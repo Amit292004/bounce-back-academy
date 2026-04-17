@@ -10,12 +10,12 @@ declare const globalThis: {
   prismaGlobal: ReturnType<typeof prismaClientSingleton>;
 } & typeof global;
 
-let prisma;
+let prisma: ReturnType<typeof prismaClientSingleton>;
 try {
   prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
 } catch (e) {
   console.error("CRITICAL PRISMA ERROR:", e);
-  prisma = {} as any; // Fallback to avoid total crash
+  prisma = {} as ReturnType<typeof prismaClientSingleton>; // Fallback to avoid total crash
 }
 
 export default prisma
