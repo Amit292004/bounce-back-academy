@@ -154,25 +154,20 @@ export default function PapersPage() {
           )}
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', gridColumn: '1 / -1' }}>
-            <label style={{ fontSize: '0.85rem', opacity: 0.8 }}>Google Drive View URL <span style={{ opacity: 0.5 }}>(optional — for inline preview)</span></label>
+            <label>Google Drive / PDF Link</label>
             <input
               type="url"
-              placeholder="https://drive.google.com/file/d/.../view"
+              placeholder="https://drive.google.com/..."
               value={viewUrl}
               onChange={e => setViewUrl(e.target.value)}
+              required
               style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--surface-border)', color: 'white' }}
             />
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', gridColumn: '1 / -1' }}>
-            <label>Upload PDF File</label>
-            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} required
-              style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--surface-border)', color: 'white' }} />
-          </div>
-
           <div style={{ gridColumn: '1 / -1', marginTop: '1rem' }}>
             <button type="submit" className="btn-primary" disabled={uploading || subjects.length === 0 || years.length === 0}>
-              {uploading ? 'Uploading...' : <><FaUpload /> Upload Paper</>}
+              {uploading ? 'Saving...' : 'Add Paper'}
             </button>
             {(subjects.length === 0 || years.length === 0) && (
               <p style={{ color: 'var(--error)', marginTop: '0.5rem', fontSize: '0.875rem' }}>
