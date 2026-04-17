@@ -6,11 +6,14 @@ import prisma from "@/lib/prisma";
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
+  /*
   const announcements = await prisma.announcement.findMany({
     where: { isActive: true },
     orderBy: { createdAt: "desc" },
     take: 3,
   });
+  */
+  const announcements: any[] = [];
 
   return (
     <div className={styles.container}>
