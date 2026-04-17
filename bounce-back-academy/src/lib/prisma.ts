@@ -1,14 +1,22 @@
 import { PrismaClient } from '@prisma/client'
 
 const prismaClientSingleton = () => {
-  return new PrismaClient()
+  return new PrismaClient({
+    log: ['query', 'error', 'warn'],
+  })
 }
 
 declare const globalThis: {
   prismaGlobal: ReturnType<typeof prismaClientSingleton>;
 } & typeof global;
 
-const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
+let prisma;
+try {
+  prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
+} catch (e) {
+  console.error("CRITICAL PRISMA ERROR:", e);
+  prisma = {} as any; // Fallback to avoid total crash
+}
 
 export default prisma
 
