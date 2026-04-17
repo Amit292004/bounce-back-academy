@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FaFileAlt, FaDownload, FaEye, FaFilter } from 'react-icons/fa';
@@ -19,7 +19,7 @@ interface Paper {
 interface Subject { id: string; name: string; }
 interface Year { id: string; year: string; }
 
-export default function PapersPage() {
+function PapersContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -185,5 +185,13 @@ export default function PapersPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function PapersPage() {
+  return (
+    <Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', opacity: 0.6 }}>Loading page...</div>}>
+      <PapersContent />
+    </Suspense>
   );
 }
