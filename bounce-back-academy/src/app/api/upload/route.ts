@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
+import { put } from '@vercel/blob';
 
 export async function POST(request: Request) {
   try {
@@ -11,30 +10,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
     const uniqueName = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
-    const publicPath = join(process.cwd(), 'public', 'uploads');
-    const filePath = join(publicPath, uniqueName);
-    
-    try {
-      await writeFile(filePath, buffer);
-    } catch (e: any) {
-      if (e.code === 'ENOENT') {
-        const fs = require('fs');
-        fs.mkdirSync(publicPath, { recursive: true });
-        await writeFile(filePath, buffer);
-      } else {
-        throw e;
-      }
-    }
 
-    const fileUrl = `/uploads/${uniqueName}`;
+    // Upload to Vercel Blob
+    const blob = await put(uniqueName, file, {
+      access: 'public',
+      multipart: true // Recommended for larger files
+    });
 
-    return NextResponse.json({ url: fileUrl });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
+    return NextResponse.json({ url: blob.url });
+  } catch (error: any) {
+    console.error('Vercel Blob Upload Error:', error);
+    return NextResponse.json({ 
+      error: 'Failed to upload file. Please make sure Vercel Blob is configured.',
+      details: error.message 
+    }, { status: 500 });
   }
 }
