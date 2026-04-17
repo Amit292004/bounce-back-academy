@@ -3,10 +3,11 @@ import prisma from '@/lib/prisma';
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await prisma.note.delete({ where: { id: params.id } });
+    const { id } = await params;
+    await prisma.note.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: 'Failed to delete note' }, { status: 500 });
