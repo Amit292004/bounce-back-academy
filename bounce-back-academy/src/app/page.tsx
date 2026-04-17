@@ -3,7 +3,7 @@ import styles from "./page.module.css";
 import prisma from "@/lib/prisma";
 
 // Revalidate every 60 seconds or make it dynamic
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const announcements = await prisma.announcement.findMany({
