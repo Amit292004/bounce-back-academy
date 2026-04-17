@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  class     String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Subject {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  papers    QuestionPaper[]
+  notes     Note[]
+}
+
+model AcademicYear {
+  id        String   @id @default(cuid())
+  year      String   @unique
+  createdAt DateTime @default(now())
+  papers    QuestionPaper[]
+}
+
+model QuestionPaper {
+  id           String   @id @default(cuid())
+  title        String
+  className    String
+  subjectId    String
+  subject      Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  yearId       String
+  year         AcademicYear @relation(fields: [yearId], references: [id], onDelete: Cascade)
+  phase        String?
+  viewUrl      String
+  downloadFile String
+  createdAt    DateTime @default(now())
+}
+
+model Note {
+  id           String   @id @default(cuid())
+  title        String
+  className    String
+  subjectId    String
+  subject      Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  viewUrl      String
+  downloadFile String
+  createdAt    DateTime @default(now())
+}
+
+model Video {
+  id          String   @id @default(cuid())
+  title       String
+  youtubeLink String
+  category    String
+  createdAt   DateTime @default(now())
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  message   String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  name      String
+  className String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model Branding {
+  id         String   @id @default(cuid())
+  siteLogo   String?
+  adminPhoto String?
+  updatedAt  DateTime @updatedAt
+}

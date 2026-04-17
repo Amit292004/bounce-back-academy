@@ -1,0 +1,4 @@
+.container {
+  min-height: 100vh;
+  background: radial-gradient(ellipse at bottom, rgba(139, 92, 246, 0.1) 0%, var(--background) 60%);
+}
