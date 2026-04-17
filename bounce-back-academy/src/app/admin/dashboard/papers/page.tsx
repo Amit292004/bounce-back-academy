@@ -36,22 +36,31 @@ export default function PapersPage() {
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file || !title || !className || !subjectId || !yearId) return;
+    if (!title || !className || !subjectId || !yearId) return;
+    
+    if (!file && !viewUrl) {
+      alert("Please either upload a file OR provide a Google Drive URL.");
+      return;
+    }
 
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
+      let fileUrl = '';
 
-      const uploadRes = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      const uploadData = await uploadRes.json();
+      if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
 
-      if (!uploadRes.ok) throw new Error(uploadData.error);
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        const uploadData = await uploadRes.json();
 
-      const fileUrl = uploadData.url;
+        if (!uploadRes.ok) throw new Error(uploadData.error || "Upload failed. Vercel blocks direct file storage.");
+
+        fileUrl = uploadData.url;
+      }
 
       await fetch('/api/admin/papers', {
         method: 'POST',
@@ -63,7 +72,7 @@ export default function PapersPage() {
           yearId,
           phase: (className === '8' || className === '9') ? phase : undefined,
           viewUrl: viewUrl || fileUrl,
-          downloadFile: fileUrl
+          downloadFile: fileUrl || viewUrl
         }),
       });
 
@@ -74,9 +83,9 @@ export default function PapersPage() {
       setFile(null);
       setPhase('');
       setViewUrl('');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Upload failed');
+      alert(err.message || 'Upload failed');
     } finally {
       setUploading(false);
     }
