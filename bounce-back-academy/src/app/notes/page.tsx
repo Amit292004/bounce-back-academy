@@ -21,6 +21,19 @@ export default function NotesPage() {
   const [loading, setLoading] = useState(true);
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const fetchAuth = async () => {
+    try {
+      const res = await fetch('/api/student/me');
+      if (res.ok) {
+        const data = await res.json();
+        setIsAuthenticated(data.authenticated);
+      }
+    } catch {
+      setIsAuthenticated(false);
+    }
+  };
 
   const fetchMeta = async () => {
     const res = await fetch('/api/admin/subjects');
@@ -37,7 +50,7 @@ export default function NotesPage() {
     setLoading(false);
   }, [selectedClass, selectedSubject]);
 
-  useEffect(() => { fetchMeta(); }, []);
+  useEffect(() => { fetchMeta(); fetchAuth(); }, []);
   useEffect(() => { fetchNotes(); }, [fetchNotes]);
 
   return (
@@ -51,13 +64,13 @@ export default function NotesPage() {
 
       {/* Class Filters */}
       <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-        {['', '8', '9', '10', '11', '12'].map(cls => (
+        {['', '8', '9', '10', '11', '12', 'CUET', 'JEE', 'NEET'].map(cls => (
           <button
             key={cls}
             onClick={() => { setSelectedClass(cls); setSelectedSubject(''); }}
             style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedClass === cls ? 'var(--primary)' : 'transparent', color: 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)' }}
           >
-            {cls === '' ? 'All Classes' : `Class ${cls}`}
+            {cls === '' ? 'All Classes' : (['CUET', 'JEE', 'NEET'].includes(cls) ? cls : `Class ${cls}`)}
           </button>
         ))}
       </div>
@@ -98,25 +111,29 @@ export default function NotesPage() {
                 <div>
                   <h3 style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{note.title}</h3>
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(99,102,241,0.15)', borderRadius: '999px', color: 'var(--primary)' }}>Class {note.className}</span>
+                    <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(99,102,241,0.15)', borderRadius: '999px', color: 'var(--primary)' }}>{['CUET', 'JEE', 'NEET'].includes(note.className) ? note.className : `Class ${note.className}`}</span>
                     <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(139,92,246,0.15)', borderRadius: '999px', color: 'var(--accent)' }}>{note.subject.name}</span>
                   </div>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                {note.viewUrl && (
-                  <a href={note.viewUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                {(note.viewUrl || note.downloadFile) && (
+                  <a href={note.viewUrl || note.downloadFile} target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                     <FaEye /> View
                   </a>
                 )}
-                {note.downloadFile ? (
+                {!isAuthenticated ? (
+                  <Link href="/login" className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <FaDownload /> Login to Download
+                  </Link>
+                ) : note.downloadFile ? (
                   <a href={note.downloadFile} download className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                     <FaDownload /> Download
                   </a>
                 ) : (
-                  <Link href="/login" className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <FaDownload /> Login to Download
-                  </Link>
+                  <button disabled className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.4rem', opacity: 0.5, cursor: 'not-allowed' }}>
+                    <FaDownload /> No File Attached
+                  </button>
                 )}
               </div>
             </div>

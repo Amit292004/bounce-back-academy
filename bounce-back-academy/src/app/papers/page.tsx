@@ -31,6 +31,19 @@ function PapersContent() {
   const [selectedClass, setSelectedClass] = useState(searchParams.get('class') || '');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const fetchAuth = async () => {
+    try {
+      const res = await fetch('/api/student/me');
+      if (res.ok) {
+        const data = await res.json();
+        setIsAuthenticated(data.authenticated);
+      }
+    } catch {
+      setIsAuthenticated(false);
+    }
+  };
 
   const fetchMeta = async () => {
     const [sRes, yRes] = await Promise.all([fetch('/api/admin/subjects'), fetch('/api/admin/years')]);
@@ -49,7 +62,7 @@ function PapersContent() {
     setLoading(false);
   }, [selectedClass, selectedSubject, selectedYear]);
 
-  useEffect(() => { fetchMeta(); }, []);
+  useEffect(() => { fetchMeta(); fetchAuth(); }, []);
   useEffect(() => { fetchPapers(); }, [fetchPapers]);
 
   const handleClassSelect = (cls: string) => {
@@ -76,13 +89,13 @@ function PapersContent() {
         >
           All Classes
         </button>
-        {[8, 9, 10, 11, 12].map(c => (
+        {['8', '9', '10', '11', '12', 'CUET', 'JEE', 'NEET'].map(c => (
           <button
             key={c}
-            onClick={() => handleClassSelect(String(c))}
-            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedClass === String(c) ? 'var(--primary)' : 'transparent', color: 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)' }}
+            onClick={() => handleClassSelect(c)}
+            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedClass === c ? 'var(--primary)' : 'transparent', color: 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)' }}
           >
-            Class {c}
+            {['CUET', 'JEE', 'NEET'].includes(c) ? c : `Class ${c}`}
           </button>
         ))}
       </div>
@@ -142,7 +155,7 @@ function PapersContent() {
                 <div>
                   <h3 style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{paper.title}</h3>
                   <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(99,102,241,0.15)', borderRadius: '999px', color: 'var(--primary)' }}>Class {paper.className}</span>
+                    <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(99,102,241,0.15)', borderRadius: '999px', color: 'var(--primary)' }}>{['CUET', 'JEE', 'NEET'].includes(paper.className) ? paper.className : `Class ${paper.className}`}</span>
                     <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(139,92,246,0.15)', borderRadius: '999px', color: 'var(--accent)' }}>{paper.subject.name}</span>
                     <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(255,255,255,0.08)', borderRadius: '999px', opacity: 0.8 }}>{paper.year.year}</span>
                     {paper.phase && <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(16,185,129,0.15)', borderRadius: '999px', color: 'var(--success)' }}>Phase {paper.phase}</span>}
@@ -150,9 +163,9 @@ function PapersContent() {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                {paper.viewUrl && (
+                {(paper.viewUrl || paper.downloadFile) && (
                   <a
-                    href={paper.viewUrl}
+                    href={paper.viewUrl || paper.downloadFile}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-secondary"
@@ -161,7 +174,15 @@ function PapersContent() {
                     <FaEye /> View
                   </a>
                 )}
-                {paper.downloadFile ? (
+                {!isAuthenticated ? (
+                  <Link
+                    href="/login"
+                    className="btn-primary"
+                    style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                  >
+                    <FaDownload /> Login to Download
+                  </Link>
+                ) : paper.downloadFile ? (
                   <a
                     href={paper.downloadFile}
                     download
@@ -171,13 +192,13 @@ function PapersContent() {
                     <FaDownload /> Download
                   </a>
                 ) : (
-                  <Link
-                    href="/login"
+                  <button
+                    disabled
                     className="btn-primary"
-                    style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                    style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.4rem', opacity: 0.5, cursor: 'not-allowed' }}
                   >
-                    <FaDownload /> Login to Download
-                  </Link>
+                    <FaDownload /> No File Attached
+                  </button>
                 )}
               </div>
             </div>

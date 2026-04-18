@@ -11,7 +11,7 @@ interface Video {
   createdAt: string;
 }
 
-const CATEGORIES = ['General', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'];
+const CATEGORIES = ['General', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12', 'CUET', 'JEE', 'NEET'];
 
 export default function VideosPage() {
   const [videos, setVideos] = useState<Video[]>([]);

@@ -117,6 +117,9 @@ export default function NotesPage() {
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Class</label>
               <select name="className" value={form.className} onChange={handleChange} required style={selectStyle}>
                 {[8, 9, 10, 11, 12].map(c => <option key={c} value={String(c)}>Class {c}</option>)}
+                <option value="CUET">CUET</option>
+                <option value="JEE">JEE</option>
+                <option value="NEET">NEET</option>
               </select>
             </div>
             <div>

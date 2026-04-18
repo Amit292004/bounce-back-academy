@@ -47,10 +47,10 @@ export default async function Home() {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Select Your Class</h2>
         <div className={styles.grid}>
-          {[8, 9, 10, 11, 12].map((cls) => (
+          {['8', '9', '10', '11', '12', 'CUET', 'JEE', 'NEET'].map((cls) => (
             <Link key={cls} href={`/papers?class=${cls}`}>
               <div className={`glass-panel ${styles.card}`}>
-                <h3 className={`${styles.cardTitle} text-gradient`}>Class {cls}</h3>
+                <h3 className={`${styles.cardTitle} text-gradient`}>{['CUET', 'JEE', 'NEET'].includes(cls) ? cls : `Class ${cls}`}</h3>
                 <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
               </div>
             </Link>

@@ -122,6 +122,9 @@ export default function PapersPage() {
             <select value={className} onChange={e => setClassName(e.target.value)}
               style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--surface-border)', color: 'white' }}>
               {['8', '9', '10', '11', '12'].map(c => <option key={c} value={c}>Class {c}</option>)}
+              <option value="CUET">CUET</option>
+              <option value="JEE">JEE</option>
+              <option value="NEET">NEET</option>
             </select>
           </div>
 
