@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block admin pages from indexing
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://bounce-back-academy.vercel.app/sitemap.xml
