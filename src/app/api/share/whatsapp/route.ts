@@ -1,17 +1,33 @@
 import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const imageUrl = searchParams.get('image');
-  const title = searchParams.get('title') || 'Bounce Back Academy';
-  const description = searchParams.get('desc') || 'Empowering Students to Excel';
+  
+  let imageUrl = searchParams.get('image');
+  let title = searchParams.get('title') || 'Bounce Back Academy';
+  let description = searchParams.get('desc') || 'Empowering Students to Excel';
+
+  // If no image provided in URL, fetch from Branding table
+  if (!imageUrl) {
+    try {
+      const branding = await prisma.branding.findFirst({
+        orderBy: { updatedAt: 'desc' }
+      });
+      if (branding) {
+        imageUrl = branding.whatsappImageUrl || imageUrl;
+        description = branding.whatsappMessage || description;
+      }
+    } catch (e) {
+      console.error('Error fetching branding for WhatsApp share:', e);
+    }
+  }
 
   if (!imageUrl) {
     return new NextResponse('Image URL is required', { status: 400 });
   }
 
   // Return a minimal HTML page with Open Graph tags
-  // WhatsApp will crawl this to generate the preview
   const html = `
     <!DOCTYPE html>
     <html lang="en">
@@ -29,14 +45,12 @@ export async function GET(request: Request) {
       <meta http-equiv="refresh" content="0;url=${imageUrl}">
     </head>
     <body>
-      <p>Redirecting to image...</p>
+      <p>Redirecting...</p>
     </body>
     </html>
   `;
 
   return new NextResponse(html, {
-    headers: {
-      'Content-Type': 'text/html',
-    },
+    headers: { 'Content-Type': 'text/html' },
   });
 }

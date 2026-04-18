@@ -43,18 +43,16 @@ export default function UsersPage() {
   const getWhatsAppUrl = (user: User) => {
     const defaultMsg = `Hello ${user.name},\n\nWelcome to Bounce Back Academy! We are thrilled to have you with us.`;
     let msg = branding.whatsappMessage || defaultMsg;
-    
-    // Replace {name} placeholder
     msg = msg.replace(/{name}/g, user.name);
     
-    // Append image wrapper URL for better link preview if present
-    if (branding.whatsappImageUrl) {
-      const origin = window.location.origin;
-      const previewUrl = `${origin}/api/share/whatsapp?image=${encodeURIComponent(branding.whatsappImageUrl)}&title=${encodeURIComponent('Bounce Back Academy')}&desc=${encodeURIComponent(msg.substring(0, 100))}`;
-      msg += `\n\n${previewUrl}`;
-    }
+    // Use the short /w link for better preview
+    const origin = window.location.origin;
+    const shortLink = `${origin}/w`;
     
-    return `https://wa.me/${user.mobile?.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
+    // Formatting: Link at top generates the preview, followed by the message
+    const fullMessage = `${shortLink}\n\n${msg}`;
+    
+    return `https://wa.me/${user.mobile?.replace(/\D/g, '')}?text=${encodeURIComponent(fullMessage)}`;
   };
 
   return (
