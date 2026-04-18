@@ -45,14 +45,11 @@ export default function UsersPage() {
     let msg = branding.whatsappMessage || defaultMsg;
     msg = msg.replace(/{name}/g, user.name);
     
-    // Use the short /w link for better preview
+    // Use the short /w link for better preview (includes photo and message as OG tags)
     const origin = window.location.origin;
     const shortLink = `${origin}/w`;
     
-    // Formatting: Link at top generates the preview, followed by the message
-    const fullMessage = `${shortLink}\n\n${msg}`;
-    
-    return `https://wa.me/${user.mobile?.replace(/\D/g, '')}?text=${encodeURIComponent(fullMessage)}`;
+    return `https://wa.me/${user.mobile?.replace(/\D/g, '')}?text=${encodeURIComponent(shortLink)}`;
   };
 
   return (
