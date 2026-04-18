@@ -29,12 +29,12 @@ export default async function AdminDashboard() {
   return (
     <div>
       <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '2rem' }}>Dashboard Overview</h1>
-      
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
         {stats.map((stat, i) => (
           <div key={i} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <div style={{ 
-              width: '60px', height: '60px', borderRadius: '50%', 
+            <div style={{
+              width: '60px', height: '60px', borderRadius: '50%',
               background: `${stat.color}20`, color: stat.color,
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
