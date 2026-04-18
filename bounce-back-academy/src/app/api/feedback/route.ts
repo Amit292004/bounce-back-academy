@@ -15,3 +15,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to submit feedback' }, { status: 500 });
   }
 }
+
+export async function GET() {
+  try {
+    const feedbacks = await prisma.feedback.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
+    return NextResponse.json(feedbacks);
+  } catch {
+    return NextResponse.json({ error: 'Failed to fetch feedback' }, { status: 500 });
+  }
+}

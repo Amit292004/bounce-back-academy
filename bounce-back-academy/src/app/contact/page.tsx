@@ -16,7 +16,7 @@ export default function ContactPage() {
   return (
     <div className={styles.container}>
       {/* Header Section */}
-      <div style={{ 
+      <div style={{
         padding: '5rem 2rem 4rem 2rem',
         textAlign: 'center',
       }}>
@@ -31,23 +31,23 @@ export default function ContactPage() {
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem 4rem' }}>
         <div className={styles.grid}>
-          
+
           {/* Left Column: Admin Info */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <div className="glass-panel" style={{ padding: '2rem', background: 'var(--surface)' }}>
               {/* Profile Image & Name */}
               <div style={{ marginBottom: '2rem' }}>
-                <div className={styles.profileImage} style={{ 
-                  width: '100px', height: '100px', borderRadius: 'var(--radius-md)', 
+                <div className={styles.profileImage} style={{
+                  width: '100px', height: '100px', borderRadius: 'var(--radius-md)',
                   background: '#f59e0b', overflow: 'hidden', marginBottom: '1rem',
                   border: '2px solid rgba(255,255,255,0.1)',
                   boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
                 }}>
-                  <Image 
-                    src="/amit-sharma.jpg" 
-                    alt="Amit Sharma" 
-                    width={100} 
-                    height={100} 
+                  <Image
+                    src="/amit-sharma.jpg"
+                    alt="Amit Sharma"
+                    width={100}
+                    height={100}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </div>
@@ -79,25 +79,25 @@ export default function ContactPage() {
           {/* Right Column: Social Links */}
           <div style={{ paddingTop: '2rem' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>Connect With Us</h3>
-            
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {socialLinks.map((link, i) => (
-                <a 
-                  key={i} 
-                  href={link.url} 
-                  target="_blank" 
+                <a
+                  key={i}
+                  href={link.url}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className={`glass-panel ${styles.socialCard}`}
-                  style={{ 
-                    display: 'flex', alignItems: 'center', gap: '1.25rem', 
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '1.25rem',
                     padding: '1.25rem 1.5rem', background: 'var(--surface)',
                     textDecoration: 'none', color: 'inherit',
                     '--hover-color': link.color
                   } as React.CSSProperties}
                 >
-                  <div className={styles.socialIcon} style={{ 
-                    width: '45px', height: '45px', borderRadius: '50%', 
-                    background: `rgba(255,255,255,0.05)`, display: 'flex', 
+                  <div className={styles.socialIcon} style={{
+                    width: '45px', height: '45px', borderRadius: '50%',
+                    background: `rgba(255,255,255,0.05)`, display: 'flex',
                     alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem',
                     color: link.color
                   }}>
@@ -111,7 +111,7 @@ export default function ContactPage() {
               ))}
 
               {/* Subscribe Banner */}
-              <div className="glass-panel" style={{ 
+              <div className="glass-panel" style={{
                 marginTop: '1rem',
                 background: 'linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(99,102,241,0.1) 100%)',
                 border: '1px solid rgba(99,102,241,0.3)',
@@ -123,13 +123,13 @@ export default function ContactPage() {
                 <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.25rem' }}>
                   📌 Subscribe to Bounce Back Academy
                 </h3>
-                <a 
-                  href="https://www.youtube.com/@BounceBackAcademy" 
-                  target="_blank" 
+                <a
+                  href="https://www.youtube.com/@BounceBackAcademy"
+                  target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-primary" 
-                  style={{ 
-                    padding: '0.75rem 2rem', 
+                  className="btn-primary"
+                  style={{
+                    padding: '0.75rem 2rem',
                     display: 'inline-block',
                     textDecoration: 'none'
                   }}

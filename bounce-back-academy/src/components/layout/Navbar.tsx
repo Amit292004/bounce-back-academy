@@ -49,6 +49,7 @@ export default function Navbar() {
     { label: 'Papers', href: '/papers' },
     { label: 'Notes', href: '/notes' },
     { label: 'Videos', href: '/videos' },
+    { label: 'Feedback', href: '/feedback' },
     { label: 'Contact', href: '/contact' },
   ];
 

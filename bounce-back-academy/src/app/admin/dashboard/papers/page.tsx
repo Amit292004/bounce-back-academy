@@ -37,7 +37,7 @@ export default function PapersPage() {
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !className || !subjectId || !yearId) return;
-    
+
     if (!file && !viewUrl) {
       alert("Please either upload a file OR provide a Google Drive URL.");
       return;
@@ -113,14 +113,12 @@ export default function PapersPage() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <label>Title</label>
-            <input type="text" value={title} onChange={e => setTitle(e.target.value)} required
-              style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--surface-border)', color: 'white' }} />
+            <input type="text" value={title} onChange={e => setTitle(e.target.value)} required style={inputStyle} />
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <label>Class</label>
-            <select value={className} onChange={e => setClassName(e.target.value)}
-              style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--surface-border)', color: 'white' }}>
+            <select value={className} onChange={e => setClassName(e.target.value)} style={selectStyle}>
               {['8', '9', '10', '11', '12'].map(c => <option key={c} value={c}>Class {c}</option>)}
               <option value="CUET">CUET</option>
               <option value="JEE">JEE</option>
@@ -130,16 +128,14 @@ export default function PapersPage() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <label>Subject</label>
-            <select value={subjectId} onChange={e => setSubjectId(e.target.value)} required
-              style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--surface-border)', color: 'white' }}>
+            <select value={subjectId} onChange={e => setSubjectId(e.target.value)} required style={selectStyle}>
               {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <label>Year</label>
-            <select value={yearId} onChange={e => setYearId(e.target.value)} required
-              style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--surface-border)', color: 'white' }}>
+            <select value={yearId} onChange={e => setYearId(e.target.value)} required style={selectStyle}>
               {years.map(y => <option key={y.id} value={y.id}>{y.year}</option>)}
             </select>
           </div>
@@ -147,8 +143,7 @@ export default function PapersPage() {
           {(className === '8' || className === '9') && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label>Phase</label>
-              <select value={phase} onChange={e => setPhase(e.target.value)}
-                style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--surface-border)', color: 'white' }}>
+              <select value={phase} onChange={e => setPhase(e.target.value)} style={selectStyle}>
                 <option value="">Select Phase</option>
                 <option value="Phase 1">Phase 1</option>
                 <option value="Phase 2">Phase 2</option>
@@ -163,14 +158,14 @@ export default function PapersPage() {
               placeholder="https://drive.google.com/..."
               value={viewUrl}
               onChange={e => setViewUrl(e.target.value)}
-              style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--surface-border)', color: 'white' }}
+              style={inputStyle}
             />
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', gridColumn: '1 / -1' }}>
             <label>Upload PDF File <span style={{ fontSize: '0.85rem', opacity: 0.5 }}>(optional if using link)</span></label>
             <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)}
-              style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--surface-border)', color: 'white' }} />
+              style={inputStyle} />
           </div>
 
           <div style={{ gridColumn: '1 / -1', marginTop: '1rem' }}>
@@ -241,3 +236,14 @@ export default function PapersPage() {
     </div>
   );
 }
+const inputStyle: React.CSSProperties = {
+  width: '100%', padding: '0.75rem',
+  background: 'rgba(255,255,255,0.05)', border: '1px solid var(--surface-border)',
+  borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none',
+};
+
+const selectStyle: React.CSSProperties = {
+  width: '100%', padding: '0.75rem',
+  background: 'rgba(30,41,59,0.9)', border: '1px solid var(--surface-border)',
+  borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none',
+};
