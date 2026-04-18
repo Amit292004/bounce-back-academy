@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = 'https://bounce-back-academy.vercel.app';
+  const base = 'https://bouncebackacademy.vercel.app';
   const now = new Date();
 
   return [

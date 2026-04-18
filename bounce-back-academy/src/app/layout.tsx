@@ -33,10 +33,10 @@ export const metadata: Metadata = {
     "Maths Science online class",
     "Amit Sharma teacher Nagaland",
   ],
-  authors: [{ name: "Amit Sharma", url: "https://bounce-back-academy.vercel.app" }],
+  authors: [{ name: "Amit Sharma", url: "https://bouncebackacademy.vercel.app" }],
   creator: "Amit Sharma",
   publisher: "Bounce Back Academy",
-  metadataBase: new URL("https://bounce-back-academy.vercel.app"),
+  metadataBase: new URL("https://bouncebackacademy.vercel.app"),
   alternates: {
     canonical: "/",
   },
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title: "Bounce Back Academy – Free NBSE Study Material",
     description:
       "Free NBSE study material for Classes 8–12, CUET, JEE & NEET. Question papers, notes and video lectures.",
-    url: "https://bounce-back-academy.vercel.app",
+    url: "https://bouncebackacademy.vercel.app",
     siteName: "Bounce Back Academy",
     images: [
       {

@@ -6,4 +6,4 @@ Disallow: /admin/
 Disallow: /api/
 
 # Sitemap location
-Sitemap: https://bounce-back-academy.vercel.app/sitemap.xml
+Sitemap: https://bouncebackacademy.vercel.app/sitemap.xml
