@@ -39,8 +39,13 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
         display: 'flex',
         flexDirection: 'column'
       }}>
-        <div style={{ padding: '2rem 1.5rem', borderBottom: '1px solid var(--surface-border)' }}>
-          <h2 className="text-gradient" style={{ fontSize: '1.25rem', fontWeight: 800 }}>Bounce Back Admin</h2>
+        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--surface-border)', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+          <img 
+            src="/logo.png" 
+            alt="Bounce Back Academy Logo" 
+            style={{ width: '36px', height: '36px', borderRadius: '6px', objectFit: 'cover' }} 
+          />
+          <h2 className="text-gradient" style={{ fontSize: '1.1rem', fontWeight: 800 }}>Bounce Back Academy</h2>
         </div>
         <nav style={{ flex: 1, padding: '1.5rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', overflowY: 'auto' }}>
           {navItems.map((item) => {

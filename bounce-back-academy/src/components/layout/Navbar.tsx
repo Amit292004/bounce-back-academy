@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { FaGraduationCap, FaBars, FaTimes, FaUserCircle } from 'react-icons/fa';
+import { FaBars, FaTimes, FaUserCircle } from 'react-icons/fa';
 
 interface AuthState {
   authenticated: boolean;
@@ -67,12 +67,14 @@ export default function Navbar() {
     >
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px' }}>
         {/* Logo */}
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none' }}>
-          <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), var(--secondary))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-            <FaGraduationCap />
-          </div>
-          <span style={{ fontWeight: 800, fontSize: '1.1rem' }}>
-            Bounce<span className="text-gradient">Back</span>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', textDecoration: 'none' }}>
+          <img 
+            src="/logo.png" 
+            alt="Bounce Back Academy Logo" 
+            style={{ width: '42px', height: '42px', borderRadius: '8px', objectFit: 'cover' }} 
+          />
+          <span style={{ fontWeight: 800, fontSize: '1.2rem' }}>
+            Bounce Back <span className="text-gradient">Academy</span>
           </span>
         </Link>
 
