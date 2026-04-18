@@ -29,8 +29,8 @@ export default function UsersPage() {
     if (res.ok) setBranding(await res.json());
   };
 
-  useEffect(() => { 
-    fetchUsers(); 
+  useEffect(() => {
+    fetchUsers();
     fetchBranding();
   }, []);
 
@@ -41,15 +41,11 @@ export default function UsersPage() {
   };
 
   const getWhatsAppUrl = (user: User) => {
-    const defaultMsg = `Hello ${user.name},\n\nWelcome to Bounce Back Academy! We are thrilled to have you with us.`;
-    let msg = branding.whatsappMessage || defaultMsg;
-    msg = msg.replace(/{name}/g, user.name);
-    
-    // Use the short /w link for better preview (includes photo and message as OG tags)
+    // Use the main website URL (optimized for WhatsApp preview in layout.tsx)
     const origin = window.location.origin;
-    const shortLink = `${origin}/w`;
     
-    return `https://wa.me/${user.mobile?.replace(/\D/g, '')}?text=${encodeURIComponent(shortLink)}`;
+    // We only send the link; WhatsApp will generate the preview with the branding photo & message
+    return `https://wa.me/${user.mobile?.replace(/\D/g, '')}?text=${encodeURIComponent(origin)}`;
   };
 
   return (

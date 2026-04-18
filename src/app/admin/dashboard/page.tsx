@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { FaBook, FaCalendarAlt, FaFileAlt, FaVideo, FaUsers } from 'react-icons/fa';
+import { FaBook, FaCalendarAlt, FaFileAlt, FaVideo, FaUsers, FaComments } from 'react-icons/fa';
 
 export const revalidate = 0; // Disable caching for dashboard
 
@@ -9,13 +9,15 @@ export default async function AdminDashboard() {
     subjectCount,
     paperCount,
     noteCount,
-    videoCount
+    videoCount,
+    feedbackCount
   ] = await Promise.all([
     prisma.user.count(),
     prisma.subject.count(),
     prisma.questionPaper.count(),
     prisma.note.count(),
-    prisma.video.count()
+    prisma.video.count(),
+    prisma.feedback.count()
   ]);
 
   const stats = [
@@ -24,6 +26,7 @@ export default async function AdminDashboard() {
     { label: 'Question Papers', value: paperCount, icon: <FaFileAlt size={24} />, color: '#10b981' },
     { label: 'Notes', value: noteCount, icon: <FaFileAlt size={24} />, color: '#f59e0b' },
     { label: 'Videos', value: videoCount, icon: <FaVideo size={24} />, color: '#8b5cf6' },
+    { label: 'Feedbacks', value: feedbackCount, icon: <FaComments size={24} />, color: '#f43f5e' },
   ];
 
   return (

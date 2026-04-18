@@ -8,77 +8,64 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Bounce Back Academy – Free NBSE Study Material for Classes 8–12",
-    template: "%s | Bounce Back Academy",
-  },
-  description:
-    "Free NBSE study material for Classes 8 to 12, CUET, JEE & NEET. Download question papers, notes, and watch video lectures by Amit Sharma. Best online coaching in Nagaland.",
-  keywords: [
-    "NBSE study material",
-    "NBSE question papers",
-    "NBSE notes",
-    "free study material Nagaland",
-    "Class 8 notes NBSE",
-    "Class 9 notes NBSE",
-    "Class 10 notes NBSE",
-    "Class 11 notes NBSE",
-    "Class 12 notes NBSE",
-    "CUET preparation",
-    "JEE preparation",
-    "NEET preparation",
-    "Bounce Back Academy",
-    "online classes Nagaland",
-    "Maths Science online class",
-    "Amit Sharma teacher Nagaland",
-  ],
-  authors: [{ name: "Amit Sharma", url: "https://bouncebackacademy.vercel.app" }],
-  creator: "Amit Sharma",
-  publisher: "Bounce Back Academy",
-  metadataBase: new URL("https://bouncebackacademy.vercel.app"),
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    title: "Bounce Back Academy – Free NBSE Study Material",
-    description:
-      "Free NBSE study material for Classes 8–12, CUET, JEE & NEET. Question papers, notes and video lectures.",
-    url: "https://bouncebackacademy.vercel.app",
-    siteName: "Bounce Back Academy",
-    images: [
-      {
-        url: "/logo.png",
-        width: 400,
-        height: 400,
-        alt: "Bounce Back Academy Logo",
-      },
-    ],
-    locale: "en_IN",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Bounce Back Academy – Free NBSE Study Material",
-    description: "Free NBSE study material for Classes 8–12, CUET, JEE & NEET.",
-    images: ["/logo.png"],
-    creator: "@BounceBackAcademy",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+import { headers } from "next/headers";
+import prisma from "@/lib/prisma";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const headerList = await headers();
+  const userAgent = headerList.get("user-agent") || "";
+  const isWhatsApp = /WhatsApp/i.test(userAgent);
+
+  const defaultTitle = "Bounce Back Academy – Free NBSE Study Material for Classes 8–12";
+  const defaultDesc = "Free NBSE study material for Classes 8 to 12, CUET, JEE & NEET. Download question papers, notes, and watch video lectures.";
+
+  // Fetch branding for WhatsApp preview
+  let imageUrl = "/logo.png";
+  let description = defaultDesc;
+
+  try {
+    const branding = await prisma.branding.findFirst({ orderBy: { updatedAt: "desc" } }) as any;
+    if (branding) {
+      if (isWhatsApp && branding.whatsappImageUrl) {
+        imageUrl = branding.whatsappImageUrl;
+      }
+      if (isWhatsApp && branding.whatsappMessage) {
+        description = branding.whatsappMessage;
+      }
+    }
+  } catch (e) {
+    console.error("Error fetching metadata branding:", e);
+  }
+
+  return {
+    title: {
+      default: defaultTitle,
+      template: "%s | Bounce Back Academy",
+    },
+    description: defaultDesc,
+    metadataBase: new URL("https://bouncebackacademy.vercel.app"),
+    openGraph: {
+      title: "Bounce Back Academy",
+      description: description,
+      url: "https://bouncebackacademy.vercel.app",
+      siteName: "Bounce Back Academy",
+      images: [{ url: imageUrl }],
+      locale: "en_IN",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [imageUrl],
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
     },
-  },
-  verification: {
-    google: "RD88kClebuq3g0JxmGSaFloIen2rk_aCSH7ge3nSJwg",
-  },
-};
+    verification: {
+      google: "RD88kClebuq3g0JxmGSaFloIen2rk_aCSH7ge3nSJwg",
+    },
+  };
+}
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 
