@@ -70,7 +70,7 @@ export default function Navbar() {
   return (
     <header
       style={{
-        position: 'sticky', top: 0, zIndex: 100,
+        position: 'sticky', top: '0', zIndex: 100,
         background: scrolled ? 'var(--surface)' : 'transparent',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',

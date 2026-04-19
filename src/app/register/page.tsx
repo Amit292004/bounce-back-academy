@@ -109,9 +109,11 @@ export default function RegisterPage() {
               required
               className={styles.input}
             >
-              <option value="" style={{ background: '#1e293b', color: 'white' }}>Select class</option>
-              {[8, 9, 10, 11, 12].map(c => (
-                <option key={c} value={String(c)} style={{ background: '#1e293b', color: 'white' }}>Class {c}</option>
+              <option value="" style={{ background: 'var(--background)', color: 'var(--foreground)' }}>Select class</option>
+              {['8', '9', '10', '11', '12', 'NEET', 'JEE', 'CUET'].map(c => (
+                <option key={c} value={c} style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
+                  {isNaN(Number(c)) ? c : `Class ${c}`}
+                </option>
               ))}
             </select>
           </div>

@@ -155,7 +155,7 @@ export default function NotesPage() {
 
       {/* Filter */}
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-        {['All', '8', '9', '10', '11', '12'].map(cls => (
+        {['All', '8', '9', '10', '11', '12', 'CUET', 'JEE', 'NEET'].map(cls => (
           <button
             key={cls}
             onClick={() => setFilterClass(cls)}
@@ -166,7 +166,7 @@ export default function NotesPage() {
               transition: 'var(--transition)'
             }}
           >
-            {cls === 'All' ? 'All Classes' : `Class ${cls}`}
+            {cls === 'All' ? 'All Classes' : (['CUET', 'JEE', 'NEET'].includes(cls) ? cls : `Class ${cls}`)}
           </button>
         ))}
       </div>

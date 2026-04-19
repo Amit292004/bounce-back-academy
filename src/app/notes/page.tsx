@@ -59,7 +59,7 @@ export default function NotesPage() {
         <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>
           Study <span className="text-gradient">Notes</span>
         </h1>
-        <p style={{ opacity: 0.7 }}>Comprehensive notes for Classes 8-12. View free, download after login.</p>
+        <p style={{ opacity: 0.7 }}>Comprehensive notes for all levels. View free, download after login.</p>
       </div>
 
       {/* Class Filters */}
@@ -68,7 +68,7 @@ export default function NotesPage() {
           <button
             key={cls}
             onClick={() => { setSelectedClass(cls); setSelectedSubject(''); }}
-            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedClass === cls ? 'var(--primary)' : 'transparent', color: 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)' }}
+            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedClass === cls ? 'var(--primary)' : 'transparent', color: selectedClass === cls ? 'white' : 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)' }}
           >
             {cls === '' ? 'All Classes' : (['CUET', 'JEE', 'NEET'].includes(cls) ? cls : `Class ${cls}`)}
           </button>
@@ -81,7 +81,7 @@ export default function NotesPage() {
         <select
           value={selectedSubject}
           onChange={e => setSelectedSubject(e.target.value)}
-          style={{ padding: '0.5rem 1rem', background: 'rgba(30,41,59,0.9)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none', flex: 1, minWidth: '140px' }}
+          style={{ padding: '0.5rem 1rem', background: 'var(--background)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none', flex: 1, minWidth: '140px' }}
         >
           <option value="">All Subjects</option>
           {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}

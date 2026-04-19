@@ -93,7 +93,7 @@ function PapersContent() {
           <button
             key={c}
             onClick={() => handleClassSelect(c)}
-            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedClass === c ? 'var(--primary)' : 'transparent', color: 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)' }}
+            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedClass === c ? 'var(--primary)' : 'transparent', color: selectedClass === c ? 'white' : 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)' }}
           >
             {['CUET', 'JEE', 'NEET'].includes(c) ? c : `Class ${c}`}
           </button>
@@ -107,7 +107,7 @@ function PapersContent() {
         <select
           value={selectedSubject}
           onChange={e => setSelectedSubject(e.target.value)}
-          style={{ padding: '0.5rem 1rem', background: 'rgba(30,41,59,0.9)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none', flex: 1, minWidth: '140px' }}
+          style={{ padding: '0.5rem 1rem', background: 'var(--background)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none', flex: 1, minWidth: '140px' }}
         >
           <option value="">All Subjects</option>
           {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -116,7 +116,7 @@ function PapersContent() {
         <select
           value={selectedYear}
           onChange={e => setSelectedYear(e.target.value)}
-          style={{ padding: '0.5rem 1rem', background: 'rgba(30,41,59,0.9)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none', flex: 1, minWidth: '120px' }}
+          style={{ padding: '0.5rem 1rem', background: 'var(--background)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none', flex: 1, minWidth: '120px' }}
         >
           <option value="">All Years</option>
           {years.map(y => <option key={y.id} value={y.id}>{y.year}</option>)}

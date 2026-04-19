@@ -84,9 +84,9 @@ export default function ProfilePage() {
     width: '100%',
     padding: '0.75rem 1rem',
     borderRadius: '8px',
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.15)',
-    color: 'white',
+    background: 'var(--surface-highlight)',
+    border: '1px solid var(--surface-border)',
+    color: 'var(--foreground)',
     fontSize: '0.95rem',
     outline: 'none',
   };
@@ -190,7 +190,8 @@ export default function ProfilePage() {
                 style={{
                   display: 'flex', alignItems: 'center', gap: '0.4rem',
                   padding: '0.5rem 1rem', borderRadius: '8px',
-                  background: 'transparent', color: 'rgba(255,255,255,0.6)',
+                  background: 'transparent', color: 'var(--foreground)',
+                  opacity: 0.7,
                   border: '1px solid var(--surface-border)', cursor: 'pointer',
                   fontWeight: 600, fontSize: '0.875rem',
                 }}
@@ -236,7 +237,7 @@ export default function ProfilePage() {
             <label style={labelStyle}><FaEnvelope /> Email Address</label>
             <p style={{ fontSize: '1rem', fontWeight: 500, opacity: editing ? 0.5 : 1 }}>
               {user.email}
-              {editing && <span style={{ fontSize: '0.78rem', marginLeft: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>Cannot be changed</span>}
+              {editing && <span style={{ fontSize: '0.78rem', marginLeft: '0.75rem', color: 'var(--foreground)', opacity: 0.4 }}>Cannot be changed</span>}
             </p>
           </div>
 
@@ -249,8 +250,10 @@ export default function ProfilePage() {
                 onChange={e => setForm(p => ({ ...p, className: e.target.value }))}
                 style={{ ...inputStyle, cursor: 'pointer' }}
               >
-                {[8, 9, 10, 11, 12].map(c => (
-                  <option key={c} value={String(c)} style={{ background: '#1e293b', color: 'white' }}>Class {c}</option>
+                {['8', '9', '10', '11', '12', 'NEET', 'JEE', 'CUET'].map(c => (
+                  <option key={c} value={c} style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
+                    {isNaN(Number(c)) ? c : `Class ${c}`}
+                  </option>
                 ))}
               </select>
             ) : (
