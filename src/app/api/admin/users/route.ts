@@ -5,11 +5,28 @@ export async function GET() {
   try {
     const users = await prisma.user.findMany({
       orderBy: { createdAt: 'desc' },
-      select: { id: true, name: true, class: true, email: true, mobile: true, createdAt: true } as any
+      select: { id: true, name: true, class: true, email: true, mobile: true, adSent: true, welcomeSent: true, createdAt: true } as any
     });
     return NextResponse.json(users);
   } catch {
     return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: Request) {
+  try {
+    const { id, adSent, welcomeSent } = await request.json();
+    const data: any = {};
+    if (adSent !== undefined) data.adSent = adSent;
+    if (welcomeSent !== undefined) data.welcomeSent = welcomeSent;
+    
+    await prisma.user.update({
+      where: { id },
+      data: data
+    });
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
   }
 }
 

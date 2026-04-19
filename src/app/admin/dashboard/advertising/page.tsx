@@ -13,6 +13,7 @@ interface User {
   class: string;
   email: string;
   mobile?: string;
+  adSent?: boolean;
   createdAt: string;
 }
 
@@ -30,8 +31,20 @@ export default function AdvertisingPage() {
   const [statusMsg, setStatusMsg] = useState('');
   // sentSet is populated automatically when Send is clicked — no manual toggles
   const [sentSet, setSentSet] = useState<Set<string>>(new Set());
-  const markSent = (userId: string) =>
-    setSentSet(prev => new Set([...prev, userId]));
+  const markSent = async (userId: string, isNowSent: boolean = true) => {
+    setSentSet(prev => {
+      const next = new Set(prev);
+      if (isNowSent) next.add(userId);
+      else next.delete(userId);
+      return next;
+    });
+    
+    await fetch('/api/admin/users', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: userId, adSent: isNowSent }),
+    });
+  };
   const imageInputRef = useRef<HTMLInputElement>(null);
 
   const showStatus = (msg: string) => {
@@ -49,7 +62,12 @@ export default function AdvertisingPage() {
       const b = await brandRes.json();
       setAd({ adMessage: b.adMessage, adImageUrl: b.adImageUrl });
     }
-    if (usersRes.ok) setUsers(await usersRes.json());
+    if (usersRes.ok) {
+      const u = await usersRes.json();
+      setUsers(u);
+      const initialSent = new Set<string>(u.filter((user: User) => user.adSent).map((user: User) => user.id));
+      setSentSet(initialSent);
+    }
     setLoading(false);
   };
 
@@ -340,9 +358,11 @@ export default function AdvertisingPage() {
                         </a>
                       </td>
 
-                      {/* Auto status indicator */}
+                      {/* Interactive status indicator */}
                       <td style={{ padding: '0.85rem 1rem' }}>
-                        <span
+                        <button
+                          onClick={() => markSent(user.id, !isSent)}
+                          title={isSent ? 'Mark as Pending' : 'Mark as Sent'}
                           style={{
                               display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
                               padding: '0.35rem 0.85rem', borderRadius: 'var(--radius-sm)',
@@ -351,11 +371,12 @@ export default function AdvertisingPage() {
                               color: isSent ? 'var(--success)' : 'var(--foreground)',
                             fontSize: '0.8rem', fontWeight: 600,
                             transition: 'all 0.25s',
-                            userSelect: 'none',
+                            cursor: 'pointer',
+                            outline: 'none',
                           }}
                         >
                           {isSent ? <><FaCheckCircle size={11} /> Sent</> : <>⏳ Pending</>}
-                        </span>
+                        </button>
                       </td>
                     </tr>
                   );

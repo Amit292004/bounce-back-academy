@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
   let description = defaultDesc;
 
   try {
-    const branding = await prisma.branding.findFirst({ orderBy: { updatedAt: "desc" } }) as any;
+    const branding = await prisma.branding.findFirst() as any;
     if (branding) {
       if (isWhatsApp && branding.whatsappImageUrl) {
         imageUrl = branding.whatsappImageUrl;

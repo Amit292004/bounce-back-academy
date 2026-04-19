@@ -9,6 +9,7 @@ interface User {
   class: string;
   email: string;
   mobile?: string;
+  welcomeSent?: boolean;
   createdAt: string;
 }
 
@@ -19,12 +20,30 @@ export default function UsersPage() {
   
   // Track who we have messaged
   const [sentSet, setSentSet] = useState<Set<string>>(new Set());
-  const markSent = (userId: string) => setSentSet(prev => new Set([...prev, userId]));
+  const markSent = async (userId: string, isNowSent: boolean = true) => {
+    setSentSet(prev => {
+      const next = new Set(prev);
+      if (isNowSent) next.add(userId);
+      else next.delete(userId);
+      return next;
+    });
+    
+    await fetch('/api/admin/users', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: userId, welcomeSent: isNowSent }),
+    });
+  };
 
   const fetchUsers = async () => {
     setLoading(true);
     const res = await fetch('/api/admin/users');
-    if (res.ok) setUsers(await res.json());
+    if (res.ok) {
+      const u = await res.json();
+      setUsers(u);
+      const initialSent = new Set<string>(u.filter((user: any) => user.welcomeSent).map((user: any) => user.id));
+      setSentSet(initialSent);
+    }
     setLoading(false);
   };
 
@@ -43,21 +62,23 @@ export default function UsersPage() {
     await fetch('/api/admin/users', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
     fetchUsers();
   };
-
   const getWhatsAppUrl = (user: User) => {
-    // Use the main website URL (optimized for WhatsApp preview in layout.tsx)
     const origin = window.location.origin;
     let mobile = user.mobile?.replace(/\D/g, '') || '';
-    
-    // Normalize Indian numbers: if 10 digits, prepend 91; if 11 digits starting with 0, replace 0 with 91
-    if (mobile.length === 10) {
-      mobile = `91${mobile}`;
-    } else if (mobile.length === 11 && mobile.startsWith('0')) {
-      mobile = `91${mobile.substring(1)}`;
+    if (mobile.length === 10) mobile = `91${mobile}`;
+    else if (mobile.length === 11 && mobile.startsWith('0')) mobile = `91${mobile.substring(1)}`;
+
+    let rawText: string;
+    if (!branding.whatsappMessage) {
+      rawText = `Hi ${user.name}, welcome to Bounce Back Academy!`;
+    } else if (/\{name\}/i.test(branding.whatsappMessage)) {
+      rawText = branding.whatsappMessage.replace(/\{name\}/gi, user.name);
+    } else {
+      rawText = `Hi ${user.name},\n\n${branding.whatsappMessage}`;
     }
-    
-    // We only send the link; WhatsApp will generate the preview with the branding photo & message
-    return `https://wa.me/${mobile}?text=${encodeURIComponent(origin)}`;
+
+    const text = `${rawText}\n\n${origin}`;
+    return `https://wa.me/${mobile}?text=${encodeURIComponent(text)}`;
   };
 
   return (
@@ -118,7 +139,9 @@ export default function UsersPage() {
                       {/* Status Column */}
                       <td style={{ padding: '0.85rem 1rem' }}>
                         {user.mobile ? (
-                          <span
+                          <button
+                            onClick={() => markSent(user.id, !isSent)}
+                            title={isSent ? 'Mark as Pending' : 'Mark as Sent'}
                             style={{
                               display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
                               padding: '0.35rem 0.85rem', borderRadius: 'var(--radius-sm)',
@@ -126,11 +149,12 @@ export default function UsersPage() {
                               border: `1px solid ${isSent ? 'rgba(16,185,129,0.45)' : 'var(--surface-border)'}`,
                               color: isSent ? 'var(--success)' : 'var(--foreground)',
                               fontSize: '0.75rem', fontWeight: 600,
-                              transition: 'all 0.25s', userSelect: 'none',
+                              transition: 'all 0.25s', cursor: 'pointer',
+                              outline: 'none',
                             }}
                           >
                             {isSent ? <><FaCheckCircle size={10} /> Sent</> : <>⏳ Pending</>}
-                          </span>
+                          </button>
                         ) : (
                           <span style={{ opacity: 0.4, fontSize: '0.8rem' }}>No number</span>
                         )}
