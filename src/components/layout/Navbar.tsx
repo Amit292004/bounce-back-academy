@@ -81,13 +81,13 @@ export default function Navbar() {
     >
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px' }}>
         {/* Logo */}
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', textDecoration: 'none' }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', textDecoration: 'none', minWidth: 0, flexShrink: 1 }}>
           <img
             src={siteLogo || "/logo.png"}
             alt="Bounce Back Academy Logo"
-            style={{ width: '42px', height: '42px', borderRadius: '8px', objectFit: 'contain' }}
+            style={{ width: '42px', height: '42px', borderRadius: '8px', objectFit: 'contain', flexShrink: 0 }}
           />
-          <span style={{ fontWeight: 800, fontSize: '1.2rem' }}>
+          <span style={{ fontWeight: 800, fontSize: 'clamp(1rem, 3vw, 1.2rem)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             Bounce Back <span className="text-gradient">Academy</span>
           </span>
         </Link>
@@ -183,7 +183,7 @@ export default function Navbar() {
       )}
 
       <style>{`
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
           .desktop-nav, .desktop-auth { display: none !important; }
           .mobile-menu-btn { display: flex !important; }
         }

@@ -5,6 +5,8 @@ import prisma from "@/lib/prisma";
 // Revalidate every 60 seconds or make it dynamic
 export const dynamic = 'force-dynamic';
 
+import LiveAnalytics from "@/components/home/LiveAnalytics";
+
 export default async function Home() {
   const announcements = await prisma.announcement.findMany({
     where: { isActive: true },
@@ -40,13 +42,28 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Live Analytics */}
+      <div style={{ padding: '0 2rem' }}>
+        <LiveAnalytics />
+      </div>
+
       {/* Class-wise Section */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Select Your Class</h2>
         <div className={styles.grid}>
-          {['8', '9', '10', '11', '12', 'CUET', 'JEE', 'NEET'].map((cls) => (
+          {[
+            { cls: '8', icon: '🏫' },
+            { cls: '9', icon: '🎒' },
+            { cls: '10', icon: '📖' },
+            { cls: '11', icon: '🎓' },
+            { cls: '12', icon: '📜' },
+            { cls: 'CUET', icon: '🎯' },
+            { cls: 'JEE', icon: '🚀' },
+            { cls: 'NEET', icon: '🩺' }
+          ].map(({ cls, icon }) => (
             <Link key={cls} href={`/papers?class=${cls}`}>
               <div className={`glass-panel ${styles.card}`}>
+                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{icon}</div>
                 <h3 className={`${styles.cardTitle} text-gradient`}>{['CUET', 'JEE', 'NEET'].includes(cls) ? cls : `Class ${cls}`}</h3>
                 <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
               </div>
@@ -60,17 +77,17 @@ export default async function Home() {
         <h2 className={styles.sectionTitle}>Latest Content</h2>
         <div className={styles.grid}>
           <div className={`glass-panel ${styles.card}`}>
-            <h3 className={styles.cardTitle}>Recent Papers</h3>
+            <h3 className={styles.cardTitle}>📝 Recent Papers</h3>
             <p style={{ opacity: 0.8, marginBottom: '1rem' }}>Browse the newest additions to our question paper library.</p>
             <Link href="/papers" className="text-gradient">View all →</Link>
           </div>
           <div className={`glass-panel ${styles.card}`}>
-            <h3 className={styles.cardTitle}>New Notes</h3>
+            <h3 className={styles.cardTitle}>📚 New Notes</h3>
             <p style={{ opacity: 0.8, marginBottom: '1rem' }}>Get the latest study notes for Science and Maths.</p>
             <Link href="/notes" className="text-gradient">View all →</Link>
           </div>
           <div className={`glass-panel ${styles.card}`}>
-            <h3 className={styles.cardTitle}>Latest Videos</h3>
+            <h3 className={styles.cardTitle}>🎥 Latest Videos</h3>
             <p style={{ opacity: 0.8, marginBottom: '1rem' }}>Watch new video lectures uploaded by our instructors.</p>
             <Link href="/videos" className="text-gradient">View all →</Link>
           </div>

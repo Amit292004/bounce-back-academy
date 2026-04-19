@@ -102,3 +102,7 @@ model Branding {
   adImageUrl       String?
   updatedAt        DateTime @updatedAt
 }
+model ActiveSession {
+  id        String   @id @default(cuid())
+  lastSeen  DateTime @default(now())
+}

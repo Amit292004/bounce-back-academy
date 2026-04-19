@@ -104,20 +104,20 @@ export default function ProfilePage() {
   };
 
   return (
-    <div style={{ maxWidth: '700px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
+    <div style={{ maxWidth: '700px', margin: '0 auto', padding: 'clamp(1rem, 5vw, 2.5rem) clamp(1rem, 5vw, 1.5rem)' }}>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
         <div style={{
-          width: '72px', height: '72px', borderRadius: '50%',
+          width: 'min(72px, 20vw)', height: 'min(72px, 20vw)', borderRadius: '50%',
           background: 'linear-gradient(135deg, var(--primary), var(--accent))',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '2rem', flexShrink: 0,
+          fontSize: 'clamp(1.2rem, 5vw, 2rem)', flexShrink: 0,
         }}>
           {user.name.charAt(0).toUpperCase()}
         </div>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 700 }}>{user.name}</h1>
+        <div style={{ flex: 1, minWidth: '200px' }}>
+          <h1 style={{ fontSize: 'clamp(1.25rem, 6vw, 1.75rem)', fontWeight: 700 }}>{user.name}</h1>
           <p style={{ opacity: 0.6, fontSize: '0.9rem', marginTop: '0.25rem' }}>
             Class {user.class} · Member since {new Date(user.createdAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}
           </p>
@@ -235,10 +235,16 @@ export default function ProfilePage() {
           {/* Email (read-only) */}
           <div>
             <label style={labelStyle}><FaEnvelope /> Email Address</label>
-            <p style={{ fontSize: '1rem', fontWeight: 500, opacity: editing ? 0.5 : 1 }}>
+            <p style={{ 
+              fontSize: '1rem', 
+              fontWeight: 500, 
+              opacity: editing ? 0.5 : 1,
+              overflowWrap: 'break-word',
+              maxWidth: '100%'
+            }}>
               {user.email}
-              {editing && <span style={{ fontSize: '0.78rem', marginLeft: '0.75rem', color: 'var(--foreground)', opacity: 0.4 }}>Cannot be changed</span>}
             </p>
+            {editing && <p style={{ fontSize: '0.78rem', color: 'var(--foreground)', opacity: 0.4, marginTop: '0.25rem' }}>Cannot be changed</p>}
           </div>
 
           {/* Class */}

@@ -47,3 +47,9 @@
     margin: 0 auto;
   }
 }
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 2rem 1rem;
+  }
+}
