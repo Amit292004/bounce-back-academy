@@ -43,9 +43,17 @@ export default function UsersPage() {
   const getWhatsAppUrl = (user: User) => {
     // Use the main website URL (optimized for WhatsApp preview in layout.tsx)
     const origin = window.location.origin;
+    let mobile = user.mobile?.replace(/\D/g, '') || '';
+    
+    // Normalize Indian numbers: if 10 digits, prepend 91; if 11 digits starting with 0, replace 0 with 91
+    if (mobile.length === 10) {
+      mobile = `91${mobile}`;
+    } else if (mobile.length === 11 && mobile.startsWith('0')) {
+      mobile = `91${mobile.substring(1)}`;
+    }
     
     // We only send the link; WhatsApp will generate the preview with the branding photo & message
-    return `https://wa.me/${user.mobile?.replace(/\D/g, '')}?text=${encodeURIComponent(origin)}`;
+    return `https://wa.me/${mobile}?text=${encodeURIComponent(origin)}`;
   };
 
   return (
