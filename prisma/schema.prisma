@@ -96,5 +96,7 @@ model Branding {
   adminPhoto       String?
   whatsappMessage  String?
   whatsappImageUrl String?
+  adMessage        String?
+  adImageUrl       String?
   updatedAt        DateTime @updatedAt
 }

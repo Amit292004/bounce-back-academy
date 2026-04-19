@@ -30,11 +30,6 @@ export async function GET(request: Request) {
       orderBy: { createdAt: 'desc' },
     });
 
-    if (!isAuthenticated) {
-      const publicPapers = papers.map(paper => ({ ...paper, downloadFile: '' }));
-      return NextResponse.json(publicPapers);
-    }
-
     return NextResponse.json(papers);
   } catch {
     return NextResponse.json({ error: 'Failed to fetch papers' }, { status: 500 });

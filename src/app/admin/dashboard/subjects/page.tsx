@@ -73,7 +73,7 @@ export default function SubjectsPage() {
             placeholder="Subject Name (e.g. Mathematics)"
             style={{ 
               flex: '1 1 200px', padding: '0.75rem', borderRadius: 'var(--radius-sm)', 
-              border: '1px solid var(--surface-border)', background: 'rgba(0,0,0,0.2)', color: 'white' 
+              border: '1px solid var(--surface-border)', background: 'var(--surface-highlight)', color: 'var(--foreground)' 
             }}
             required
           />
@@ -86,7 +86,7 @@ export default function SubjectsPage() {
       <div className="glass-panel" style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', whiteSpace: 'nowrap', minWidth: '400px' }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid var(--surface-border)', background: 'rgba(255,255,255,0.05)' }}>
+            <tr style={{ borderBottom: '1px solid var(--surface-border)', background: 'var(--surface-highlight)' }}>
               <th style={{ padding: '1rem' }}>Subject Name</th>
               <th style={{ padding: '1rem', width: '100px', textAlign: 'right' }}>Actions</th>
             </tr>

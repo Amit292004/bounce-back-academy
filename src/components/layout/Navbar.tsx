@@ -38,7 +38,7 @@ export default function Navbar() {
           const data = await res.json();
           if (data.siteLogo) setSiteLogo(data.siteLogo);
         }
-      } catch {}
+      } catch { }
     };
     checkAuth();
     fetchBranding();
@@ -71,20 +71,21 @@ export default function Navbar() {
     <header
       style={{
         position: 'sticky', top: 0, zIndex: 100,
-        background: scrolled ? 'rgba(15, 23, 42, 0.95)' : 'rgba(15, 23, 42, 0.8)',
+        background: scrolled ? 'var(--surface)' : 'transparent',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        borderBottom: '1px solid var(--surface-border)',
+        borderBottom: scrolled ? '1px solid var(--surface-border)' : 'none',
         transition: 'var(--transition)',
+        color: 'var(--foreground)'
       }}
     >
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px' }}>
         {/* Logo */}
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', textDecoration: 'none' }}>
-          <img 
-            src={siteLogo || "/logo.png"} 
-            alt="Bounce Back Academy Logo" 
-            style={{ width: '42px', height: '42px', borderRadius: '8px', objectFit: 'contain' }} 
+          <img
+            src={siteLogo || "/logo.png"}
+            alt="Bounce Back Academy Logo"
+            style={{ width: '42px', height: '42px', borderRadius: '8px', objectFit: 'contain' }}
           />
           <span style={{ fontWeight: 800, fontSize: '1.2rem' }}>
             Bounce Back <span className="text-gradient">Academy</span>
@@ -155,7 +156,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div style={{ padding: '1rem 1.5rem 1.5rem', borderTop: '1px solid var(--surface-border)', background: 'rgba(15,23,42,0.98)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div style={{ padding: '1rem 1.5rem 1.5rem', borderTop: '1px solid var(--surface-border)', background: 'var(--background)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           {navLinks.map(link => (
             <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)}
               style={{ padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', fontWeight: 500, background: isActive(link.href) ? 'rgba(99,102,241,0.1)' : 'transparent', color: isActive(link.href) ? 'var(--primary)' : 'var(--foreground)' }}>
@@ -174,6 +175,9 @@ export default function Navbar() {
                 <Link href="/register" className="btn-primary" style={{ flex: 1, textAlign: 'center' }} onClick={() => setMenuOpen(false)}>Sign Up</Link>
               </>
             )}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem' }}>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       )}

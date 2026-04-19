@@ -78,7 +78,7 @@ export default function AnnouncementsPage() {
               onChange={e => setMessage(e.target.value)}
               required
               placeholder="Announcement Message"
-              style={{ flex: '1 1 200px', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid var(--surface-border)', outline: 'none' }}
+              style={{ flex: '1 1 200px', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', background: 'var(--surface-highlight)', color: 'var(--foreground)', border: '1px solid var(--surface-border)', outline: 'none' }}
             />
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, whiteSpace: 'nowrap' }}>Priority:</label>
@@ -88,7 +88,7 @@ export default function AnnouncementsPage() {
                 onChange={e => setPriority(Number(e.target.value))}
                 min={0}
                 max={100}
-                style={{ width: '80px', padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid var(--surface-border)', outline: 'none', textAlign: 'center' }}
+                style={{ width: '80px', padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'var(--surface-highlight)', color: 'var(--foreground)', border: '1px solid var(--surface-border)', outline: 'none', textAlign: 'center' }}
               />
             </div>
           </div>
@@ -102,7 +102,7 @@ export default function AnnouncementsPage() {
       <div className="glass-panel" style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px' }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid var(--surface-border)', background: 'rgba(255,255,255,0.05)' }}>
+            <tr style={{ borderBottom: '1px solid var(--surface-border)', background: 'var(--surface-highlight)' }}>
               <th style={{ padding: '0.85rem 1rem' }}>Message</th>
               <th style={{ padding: '0.85rem 1rem', width: '110px', textAlign: 'center' }}>Priority</th>
               <th style={{ padding: '0.85rem 1rem', width: '90px', textAlign: 'center' }}>Visible</th>
@@ -122,7 +122,7 @@ export default function AnnouncementsPage() {
                     min={0}
                     max={100}
                     onBlur={e => handlePriorityChange(a, Number(e.target.value))}
-                    style={{ width: '60px', padding: '0.3rem', borderRadius: '4px', background: 'rgba(255,255,255,0.08)', color: 'white', border: '1px solid var(--surface-border)', textAlign: 'center', outline: 'none' }}
+                    style={{ width: '60px', padding: '0.3rem', borderRadius: '4px', background: 'var(--surface-highlight)', color: 'var(--foreground)', border: '1px solid var(--surface-border)', textAlign: 'center', outline: 'none' }}
                   />
                 </td>
                 <td style={{ padding: '0.85rem 1rem', textAlign: 'center' }}>
@@ -130,9 +130,9 @@ export default function AnnouncementsPage() {
                     onClick={() => handleToggle(a)}
                     title={a.isActive ? 'Hide announcement' : 'Show announcement'}
                     style={{
-                      background: a.isActive ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.07)',
+                      background: a.isActive ? 'rgba(99,102,241,0.2)' : 'var(--surface-highlight)',
                       border: `1px solid ${a.isActive ? 'var(--primary)' : 'var(--surface-border)'}`,
-                      color: a.isActive ? 'var(--primary)' : 'rgba(255,255,255,0.4)',
+                      color: a.isActive ? 'var(--primary)' : 'var(--foreground)',
                       borderRadius: '6px',
                       padding: '0.35rem 0.6rem',
                       cursor: 'pointer',

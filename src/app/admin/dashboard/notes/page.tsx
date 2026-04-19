@@ -162,7 +162,7 @@ export default function NotesPage() {
             style={{
               padding: '0.4rem 1rem', borderRadius: '999px', border: '1px solid var(--surface-border)',
               background: filterClass === cls ? 'var(--primary)' : 'transparent',
-              color: 'var(--foreground)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500,
+              color: filterClass === cls ? 'white' : 'var(--foreground)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500,
               transition: 'var(--transition)'
             }}
           >
@@ -217,12 +217,12 @@ export default function NotesPage() {
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '0.65rem 1rem',
-  background: 'rgba(255,255,255,0.05)', border: '1px solid var(--surface-border)',
+  background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)',
   borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none',
 };
 
 const selectStyle: React.CSSProperties = {
   width: '100%', padding: '0.65rem 1rem',
-  background: 'rgba(30,41,59,0.9)', border: '1px solid var(--surface-border)',
+  background: 'var(--background)', border: '1px solid var(--surface-border)',
   borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none',
 };

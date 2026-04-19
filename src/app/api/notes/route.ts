@@ -28,11 +28,6 @@ export async function GET(request: Request) {
       orderBy: { createdAt: 'desc' },
     });
 
-    if (!isAuthenticated) {
-      const publicNotes = notes.map(note => ({ ...note, downloadFile: '' }));
-      return NextResponse.json(publicNotes);
-    }
-
     return NextResponse.json(notes);
   } catch {
     return NextResponse.json({ error: 'Failed to fetch notes' }, { status: 500 });

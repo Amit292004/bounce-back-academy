@@ -17,7 +17,7 @@ export default function ContactPage() {
     <div className={styles.container}>
       {/* Header Section */}
       <div className={styles.headerSection}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', padding: '0.4rem 1rem', borderRadius: '999px', fontSize: '0.875rem', marginBottom: '1.5rem', backdropFilter: 'blur(10px)' }}>
+        <div className={styles.getInTouchBadge}>
           <FaEnvelope /> Get in Touch
         </div>
         <h1 style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '0.5rem' }}>
@@ -34,12 +34,7 @@ export default function ContactPage() {
             <div className="glass-panel" style={{ padding: '2rem', background: 'var(--surface)' }}>
               {/* Profile Image & Name */}
               <div style={{ marginBottom: '2rem' }}>
-                <div className={styles.profileImage} style={{
-                  width: '100px', height: '100px', borderRadius: 'var(--radius-md)',
-                  background: '#f59e0b', overflow: 'hidden', marginBottom: '1rem',
-                  border: '2px solid rgba(255,255,255,0.1)',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
-                }}>
+                <div className={styles.profileImage}>
                   <Image
                     src="/amit-sharma.jpg"
                     alt="Amit Sharma"
@@ -54,11 +49,11 @@ export default function ContactPage() {
 
               {/* Contact Pills */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div className={styles.contactPill} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem 1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(255,255,255,0.05)', cursor: 'pointer' }}>
+                <div className={styles.contactPill}>
                   <FaPhoneAlt style={{ color: '#6366f1' }} />
                   <span style={{ fontWeight: 500 }}>7628024274</span>
                 </div>
-                <div className={styles.contactPill} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem 1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(255,255,255,0.05)', cursor: 'pointer' }}>
+                <div className={styles.contactPill}>
                   <FaEnvelope style={{ color: '#8b5cf6' }} />
                   <span style={{ fontWeight: 500 }}>amitsharma72020@gmail.com</span>
                 </div>
@@ -77,7 +72,7 @@ export default function ContactPage() {
           <div style={{ paddingTop: '2rem' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>Connect With Us</h3>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className={styles.socialLinksGrid}>
               {socialLinks.map((link, i) => (
                 <a
                   key={i}
@@ -85,22 +80,12 @@ export default function ContactPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`glass-panel ${styles.socialCard}`}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '1.25rem',
-                    padding: '1.25rem 1.5rem', background: 'var(--surface)',
-                    textDecoration: 'none', color: 'inherit',
-                    '--hover-color': link.color
-                  } as React.CSSProperties}
+                  style={{ '--hover-color': link.color } as React.CSSProperties}
                 >
-                  <div className={styles.socialIcon} style={{
-                    width: '45px', height: '45px', borderRadius: '50%',
-                    background: `rgba(255,255,255,0.05)`, display: 'flex',
-                    alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem',
-                    color: link.color
-                  }}>
+                  <div className={styles.socialIcon} style={{ color: link.color }}>
                     {link.icon}
                   </div>
-                  <div>
+                  <div style={{ overflow: 'hidden' }}>
                     <h4 style={{ fontWeight: 600, marginBottom: '0.2rem' }}>{link.name}</h4>
                     <p className={styles.socialUrl}>{link.url}</p>
                   </div>

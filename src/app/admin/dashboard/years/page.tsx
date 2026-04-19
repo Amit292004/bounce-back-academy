@@ -86,7 +86,7 @@ export default function YearsPage() {
       <div className="glass-panel" style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', whiteSpace: 'nowrap', minWidth: '400px' }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid var(--surface-border)', background: 'rgba(255,255,255,0.05)' }}>
+            <tr style={{ borderBottom: '1px solid var(--surface-border)', background: 'var(--surface-highlight)' }}>
               <th style={{ padding: '1rem' }}>Academic Year</th>
               <th style={{ padding: '1rem', width: '100px', textAlign: 'right' }}>Actions</th>
             </tr>

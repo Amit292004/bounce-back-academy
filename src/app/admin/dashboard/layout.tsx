@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { 
   FaHome, FaBook, FaCalendarAlt, FaFileAlt, 
   FaVideo, FaBullhorn, FaImages, FaUsers, FaComments, FaSignOutAlt,
-  FaBars, FaTimes
+  FaBars, FaTimes, FaAd
 } from 'react-icons/fa';
 import styles from './layout.module.css';
 
@@ -40,6 +40,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
     { label: 'Notes', href: '/admin/dashboard/notes', icon: <FaFileAlt /> },
     { label: 'Videos', href: '/admin/dashboard/videos', icon: <FaVideo /> },
     { label: 'Announcements', href: '/admin/dashboard/announcements', icon: <FaBullhorn /> },
+    { label: 'Advertising', href: '/admin/dashboard/advertising', icon: <FaAd /> },
     { label: 'Branding', href: '/admin/dashboard/branding', icon: <FaImages /> },
     { label: 'Users', href: '/admin/dashboard/users', icon: <FaUsers /> },
     { label: 'Feedback', href: '/admin/dashboard/feedback', icon: <FaComments /> },
@@ -101,7 +102,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
               <img src={branding.adminPhoto} alt="Admin" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)' }} />
               <div>
-                <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'white' }}>Administrator</p>
+                <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--foreground)' }}>Administrator</p>
                 <p style={{ fontSize: '0.7rem', opacity: 0.6 }}>Manage Platform</p>
               </div>
             </div>

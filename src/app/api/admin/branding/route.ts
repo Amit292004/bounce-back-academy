@@ -12,8 +12,17 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { id: dataId, updatedAt, ...cleanData } = await request.json();
+    const data = await request.json();
     const existing = await prisma.branding.findFirst();
+
+    const cleanData = {
+      siteLogo: data.siteLogo !== undefined ? data.siteLogo : null,
+      adminPhoto: data.adminPhoto !== undefined ? data.adminPhoto : null,
+      whatsappMessage: data.whatsappMessage !== undefined ? data.whatsappMessage : null,
+      whatsappImageUrl: data.whatsappImageUrl !== undefined ? data.whatsappImageUrl : null,
+      adMessage: data.adMessage !== undefined ? data.adMessage : null,
+      adImageUrl: data.adImageUrl !== undefined ? data.adImageUrl : null,
+    };
 
     let branding;
     if (existing) {
@@ -26,7 +35,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(branding);
-  } catch {
-    return NextResponse.json({ error: 'Failed to save branding' }, { status: 500 });
+  } catch (error) {
+    console.error('Branding save error:', error);
+    return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }

@@ -123,7 +123,7 @@ export default function VideosPage() {
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 required
-                style={{ width: '100%', padding: '0.65rem 1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }}
+                style={{ width: '100%', padding: '0.65rem 1rem', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }}
               />
             </div>
             <div>
@@ -131,7 +131,7 @@ export default function VideosPage() {
               <select
                 value={category}
                 onChange={e => setCategory(e.target.value)}
-                style={{ width: '100%', padding: '0.65rem 1rem', background: 'rgba(30,41,59,0.9)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }}
+                style={{ width: '100%', padding: '0.65rem 1rem', background: 'var(--background)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }}
               >
                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -145,7 +145,7 @@ export default function VideosPage() {
               value={youtubeLink}
               onChange={e => setYoutubeLink(e.target.value)}
               required
-              style={{ width: '100%', padding: '0.65rem 1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none', marginBottom: '1rem' }}
+              style={{ width: '100%', padding: '0.65rem 1rem', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none', marginBottom: '1rem' }}
             />
           </div>
           
@@ -157,7 +157,7 @@ export default function VideosPage() {
                 placeholder="https://drive.google.com/..."
                 value={pdfUrl}
                 onChange={e => setPdfUrl(e.target.value)}
-                style={{ width: '100%', padding: '0.65rem 1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }}
+                style={{ width: '100%', padding: '0.65rem 1rem', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }}
               />
             </div>
             <div>
@@ -166,7 +166,7 @@ export default function VideosPage() {
                 type="file" 
                 accept=".pdf" 
                 onChange={e => setFile(e.target.files?.[0] || null)} 
-                style={{ width: '100%', padding: '0.45rem 1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }} 
+                style={{ width: '100%', padding: '0.45rem 1rem', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }} 
               />
             </div>
           </div>
@@ -192,7 +192,7 @@ export default function VideosPage() {
             style={{
               padding: '0.4rem 1rem', borderRadius: '999px', border: '1px solid var(--surface-border)',
               background: filterCat === cat ? 'var(--primary)' : 'transparent',
-              color: 'var(--foreground)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500,
+              color: filterCat === cat ? 'white' : 'var(--foreground)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500,
               transition: 'var(--transition)'
             }}
           >
@@ -230,7 +230,7 @@ export default function VideosPage() {
                       <h3 style={{ fontWeight: 600, marginBottom: '0.25rem', fontSize: '0.95rem' }}>{video.title}</h3>
                       <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                         <span style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', background: 'rgba(99,102,241,0.15)', borderRadius: '999px', color: 'var(--primary)' }}>{video.category}</span>
-                        {video.pdfUrl && <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.4rem', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.2)' }}>Notes</span>}
+                        {video.pdfUrl && <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.4rem', background: 'var(--surface-highlight)', borderRadius: '4px', border: '1px solid var(--surface-border)' }}>Notes</span>}
                       </div>
                     </div>
                     <button

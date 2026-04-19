@@ -262,8 +262,8 @@ export default function BrandingPage() {
                 placeholder="Hello {name}, welcome to Bounce Back Academy!"
                 style={{
                   width: '100%', minHeight: '120px', padding: '1rem',
-                  borderRadius: 'var(--radius-sm)', background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid var(--surface-border)', color: 'white',
+                  borderRadius: 'var(--radius-sm)', background: 'var(--surface-highlight)',
+                  border: '1px solid var(--surface-border)', color: 'var(--foreground)',
                   fontSize: '0.9rem', resize: 'vertical', outline: 'none'
                 }}
               />
