@@ -168,7 +168,7 @@ export default function ProfilePage() {
 
       {/* Profile Card */}
       <div className="glass-panel" style={{ padding: '2rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
           <h2 style={{ fontWeight: 600, fontSize: '1.1rem' }}>Account Details</h2>
           {!editing ? (
             <button
@@ -184,7 +184,7 @@ export default function ProfilePage() {
               <FaEdit /> Edit Profile
             </button>
           ) : (
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
               <button
                 onClick={handleCancel}
                 style={{

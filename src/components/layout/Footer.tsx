@@ -32,7 +32,12 @@ export default function Footer() {
       </div>
       
       <div className={styles.bottom}>
-        © {new Date().getFullYear()} Bounce Back Academy. All rights reserved.
+        <div style={{ marginBottom: '0.5rem' }}>
+          © {new Date().getFullYear()} Bounce Back Academy. All rights reserved.
+        </div>
+        <div style={{ fontWeight: 500 }}>
+          Made with <span style={{ color: '#ef4444' }}>❤️</span> by Amit Sharma
+        </div>
       </div>
     </footer>
   );

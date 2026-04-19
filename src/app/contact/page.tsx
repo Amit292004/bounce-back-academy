@@ -15,113 +15,85 @@ export default function ContactPage() {
 
   return (
     <div className={styles.container}>
-      {/* Header Section */}
-      <div className={styles.headerSection}>
-        <div className={styles.getInTouchBadge}>
-          <FaEnvelope /> Get in Touch
+      <div className={styles.wrapper}>
+        {/* SECTION 1: CONTACT US (From Image 2) */}
+        <div className={styles.section}>
+          <div className={styles.headerSection}>
+            <div className={styles.getInTouchBadge}>
+              <FaEnvelope /> Get in Touch
+            </div>
+            <h1 className={styles.mainTitle}>
+              Contact <span className="text-gradient">Us</span>
+            </h1>
+            <p className={styles.subtitle}>We&apos;d love to hear from you</p>
+          </div>
+
+          <div className={styles.profileCard}>
+            <div className={styles.profileImageContainer}>
+              <Image
+                src="/amit-sharma.jpg"
+                alt="Amit Sharma"
+                width={120}
+                height={120}
+                className={styles.profileImage}
+              />
+            </div>
+            <h2 className={styles.profileName}>Amit Sharma</h2>
+            <p className={styles.profileRole}>Founder, Bounce Back Academy</p>
+
+            <div className={styles.contactDetails}>
+              <a href="tel:7628024274" className={styles.contactPill}>
+                <FaPhoneAlt className={styles.phoneIcon} />
+                <span>7628024274</span>
+              </a>
+              <a href="mailto:amitsharma72020@gmail.com" className={styles.contactPill}>
+                <FaEnvelope className={styles.emailIcon} />
+                <span>amitsharma72020@gmail.com</span>
+              </a>
+            </div>
+          </div>
+
+          <div className={styles.noteBanner}>
+            <p>
+              📚 Online Classes available only for <span className={styles.highlightBlue}>Maths</span> and <span className={styles.highlightPurple}>Science</span> subjects.
+            </p>
+          </div>
         </div>
-        <h1 style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-          Contact <span className="text-gradient">Us</span>
-        </h1>
-        <p style={{ opacity: 0.7, fontSize: '1.1rem' }}>We&apos;d love to hear from you</p>
-      </div>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem 4rem' }}>
-        <div className={styles.grid}>
+        {/* SECTION 2: CONNECT WITH US (From Image 1) */}
+        <div className={styles.section}>
+          <h3 className={styles.connectTitle}>Connect With Us</h3>
 
-          {/* Left Column: Admin Info */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div className="glass-panel" style={{ padding: '2rem', background: 'var(--surface)' }}>
-              {/* Profile Image & Name */}
-              <div style={{ marginBottom: '2rem' }}>
-                <div className={styles.profileImage}>
-                  <Image
-                    src="/amit-sharma.jpg"
-                    alt="Amit Sharma"
-                    width={100}
-                    height={100}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
+          <div className={styles.socialList}>
+            {socialLinks.map((link, i) => (
+              <a
+                key={i}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialItem}
+              >
+                <div className={styles.socialIconWrapper} style={{ backgroundColor: `${link.color}20` }}>
+                  <span style={{ color: link.color }}>{link.icon}</span>
                 </div>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.2rem' }}>Amit Sharma</h2>
-                <p style={{ opacity: 0.6, fontSize: '0.9rem' }}>Founder, Bounce Back Academy</p>
-              </div>
-
-              {/* Contact Pills */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div className={styles.contactPill}>
-                  <FaPhoneAlt style={{ color: '#6366f1' }} />
-                  <span style={{ fontWeight: 500 }}>7628024274</span>
-                </div>
-                <div className={styles.contactPill}>
-                  <FaEnvelope style={{ color: '#8b5cf6' }} />
-                  <span style={{ fontWeight: 500 }}>amitsharma72020@gmail.com</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Note Card */}
-            <div className={`glass-panel ${styles.noteCard}`}>
-              <p style={{ fontWeight: 500 }}>
-                📚 Online Classes available only for <span style={{ color: '#3b82f6', fontWeight: 700 }}>Maths</span> and <span style={{ color: '#6366f1', fontWeight: 700 }}>Science</span> subjects.
-              </p>
-            </div>
+                <span className={styles.socialName}>{link.name}</span>
+              </a>
+            ))}
           </div>
 
-          {/* Right Column: Social Links */}
-          <div style={{ paddingTop: '2rem' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>Connect With Us</h3>
-
-            <div className={styles.socialLinksGrid}>
-              {socialLinks.map((link, i) => (
-                <a
-                  key={i}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`glass-panel ${styles.socialCard}`}
-                  style={{ '--hover-color': link.color } as React.CSSProperties}
-                >
-                  <div className={styles.socialIcon} style={{ color: link.color }}>
-                    {link.icon}
-                  </div>
-                  <div style={{ overflow: 'hidden' }}>
-                    <h4 style={{ fontWeight: 600, marginBottom: '0.2rem' }}>{link.name}</h4>
-                    <p className={styles.socialUrl}>{link.url}</p>
-                  </div>
-                </a>
-              ))}
-
-              {/* Subscribe Banner */}
-              <div className="glass-panel" style={{
-                marginTop: '1rem',
-                background: 'linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(99,102,241,0.1) 100%)',
-                border: '1px solid rgba(99,102,241,0.3)',
-                padding: '2rem',
-                borderRadius: 'var(--radius-md)',
-                textAlign: 'center',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
-              }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.25rem' }}>
-                  📌 Subscribe to Bounce Back Academy
-                </h3>
-                <a
-                  href="https://www.youtube.com/@BounceBackAcademy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary"
-                  style={{
-                    padding: '0.75rem 2rem',
-                    display: 'inline-block',
-                    textDecoration: 'none'
-                  }}
-                >
-                  Subscribe Now &rarr;
-                </a>
-              </div>
-            </div>
+          <div className={styles.subscribeBox}>
+            <h3 className={styles.subscribeTitle}>
+              📌 Subscribe to Bounce Back Academy
+            </h3>
+            <a
+              href="https://www.youtube.com/@BounceBackAcademy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.subscribeBtn}
+            >
+              Subscribe Now &rarr;
+            </a>
           </div>
-
         </div>
       </div>
     </div>
