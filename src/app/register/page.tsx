@@ -67,8 +67,16 @@ export default function RegisterPage() {
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || 'Registration failed');
+        if (data.details) console.error('Registration details:', data.details);
       } else {
-        router.push('/login');
+        if (data.requiresVerification) {
+          // Pass devOtp in URL for local testing when email isn't configured
+          const params = new URLSearchParams({ email: form.email });
+          if (data.devOtp) params.set('devOtp', data.devOtp);
+          router.push(`/verify-email?${params.toString()}`);
+        } else {
+          router.push('/login');
+        }
       }
     } catch {
       setError('Something went wrong. Please try again.');

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FaFileAlt, FaDownload, FaEye, FaFilter } from 'react-icons/fa';
+import InteractionButtons from '@/components/InteractionButtons';
 
 interface Paper {
   id: string;
@@ -14,6 +15,11 @@ interface Paper {
   year: { id: string; year: string };
   viewUrl: string;
   downloadFile: string;
+  likesCount: number;
+  sharesCount: number;
+  favoritesCount: number;
+  isLiked?: boolean;
+  isFavorited?: boolean;
 }
 
 interface Subject { id: string; name: string; }
@@ -72,13 +78,13 @@ function PapersContent() {
   };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'clamp(1rem, 5vw, 2rem) clamp(0.75rem, 3vw, 1.5rem)' }}>
       {/* Header */}
       <div style={{ marginBottom: '2.5rem' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>
+        <h1 style={{ fontSize: 'clamp(1.75rem, 8vw, 2.5rem)', fontWeight: 800, marginBottom: '0.5rem' }}>
           Question <span className="text-gradient">Papers</span>
         </h1>
-        <p style={{ opacity: 0.7 }}>NBSE past papers available from 2016 onwards. View free, download after login.</p>
+        <p style={{ opacity: 0.7, fontSize: 'clamp(0.9rem, 4vw, 1rem)' }}>NBSE past papers available from 2016 onwards. View free, download after login.</p>
       </div>
 
       {/* Class Filters */}
@@ -160,6 +166,16 @@ function PapersContent() {
                     <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(255,255,255,0.08)', borderRadius: '999px', opacity: 0.8 }}>{paper.year.year}</span>
                     {paper.phase && <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(16,185,129,0.15)', borderRadius: '999px', color: 'var(--success)' }}>Phase {paper.phase}</span>}
                   </div>
+                  <InteractionButtons 
+                    targetId={paper.id}
+                    targetType="PAPER"
+                    initialLikes={paper.likesCount}
+                    initialShares={paper.sharesCount}
+                    initialFavorites={paper.favoritesCount}
+                    isLiked={paper.isLiked}
+                    isFavorited={paper.isFavorited}
+                    isAuthenticated={isAuthenticated}
+                  />
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>

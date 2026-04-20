@@ -9,6 +9,8 @@ import ThemeToggle from '@/components/ThemeToggle';
 interface AuthState {
   authenticated: boolean;
   email?: string;
+  name?: string;
+  image?: string | null;
 }
 
 export default function Navbar() {
@@ -42,6 +44,10 @@ export default function Navbar() {
     };
     checkAuth();
     fetchBranding();
+
+    // Listen for profile updates from other components
+    window.addEventListener('profileUpdated', checkAuth);
+    return () => window.removeEventListener('profileUpdated', checkAuth);
   }, [pathname]);
 
   useEffect(() => {
@@ -53,14 +59,15 @@ export default function Navbar() {
   const handleLogout = async () => {
     await fetch('/api/student/logout', { method: 'POST' });
     setAuth({ authenticated: false });
-    router.refresh();
     setMenuOpen(false);
+    window.location.href = '/login';
   };
 
   const navLinks = [
     { label: 'Papers', href: '/papers' },
     { label: 'Notes', href: '/notes' },
     { label: 'Videos', href: '/videos' },
+    ...(auth.authenticated ? [{ label: 'Favorites', href: '/favorites' }] : []),
     { label: 'Feedback', href: '/feedback' },
     { label: 'Contact', href: '/contact' },
   ];
@@ -119,8 +126,12 @@ export default function Navbar() {
           {auth.authenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', opacity: 0.8, fontSize: '0.85rem' }}>
-                <FaUserCircle style={{ color: 'var(--primary)' }} />
-                <span style={{ maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{(auth as any).name || (auth as any).email}</span>
+                {auth.image ? (
+                  <img src={auth.image} alt="" style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
+                ) : (
+                  <FaUserCircle style={{ color: 'var(--primary)' }} />
+                )}
+                <span style={{ maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{auth.name || auth.email}</span>
               </div>
               <Link href="/profile" className="btn-secondary" style={{ padding: '0.45rem 1rem', fontSize: '0.85rem' }}>Profile</Link>
               <button
@@ -137,7 +148,7 @@ export default function Navbar() {
                 Sign In
               </Link>
               <Link href="/register" className="btn-primary" style={{ padding: '0.45rem 1rem', fontSize: '0.875rem' }}>
-                Sign Up
+                Create Account
               </Link>
             </>
           )}
@@ -172,7 +183,7 @@ export default function Navbar() {
             ) : (
               <>
                 <Link href="/login" className="btn-secondary" style={{ flex: 1, textAlign: 'center' }} onClick={() => setMenuOpen(false)}>Sign In</Link>
-                <Link href="/register" className="btn-primary" style={{ flex: 1, textAlign: 'center' }} onClick={() => setMenuOpen(false)}>Sign Up</Link>
+                <Link href="/register" className="btn-primary" style={{ flex: 1, textAlign: 'center' }} onClick={() => setMenuOpen(false)}>Create Account</Link>
               </>
             )}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem' }}>

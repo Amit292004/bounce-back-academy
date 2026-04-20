@@ -69,4 +69,40 @@
   background: rgba(239, 68, 68, 0.1);
   padding: 0.5rem;
   border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+}
+
+.googleStep {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.googleNotice {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.googleButtonWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.backBtn {
+  background: transparent;
+  border: none;
+  color: var(--foreground);
+  opacity: 0.6;
+  font-size: 0.875rem;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: var(--transition);
+}
+
+.backBtn:hover {
+  opacity: 1;
 }

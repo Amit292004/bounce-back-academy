@@ -17,14 +17,21 @@ model User {
   password  String
   adSent      Boolean  @default(false)
   welcomeSent Boolean  @default(false)
+  emailVerified Boolean  @default(false)
+  otp           String?
+  otpExpires    DateTime?
+  image       String?
   createdAt   DateTime @default(now())
+  likes       Like[]
+  favorites   Favorite[]
 }
 
 model Admin {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  username    String   @unique
+  password    String
+  googleEmail String?  @unique
+  createdAt   DateTime @default(now())
 }
 
 model Subject {
@@ -33,6 +40,7 @@ model Subject {
   createdAt DateTime @default(now())
   papers    QuestionPaper[]
   notes     Note[]
+  videos    Video[]
 }
 
 model AcademicYear {
@@ -54,6 +62,9 @@ model QuestionPaper {
   viewUrl      String
   downloadFile String
   createdAt    DateTime @default(now())
+  likesCount   Int      @default(0)
+  sharesCount  Int      @default(0)
+  favoritesCount Int    @default(0)
 }
 
 model Note {
@@ -65,6 +76,9 @@ model Note {
   viewUrl      String
   downloadFile String
   createdAt    DateTime @default(now())
+  likesCount   Int      @default(0)
+  sharesCount  Int      @default(0)
+  favoritesCount Int    @default(0)
 }
 
 model Video {
@@ -72,8 +86,13 @@ model Video {
   title       String
   youtubeLink String
   category    String
+  subjectId   String?
+  subject     Subject? @relation(fields: [subjectId], references: [id], onDelete: SetNull)
   pdfUrl      String?
   createdAt   DateTime @default(now())
+  likesCount   Int      @default(0)
+  sharesCount  Int      @default(0)
+  favoritesCount Int    @default(0)
 }
 
 model Announcement {
@@ -102,7 +121,30 @@ model Branding {
   adImageUrl       String?
   updatedAt        DateTime @updatedAt
 }
+
 model ActiveSession {
   id        String   @id @default(cuid())
   lastSeen  DateTime @default(now())
+}
+
+model Like {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetId   String
+  targetType String   // "VIDEO", "NOTE", "PAPER"
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, targetId, targetType])
+}
+
+model Favorite {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetId   String
+  targetType String   // "VIDEO", "NOTE", "PAPER"
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, targetId, targetType])
 }

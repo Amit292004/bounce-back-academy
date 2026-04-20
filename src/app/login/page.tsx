@@ -66,7 +66,11 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'Login failed');
+        if (data.requiresVerification) {
+          router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+        } else {
+          setError(data.error || 'Login failed');
+        }
       } else {
         router.push('/');
         router.refresh();

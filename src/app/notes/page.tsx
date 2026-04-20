@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { FaBook, FaDownload, FaEye, FaFilter } from 'react-icons/fa';
+import InteractionButtons from '@/components/InteractionButtons';
 
 interface Note {
   id: string;
@@ -11,6 +12,11 @@ interface Note {
   subject: { id: string; name: string };
   viewUrl: string;
   downloadFile: string;
+  likesCount: number;
+  sharesCount: number;
+  favoritesCount: number;
+  isLiked?: boolean;
+  isFavorited?: boolean;
 }
 
 interface Subject { id: string; name: string; }
@@ -54,12 +60,12 @@ export default function NotesPage() {
   useEffect(() => { fetchNotes(); }, [fetchNotes]);
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'clamp(1rem, 5vw, 2rem) clamp(0.75rem, 3vw, 1.5rem)' }}>
       <div style={{ marginBottom: '2.5rem' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>
+        <h1 style={{ fontSize: 'clamp(1.75rem, 8vw, 2.5rem)', fontWeight: 800, marginBottom: '0.5rem' }}>
           Study <span className="text-gradient">Notes</span>
         </h1>
-        <p style={{ opacity: 0.7 }}>Comprehensive notes for all levels. View free, download after login.</p>
+        <p style={{ opacity: 0.7, fontSize: 'clamp(0.9rem, 4vw, 1rem)' }}>Comprehensive notes for all levels. View free, download after login.</p>
       </div>
 
       {/* Class Filters */}
@@ -114,6 +120,16 @@ export default function NotesPage() {
                     <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(99,102,241,0.15)', borderRadius: '999px', color: 'var(--primary)' }}>{['CUET', 'JEE', 'NEET'].includes(note.className) ? note.className : `Class ${note.className}`}</span>
                     <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(139,92,246,0.15)', borderRadius: '999px', color: 'var(--accent)' }}>{note.subject.name}</span>
                   </div>
+                  <InteractionButtons 
+                    targetId={note.id}
+                    targetType="NOTE"
+                    initialLikes={note.likesCount}
+                    initialShares={note.sharesCount}
+                    initialFavorites={note.favoritesCount}
+                    isLiked={note.isLiked}
+                    isFavorited={note.isFavorited}
+                    isAuthenticated={isAuthenticated}
+                  />
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>

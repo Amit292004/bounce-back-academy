@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaUserCircle, FaEdit, FaSave, FaTimes, FaCalendarAlt, FaEnvelope, FaPhone, FaGraduationCap } from 'react-icons/fa';
+import { FaUserCircle, FaEdit, FaSave, FaTimes, FaCalendarAlt, FaEnvelope, FaPhone, FaGraduationCap, FaBookmark } from 'react-icons/fa';
 
 interface UserProfile {
   id: string;
@@ -10,6 +10,7 @@ interface UserProfile {
   class: string;
   email: string;
   mobile?: string | null;
+  image?: string | null;
   createdAt: string;
 }
 
@@ -19,8 +20,10 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [form, setForm] = useState({ name: '', className: '', mobile: '' });
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetch('/api/student/me')
@@ -70,6 +73,61 @@ export default function ProfilePage() {
     setMessage(null);
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'Image size should be less than 2MB.' });
+      return;
+    }
+
+    setUploading(true);
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64 = reader.result as string;
+      try {
+        const res = await fetch('/api/student/profile-pic', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: base64 }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setUser(prev => prev ? { ...prev, image: base64 } : null);
+          window.dispatchEvent(new Event('profileUpdated'));
+          setMessage({ type: 'success', text: 'Profile picture updated!' });
+          setTimeout(() => setMessage(null), 3000);
+        } else {
+          setMessage({ type: 'error', text: data.error || 'Upload failed' });
+        }
+      } catch {
+        setMessage({ type: 'error', text: 'Something went wrong.' });
+      } finally {
+        setUploading(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveImage = async () => {
+    if (!confirm('Are you sure you want to remove your profile picture?')) return;
+    setUploading(true);
+    try {
+      const res = await fetch('/api/student/profile-pic', { method: 'DELETE' });
+      if (res.ok) {
+        setUser(prev => prev ? { ...prev, image: null } : null);
+        window.dispatchEvent(new Event('profileUpdated'));
+        setMessage({ type: 'success', text: 'Profile picture removed.' });
+        setTimeout(() => setMessage(null), 3000);
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Failed to remove image.' });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -108,19 +166,66 @@ export default function ProfilePage() {
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-        <div style={{
-          width: 'min(72px, 20vw)', height: 'min(72px, 20vw)', borderRadius: '50%',
-          background: 'linear-gradient(135deg, var(--primary), var(--accent))',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 'clamp(1.2rem, 5vw, 2rem)', flexShrink: 0,
-        }}>
-          {user.name.charAt(0).toUpperCase()}
+        <div style={{ position: 'relative', flexShrink: 0 }}>
+          <div 
+            onClick={() => user.image && setShowImageModal(true)}
+            style={{
+              width: 'min(90px, 25vw)', height: 'min(90px, 25vw)', borderRadius: '50%',
+              backgroundImage: user.image ? `url(${user.image})` : 'linear-gradient(135deg, var(--primary), var(--accent))',
+              backgroundSize: 'cover', backgroundPosition: 'center',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 'clamp(1.5rem, 6vw, 2.5rem)', border: '3px solid var(--surface-border)',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.2)', overflow: 'hidden',
+              cursor: user.image ? 'zoom-in' : 'default'
+            }}
+          >
+            {!user.image && user.name.charAt(0).toUpperCase()}
+          </div>
+          <label 
+            title="Update Photo"
+            style={{
+              position: 'absolute', bottom: '0', right: '0',
+              width: '32px', height: '32px', borderRadius: '50%',
+              background: 'var(--primary)', color: 'white',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', border: '2px solid var(--background)',
+              boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+              fontSize: '0.8rem', opacity: uploading ? 0.5 : 1
+            }}
+          >
+            <FaEdit />
+            <input type="file" hidden accept="image/*" onChange={handleImageUpload} disabled={uploading} />
+          </label>
+          {user.image && (
+            <button
+              onClick={handleRemoveImage}
+              title="Remove Photo"
+              style={{
+                position: 'absolute', top: '0', right: '-5px',
+                width: '24px', height: '24px', borderRadius: '50%',
+                background: 'rgba(239, 68, 68, 0.9)', color: 'white',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', border: 'none', fontSize: '0.7rem',
+              }}
+            >
+              <FaTimes />
+            </button>
+          )}
         </div>
         <div style={{ flex: 1, minWidth: '200px' }}>
           <h1 style={{ fontSize: 'clamp(1.25rem, 6vw, 1.75rem)', fontWeight: 700 }}>{user.name}</h1>
           <p style={{ opacity: 0.6, fontSize: '0.9rem', marginTop: '0.25rem' }}>
             Class {user.class} · Member since {new Date(user.createdAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}
           </p>
+          <div style={{ marginTop: '0.75rem' }}>
+            <button 
+              onClick={() => router.push('/favorites')}
+              className="btn-primary" 
+              style={{ padding: '0.45rem 0.85rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem', borderRadius: '6px' }}
+            >
+              <FaBookmark /> My Favorites
+            </button>
+          </div>
         </div>
       </div>
 
@@ -233,12 +338,13 @@ export default function ProfilePage() {
           </div>
 
           {/* Email (read-only) */}
-          <div>
+          <div style={{ maxWidth: '100%', overflow: 'hidden' }}>
             <label style={labelStyle}><FaEnvelope /> Email Address</label>
             <p style={{ 
               fontSize: '1rem', 
               fontWeight: 500, 
               opacity: editing ? 0.5 : 1,
+              wordBreak: 'break-all',
               overflowWrap: 'break-word',
               maxWidth: '100%'
             }}>
@@ -293,6 +399,41 @@ export default function ProfilePage() {
 
         </div>
       </div>
+      {/* Enlarged Image Modal */}
+      {showImageModal && user.image && (
+        <div 
+          onClick={() => setShowImageModal(false)}
+          style={{
+            position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+            background: 'rgba(0,0,0,0.9)', backdropFilter: 'blur(10px)',
+            zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '2rem', cursor: 'zoom-out'
+          }}
+        >
+          <div style={{ position: 'relative', maxWidth: '90vw', maxHeight: '90vh' }}>
+            <img 
+              src={user.image} 
+              alt={user.name} 
+              style={{ 
+                maxWidth: '100%', maxHeight: '90vh', borderRadius: '15px', 
+                boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
+                border: '4px solid rgba(255,255,255,0.1)'
+              }} 
+            />
+            <button 
+              onClick={(e) => { e.stopPropagation(); setShowImageModal(false); }}
+              style={{
+                position: 'absolute', top: '-1.5rem', right: '-1.5rem',
+                background: 'var(--primary)', color: 'white', border: 'none',
+                width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem'
+              }}
+            >
+              <FaTimes />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

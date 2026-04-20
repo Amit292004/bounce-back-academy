@@ -3,11 +3,11 @@ import { SignJWT, jwtVerify } from 'jose';
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-for-bounce-back-academy';
 const key = new TextEncoder().encode(JWT_SECRET);
 
-export async function signAdminToken(payload: { adminId: string, username: string }) {
+export async function signAdminToken(payload: { adminId: string, username: string, preAuth?: boolean }) {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('24h')
+    .setExpirationTime(payload.preAuth ? '5m' : '24h')
     .sign(key);
 }
 

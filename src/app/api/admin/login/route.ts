@@ -25,18 +25,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    const token = await signAdminToken({ adminId: admin.id, username: admin.username });
+    // Instead of full token, set a temporary pre-auth cookie
+    const preAuthToken = await signAdminToken({ adminId: admin.id, username: admin.username, preAuth: true });
 
-    const response = NextResponse.json({ success: true }, { status: 200 });
+    const response = NextResponse.json({ 
+      success: true, 
+      requiresGoogle: true,
+      adminId: admin.id 
+    }, { status: 200 });
     
-    // Set cookie
+    // Set temporary pre-auth cookie (short lived)
     response.cookies.set({
-      name: 'admin_token',
-      value: token,
+      name: 'admin_pre_auth',
+      value: preAuthToken,
       httpOnly: true,
       path: '/',
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24, // 24 hours
+      maxAge: 300, // 5 minutes
     });
 
     return response;

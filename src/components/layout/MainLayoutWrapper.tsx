@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
+import SignupReminder from './SignupReminder';
+
 export default function MainLayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith('/admin');
@@ -41,6 +43,7 @@ export default function MainLayoutWrapper({ children }: { children: React.ReactN
         {children}
       </main>
       {!isAdminRoute && <Footer />}
+      {!isAdminRoute && <SignupReminder />}
     </>
   );
 }
