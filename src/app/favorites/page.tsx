@@ -46,7 +46,27 @@ export default function FavoritesPage() {
         <h1 style={{ fontSize: 'clamp(1.75rem, 8vw, 2.5rem)', fontWeight: 800, marginBottom: '0.5rem' }}>
           My <span className="text-gradient">Favorites</span>
         </h1>
-        <p style={{ opacity: 0.7, fontSize: 'clamp(0.9rem, 4vw, 1rem)' }}>All your saved study materials in one place.</p>
+        <p style={{ opacity: 0.7, fontSize: 'clamp(0.9rem, 4vw, 1rem)', marginBottom: '1.5rem' }}>All your saved study materials in one place.</p>
+
+        {hasAnyFavorites && (
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            {data.videos.length > 0 && (
+              <a href="#videos" className="glass-panel" style={{ padding: '0.5rem 1.25rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderRadius: '999px', textDecoration: 'none', color: 'var(--foreground)' }}>
+                <FaYoutube style={{ color: '#ff0000' }} /> Videos ({data.videos.length})
+              </a>
+            )}
+            {data.notes.length > 0 && (
+              <a href="#notes" className="glass-panel" style={{ padding: '0.5rem 1.25rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderRadius: '999px', textDecoration: 'none', color: 'var(--foreground)' }}>
+                <FaBook style={{ color: 'var(--accent)' }} /> Notes ({data.notes.length})
+              </a>
+            )}
+            {data.papers.length > 0 && (
+              <a href="#papers" className="glass-panel" style={{ padding: '0.5rem 1.25rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderRadius: '999px', textDecoration: 'none', color: 'var(--foreground)' }}>
+                <FaFileAlt style={{ color: 'var(--primary)' }} /> Papers ({data.papers.length})
+              </a>
+            )}
+          </div>
+        )}
       </div>
 
       {!hasAnyFavorites ? (
@@ -64,7 +84,7 @@ export default function FavoritesPage() {
           
           {/* Videos Section */}
           {data.videos.length > 0 && (
-            <section>
+            <section id="videos" style={{ scrollMarginTop: '80px' }}>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <FaYoutube style={{ color: '#ff0000' }} /> Videos
               </h2>
@@ -109,7 +129,7 @@ export default function FavoritesPage() {
 
           {/* Notes Section */}
           {data.notes.length > 0 && (
-            <section>
+            <section id="notes" style={{ scrollMarginTop: '80px' }}>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <FaBook style={{ color: 'var(--accent)' }} /> Study Notes
               </h2>
@@ -151,7 +171,7 @@ export default function FavoritesPage() {
 
           {/* Papers Section */}
           {data.papers.length > 0 && (
-            <section>
+            <section id="papers" style={{ scrollMarginTop: '80px' }}>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <FaFileAlt style={{ color: 'var(--primary)' }} /> Question Papers
               </h2>

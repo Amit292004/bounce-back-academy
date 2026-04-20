@@ -13,11 +13,13 @@ export async function GET() {
 
     const user = await (prisma as any).user.findUnique({
       where: { id: payload.userId as string },
-      select: { id: true, name: true, class: true, email: true, mobile: true, image: true, createdAt: true }
+      select: { id: true, name: true, class: true, email: true, mobile: true, image: true, createdAt: true, emailVerified: true }
     });
 
-    if (!user) return NextResponse.json({ authenticated: false });
-    return NextResponse.json({ authenticated: true, ...user });
+    if (!user || !user.emailVerified) return NextResponse.json({ authenticated: false });
+    
+    const { emailVerified, ...userData } = user;
+    return NextResponse.json({ authenticated: true, ...userData });
   } catch {
     return NextResponse.json({ authenticated: false });
   }

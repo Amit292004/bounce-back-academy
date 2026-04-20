@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const [userCount, paperCount, noteCount, videoCount] = await Promise.all([
-      prisma.user.count(),
+      prisma.user.count({ where: { emailVerified: true } }),
       (prisma as any).questionPaper.count(),
       (prisma as any).note.count(),
       (prisma as any).video.count(),

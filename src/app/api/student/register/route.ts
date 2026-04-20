@@ -17,7 +17,12 @@ export async function POST(request: Request) {
 
     const existingUser = await (prisma as any).user.findUnique({ where: { email } });
     if (existingUser) {
-      return NextResponse.json({ error: 'Email already registered. Please sign in.' }, { status: 400 });
+      if (existingUser.emailVerified) {
+        return NextResponse.json({ error: 'Email already registered. Please sign in.' }, { status: 400 });
+      }
+      // If user exists but is not verified, we'll delete the old one and create a new one
+      // (or we could update it, but deleting ensures a clean state with new OTP)
+      await (prisma as any).user.delete({ where: { id: existingUser.id } });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -37,13 +42,10 @@ export async function POST(request: Request) {
       }
     });
 
+
     // Try to send OTP email — failure must NOT block registration
     let emailSent = false;
-    const emailConfigured =
-      process.env.EMAIL_USER &&
-      process.env.EMAIL_USER !== 'your-email@gmail.com' &&
-      process.env.EMAIL_PASS &&
-      process.env.EMAIL_PASS !== 'your-app-password';
+    const emailConfigured = !!(process.env.EMAIL_USER && process.env.EMAIL_PASS);
 
     if (emailConfigured) {
       try {
@@ -58,25 +60,14 @@ export async function POST(request: Request) {
       console.warn(`[DEV] Email not configured. OTP for ${email} is: ${otp}`);
     }
 
-    const token = await signStudentToken({ userId: user.id, email: user.email });
-
     const response = NextResponse.json({
       success: true,
       requiresVerification: true,
       email: user.email,
       emailSent,
-      // Expose OTP in dev when email is not configured
-      ...(process.env.NODE_ENV !== 'production' && !emailSent ? { devOtp: otp } : {})
+      // Expose OTP when email is not configured or fails to send
+      ...(!emailSent ? { devOtp: otp } : {})
     }, { status: 201 });
-
-    response.cookies.set({
-      name: 'student_token',
-      value: token,
-      httpOnly: true,
-      path: '/',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7,
-    });
 
     return response;
   } catch (error: any) {

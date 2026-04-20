@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { 
   FaHome, FaBook, FaCalendarAlt, FaFileAlt, 
   FaVideo, FaBullhorn, FaImages, FaUsers, FaComments, FaSignOutAlt,
-  FaBars, FaTimes, FaAd
+  FaBars, FaTimes, FaAd, FaPaperPlane
 } from 'react-icons/fa';
 import styles from './layout.module.css';
 
@@ -42,6 +42,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
     { label: 'Announcements', href: '/admin/dashboard/announcements', icon: <FaBullhorn /> },
     { label: 'Advertising', href: '/admin/dashboard/advertising', icon: <FaAd /> },
     { label: 'Branding', href: '/admin/dashboard/branding', icon: <FaImages /> },
+    { label: 'Broadcaster', href: '/admin/dashboard/broadcaster', icon: <FaPaperPlane /> },
     { label: 'Users', href: '/admin/dashboard/users', icon: <FaUsers /> },
     { label: 'Feedback', href: '/admin/dashboard/feedback', icon: <FaComments /> },
   ];

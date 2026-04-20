@@ -155,7 +155,8 @@ export default function RegisterPage() {
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
-          <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''}>
+          <GoogleOAuthProvider clientId={(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '').replace(/['"]/g, '')}>
+
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => setError('Google Sign Up failed')}

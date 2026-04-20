@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { signStudentToken } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
@@ -39,7 +40,20 @@ export async function POST(request: Request) {
       }
     });
 
-    return NextResponse.json({ success: true, message: 'Email verified successfully!' });
+    const token = await signStudentToken({ userId: user.id, email: user.email });
+
+    const response = NextResponse.json({ success: true, message: 'Email verified successfully!' });
+
+    response.cookies.set({
+      name: 'student_token',
+      value: token,
+      httpOnly: true,
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return response;
   } catch (error) {
     console.error('Verification error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

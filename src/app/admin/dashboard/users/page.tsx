@@ -111,9 +111,6 @@ export default function UsersPage() {
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.3rem 0.75rem', borderRadius: '999px', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', color: 'var(--foreground)', fontSize: '0.8rem', fontWeight: 600 }}>
                   ⏳ {users.filter(u => u.mobile).length - sentSet.size} Pending
                 </span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.3rem 0.75rem', borderRadius: '999px', background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.3)', color: '#3b82f6', fontSize: '0.8rem', fontWeight: 600 }}>
-                  <FaCheckCircle size={11} /> {users.filter(u => u.emailVerified).length} Verified
-                </span>
               </div>
             )}
           </div>
@@ -121,16 +118,17 @@ export default function UsersPage() {
             <table style={{ width: '100%', borderCollapse: 'collapse', whiteSpace: 'nowrap', minWidth: '680px' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--surface-border)' }}>
-                  {['Name', 'Email', 'Class', 'Joined', 'Email Status', 'WhatsApp', 'Actions'].map(h => (
+                  {['#', 'Name', 'Email', 'Class', 'Joined', 'WhatsApp', 'Actions'].map(h => (
                     <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.8rem', opacity: 0.6, fontWeight: 600, textTransform: 'uppercase' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {users.map(user => {
+                {users.map((user, index) => {
                   const isSent = sentSet.has(user.id);
                   return (
                     <tr key={user.id} style={{ borderBottom: '1px solid var(--surface-border)', background: isSent ? 'rgba(16,185,129,0.04)' : 'transparent' }}>
+                      <td style={{ padding: '0.85rem 1rem', opacity: 0.5, fontSize: '0.85rem', fontWeight: 600 }}>{index + 1}</td>
                       <td style={{ padding: '0.85rem 1rem', fontWeight: 500 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                           <div style={{ 
@@ -154,19 +152,7 @@ export default function UsersPage() {
                       <td style={{ padding: '0.85rem 1rem', opacity: 0.6, fontSize: '0.85rem' }}>
                         {new Date(user.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </td>
-                      
-                      {/* Email Verification Status */}
-                      <td style={{ padding: '0.85rem 1rem' }}>
-                        <span style={{ 
-                          display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
-                          padding: '0.25rem 0.6rem', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 600,
-                          background: user.emailVerified ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
-                          color: user.emailVerified ? 'var(--success)' : 'var(--error)',
-                          border: `1px solid ${user.emailVerified ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`
-                        }}>
-                          {user.emailVerified ? <><FaCheckCircle size={10} /> Verified</> : 'Unverified'}
-                        </span>
-                      </td>
+
                       
                       {/* Status Column */}
                       <td style={{ padding: '0.85rem 1rem' }}>
@@ -280,15 +266,7 @@ export default function UsersPage() {
                   <span style={{ fontSize: '0.95rem' }}>{new Date(selectedUser.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <FaCheckCircle style={{ color: selectedUser.emailVerified ? 'var(--success)' : 'var(--error)', opacity: 0.7 }} />
-                <div>
-                  <label style={{ fontSize: '0.75rem', opacity: 0.5, display: 'block' }}>Email Status</label>
-                  <span style={{ fontSize: '0.95rem', fontWeight: 600, color: selectedUser.emailVerified ? 'var(--success)' : 'var(--error)' }}>
-                    {selectedUser.emailVerified ? 'Verified Account' : 'Verification Pending'}
-                  </span>
-                </div>
-              </div>
+
             </div>
 
             <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem' }}>

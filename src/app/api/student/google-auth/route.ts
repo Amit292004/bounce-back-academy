@@ -4,8 +4,6 @@ import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { signStudentToken } from '@/lib/auth';
 
-const client = new OAuth2Client(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
-
 export async function POST(request: Request) {
   try {
     const { token } = await request.json();
@@ -14,9 +12,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Token is required' }, { status: 400 });
     }
 
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.replace(/['"]/g, '');
+    if (!clientId) {
+      console.error('NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured');
+      return NextResponse.json({ error: 'Google configuration missing' }, { status: 500 });
+    }
+
+    const client = new OAuth2Client(clientId);
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+      audience: clientId,
     });
 
     const payload = ticket.getPayload();
@@ -35,7 +40,6 @@ export async function POST(request: Request) {
 
     if (!user) {
       // Create new user for Google login
-      // Since password and class are required in the schema, provide dummy data
       const randomPassword = Math.random().toString(36).slice(-10) + Math.random().toString(36).slice(-10);
       const hashedPassword = await bcrypt.hash(randomPassword, 10);
       
@@ -44,8 +48,15 @@ export async function POST(request: Request) {
           email,
           name,
           password: hashedPassword,
-          class: 'Not Selected', // Default for Google users
+          class: 'Not Selected',
+          emailVerified: true, // Mark Google users as verified
         },
+      });
+    } else if (!user.emailVerified) {
+      // Ensure existing users are marked as verified if they sign in with Google
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { emailVerified: true }
       });
     }
 
@@ -75,6 +86,7 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     console.error('Google auth error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Authentication failed. Please try again.' }, { status: 500 });
   }
 }
+

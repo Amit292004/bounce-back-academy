@@ -12,7 +12,7 @@ export default async function AdminDashboard() {
     videoCount,
     feedbackCount
   ] = await Promise.all([
-    prisma.user.count(),
+    prisma.user.count({ where: { emailVerified: true } }),
     prisma.subject.count(),
     prisma.questionPaper.count(),
     prisma.note.count(),
