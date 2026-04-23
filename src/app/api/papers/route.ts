@@ -8,6 +8,7 @@ export async function GET(request: Request) {
   const className = searchParams.get('class');
   const subjectId = searchParams.get('subject');
   const yearId = searchParams.get('year');
+  const chapterId = searchParams.get('chapter');
 
   try {
     const cookieStore = await cookies();
@@ -22,23 +23,31 @@ export async function GET(request: Request) {
     if (className) where.className = className;
     if (subjectId) where.subjectId = subjectId;
     if (yearId) where.yearId = yearId;
+    if (chapterId) where.chapterId = chapterId;
 
-    const papers = await prisma.questionPaper.findMany({
+    const mode = searchParams.get('mode'); // 'year-wise' or 'chapter-wise'
+    if (mode === 'year-wise') {
+      where.chapterId = null;
+    } else if (mode === 'chapter-wise') {
+      where.chapterId = { not: null };
+    }
+
+    const papers = await (prisma as any).questionPaper.findMany({
       where,
-      include: { subject: true, year: true },
+      include: { subject: true, year: true, chapter: true },
       orderBy: { createdAt: 'desc' },
     });
 
     if (userId) {
       const [userLikes, userFavorites] = await Promise.all([
-        (prisma as any).like.findMany({ where: { userId, targetType: 'PAPER', targetId: { in: papers.map(p => p.id) } } }),
-        (prisma as any).favorite.findMany({ where: { userId, targetType: 'PAPER', targetId: { in: papers.map(p => p.id) } } })
+        (prisma as any).like.findMany({ where: { userId, targetType: 'PAPER', targetId: { in: papers.map((p: any) => p.id) } } }),
+        (prisma as any).favorite.findMany({ where: { userId, targetType: 'PAPER', targetId: { in: papers.map((p: any) => p.id) } } })
       ]);
 
       const likedIds = new Set(userLikes.map((l: any) => l.targetId));
       const favoritedIds = new Set(userFavorites.map((f: any) => f.targetId));
 
-      const papersWithInteractions = papers.map(paper => ({
+      const papersWithInteractions = papers.map((paper: any) => ({
         ...paper,
         isLiked: likedIds.has(paper.id),
         isFavorited: favoritedIds.has(paper.id)

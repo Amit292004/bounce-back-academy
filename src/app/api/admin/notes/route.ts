@@ -3,8 +3,8 @@ import prisma from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const notes = await prisma.note.findMany({
-      include: { subject: true },
+    const notes = await (prisma as any).note.findMany({
+      include: { subject: true, chapter: true },
       orderBy: { createdAt: 'desc' }
     });
     return NextResponse.json(notes);
@@ -15,12 +15,19 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { title, className, subjectId, viewUrl, downloadFile } = await request.json();
+    const { title, className, subjectId, viewUrl, downloadFile, chapterId } = await request.json();
     if (!title || !className || !subjectId) {
       return NextResponse.json({ error: 'Title, class, and subject are required' }, { status: 400 });
     }
-    const note = await prisma.note.create({
-      data: { title, className, subjectId, viewUrl: viewUrl || '', downloadFile: downloadFile || '' }
+    const note = await (prisma as any).note.create({
+      data: { 
+        title, 
+        className, 
+        subjectId, 
+        viewUrl: viewUrl || '', 
+        downloadFile: downloadFile || '',
+        chapterId: chapterId || null
+      }
     });
     return NextResponse.json(note, { status: 201 });
   } catch {

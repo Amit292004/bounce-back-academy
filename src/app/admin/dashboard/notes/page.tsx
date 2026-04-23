@@ -8,6 +8,7 @@ interface Note {
   title: string;
   className: string;
   subject: { name: string };
+  chapter?: { name: string };
   viewUrl: string;
   downloadFile: string;
   createdAt: string;
@@ -18,22 +19,32 @@ interface Subject {
   name: string;
 }
 
+interface Chapter {
+  id: string;
+  name: string;
+  className: string;
+  subjectId: string;
+}
+
 export default function NotesPage() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [form, setForm] = useState({ title: '', className: '8', subjectId: '', viewUrl: '', downloadFile: '' });
+  const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [form, setForm] = useState({ title: '', className: '10', subjectId: '', chapterId: '', viewUrl: '', downloadFile: '' });
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
   const [filterClass, setFilterClass] = useState('All');
 
   const fetchAll = async () => {
-    const [notesRes, subjectsRes] = await Promise.all([
+    const [notesRes, subjectsRes, chaptersRes] = await Promise.all([
       fetch('/api/admin/notes'),
       fetch('/api/admin/subjects'),
+      fetch('/api/admin/chapters'),
     ]);
     if (notesRes.ok) setNotes(await notesRes.json());
     if (subjectsRes.ok) setSubjects(await subjectsRes.json());
+    if (chaptersRes.ok) setChapters(await chaptersRes.json());
   };
 
   useEffect(() => { fetchAll(); }, []);
@@ -41,6 +52,8 @@ export default function NotesPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
+  const filteredChapters = chapters.filter(ch => ch.className === form.className && ch.subjectId === form.subjectId);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,12 +68,9 @@ export default function NotesPage() {
       fd.append('folder', 'notes');
       const uploadRes = await fetch('/api/upload', { method: 'POST', body: fd });
       const uploadData = await uploadRes.json();
-      if (!uploadRes.ok) {
-        setMessage(uploadData.error || 'File upload failed.');
-        setUploading(false);
-        return;
-      }
+      if (!uploadRes.ok) throw new Error(uploadData.error || "Upload failed. Check your connection or file size.");
       downloadPath = uploadData.url;
+      if (!downloadPath) throw new Error("Upload succeeded but no URL was returned. Please try again.");
     }
 
     try {
@@ -71,12 +81,13 @@ export default function NotesPage() {
           title: form.title,
           className: form.className,
           subjectId: form.subjectId,
-          viewUrl: form.viewUrl,
-          downloadFile: downloadPath || form.downloadFile,
+          chapterId: form.chapterId || undefined,
+          viewUrl: form.viewUrl || downloadPath,
+          downloadFile: downloadPath || form.viewUrl,
         }),
       });
       if (res.ok) {
-        setForm({ title: '', className: '8', subjectId: '', viewUrl: '', downloadFile: '' });
+        setForm({ title: '', className: form.className, subjectId: form.subjectId, chapterId: '', viewUrl: '', downloadFile: '' });
         setFile(null);
         setMessage('Note added successfully!');
         fetchAll();
@@ -108,7 +119,7 @@ export default function NotesPage() {
       <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
         <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '1.25rem' }}>Add New Note</h2>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem' }}>
             <div>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Title</label>
               <input name="title" type="text" placeholder="Note title" value={form.title} onChange={handleChange} required style={inputStyle} />
@@ -129,6 +140,13 @@ export default function NotesPage() {
                 {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
             </div>
+            <div>
+              <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Chapter (optional)</label>
+              <select name="chapterId" value={form.chapterId} onChange={handleChange} style={selectStyle}>
+                <option value="">Select chapter</option>
+                {filteredChapters.map(ch => <option key={ch.id} value={ch.id}>{ch.name}</option>)}
+              </select>
+            </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <div>
@@ -136,8 +154,8 @@ export default function NotesPage() {
               <input name="viewUrl" type="url" placeholder="https://drive.google.com/..." value={form.viewUrl} onChange={handleChange} style={inputStyle} />
             </div>
             <div>
-              <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Upload PDF File</label>
-              <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} style={{ ...inputStyle, padding: '0.45rem 1rem' }} />
+              <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Upload File (PDF or Image)</label>
+              <input type="file" accept=".pdf,image/*" onChange={e => setFile(e.target.files?.[0] || null)} style={{ ...inputStyle, padding: '0.45rem 1rem' }} />
             </div>
           </div>
 
@@ -182,7 +200,7 @@ export default function NotesPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse', whiteSpace: 'nowrap', minWidth: '600px' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--surface-border)' }}>
-                {['Title', 'Class', 'Subject', 'View', 'Actions'].map(h => (
+                {['Title', 'Class', 'Subject', 'Chapter', 'View', 'Actions'].map(h => (
                   <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.8rem', opacity: 0.6, fontWeight: 600, textTransform: 'uppercase' }}>{h}</th>
                 ))}
               </tr>
@@ -193,6 +211,7 @@ export default function NotesPage() {
                   <td style={{ padding: '0.85rem 1rem', fontWeight: 500 }}>{note.title}</td>
                   <td style={{ padding: '0.85rem 1rem' }}>Class {note.className}</td>
                   <td style={{ padding: '0.85rem 1rem', opacity: 0.8 }}>{note.subject?.name || '—'}</td>
+                  <td style={{ padding: '0.85rem 1rem', opacity: 0.8 }}>{note.chapter?.name || '—'}</td>
                   <td style={{ padding: '0.85rem 1rem' }}>
                     {note.viewUrl ? (
                       <a href={note.viewUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem' }}>

@@ -176,3 +176,117 @@ button, input, textarea, select {
 .pulse {
   animation: pulse-animation 2s infinite ease-in-out;
 }
+
+/* Tactile & Kinetic UI Design System 2026 */
+.glass-morphism {
+  background: var(--surface);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--surface-border);
+  box-shadow: var(--shadow-md);
+}
+
+.tactile-card {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.3s ease;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.tactile-card:hover {
+  transform: translateY(-8px) scale(1.015);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  border-color: var(--primary);
+  background: var(--surface-highlight);
+}
+
+.kinetic-text {
+  background: linear-gradient(
+    90deg, 
+    var(--primary) 0%, 
+    var(--secondary) 25%, 
+    var(--accent) 50%, 
+    var(--primary) 75%, 
+    var(--secondary) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: kineticFlow 4s linear infinite;
+}
+
+@keyframes kineticFlow {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.haptic-btn {
+  transition: transform 0.1s ease, box-shadow 0.3s ease;
+}
+
+.haptic-btn:active {
+  transform: scale(0.96) translateY(1px);
+}
+
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes borderRotate {
+  0% { border-color: var(--primary); }
+  33% { border-color: var(--secondary); }
+  66% { border-color: var(--accent); }
+  100% { border-color: var(--primary); }
+}
+
+.shimmer-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: shimmer 3s infinite;
+}
+

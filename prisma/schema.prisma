@@ -43,6 +43,7 @@ model Subject {
   papers    QuestionPaper[]
   notes     Note[]
   videos    Video[]
+  chapters  Chapter[]
 }
 
 model AcademicYear {
@@ -58,8 +59,8 @@ model QuestionPaper {
   className    String
   subjectId    String
   subject      Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  yearId       String
-  year         AcademicYear @relation(fields: [yearId], references: [id], onDelete: Cascade)
+  yearId       String?
+  year         AcademicYear? @relation(fields: [yearId], references: [id], onDelete: Cascade)
   phase        String?
   viewUrl      String
   downloadFile String
@@ -67,6 +68,8 @@ model QuestionPaper {
   likesCount   Int      @default(0)
   sharesCount  Int      @default(0)
   favoritesCount Int    @default(0)
+  chapterId    String?
+  chapter      Chapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
 }
 
 model Note {
@@ -81,6 +84,8 @@ model Note {
   likesCount   Int      @default(0)
   sharesCount  Int      @default(0)
   favoritesCount Int    @default(0)
+  chapterId    String?
+  chapter      Chapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
 }
 
 model Video {
@@ -95,6 +100,9 @@ model Video {
   likesCount   Int      @default(0)
   sharesCount  Int      @default(0)
   favoritesCount Int    @default(0)
+  chapterId      String?
+  chapter        Chapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  lectureNumber  Int      @default(0)
 }
 
 model Announcement {
@@ -149,4 +157,19 @@ model Favorite {
   createdAt  DateTime @default(now())
 
   @@unique([userId, targetId, targetType])
+}
+
+model Chapter {
+  id        String   @id @default(cuid())
+  name          String
+  number        Int       @default(0)
+  className     String
+  subjectId     String
+  subject       Subject   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  notes     Note[]
+  videos    Video[]
+  papers    QuestionPaper[]
+  createdAt DateTime @default(now())
+
+  @@unique([name, className, subjectId])
 }

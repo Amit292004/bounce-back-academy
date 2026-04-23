@@ -1,20 +1,8 @@
 import type { Metadata } from 'next';
-import prisma from '@/lib/prisma';
-
 export async function generateMetadata(): Promise<Metadata> {
-  let imageUrl = '/logo.png';
-  let description = 'Check out this special offer from Bounce Back Academy!';
-  let title = 'Bounce Back Academy – Special Offer';
-
-  try {
-    const branding = await prisma.branding.findFirst({ orderBy: { updatedAt: 'desc' } });
-    if (branding) {
-      if (branding.adImageUrl) imageUrl = branding.adImageUrl;
-      if (branding.adMessage) description = branding.adMessage;
-    }
-  } catch (e) {
-    console.error('Error fetching ad branding:', e);
-  }
+  const imageUrl = '/logo.png';
+  const description = 'Check out this special offer from Bounce Back Academy!';
+  const title = 'Bounce Back Academy – Special Offer';
 
   return {
     title,

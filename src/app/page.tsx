@@ -1,6 +1,7 @@
 import Link from "next/link";
 import styles from "./page.module.css";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
+import { Announcement } from "@prisma/client";
 
 // Revalidate every 60 seconds or make it dynamic
 export const dynamic = 'force-dynamic';
@@ -8,11 +9,16 @@ export const dynamic = 'force-dynamic';
 import LiveAnalytics from "@/components/home/LiveAnalytics";
 
 export default async function Home() {
-  const announcements = await prisma.announcement.findMany({
-    where: { isActive: true },
-    orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }] as any,
-    take: 3,
-  });
+  let announcements: Announcement[] = [];
+  try {
+    announcements = await prisma.announcement.findMany({
+      where: { isActive: true },
+      orderBy: { priority: 'desc' },
+      take: 3,
+    });
+  } catch (error) {
+    console.error("Failed to fetch announcements:", error);
+  }
 
   return (
     <div className={styles.container}>

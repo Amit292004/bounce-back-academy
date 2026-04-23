@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const branding = await prisma.branding.findFirst();
-    return NextResponse.json(branding || {});
-  } catch {
+    if (prisma && (prisma as any).branding) {
+      const branding = await (prisma as any).branding.findFirst();
+      return NextResponse.json(branding || {});
+    }
+    return NextResponse.json({});
+  } catch (error) {
+    console.error('Branding GET error:', error);
     return NextResponse.json({ error: 'Failed to fetch branding' }, { status: 500 });
   }
 }
@@ -13,7 +17,11 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const existing = await prisma.branding.findFirst();
+    if (!prisma || !(prisma as any).branding) {
+      throw new Error('Database client not initialized');
+    }
+
+    const existing = await (prisma as any).branding.findFirst();
 
     const cleanData = {
       siteLogo: data.siteLogo !== undefined ? data.siteLogo : null,
@@ -26,12 +34,12 @@ export async function POST(request: Request) {
 
     let branding;
     if (existing) {
-      branding = await prisma.branding.update({
+      branding = await (prisma as any).branding.update({
         where: { id: existing.id },
         data: cleanData,
       });
     } else {
-      branding = await prisma.branding.create({ data: cleanData });
+      branding = await (prisma as any).branding.create({ data: cleanData });
     }
 
     return NextResponse.json(branding);

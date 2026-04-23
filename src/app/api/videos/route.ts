@@ -7,6 +7,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get('category');
   const subjectId = searchParams.get('subject');
+  const chapterId = searchParams.get('chapter');
 
   try {
     const cookieStore = await cookies();
@@ -20,23 +21,27 @@ export async function GET(request: Request) {
     const where: any = {};
     if (category) where.category = category;
     if (subjectId) where.subjectId = subjectId;
+    if (chapterId) where.chapterId = chapterId;
 
-    const videos = await prisma.video.findMany({
+    const videos = await (prisma as any).video.findMany({
       where,
-      include: { subject: true },
-      orderBy: { createdAt: 'desc' },
+      include: { subject: true, chapter: true },
+      orderBy: [
+        { lectureNumber: 'asc' },
+        { createdAt: 'desc' }
+      ],
     });
 
     if (userId) {
       const [userLikes, userFavorites] = await Promise.all([
-        (prisma as any).like.findMany({ where: { userId, targetType: 'VIDEO', targetId: { in: videos.map(v => v.id) } } }),
-        (prisma as any).favorite.findMany({ where: { userId, targetType: 'VIDEO', targetId: { in: videos.map(v => v.id) } } })
+        (prisma as any).like.findMany({ where: { userId, targetType: 'VIDEO', targetId: { in: videos.map((v: any) => v.id) } } }),
+        (prisma as any).favorite.findMany({ where: { userId, targetType: 'VIDEO', targetId: { in: videos.map((v: any) => v.id) } } })
       ]);
 
       const likedIds = new Set(userLikes.map((l: any) => l.targetId));
       const favoritedIds = new Set(userFavorites.map((f: any) => f.targetId));
 
-      const videosWithInteractions = videos.map(video => ({
+      const videosWithInteractions = videos.map((video: any) => ({
         ...video,
         isLiked: likedIds.has(video.id),
         isFavorited: favoritedIds.has(video.id)

@@ -7,11 +7,13 @@ export default function PapersPage() {
   const [papers, setPapers] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<any[]>([]);
   const [years, setYears] = useState<any[]>([]);
+  const [chapters, setChapters] = useState<any[]>([]);
 
   const [title, setTitle] = useState('');
   const [className, setClassName] = useState('10');
   const [subjectId, setSubjectId] = useState('');
   const [yearId, setYearId] = useState('');
+  const [chapterId, setChapterId] = useState('');
   const [phase, setPhase] = useState('');
   const [viewUrl, setViewUrl] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -23,20 +25,24 @@ export default function PapersPage() {
     Promise.all([
       fetch('/api/admin/papers').then(res => res.json()),
       fetch('/api/admin/subjects').then(res => res.json()),
-      fetch('/api/admin/years').then(res => res.json())
-    ]).then(([papersData, subjectsData, yearsData]) => {
+      fetch('/api/admin/years').then(res => res.json()),
+      fetch('/api/admin/chapters').then(res => res.json())
+    ]).then(([papersData, subjectsData, yearsData, chaptersData]) => {
       setPapers(papersData);
       setSubjects(subjectsData);
       setYears(yearsData);
+      setChapters(chaptersData);
       if (subjectsData.length > 0) setSubjectId(subjectsData[0].id);
       if (yearsData.length > 0) setYearId(yearsData[0].id);
       setLoading(false);
     });
   }, []);
 
+  const filteredChapters = chapters.filter(ch => ch.className === className && ch.subjectId === subjectId);
+
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !className || !subjectId || !yearId) return;
+    if (!title || !className || !subjectId) return;
 
     if (!file && !viewUrl) {
       alert("Please either upload a file OR provide a Google Drive URL.");
@@ -57,9 +63,10 @@ export default function PapersPage() {
         });
         const uploadData = await uploadRes.json();
 
-        if (!uploadRes.ok) throw new Error(uploadData.error || "Upload failed. Vercel blocks direct file storage.");
+        if (!uploadRes.ok) throw new Error(uploadData.error || "Upload failed. Check your connection or file size.");
 
         fileUrl = uploadData.url;
+        if (!fileUrl) throw new Error("Upload succeeded but no URL was returned. Please try again.");
       }
 
       await fetch('/api/admin/papers', {
@@ -70,6 +77,7 @@ export default function PapersPage() {
           className,
           subjectId,
           yearId,
+          chapterId: chapterId || undefined,
           phase: (className === '8' || className === '9') ? phase : undefined,
           viewUrl: viewUrl || fileUrl,
           downloadFile: fileUrl || viewUrl
@@ -83,6 +91,7 @@ export default function PapersPage() {
       setFile(null);
       setPhase('');
       setViewUrl('');
+      setChapterId('');
     } catch (err: any) {
       console.error(err);
       alert(err.message || 'Upload failed');
@@ -134,9 +143,18 @@ export default function PapersPage() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label>Year</label>
-            <select value={yearId} onChange={e => setYearId(e.target.value)} required style={selectStyle}>
+            <label>Year <span style={{ opacity: 0.5 }}>(optional)</span></label>
+            <select value={yearId} onChange={e => setYearId(e.target.value)} style={selectStyle}>
+              <option value="">Select Year</option>
               {years.map(y => <option key={y.id} value={y.id}>{y.year}</option>)}
+            </select>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label>Chapter <span style={{ opacity: 0.5 }}>(optional)</span></label>
+            <select value={chapterId} onChange={e => setChapterId(e.target.value)} style={selectStyle}>
+              <option value="">Select Chapter</option>
+              {filteredChapters.map(ch => <option key={ch.id} value={ch.id}>Ch {ch.number}: {ch.name}</option>)}
             </select>
           </div>
 
@@ -163,8 +181,8 @@ export default function PapersPage() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', gridColumn: '1 / -1' }}>
-            <label>Upload PDF File <span style={{ fontSize: '0.85rem', opacity: 0.5 }}>(optional if using link)</span></label>
-            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)}
+            <label>Upload File <span style={{ fontSize: '0.85rem', opacity: 0.5 }}>(PDF or Image)</span></label>
+            <input type="file" accept=".pdf,image/*" onChange={e => setFile(e.target.files?.[0] || null)}
               style={inputStyle} />
           </div>
 
@@ -189,6 +207,7 @@ export default function PapersPage() {
               <th style={{ padding: '1rem' }}>Class</th>
               <th style={{ padding: '1rem' }}>Subject</th>
               <th style={{ padding: '1rem' }}>Year</th>
+              <th style={{ padding: '1rem' }}>Chapter</th>
               <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
               <th style={{ padding: '1rem' }}></th>
             </tr>
@@ -199,7 +218,8 @@ export default function PapersPage() {
                 <td style={{ padding: '1rem' }}>{p.title} {p.phase && `(${p.phase})`}</td>
                 <td style={{ padding: '1rem' }}>{p.className}</td>
                 <td style={{ padding: '1rem' }}>{p.subject.name}</td>
-                <td style={{ padding: '1rem' }}>{p.year.year}</td>
+                <td style={{ padding: '1rem' }}>{p.year?.year || '-'}</td>
+                <td style={{ padding: '1rem' }}>{p.chapter ? `Ch ${p.chapter.number}: ${p.chapter.name}` : '-'}</td>
                 <td style={{ padding: '1rem', textAlign: 'right' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.75rem' }}>
                     {(p.viewUrl || p.downloadFile) && (

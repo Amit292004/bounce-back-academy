@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server';
+import { v2 as cloudinary } from 'cloudinary';
 import { put } from '@vercel/blob';
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(request: Request) {
   try {
@@ -10,20 +18,45 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    const uniqueName = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
+    const isPDF = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
 
-    // Upload to Vercel Blob
-    const blob = await put(uniqueName, file, {
-      access: 'public',
-      multipart: true // Recommended for larger files
-    });
+    if (isPDF) {
+      // --- VERCEL BLOB FOR PDFs ---
+      const blob = await put(file.name, file, {
+        access: 'public',
+      });
+      console.log('--- VERCEL BLOB UPLOAD SUCCESS ---');
+      return NextResponse.json({ url: blob.url });
+    } else {
+      // --- CLOUDINARY FOR IMAGES/VIDEOS ---
+      // Convert file to base64 for Cloudinary
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const base64File = `data:${file.type};base64,${buffer.toString('base64')}`;
 
-    return NextResponse.json({ url: blob.url });
+      // Sanitize filename for Cloudinary public_id
+      const fileNameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+      const sanitizedName = fileNameWithoutExt.replace(/[^a-zA-Z0-9]/g, '_');
+      const uniqueFileName = `${sanitizedName}-${Date.now()}`;
+      
+      const result = await cloudinary.uploader.upload(base64File, {
+        folder: 'bba_uploads',
+        resource_type: 'auto', // Use auto to let Cloudinary decide
+        public_id: uniqueFileName,
+        use_filename: true,
+        unique_filename: false
+      });
+
+      console.log('--- CLOUDINARY UPLOAD SUCCESS ---');
+      return NextResponse.json({ url: result.secure_url || result.url });
+    }
   } catch (error: any) {
-    console.error('Vercel Blob Upload Error:', error);
+    console.error('--- UPLOAD ERROR ---', error);
+    
     return NextResponse.json({ 
-      error: 'Failed to upload file. Please make sure Vercel Blob is configured.',
-      details: error.message 
+      error: error.message || 'Upload Failed',
+      details: error.error?.message || error.message 
     }, { status: 500 });
   }
 }
+

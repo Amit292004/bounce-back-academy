@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter } from "next/font/google";
 import MainLayoutWrapper from "@/components/layout/MainLayoutWrapper";
 import "./globals.css";
@@ -9,33 +10,16 @@ const inter = Inter({
 });
 
 import { headers } from "next/headers";
-import prisma from "@/lib/prisma";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const headerList = await headers();
-  const userAgent = headerList.get("user-agent") || "";
-  const isWhatsApp = /WhatsApp/i.test(userAgent);
-
   const defaultTitle = "Bounce Back Academy – Free NBSE Study Material for Classes 8–12";
   const defaultDesc = "Free NBSE study material for Classes 8 to 12, CUET, JEE & NEET. Download question papers, notes, and watch video lectures.";
 
-  // Fetch branding for WhatsApp preview
   let imageUrl = "/logo.png";
   let description = defaultDesc;
 
-  try {
-    const branding = await prisma.branding.findFirst() as any;
-    if (branding) {
-      if (isWhatsApp && branding.whatsappImageUrl) {
-        imageUrl = branding.whatsappImageUrl;
-      }
-      if (isWhatsApp && branding.whatsappMessage) {
-        description = branding.whatsappMessage;
-      }
-    }
-  } catch (e) {
-    console.error("Error fetching metadata branding:", e);
-  }
+  // WhatsApp branding is handled via /ad route metadata
+  // Keeping layout metadata static avoids Prisma SSR issues with Turbopack
 
   return {
     title: {
@@ -77,7 +61,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
-        <script
+        <Script
+          id="theme-detection"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {

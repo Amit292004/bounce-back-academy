@@ -77,38 +77,53 @@ export default function ProfilePage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      setMessage({ type: 'error', text: 'Image size should be less than 2MB.' });
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'Image size should be less than 5MB.' });
       return;
     }
 
     setUploading(true);
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64 = reader.result as string;
-      try {
-        const res = await fetch('/api/student/profile-pic', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ image: base64 }),
-        });
-        const data = await res.json();
-        if (res.ok) {
-          setUser(prev => prev ? { ...prev, image: base64 } : null);
-          window.dispatchEvent(new Event('profileUpdated'));
-          setMessage({ type: 'success', text: 'Profile picture updated!' });
-          setTimeout(() => setMessage(null), 3000);
-        } else {
-          setMessage({ type: 'error', text: data.error || 'Upload failed' });
-        }
-      } catch {
-        setMessage({ type: 'error', text: 'Something went wrong.' });
-      } finally {
-        setUploading(false);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+
+      // 1. Upload to Cloudinary via our central API
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: fd
+      });
+      const uploadData = await uploadRes.json();
+      
+      if (!uploadRes.ok) {
+        throw new Error(uploadData.error || 'Failed to upload image to server');
       }
-    };
-    reader.readAsDataURL(file);
+
+      const imageUrl = uploadData.url;
+
+      // 2. Update user profile with the new URL
+      const res = await fetch('/api/student/profile-pic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: imageUrl }),
+      });
+      
+      if (res.ok) {
+        setUser(prev => prev ? { ...prev, image: imageUrl } : null);
+        window.dispatchEvent(new Event('profileUpdated'));
+        setMessage({ type: 'success', text: 'Profile picture updated!' });
+        setTimeout(() => setMessage(null), 3000);
+      } else {
+        const data = await res.json();
+        setMessage({ type: 'error', text: data.error || 'Failed to save profile picture' });
+      }
+    } catch (err: any) {
+      console.error('Upload error:', err);
+      setMessage({ type: 'error', text: err.message || 'Something went wrong during upload.' });
+    } finally {
+      setUploading(false);
+    }
   };
+
 
   const handleRemoveImage = async () => {
     if (!confirm('Are you sure you want to remove your profile picture?')) return;

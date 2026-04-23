@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { FaBars, FaTimes, FaUserCircle } from 'react-icons/fa';
 import ThemeToggle from '@/components/ThemeToggle';
 
+
 interface AuthState {
   authenticated: boolean;
   email?: string;
@@ -98,7 +99,6 @@ export default function Navbar() {
             Bounce Back <span className="text-gradient">Academy</span>
           </span>
         </Link>
-
         {/* Desktop Nav */}
         <nav style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }} className="desktop-nav">
           {navLinks.map(link => (
@@ -168,6 +168,7 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {menuOpen && (
         <div style={{ padding: '1rem 1.5rem 1.5rem', borderTop: '1px solid var(--surface-border)', background: 'var(--background)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+
           {navLinks.map(link => (
             <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)}
               style={{ padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', fontWeight: 500, background: isActive(link.href) ? 'rgba(99,102,241,0.1)' : 'transparent', color: isActive(link.href) ? 'var(--primary)' : 'var(--foreground)' }}>

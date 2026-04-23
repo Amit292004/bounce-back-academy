@@ -8,6 +8,13 @@ interface Subject {
   name: string;
 }
 
+interface Chapter {
+  id: string;
+  name: string;
+  className: string;
+  subjectId: string;
+}
+
 interface Video {
   id: string;
   title: string;
@@ -15,6 +22,9 @@ interface Video {
   category: string;
   subjectId?: string | null;
   subject?: Subject | null;
+  chapterId?: string | null;
+  chapter?: Chapter | null;
+  lectureNumber: number;
   pdfUrl?: string | null;
   createdAt: string;
 }
@@ -24,10 +34,13 @@ const CATEGORIES = ['General', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Cl
 export default function VideosPage() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [chapters, setChapters] = useState<Chapter[]>([]);
   const [title, setTitle] = useState('');
   const [youtubeLink, setYoutubeLink] = useState('');
   const [category, setCategory] = useState('General');
   const [subjectId, setSubjectId] = useState('');
+  const [chapterId, setChapterId] = useState('');
+  const [lectureNumber, setLectureNumber] = useState('0');
   const [pdfUrl, setPdfUrl] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -50,10 +63,23 @@ export default function VideosPage() {
     }
   };
 
+  const fetchChapters = async () => {
+    const res = await fetch('/api/admin/chapters');
+    if (res.ok) {
+      const data = await res.json();
+      setChapters(data);
+    }
+  };
+
   useEffect(() => {
     fetchVideos();
     fetchSubjects();
+    fetchChapters();
   }, []);
+
+  // Filter chapters based on selected category (class) and subject
+  const currentClassName = category.replace('Class ', '');
+  const filteredChapters = chapters.filter(ch => ch.className === currentClassName && ch.subjectId === subjectId);
 
   const getYoutubeId = (url: string) => {
     const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?/\s]{11})/);
@@ -99,6 +125,8 @@ export default function VideosPage() {
           youtubeLink: youtubeLink.trim(), 
           category, 
           subjectId: subjectId || null,
+          chapterId: chapterId || null,
+          lectureNumber: parseInt(lectureNumber) || 0,
           pdfUrl: finalPdfUrl 
         }),
       });
@@ -107,6 +135,8 @@ export default function VideosPage() {
         setYoutubeLink('');
         setCategory('General');
         setSubjectId('');
+        setChapterId('');
+        setLectureNumber('0');
         setPdfUrl('');
         setFile(null);
         setMessage('Video added successfully!');
@@ -175,16 +205,40 @@ export default function VideosPage() {
               </div>
             </div>
           </div>
-          <div>
-            <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>YouTube URL</label>
-            <input
-              type="url"
-              placeholder="https://www.youtube.com/watch?v=..."
-              value={youtubeLink}
-              onChange={e => setYoutubeLink(e.target.value)}
-              required
-              style={{ width: '100%', padding: '0.65rem 1rem', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none', marginBottom: '1rem' }}
-            />
+          
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+            <div>
+              <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Chapter (Optional)</label>
+              <select
+                value={chapterId}
+                onChange={e => setChapterId(e.target.value)}
+                style={{ width: '100%', padding: '0.65rem 1rem', background: 'var(--background)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }}
+              >
+                <option value="">No Chapter</option>
+                {filteredChapters.map(ch => <option key={ch.id} value={ch.id}>{ch.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Lecture Number</label>
+              <input
+                type="number"
+                value={lectureNumber}
+                onChange={e => setLectureNumber(e.target.value)}
+                min="0"
+                style={{ width: '100%', padding: '0.65rem 1rem', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }}
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>YouTube URL</label>
+              <input
+                type="url"
+                placeholder="https://www.youtube.com/watch?v=..."
+                value={youtubeLink}
+                onChange={e => setYoutubeLink(e.target.value)}
+                required
+                style={{ width: '100%', padding: '0.65rem 1rem', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }}
+              />
+            </div>
           </div>
           
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -270,6 +324,12 @@ export default function VideosPage() {
                         <span style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', background: 'rgba(99,102,241,0.15)', borderRadius: '999px', color: 'var(--primary)' }}>{video.category}</span>
                         {video.subject && (
                           <span style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', background: 'rgba(139,92,246,0.15)', borderRadius: '999px', color: 'var(--accent)' }}>{video.subject.name}</span>
+                        )}
+                        {video.chapter && (
+                          <span style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', background: 'rgba(16,185,129,0.15)', borderRadius: '999px', color: '#10b981' }}>{video.chapter.name}</span>
+                        )}
+                        {video.lectureNumber > 0 && (
+                          <span style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', background: 'rgba(245,158,11,0.15)', borderRadius: '999px', color: '#f59e0b' }}>Lec {video.lectureNumber}</span>
                         )}
                         {video.pdfUrl && <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.4rem', background: 'var(--surface-highlight)', borderRadius: '4px', border: '1px solid var(--surface-border)' }}>Notes</span>}
                       </div>
