@@ -32,7 +32,7 @@ export async function GET(request: Request) {
       where.chapterId = { not: null };
     }
 
-    const papers = await (prisma as any).questionPaper.findMany({
+    const papers = await prisma.questionPaper.findMany({
       where,
       include: { subject: true, year: true, chapter: true },
       orderBy: { createdAt: 'desc' },
@@ -40,8 +40,8 @@ export async function GET(request: Request) {
 
     if (userId) {
       const [userLikes, userFavorites] = await Promise.all([
-        (prisma as any).like.findMany({ where: { userId, targetType: 'PAPER', targetId: { in: papers.map((p: any) => p.id) } } }),
-        (prisma as any).favorite.findMany({ where: { userId, targetType: 'PAPER', targetId: { in: papers.map((p: any) => p.id) } } })
+        prisma.like.findMany({ where: { userId, targetType: 'PAPER', targetId: { in: papers.map((p: any) => p.id) } } }),
+        prisma.favorite.findMany({ where: { userId, targetType: 'PAPER', targetId: { in: papers.map((p: any) => p.id) } } })
       ]);
 
       const likedIds = new Set(userLikes.map((l: any) => l.targetId));

@@ -7,14 +7,14 @@ export async function GET() {
   try {
     const [userCount, paperCount, noteCount, videoCount] = await Promise.all([
       prisma.user.count({ where: { emailVerified: true } }),
-      (prisma as any).questionPaper.count(),
-      (prisma as any).note.count(),
-      (prisma as any).video.count(),
+      prisma.questionPaper.count(),
+      prisma.note.count(),
+      prisma.video.count(),
     ]);
 
     // Real "Active Now" count based on heartbeats in the last 5 minutes
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-    const activeNow = await (prisma as any).activeSession.count({
+    const activeNow = await prisma.activeSession.count({
       where: {
         lastSeen: {
           gte: fiveMinutesAgo

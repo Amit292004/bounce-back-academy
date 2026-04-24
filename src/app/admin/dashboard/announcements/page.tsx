@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { FaTrash, FaPlus, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaTrash, FaPlus, FaEye, FaEyeSlash, FaImage } from 'react-icons/fa';
 
 interface Announcement {
   id: string;
-  message: string;
+  message: string | null;
+  imageUrl: string | null;
+  type: string;
   isActive: boolean;
   priority: number;
   createdAt: string;
@@ -15,6 +17,8 @@ export default function AnnouncementsPage() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [message, setMessage] = useState('');
   const [priority, setPriority] = useState(0);
+  const [type, setType] = useState('SECTION');
+  const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
   const fetchAnnouncements = () => {
@@ -25,17 +29,53 @@ export default function AnnouncementsPage() {
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message) return;
+    if (!message && !image) {
+      alert("Please provide either a message or an image.");
+      return;
+    }
     setLoading(true);
-    await fetch('/api/admin/announcements', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, priority }),
-    });
-    setMessage('');
-    setPriority(0);
-    fetchAnnouncements();
-    setLoading(false);
+
+    try {
+      let imageUrl = null;
+      if (image && type === 'SECTION') {
+        const formData = new FormData();
+        formData.append('file', image);
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadData.url) {
+          imageUrl = uploadData.url;
+        }
+      }
+
+      await fetch('/api/admin/announcements', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          message: message || null, 
+          priority, 
+          imageUrl,
+          type 
+        }),
+      });
+
+      setMessage('');
+      setPriority(0);
+      setType('SECTION');
+      setImage(null);
+      // Reset file input
+      const fileInput = document.getElementById('image-upload') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+      
+      fetchAnnouncements();
+    } catch (error) {
+      console.error("Error adding announcement:", error);
+      alert("Failed to add announcement.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -49,6 +89,16 @@ export default function AnnouncementsPage() {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: a.id, isActive: !a.isActive }),
+    }).then(res => res.json());
+    setAnnouncements(announcements.map(x => x.id === a.id ? updated : x));
+  };
+
+  const handleTypeToggle = async (a: Announcement) => {
+    const newType = a.type === 'BANNER' ? 'SECTION' : 'BANNER';
+    const updated = await fetch('/api/admin/announcements', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: a.id, type: newType }),
     }).then(res => res.json());
     setAnnouncements(announcements.map(x => x.id === a.id ? updated : x));
   };
@@ -71,14 +121,26 @@ export default function AnnouncementsPage() {
       <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
         <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '1.25rem' }}>Add New Announcement</h2>
         <form onSubmit={handleAdd} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          
+          <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '0.5rem' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+              <input type="radio" name="type" value="SECTION" checked={type === 'SECTION'} onChange={e => setType(e.target.value)} />
+              <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>Main Section (Grid)</span>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+              <input type="radio" name="type" value="BANNER" checked={type === 'BANNER'} onChange={e => setType(e.target.value)} />
+              <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>Top Banner (Text Only)</span>
+            </label>
+          </div>
+
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <input
               type="text"
               value={message}
               onChange={e => setMessage(e.target.value)}
-              required
-              placeholder="Announcement Message"
-              style={{ flex: '1 1 200px', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', background: 'var(--surface-highlight)', color: 'var(--foreground)', border: '1px solid var(--surface-border)', outline: 'none' }}
+              placeholder={type === 'BANNER' ? "Announcement Message (Required for banner)" : "Announcement Message (optional if image provided)"}
+              required={type === 'BANNER'}
+              style={{ flex: '1 1 300px', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', background: 'var(--surface-highlight)', color: 'var(--foreground)', border: '1px solid var(--surface-border)', outline: 'none' }}
             />
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, whiteSpace: 'nowrap' }}>Priority:</label>
@@ -92,6 +154,52 @@ export default function AnnouncementsPage() {
               />
             </div>
           </div>
+          
+          {type === 'SECTION' && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ position: 'relative', flex: '0 0 auto' }}>
+                <input
+                  id="image-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={e => setImage(e.target.files?.[0] || null)}
+                  style={{ display: 'none' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => document.getElementById('image-upload')?.click()}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    padding: '0.75rem 1rem',
+                    borderRadius: 'var(--radius-sm)',
+                    background: image ? 'rgba(99,102,241,0.1)' : 'var(--surface-highlight)',
+                    border: `1px dashed ${image ? 'var(--primary)' : 'var(--surface-border)'}`,
+                    color: image ? 'var(--primary)' : 'var(--foreground)',
+                    cursor: 'pointer',
+                    fontSize: '0.85rem'
+                  }}
+                >
+                  <FaImage /> {image ? image.name : 'Upload Image (optional)'}
+                </button>
+              </div>
+              {image && (
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    setImage(null);
+                    const fileInput = document.getElementById('image-upload') as HTMLInputElement;
+                    if (fileInput) fileInput.value = '';
+                  }}
+                  style={{ fontSize: '0.75rem', color: 'var(--error)', background: 'none', border: 'none', cursor: 'pointer' }}
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          )}
+
           <button type="submit" className="btn-primary" disabled={loading} style={{ alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <FaPlus /> {loading ? 'Adding...' : 'Add Announcement'}
           </button>
@@ -100,21 +208,41 @@ export default function AnnouncementsPage() {
 
       {/* Table */}
       <div className="glass-panel" style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '700px' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid var(--surface-border)', background: 'var(--surface-highlight)' }}>
-              <th style={{ padding: '0.85rem 1rem' }}>Message</th>
-              <th style={{ padding: '0.85rem 1rem', width: '110px', textAlign: 'center' }}>Priority</th>
+              <th style={{ padding: '0.85rem 1rem' }}>Content</th>
+              <th style={{ padding: '0.85rem 1rem', width: '120px', textAlign: 'center' }}>Type</th>
+              <th style={{ padding: '0.85rem 1rem', width: '100px', textAlign: 'center' }}>Priority</th>
               <th style={{ padding: '0.85rem 1rem', width: '90px', textAlign: 'center' }}>Visible</th>
               <th style={{ padding: '0.85rem 1rem', width: '70px', textAlign: 'center' }}>Delete</th>
             </tr>
           </thead>
           <tbody>
             {announcements.length === 0 ? (
-              <tr><td colSpan={4} style={{ padding: '2rem', textAlign: 'center', opacity: 0.5 }}>No announcements yet.</td></tr>
+              <tr><td colSpan={5} style={{ padding: '2rem', textAlign: 'center', opacity: 0.5 }}>No announcements yet.</td></tr>
             ) : announcements.map(a => (
               <tr key={a.id} style={{ borderBottom: '1px solid var(--surface-border)', opacity: a.isActive ? 1 : 0.45, transition: 'opacity 0.2s' }}>
-                <td style={{ padding: '0.85rem 1rem', fontWeight: 500 }}>{a.message}</td>
+                <td style={{ padding: '0.85rem 1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    {a.imageUrl && (
+                      <img 
+                        src={a.imageUrl} 
+                        alt="Announcement" 
+                        style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--surface-border)' }} 
+                      />
+                    )}
+                    <span style={{ fontWeight: 500 }}>{a.message || 'Image only'}</span>
+                  </div>
+                </td>
+                <td style={{ padding: '0.85rem 1rem', textAlign: 'center' }}>
+                  <button 
+                    onClick={() => handleTypeToggle(a)}
+                    style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', borderRadius: '4px', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', cursor: 'pointer' }}
+                  >
+                    {a.type}
+                  </button>
+                </td>
                 <td style={{ padding: '0.85rem 1rem', textAlign: 'center' }}>
                   <input
                     type="number"

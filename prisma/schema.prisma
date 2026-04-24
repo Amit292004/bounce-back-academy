@@ -46,6 +46,12 @@ model Subject {
   chapters  Chapter[]
 }
 
+model Course {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+}
+
 model AcademicYear {
   id        String   @id @default(cuid())
   year      String   @unique
@@ -107,7 +113,9 @@ model Video {
 
 model Announcement {
   id        String   @id @default(cuid())
-  message   String
+  message   String?
+  imageUrl  String?
+  type      String   @default("SECTION") // "BANNER" or "SECTION"
   isActive  Boolean  @default(true)
   priority  Int      @default(0)
   createdAt DateTime @default(now())

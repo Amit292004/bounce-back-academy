@@ -34,6 +34,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
 
   const navItems = [
     { label: 'Overview', href: '/admin/dashboard', icon: <FaHome /> },
+    { label: 'Courses / Classes', href: '/admin/dashboard/courses', icon: <FaBook /> },
     { label: 'Subjects', href: '/admin/dashboard/subjects', icon: <FaBook /> },
     { label: 'Chapters', href: '/admin/dashboard/chapters', icon: <FaBook /> },
     { label: 'Years', href: '/admin/dashboard/years', icon: <FaCalendarAlt /> },

@@ -31,8 +31,15 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
   let viewerUrl = `https://docs.google.com/viewerng/viewer?url=${encodeURIComponent(url)}&embedded=true`;
   
   if (url.includes("drive.google.com")) {
-    // Convert view/edit/share links to preview links for iframe compatibility
-    viewerUrl = url.replace(/\/view.*$|\/edit.*$|\/share.*$/, "/preview");
+    const folderMatch = url.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+    
+    if (folderMatch && folderMatch[1]) {
+      // It's a Google Drive folder link
+      viewerUrl = `https://drive.google.com/embeddedfolderview?id=${folderMatch[1]}#grid`;
+    } else {
+      // It's a regular file link. Convert view/edit/share links to preview links for iframe compatibility.
+      viewerUrl = url.replace(/\/view.*$|\/edit.*$|\/share.*$/, "/preview");
+    }
   }
 
   return (
@@ -47,19 +54,18 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
       zIndex: 1000,
       backgroundColor: 'var(--background)'
     }}>
-      {/* Permission Reminder for Drive Files */}
-      {url.includes("drive.google.com") && (
-        <div style={{ 
-          backgroundColor: 'var(--primary)', 
-          color: 'white', 
-          padding: '4px 10px', 
-          fontSize: '0.75rem', 
-          textAlign: 'center',
-          fontWeight: 500
-        }}>
-          💡 Tip: If you see an "Access Denied" error, please make sure the file is shared as "Anyone with the link" in Google Drive.
-        </div>
-      )}
+      {/* Platform Banner */}
+      <div style={{ 
+        backgroundColor: 'var(--primary)', 
+        color: 'white', 
+        padding: '6px 10px', 
+        fontSize: '0.8rem', 
+        textAlign: 'center',
+        fontWeight: 500,
+        letterSpacing: '0.3px'
+      }}>
+        🚀 Bounce Back Academy: Empowering your educational journey with premium study materials!
+      </div>
 
       {/* Viewer Header - Theme Matched */}
       <div style={{ 

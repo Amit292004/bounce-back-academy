@@ -7,7 +7,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    await (prisma as any).chapter.delete({
+    await prisma.chapter.delete({
       where: { id }
     });
     return NextResponse.json({ message: 'Chapter deleted' });

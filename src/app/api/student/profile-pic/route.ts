@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     const { image } = await request.json();
     if (!image) return NextResponse.json({ error: 'Image data is required' }, { status: 400 });
 
-    const user = await (prisma as any).user.update({
+    const user = await prisma.user.update({
       where: { id: payload.userId as string },
       data: { image },
       select: { id: true, name: true, image: true }
@@ -37,7 +37,7 @@ export async function DELETE() {
     const payload = await verifyToken(token);
     if (!payload) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const user = await (prisma as any).user.update({
+    const user = await prisma.user.update({
       where: { id: payload.userId as string },
       data: { image: null },
       select: { id: true, name: true, image: true }

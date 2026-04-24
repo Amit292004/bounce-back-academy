@@ -27,8 +27,8 @@ interface Paper {
 
 interface Subject { id: string; name: string; }
 interface Year { id: string; year: string; }
-
 interface Chapter { id: string; name: string; number: number; className: string; subjectId: string; }
+interface Course { id: string; name: string; }
 
 function PapersContent() {
   const searchParams = useSearchParams();
@@ -38,6 +38,7 @@ function PapersContent() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [years, setYears] = useState<Year[]>([]);
   const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [mode, setMode] = useState<'year-wise' | 'chapter-wise'>('year-wise');
   const [loading, setLoading] = useState(true);
 
@@ -58,14 +59,41 @@ function PapersContent() {
   };
 
   const fetchMeta = async () => {
-    const [sRes, yRes, cRes] = await Promise.all([
+    const cachedSub = sessionStorage.getItem('bb_subjects');
+    const cachedChap = sessionStorage.getItem('bb_chapters');
+    const cachedYear = sessionStorage.getItem('bb_years');
+    const cachedCourses = sessionStorage.getItem('bb_courses');
+    if (cachedSub) setSubjects(JSON.parse(cachedSub));
+    if (cachedChap) setChapters(JSON.parse(cachedChap));
+    if (cachedYear) setYears(JSON.parse(cachedYear));
+    if (cachedCourses) setCourses(JSON.parse(cachedCourses));
+
+    const [sRes, yRes, cRes, coursesRes] = await Promise.all([
       fetch('/api/admin/subjects'), 
       fetch('/api/admin/years'),
-      fetch('/api/admin/chapters')
+      fetch('/api/admin/chapters'),
+      fetch('/api/admin/courses')
     ]);
-    if (sRes.ok) setSubjects(await sRes.json());
-    if (yRes.ok) setYears(await yRes.json());
-    if (cRes.ok) setChapters(await cRes.json());
+    if (sRes.ok) {
+      const d = await sRes.json();
+      setSubjects(d);
+      sessionStorage.setItem('bb_subjects', JSON.stringify(d));
+    }
+    if (yRes.ok) {
+      const d = await yRes.json();
+      setYears(d);
+      sessionStorage.setItem('bb_years', JSON.stringify(d));
+    }
+    if (cRes.ok) {
+      const d = await cRes.json();
+      setChapters(d);
+      sessionStorage.setItem('bb_chapters', JSON.stringify(d));
+    }
+    if (coursesRes.ok) {
+      const d = await coursesRes.json();
+      setCourses(d);
+      sessionStorage.setItem('bb_courses', JSON.stringify(d));
+    }
   };
 
   // On mount: fetch auth first, set default class, THEN allow papers fetch
@@ -73,32 +101,63 @@ function PapersContent() {
     fetchMeta();
     (async () => {
       try {
-        const res = await fetch('/api/student/me');
-        if (res.ok) {
-          const data = await res.json();
+        const cachedMe = sessionStorage.getItem('bb_student_me');
+        if (cachedMe) {
+          const data = JSON.parse(cachedMe);
           setIsAuthenticated(data.authenticated);
           if (data.authenticated && data.class && !searchParams.get('class') && !selectedClass) {
             setSelectedClass(data.class);
           }
+          setAuthReady(true);
+        }
+
+        const res = await fetch('/api/student/me');
+        if (res.ok) {
+          const data = await res.json();
+          sessionStorage.setItem('bb_student_me', JSON.stringify(data));
+          if (!cachedMe) {
+            setIsAuthenticated(data.authenticated);
+            if (data.authenticated && data.class && !searchParams.get('class') && !selectedClass) {
+              setSelectedClass(data.class);
+            }
+            setAuthReady(true);
+          }
+        } else if (!cachedMe) {
+          setIsAuthenticated(false);
+          setAuthReady(true);
         }
       } catch {
-        setIsAuthenticated(false);
-      } finally {
-        setAuthReady(true);
+        if (!sessionStorage.getItem('bb_student_me')) {
+          setIsAuthenticated(false);
+          setAuthReady(true);
+        }
       }
     })();
   }, []);
 
   const fetchPapers = useCallback(async () => {
-    setLoading(true);
     const params = new URLSearchParams();
     params.set('mode', mode);
     if (selectedClass) params.set('class', selectedClass);
     if (selectedSubject) params.set('subject', selectedSubject);
     if (selectedYear) params.set('year', selectedYear);
     if (selectedChapter) params.set('chapter', selectedChapter);
-    const res = await fetch(`/api/papers?${params.toString()}`);
-    if (res.ok) setPapers(await res.json());
+    const url = `/api/papers?${params.toString()}`;
+
+    const cached = sessionStorage.getItem(`bb_papers_${url}`);
+    if (cached) {
+      setPapers(JSON.parse(cached));
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+
+    const res = await fetch(url);
+    if (res.ok) {
+      const data = await res.json();
+      setPapers(data);
+      sessionStorage.setItem(`bb_papers_${url}`, JSON.stringify(data));
+    }
     setLoading(false);
   }, [mode, selectedClass, selectedSubject, selectedYear, selectedChapter]);
 
@@ -166,13 +225,13 @@ function PapersContent() {
         >
           All Classes
         </button>
-        {['8', '9', '10', '11', '12', 'CUET', 'JEE', 'NEET'].map(c => (
+        {courses.map(c => (
           <button
-            key={c}
-            onClick={() => handleClassSelect(c)}
-            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedClass === c ? 'var(--primary)' : 'transparent', color: selectedClass === c ? 'white' : 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)', fontSize: '0.875rem' }}
+            key={c.id}
+            onClick={() => handleClassSelect(c.name)}
+            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedClass === c.name ? 'var(--primary)' : 'transparent', color: selectedClass === c.name ? 'white' : 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)', fontSize: '0.875rem' }}
           >
-            {['CUET', 'JEE', 'NEET'].includes(c) ? c : `Class ${c}`}
+            {c.name}
           </button>
         ))}
       </div>
@@ -326,7 +385,7 @@ function PapersContent() {
                 <div>
                   <h3 style={{ fontWeight: 700, marginBottom: '0.35rem', fontSize: '1.05rem' }}>{paper.title}</h3>
                   <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(99,102,241,0.1)', borderRadius: '999px', color: 'var(--primary)', fontWeight: 600 }}>{['CUET', 'JEE', 'NEET'].includes(paper.className) ? paper.className : `Class ${paper.className}`}</span>
+                    <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(99,102,241,0.1)', borderRadius: '999px', color: 'var(--primary)', fontWeight: 600 }}>{paper.className.startsWith('Class') || ['CUET', 'JEE', 'NEET'].includes(paper.className) ? paper.className : `Class ${paper.className}`}</span>
                     <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(139,92,246,0.1)', borderRadius: '999px', color: 'var(--accent)', fontWeight: 600 }}>{paper.subject.name}</span>
                     {paper.chapter && <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(16,185,129,0.1)', borderRadius: '999px', color: '#10b981', fontWeight: 600 }}>Ch {paper.chapter.number}: {paper.chapter.name}</span>}
                     {paper.year && <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(255,255,255,0.05)', borderRadius: '999px', opacity: 0.8 }}>{paper.year.year}</span>}

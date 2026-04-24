@@ -25,6 +25,7 @@ interface Note {
 
 interface Subject { id: string; name: string; }
 interface Chapter { id: string; name: string; number: number; className: string; subjectId: string; }
+interface Course { id: string; name: string; }
 
 function NotesContent() {
   const searchParams = useSearchParams();
@@ -33,6 +34,7 @@ function NotesContent() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedClass, setSelectedClass] = useState(searchParams.get('class') || '');
   const [selectedSubject, setSelectedSubject] = useState(searchParams.get('subject') || '');
@@ -50,12 +52,33 @@ function NotesContent() {
   };
 
   const fetchMeta = async () => {
-    const [subRes, chapRes] = await Promise.all([
+    const cachedSub = sessionStorage.getItem('bb_subjects');
+    const cachedChap = sessionStorage.getItem('bb_chapters');
+    const cachedCourses = sessionStorage.getItem('bb_courses');
+    if (cachedSub) setSubjects(JSON.parse(cachedSub));
+    if (cachedChap) setChapters(JSON.parse(cachedChap));
+    if (cachedCourses) setCourses(JSON.parse(cachedCourses));
+
+    const [subRes, chapRes, coursesRes] = await Promise.all([
       fetch('/api/admin/subjects'),
-      fetch('/api/admin/chapters')
+      fetch('/api/admin/chapters'),
+      fetch('/api/admin/courses')
     ]);
-    if (subRes.ok) setSubjects(await subRes.json());
-    if (chapRes.ok) setChapters(await chapRes.json());
+    if (subRes.ok) {
+      const d = await subRes.json();
+      setSubjects(d);
+      sessionStorage.setItem('bb_subjects', JSON.stringify(d));
+    }
+    if (chapRes.ok) {
+      const d = await chapRes.json();
+      setChapters(d);
+      sessionStorage.setItem('bb_chapters', JSON.stringify(d));
+    }
+    if (coursesRes.ok) {
+      const d = await coursesRes.json();
+      setCourses(d);
+      sessionStorage.setItem('bb_courses', JSON.stringify(d));
+    }
   };
 
   // On mount: fetch auth first, set default class, THEN allow notes fetch
@@ -63,30 +86,61 @@ function NotesContent() {
     fetchMeta();
     (async () => {
       try {
-        const res = await fetch('/api/student/me');
-        if (res.ok) {
-          const data = await res.json();
+        const cachedMe = sessionStorage.getItem('bb_student_me');
+        if (cachedMe) {
+          const data = JSON.parse(cachedMe);
           setIsAuthenticated(data.authenticated);
           if (data.authenticated && data.class && !searchParams.get('class') && !selectedClass) {
             setSelectedClass(data.class);
           }
+          setAuthReady(true);
+        }
+
+        const res = await fetch('/api/student/me');
+        if (res.ok) {
+          const data = await res.json();
+          sessionStorage.setItem('bb_student_me', JSON.stringify(data));
+          if (!cachedMe) {
+            setIsAuthenticated(data.authenticated);
+            if (data.authenticated && data.class && !searchParams.get('class') && !selectedClass) {
+              setSelectedClass(data.class);
+            }
+            setAuthReady(true);
+          }
+        } else if (!cachedMe) {
+          setIsAuthenticated(false);
+          setAuthReady(true);
         }
       } catch {
-        setIsAuthenticated(false);
-      } finally {
-        setAuthReady(true);
+        if (!sessionStorage.getItem('bb_student_me')) {
+          setIsAuthenticated(false);
+          setAuthReady(true);
+        }
       }
     })();
   }, []);
 
   const fetchNotes = useCallback(async () => {
-    setLoading(true);
     const params = new URLSearchParams();
     if (selectedClass) params.set('class', selectedClass);
     if (selectedSubject) params.set('subject', selectedSubject);
     if (selectedChapter) params.set('chapter', selectedChapter);
-    const res = await fetch(`/api/notes?${params.toString()}`);
-    if (res.ok) setNotes(await res.json());
+    const url = `/api/notes?${params.toString()}`;
+
+    const cached = sessionStorage.getItem(`bb_notes_${url}`);
+    if (cached) {
+      setNotes(JSON.parse(cached));
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+
+    const res = await fetch(url);
+    if (res.ok) {
+      const data = await res.json();
+      setNotes(data);
+      sessionStorage.setItem(`bb_notes_${url}`, JSON.stringify(data));
+    }
     setLoading(false);
   }, [selectedClass, selectedSubject, selectedChapter]);
 
@@ -124,13 +178,13 @@ function NotesContent() {
         >
           All Classes
         </button>
-        {['8', '9', '10', '11', '12', 'CUET', 'JEE', 'NEET'].map(cls => (
+        {courses.map(course => (
           <button
-            key={cls}
-            onClick={() => handleClassSelect(cls)}
-            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedClass === cls ? 'var(--primary)' : 'transparent', color: selectedClass === cls ? 'white' : 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)', fontSize: '0.875rem' }}
+            key={course.id}
+            onClick={() => handleClassSelect(course.name)}
+            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedClass === course.name ? 'var(--primary)' : 'transparent', color: selectedClass === course.name ? 'white' : 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)', fontSize: '0.875rem' }}
           >
-            {['CUET', 'JEE', 'NEET'].includes(cls) ? cls : `Class ${cls}`}
+            {course.name}
           </button>
         ))}
       </div>
@@ -260,7 +314,7 @@ function NotesContent() {
                 <div>
                   <h3 style={{ fontWeight: 700, marginBottom: '0.35rem', fontSize: '1.05rem' }}>{note.title}</h3>
                   <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(99,102,241,0.1)', borderRadius: '999px', color: 'var(--primary)', fontWeight: 600 }}>{['CUET', 'JEE', 'NEET'].includes(note.className) ? note.className : `Class ${note.className}`}</span>
+                    <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(99,102,241,0.1)', borderRadius: '999px', color: 'var(--primary)', fontWeight: 600 }}>{note.className.startsWith('Class') || ['CUET', 'JEE', 'NEET'].includes(note.className) ? note.className : `Class ${note.className}`}</span>
                     <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(139,92,246,0.1)', borderRadius: '999px', color: 'var(--accent)', fontWeight: 600 }}>{note.subject.name}</span>
                     {note.chapter && (
                       <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(16,185,129,0.1)', borderRadius: '999px', color: '#10b981', fontWeight: 600 }}>Ch {note.chapter.number}: {note.chapter.name}</span>

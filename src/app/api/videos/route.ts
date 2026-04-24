@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     if (subjectId) where.subjectId = subjectId;
     if (chapterId) where.chapterId = chapterId;
 
-    const videos = await (prisma as any).video.findMany({
+    const videos = await prisma.video.findMany({
       where,
       include: { subject: true, chapter: true },
       orderBy: [
@@ -34,8 +34,8 @@ export async function GET(request: Request) {
 
     if (userId) {
       const [userLikes, userFavorites] = await Promise.all([
-        (prisma as any).like.findMany({ where: { userId, targetType: 'VIDEO', targetId: { in: videos.map((v: any) => v.id) } } }),
-        (prisma as any).favorite.findMany({ where: { userId, targetType: 'VIDEO', targetId: { in: videos.map((v: any) => v.id) } } })
+        prisma.like.findMany({ where: { userId, targetType: 'VIDEO', targetId: { in: videos.map((v: any) => v.id) } } }),
+        prisma.favorite.findMany({ where: { userId, targetType: 'VIDEO', targetId: { in: videos.map((v: any) => v.id) } } })
       ]);
 
       const likedIds = new Set(userLikes.map((l: any) => l.targetId));

@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   const subjectId = searchParams.get('subjectId');
 
   try {
-    const chapters = await (prisma as any).chapter.findMany({
+    const chapters = await prisma.chapter.findMany({
       where: {
         ...(className && { className }),
         ...(subjectId && { subjectId }),
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Name, className, and subjectId are required' }, { status: 400 });
     }
 
-    const chapter = await (prisma as any).chapter.create({
+    const chapter = await prisma.chapter.create({
       data: { 
         name, 
         number: parseInt(number) || 0,

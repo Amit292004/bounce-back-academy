@@ -6,6 +6,7 @@ import { FaTrash, FaPlus } from 'react-icons/fa';
 export default function ChaptersPage() {
   const [chapters, setChapters] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<any[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
   const [name, setName] = useState('');
   const [number, setNumber] = useState('1');
   const [className, setClassName] = useState('10');
@@ -19,9 +20,10 @@ export default function ChaptersPage() {
 
   const fetchData = async () => {
     try {
-      const [chaptersData, subjectsData] = await Promise.all([
+      const [chaptersData, subjectsData, coursesData] = await Promise.all([
         fetch('/api/admin/chapters').then(res => res.json()),
-        fetch('/api/admin/subjects').then(res => res.json())
+        fetch('/api/admin/subjects').then(res => res.json()),
+        fetch('/api/admin/courses').then(res => res.json())
       ]);
       // Sort chapters by number
       const sortedChapters = Array.isArray(chaptersData) 
@@ -29,6 +31,7 @@ export default function ChaptersPage() {
         : [];
       setChapters(sortedChapters);
       setSubjects(subjectsData);
+      setCourses(coursesData);
       if (subjectsData.length > 0 && !subjectId) setSubjectId(subjectsData[0].id);
       setLoading(false);
     } catch (error) {
@@ -81,7 +84,7 @@ export default function ChaptersPage() {
 
   if (loading) return <div>Loading...</div>;
 
-  const classes = ['8', '9', '10', '11', '12', 'CUET', 'JEE', 'NEET'];
+
 
   return (
     <div>
@@ -89,8 +92,8 @@ export default function ChaptersPage() {
 
       <div className="glass-panel" style={{ padding: '2rem', marginBottom: '2rem' }}>
         <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>Add New Chapter</h2>
-        <form onSubmit={handleCreate} style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr 1fr auto', gap: '1rem', alignItems: 'end' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <form onSubmit={handleCreate} style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'flex-end' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: '1 1 80px' }}>
             <label>No.</label>
             <input 
               type="number" 
@@ -102,7 +105,7 @@ export default function ChaptersPage() {
             />
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: '2 1 200px' }}>
             <label>Chapter Name</label>
             <input 
               type="text" 
@@ -114,21 +117,21 @@ export default function ChaptersPage() {
             />
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: '1 1 120px' }}>
             <label>Class</label>
             <select value={className} onChange={e => setClassName(e.target.value)} style={selectStyle}>
-              {classes.map(c => <option key={c} value={c}>Class {c}</option>)}
+              {courses.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
             </select>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: '1 1 150px' }}>
             <label>Subject</label>
             <select value={subjectId} onChange={e => setSubjectId(e.target.value)} required style={selectStyle}>
               {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
 
-          <button type="submit" className="btn-primary" disabled={creating} style={{ height: '42px' }}>
+          <button type="submit" className="btn-primary" disabled={creating} style={{ height: '42px', flex: '1 1 100px', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
             {creating ? 'Adding...' : <><FaPlus /> Add</>}
           </button>
         </form>

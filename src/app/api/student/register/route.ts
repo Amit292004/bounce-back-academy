@@ -15,21 +15,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Password must be at least 6 characters' }, { status: 400 });
     }
 
-    const existingUser = await (prisma as any).user.findUnique({ where: { email } });
+    const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       if (existingUser.emailVerified) {
         return NextResponse.json({ error: 'Email already registered. Please sign in.' }, { status: 400 });
       }
       // If user exists but is not verified, we'll delete the old one and create a new one
       // (or we could update it, but deleting ensures a clean state with new OTP)
-      await (prisma as any).user.delete({ where: { id: existingUser.id } });
+      await prisma.user.delete({ where: { id: existingUser.id } });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    const user = await (prisma as any).user.create({
+    const user = await prisma.user.create({
       data: {
         name,
         class: className,

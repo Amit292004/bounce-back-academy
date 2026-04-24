@@ -72,15 +72,26 @@ export function getViewLink(url: string): string {
   return url;
 }
 
-/**
- * Triggers a browser download for a given URL by fetching it as a blob.
- * This prevents opening new tabs for cross-origin links.
- */
 export async function handleDownload(url: string, fileName?: string) {
   if (!url) return;
   
+  // Google Drive and some other external providers strictly block cross-origin client-side fetches (CORS).
+  // Attempting to fetch them will throw a TypeError and trigger the Next.js error overlay.
+  // We can skip fetch and directly use an anchor tag to let the browser handle the native download prompt.
+  if (url.includes('drive.google.com')) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.download = fileName || 'download';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    return;
+  }
+  
   try {
     const response = await fetch(url);
+    if (!response.ok) throw new Error('Network response was not ok');
     const blob = await response.blob();
     const blobUrl = window.URL.createObjectURL(blob);
     

@@ -8,6 +8,7 @@ export default function PapersPage() {
   const [subjects, setSubjects] = useState<any[]>([]);
   const [years, setYears] = useState<any[]>([]);
   const [chapters, setChapters] = useState<any[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
 
   const [title, setTitle] = useState('');
   const [className, setClassName] = useState('10');
@@ -26,12 +27,14 @@ export default function PapersPage() {
       fetch('/api/admin/papers').then(res => res.json()),
       fetch('/api/admin/subjects').then(res => res.json()),
       fetch('/api/admin/years').then(res => res.json()),
-      fetch('/api/admin/chapters').then(res => res.json())
-    ]).then(([papersData, subjectsData, yearsData, chaptersData]) => {
+      fetch('/api/admin/chapters').then(res => res.json()),
+      fetch('/api/admin/courses').then(res => res.json())
+    ]).then(([papersData, subjectsData, yearsData, chaptersData, coursesData]) => {
       setPapers(papersData);
       setSubjects(subjectsData);
       setYears(yearsData);
       setChapters(chaptersData);
+      setCourses(coursesData);
       if (subjectsData.length > 0) setSubjectId(subjectsData[0].id);
       if (yearsData.length > 0) setYearId(yearsData[0].id);
       setLoading(false);
@@ -78,7 +81,7 @@ export default function PapersPage() {
           subjectId,
           yearId,
           chapterId: chapterId || undefined,
-          phase: (className === '8' || className === '9') ? phase : undefined,
+          phase: (className.includes('8') || className.includes('9')) ? phase : undefined,
           viewUrl: viewUrl || fileUrl,
           downloadFile: fileUrl || viewUrl
         }),
@@ -128,10 +131,8 @@ export default function PapersPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <label>Class</label>
             <select value={className} onChange={e => setClassName(e.target.value)} style={selectStyle}>
-              {['8', '9', '10', '11', '12'].map(c => <option key={c} value={c}>Class {c}</option>)}
-              <option value="CUET">CUET</option>
-              <option value="JEE">JEE</option>
-              <option value="NEET">NEET</option>
+              <option value="">Select Class</option>
+              {courses.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
             </select>
           </div>
 
@@ -158,7 +159,7 @@ export default function PapersPage() {
             </select>
           </div>
 
-          {(className === '8' || className === '9') && (
+          {(className.includes('8') || className.includes('9')) && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label>Phase</label>
               <select value={phase} onChange={e => setPhase(e.target.value)} style={selectStyle}>

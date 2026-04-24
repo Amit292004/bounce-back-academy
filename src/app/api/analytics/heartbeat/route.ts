@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     if (!sessionId) return NextResponse.json({ error: 'Missing sessionId' }, { status: 400 });
 
     // Upsert the session to mark it as active
-    await (prisma as any).activeSession.upsert({
+    await prisma.activeSession.upsert({
       where: { id: sessionId },
       update: { lastSeen: new Date() },
       create: { id: sessionId, lastSeen: new Date() },

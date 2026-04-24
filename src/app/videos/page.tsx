@@ -22,8 +22,7 @@ interface Video {
 }
 
 interface Subject { id: string; name: string; }
-
-const CATEGORIES = ['General', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12', 'CUET', 'JEE', 'NEET'];
+interface Course { id: string; name: string; }
 
 interface Chapter { id: string; name: string; number: number; className: string; subjectId: string; }
 
@@ -31,6 +30,7 @@ export default function VideosPage() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
@@ -40,12 +40,33 @@ export default function VideosPage() {
 
   const fetchMeta = async () => {
     try {
-      const [subRes, chapRes] = await Promise.all([
+      const cachedSub = sessionStorage.getItem('bb_subjects');
+      const cachedChap = sessionStorage.getItem('bb_chapters');
+      const cachedCourses = sessionStorage.getItem('bb_courses');
+      if (cachedSub) setSubjects(JSON.parse(cachedSub));
+      if (cachedChap) setChapters(JSON.parse(cachedChap));
+      if (cachedCourses) setCourses(JSON.parse(cachedCourses));
+
+      const [subRes, chapRes, coursesRes] = await Promise.all([
         fetch('/api/admin/subjects'),
-        fetch('/api/admin/chapters')
+        fetch('/api/admin/chapters'),
+        fetch('/api/admin/courses')
       ]);
-      if (subRes.ok) setSubjects(await subRes.json());
-      if (chapRes.ok) setChapters(await chapRes.json());
+      if (subRes.ok) {
+        const d = await subRes.json();
+        setSubjects(d);
+        sessionStorage.setItem('bb_subjects', JSON.stringify(d));
+      }
+      if (chapRes.ok) {
+        const d = await chapRes.json();
+        setChapters(d);
+        sessionStorage.setItem('bb_chapters', JSON.stringify(d));
+      }
+      if (coursesRes.ok) {
+        const d = await coursesRes.json();
+        setCourses(d);
+        sessionStorage.setItem('bb_courses', JSON.stringify(d));
+      }
     } catch (error) {
       console.error('Failed to fetch metadata:', error);
     }
@@ -56,35 +77,61 @@ export default function VideosPage() {
     fetchMeta();
     (async () => {
       try {
+        const cachedMe = sessionStorage.getItem('bb_student_me');
+        if (cachedMe) {
+          const data = JSON.parse(cachedMe);
+          setIsAuthenticated(data.authenticated);
+          if (data.authenticated && data.class) {
+            setSelectedCategory(data.class);
+          }
+          setAuthReady(true);
+        }
+
         const res = await fetch('/api/student/me');
         if (res.ok) {
           const data = await res.json();
-          setIsAuthenticated(data.authenticated);
-          if (data.authenticated && data.class) {
-            const defaultCat = ['CUET', 'JEE', 'NEET'].includes(data.class)
-              ? data.class
-              : `Class ${data.class}`;
-            if (CATEGORIES.includes(defaultCat)) {
-              setSelectedCategory(defaultCat);
+          sessionStorage.setItem('bb_student_me', JSON.stringify(data));
+          if (!cachedMe) {
+            setIsAuthenticated(data.authenticated);
+            if (data.authenticated && data.class) {
+              setSelectedCategory(data.class);
             }
+            setAuthReady(true);
           }
+        } else if (!cachedMe) {
+          setIsAuthenticated(false);
+          setAuthReady(true);
         }
       } catch {
-        setIsAuthenticated(false);
-      } finally {
-        setAuthReady(true);
+        if (!sessionStorage.getItem('bb_student_me')) {
+          setIsAuthenticated(false);
+          setAuthReady(true);
+        }
       }
     })();
   }, []);
 
   const fetchVideos = useCallback(async () => {
-    setLoading(true);
     const params = new URLSearchParams();
     if (selectedCategory) params.set('category', selectedCategory);
     if (selectedSubject) params.set('subject', selectedSubject);
     if (selectedChapter) params.set('chapter', selectedChapter);
-    const res = await fetch(`/api/videos?${params.toString()}`);
-    if (res.ok) setVideos(await res.json());
+    const url = `/api/videos?${params.toString()}`;
+
+    const cached = sessionStorage.getItem(`bb_vid_${url}`);
+    if (cached) {
+      setVideos(JSON.parse(cached));
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+
+    const res = await fetch(url);
+    if (res.ok) {
+      const data = await res.json();
+      setVideos(data);
+      sessionStorage.setItem(`bb_vid_${url}`, JSON.stringify(data));
+    }
     setLoading(false);
   }, [selectedCategory, selectedSubject, selectedChapter]);
 
@@ -93,7 +140,7 @@ export default function VideosPage() {
     if (authReady) fetchVideos();
   }, [authReady, fetchVideos]);
 
-  const currentClassName = selectedCategory.replace('Class ', '');
+  const currentClassName = selectedCategory;
   const filteredChapters = chapters.filter(ch => 
     (currentClassName && currentClassName !== 'General' ? ch.className === currentClassName : true) && 
     (selectedSubject ? ch.subjectId === selectedSubject : true)
@@ -121,13 +168,13 @@ export default function VideosPage() {
         >
           All
         </button>
-        {CATEGORIES.map(cat => (
+        {courses.map(course => (
           <button
-            key={cat}
-            onClick={() => { setSelectedCategory(cat === selectedCategory ? '' : cat); setSelectedSubject(''); setSelectedChapter(''); }}
-            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedCategory === cat ? 'var(--primary)' : 'transparent', color: selectedCategory === cat ? 'white' : 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)' }}
+            key={course.id}
+            onClick={() => { setSelectedCategory(course.name === selectedCategory ? '' : course.name); setSelectedSubject(''); setSelectedChapter(''); }}
+            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedCategory === course.name ? 'var(--primary)' : 'transparent', color: selectedCategory === course.name ? 'white' : 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)' }}
           >
-            {cat}
+            {course.name}
           </button>
         ))}
       </div>
@@ -255,6 +302,7 @@ export default function VideosPage() {
                 {videoId ? (
                   <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, background: '#000' }}>
                     <iframe
+                      loading="lazy"
                       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
                       src={`https://www.youtube.com/embed/${videoId}`}
                       title={video.title}

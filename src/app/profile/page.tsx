@@ -24,6 +24,7 @@ export default function ProfilePage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [form, setForm] = useState({ name: '', className: '', mobile: '' });
   const [uploading, setUploading] = useState(false);
+  const [courses, setCourses] = useState<{id: string, name: string}[]>([]);
 
   useEffect(() => {
     fetch('/api/student/me')
@@ -40,6 +41,11 @@ export default function ProfilePage() {
           setEditing(true);
         }
       });
+
+    fetch('/api/admin/courses')
+      .then(res => res.json())
+      .then(data => setCourses(data))
+      .catch(console.error);
   }, [router]);
 
   const handleSave = async () => {
@@ -377,9 +383,9 @@ export default function ProfilePage() {
                 onChange={e => setForm(p => ({ ...p, className: e.target.value }))}
                 style={{ ...inputStyle, cursor: 'pointer' }}
               >
-                {['8', '9', '10', '11', '12', 'NEET', 'JEE', 'CUET'].map(c => (
-                  <option key={c} value={c} style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
-                    {isNaN(Number(c)) ? c : `Class ${c}`}
+                {courses.map(c => (
+                  <option key={c.id} value={c.name} style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
+                    {c.name}
                   </option>
                 ))}
               </select>

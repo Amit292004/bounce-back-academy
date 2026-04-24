@@ -3,8 +3,8 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    if (prisma && (prisma as any).branding) {
-      const branding = await (prisma as any).branding.findFirst();
+    if (prisma && prisma.branding) {
+      const branding = await prisma.branding.findFirst();
       return NextResponse.json(branding || {});
     }
     return NextResponse.json({});
@@ -17,11 +17,11 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    if (!prisma || !(prisma as any).branding) {
+    if (!prisma || !prisma.branding) {
       throw new Error('Database client not initialized');
     }
 
-    const existing = await (prisma as any).branding.findFirst();
+    const existing = await prisma.branding.findFirst();
 
     const cleanData = {
       siteLogo: data.siteLogo !== undefined ? data.siteLogo : null,
@@ -34,12 +34,12 @@ export async function POST(request: Request) {
 
     let branding;
     if (existing) {
-      branding = await (prisma as any).branding.update({
+      branding = await prisma.branding.update({
         where: { id: existing.id },
         data: cleanData,
       });
     } else {
-      branding = await (prisma as any).branding.create({ data: cleanData });
+      branding = await prisma.branding.create({ data: cleanData });
     }
 
     return NextResponse.json(branding);

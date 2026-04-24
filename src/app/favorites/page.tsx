@@ -13,11 +13,20 @@ export default function FavoritesPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const cachedFavs = sessionStorage.getItem('bb_favorites');
+        if (cachedFavs) {
+          setData(JSON.parse(cachedFavs));
+          setIsAuthenticated(true);
+          setLoading(false);
+        }
+
         const res = await fetch('/api/interactions/favorites');
         if (res.ok) {
-          setData(await res.json());
+          const fetchedData = await res.json();
+          setData(fetchedData);
           setIsAuthenticated(true);
-        } else if (res.status === 401) {
+          sessionStorage.setItem('bb_favorites', JSON.stringify(fetchedData));
+        } else if (res.status === 401 && !cachedFavs) {
           window.location.href = '/login';
         }
       } catch (error) {
@@ -96,6 +105,7 @@ export default function FavoritesPage() {
                       {videoId ? (
                         <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, background: '#000' }}>
                           <iframe
+                            loading="lazy"
                             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                             src={`https://www.youtube.com/embed/${videoId}`}
                             title={video.title}

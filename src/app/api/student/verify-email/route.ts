@@ -10,7 +10,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email and OTP are required' }, { status: 400 });
     }
 
-    const user = await (prisma as any).user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email }
     });
 
@@ -26,12 +26,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid verification code' }, { status: 400 });
     }
 
-    if (new Date() > new Date(user.otpExpires)) {
+    if (!user.otpExpires || new Date() > new Date(user.otpExpires)) {
       return NextResponse.json({ error: 'Verification code has expired' }, { status: 400 });
     }
 
     // Mark as verified and clear OTP
-    await (prisma as any).user.update({
+    await prisma.user.update({
       where: { id: user.id },
       data: {
         emailVerified: true,

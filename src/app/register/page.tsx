@@ -12,6 +12,7 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [courses, setCourses] = useState<{id: string, name: string}[]>([]);
 
   useEffect(() => {
     fetch('/api/student/me')
@@ -21,6 +22,11 @@ export default function RegisterPage() {
         else setChecking(false);
       })
       .catch(() => setChecking(false));
+
+    fetch('/api/admin/courses')
+      .then(res => res.json())
+      .then(data => setCourses(data))
+      .catch(console.error);
   }, [router]);
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
@@ -118,9 +124,9 @@ export default function RegisterPage() {
               className={styles.input}
             >
               <option value="" style={{ background: 'var(--background)', color: 'var(--foreground)' }}>Select class</option>
-              {['8', '9', '10', '11', '12', 'NEET', 'JEE', 'CUET'].map(c => (
-                <option key={c} value={c} style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
-                  {isNaN(Number(c)) ? c : `Class ${c}`}
+              {courses.map(c => (
+                <option key={c.id} value={c.name} style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
+                  {c.name}
                 </option>
               ))}
             </select>

@@ -29,12 +29,13 @@ interface Video {
   createdAt: string;
 }
 
-const CATEGORIES = ['General', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12', 'CUET', 'JEE', 'NEET'];
+interface Course { id: string; name: string; }
 
 export default function VideosPage() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [title, setTitle] = useState('');
   const [youtubeLink, setYoutubeLink] = useState('');
   const [category, setCategory] = useState('General');
@@ -71,14 +72,23 @@ export default function VideosPage() {
     }
   };
 
+  const fetchCourses = async () => {
+    const res = await fetch('/api/admin/courses');
+    if (res.ok) {
+      const data = await res.json();
+      setCourses(data);
+    }
+  };
+
   useEffect(() => {
     fetchVideos();
     fetchSubjects();
     fetchChapters();
+    fetchCourses();
   }, []);
 
   // Filter chapters based on selected category (class) and subject
-  const currentClassName = category.replace('Class ', '');
+  const currentClassName = category;
   const filteredChapters = chapters.filter(ch => ch.className === currentClassName && ch.subjectId === subjectId);
 
   const getYoutubeId = (url: string) => {
@@ -169,8 +179,8 @@ export default function VideosPage() {
       <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
         <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '1.25rem' }}>Add New Video</h2>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ flex: '2 1 300px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Video Title</label>
               <input
                 type="text"
@@ -181,18 +191,19 @@ export default function VideosPage() {
                 style={{ width: '100%', padding: '0.65rem 1rem', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }}
               />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', flex: '3 1 300px' }}>
+              <div style={{ flex: '1 1 120px' }}>
                 <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Category</label>
                 <select
                   value={category}
                   onChange={e => setCategory(e.target.value)}
                   style={{ width: '100%', padding: '0.65rem 1rem', background: 'var(--background)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }}
                 >
-                  {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  <option value="General">General</option>
+                  {courses.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
                 </select>
               </div>
-              <div>
+              <div style={{ flex: '1 1 150px' }}>
                 <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Subject</label>
                 <select
                   value={subjectId}
@@ -206,8 +217,8 @@ export default function VideosPage() {
             </div>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-            <div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ flex: '1 1 150px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Chapter (Optional)</label>
               <select
                 value={chapterId}
@@ -218,7 +229,7 @@ export default function VideosPage() {
                 {filteredChapters.map(ch => <option key={ch.id} value={ch.id}>{ch.name}</option>)}
               </select>
             </div>
-            <div>
+            <div style={{ flex: '1 1 100px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Lecture Number</label>
               <input
                 type="number"
@@ -228,7 +239,7 @@ export default function VideosPage() {
                 style={{ width: '100%', padding: '0.65rem 1rem', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }}
               />
             </div>
-            <div>
+            <div style={{ flex: '2 1 250px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>YouTube URL</label>
               <input
                 type="url"
@@ -241,8 +252,8 @@ export default function VideosPage() {
             </div>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ flex: '1 1 250px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Google Drive / PDF Link (Optional)</label>
               <input
                 type="url"
@@ -252,7 +263,7 @@ export default function VideosPage() {
                 style={{ width: '100%', padding: '0.65rem 1rem', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-sm)', color: 'var(--foreground)', outline: 'none' }}
               />
             </div>
-            <div>
+            <div style={{ flex: '1 1 250px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Upload PDF File (Optional)</label>
               <input 
                 type="file" 
@@ -277,18 +288,40 @@ export default function VideosPage() {
 
       {/* Filter */}
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-        {['All', ...CATEGORIES].map(cat => (
+        <button
+          onClick={() => setFilterCat('All')}
+          style={{
+            padding: '0.4rem 1rem', borderRadius: '999px', border: '1px solid var(--surface-border)',
+            background: filterCat === 'All' ? 'var(--primary)' : 'transparent',
+            color: filterCat === 'All' ? 'white' : 'var(--foreground)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500,
+            transition: 'var(--transition)'
+          }}
+        >
+          All
+        </button>
+        <button
+          onClick={() => setFilterCat('General')}
+          style={{
+            padding: '0.4rem 1rem', borderRadius: '999px', border: '1px solid var(--surface-border)',
+            background: filterCat === 'General' ? 'var(--primary)' : 'transparent',
+            color: filterCat === 'General' ? 'white' : 'var(--foreground)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500,
+            transition: 'var(--transition)'
+          }}
+        >
+          General
+        </button>
+        {courses.map(course => (
           <button
-            key={cat}
-            onClick={() => setFilterCat(cat)}
+            key={course.id}
+            onClick={() => setFilterCat(course.name)}
             style={{
               padding: '0.4rem 1rem', borderRadius: '999px', border: '1px solid var(--surface-border)',
-              background: filterCat === cat ? 'var(--primary)' : 'transparent',
-              color: filterCat === cat ? 'white' : 'var(--foreground)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500,
+              background: filterCat === course.name ? 'var(--primary)' : 'transparent',
+              color: filterCat === course.name ? 'white' : 'var(--foreground)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500,
               transition: 'var(--transition)'
             }}
           >
-            {cat}
+            {course.name}
           </button>
         ))}
       </div>
@@ -308,6 +341,7 @@ export default function VideosPage() {
                 {videoId && (
                   <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, background: '#000' }}>
                     <iframe
+                      loading="lazy"
                       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                       src={`https://www.youtube.com/embed/${videoId}`}
                       title={video.title}

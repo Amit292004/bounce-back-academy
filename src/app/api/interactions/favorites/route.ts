@@ -14,7 +14,7 @@ export async function GET() {
     const userId = payload.userId as string;
 
     // Fetch favorites first to get IDs, since we removed relation fields from schema
-    const favoritesData = await (prisma as any).favorite.findMany({
+    const favoritesData = await prisma.favorite.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' }
     });
@@ -40,7 +40,7 @@ export async function GET() {
 
     // Add isLiked/isFavorited flags for UI consistency
     const [userLikes] = await Promise.all([
-      (prisma as any).like.findMany({ where: { userId } })
+      prisma.like.findMany({ where: { userId } })
     ]);
 
     const likedIds = new Set(userLikes.map((l: any) => l.targetId));

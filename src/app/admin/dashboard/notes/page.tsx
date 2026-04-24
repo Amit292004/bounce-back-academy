@@ -26,10 +26,16 @@ interface Chapter {
   subjectId: string;
 }
 
+interface Course {
+  id: string;
+  name: string;
+}
+
 export default function NotesPage() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [form, setForm] = useState({ title: '', className: '10', subjectId: '', chapterId: '', viewUrl: '', downloadFile: '' });
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -37,14 +43,16 @@ export default function NotesPage() {
   const [filterClass, setFilterClass] = useState('All');
 
   const fetchAll = async () => {
-    const [notesRes, subjectsRes, chaptersRes] = await Promise.all([
+    const [notesRes, subjectsRes, chaptersRes, coursesRes] = await Promise.all([
       fetch('/api/admin/notes'),
       fetch('/api/admin/subjects'),
       fetch('/api/admin/chapters'),
+      fetch('/api/admin/courses'),
     ]);
     if (notesRes.ok) setNotes(await notesRes.json());
     if (subjectsRes.ok) setSubjects(await subjectsRes.json());
     if (chaptersRes.ok) setChapters(await chaptersRes.json());
+    if (coursesRes.ok) setCourses(await coursesRes.json());
   };
 
   useEffect(() => { fetchAll(); }, []);
@@ -119,28 +127,26 @@ export default function NotesPage() {
       <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
         <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '1.25rem' }}>Add New Note</h2>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem' }}>
-            <div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ flex: '1 1 200px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Title</label>
               <input name="title" type="text" placeholder="Note title" value={form.title} onChange={handleChange} required style={inputStyle} />
             </div>
-            <div>
+            <div style={{ flex: '1 1 120px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Class</label>
               <select name="className" value={form.className} onChange={handleChange} required style={selectStyle}>
-                {[8, 9, 10, 11, 12].map(c => <option key={c} value={String(c)}>Class {c}</option>)}
-                <option value="CUET">CUET</option>
-                <option value="JEE">JEE</option>
-                <option value="NEET">NEET</option>
+                <option value="">Select Class</option>
+                {courses.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
               </select>
             </div>
-            <div>
+            <div style={{ flex: '1 1 150px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Subject</label>
               <select name="subjectId" value={form.subjectId} onChange={handleChange} required style={selectStyle}>
                 <option value="">Select subject</option>
                 {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
             </div>
-            <div>
+            <div style={{ flex: '1 1 150px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Chapter (optional)</label>
               <select name="chapterId" value={form.chapterId} onChange={handleChange} style={selectStyle}>
                 <option value="">Select chapter</option>
@@ -148,12 +154,12 @@ export default function NotesPage() {
               </select>
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ flex: '1 1 250px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Google Drive / PDF Link</label>
               <input name="viewUrl" type="url" placeholder="https://drive.google.com/..." value={form.viewUrl} onChange={handleChange} style={inputStyle} />
             </div>
-            <div>
+            <div style={{ flex: '1 1 250px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Upload File (PDF or Image)</label>
               <input type="file" accept=".pdf,image/*" onChange={e => setFile(e.target.files?.[0] || null)} style={{ ...inputStyle, padding: '0.45rem 1rem' }} />
             </div>
@@ -173,18 +179,29 @@ export default function NotesPage() {
 
       {/* Filter */}
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-        {['All', '8', '9', '10', '11', '12', 'CUET', 'JEE', 'NEET'].map(cls => (
+        <button
+          onClick={() => setFilterClass('All')}
+          style={{
+            padding: '0.4rem 1rem', borderRadius: '999px', border: '1px solid var(--surface-border)',
+            background: filterClass === 'All' ? 'var(--primary)' : 'transparent',
+            color: filterClass === 'All' ? 'white' : 'var(--foreground)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500,
+            transition: 'var(--transition)'
+          }}
+        >
+          All Classes
+        </button>
+        {courses.map(course => (
           <button
-            key={cls}
-            onClick={() => setFilterClass(cls)}
+            key={course.id}
+            onClick={() => setFilterClass(course.name)}
             style={{
               padding: '0.4rem 1rem', borderRadius: '999px', border: '1px solid var(--surface-border)',
-              background: filterClass === cls ? 'var(--primary)' : 'transparent',
-              color: filterClass === cls ? 'white' : 'var(--foreground)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500,
+              background: filterClass === course.name ? 'var(--primary)' : 'transparent',
+              color: filterClass === course.name ? 'white' : 'var(--foreground)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500,
               transition: 'var(--transition)'
             }}
           >
-            {cls === 'All' ? 'All Classes' : (['CUET', 'JEE', 'NEET'].includes(cls) ? cls : `Class ${cls}`)}
+            {course.name}
           </button>
         ))}
       </div>

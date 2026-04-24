@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     const targetModel = modelMap[targetType];
     if (!targetModel) return NextResponse.json({ error: 'Invalid target type' }, { status: 400 });
 
-    const existingFavorite = await (prisma as any).favorite.findUnique({
+    const existingFavorite = await prisma.favorite.findUnique({
       where: {
         userId_targetId_targetType: { userId, targetId, targetType }
       }
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     if (existingFavorite) {
       await prisma.$transaction([
-        (prisma as any).favorite.delete({ where: { id: existingFavorite.id } }),
+        prisma.favorite.delete({ where: { id: existingFavorite.id } }),
         targetModel.update({
           where: { id: targetId },
           data: { favoritesCount: { decrement: 1 } }
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ favorited: false });
     } else {
       await prisma.$transaction([
-        (prisma as any).favorite.create({
+        prisma.favorite.create({
           data: { userId, targetId, targetType }
         }),
         targetModel.update({

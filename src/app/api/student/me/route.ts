@@ -11,7 +11,7 @@ export async function GET() {
     const payload = await verifyToken(token);
     if (!payload) return NextResponse.json({ authenticated: false });
 
-    const user = await (prisma as any).user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: payload.userId as string },
       select: { id: true, name: true, class: true, email: true, mobile: true, image: true, createdAt: true, emailVerified: true }
     });

@@ -21,8 +21,24 @@ export default function Navbar() {
   const [auth, setAuth] = useState<AuthState>({ authenticated: false });
   const [scrolled, setScrolled] = useState(false);
   const [siteLogo, setSiteLogo] = useState<string | null>(null);
+  const [hasNewAnnouncement, setHasNewAnnouncement] = useState(false);
 
   useEffect(() => {
+    const checkAnnouncements = async () => {
+      try {
+        const res = await fetch('/api/announcements/latest');
+        const data = await res.json();
+        if (data.latestCreatedAt) {
+          const lastSeen = localStorage.getItem('lastSeenAnnouncement');
+          if (!lastSeen || new Date(data.latestCreatedAt) > new Date(lastSeen)) {
+            setHasNewAnnouncement(true);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to check announcements:", error);
+      }
+    };
+
     const checkAuth = async () => {
       try {
         const res = await fetch('/api/student/me');
@@ -45,10 +61,16 @@ export default function Navbar() {
     };
     checkAuth();
     fetchBranding();
+    checkAnnouncements();
 
     // Listen for profile updates from other components
     window.addEventListener('profileUpdated', checkAuth);
-    return () => window.removeEventListener('profileUpdated', checkAuth);
+    // Listen for announcement views
+    window.addEventListener('announcementsSeen', () => setHasNewAnnouncement(false));
+    return () => {
+      window.removeEventListener('profileUpdated', checkAuth);
+      window.removeEventListener('announcementsSeen', () => setHasNewAnnouncement(false));
+    };
   }, [pathname]);
 
   useEffect(() => {
@@ -68,8 +90,18 @@ export default function Navbar() {
     { label: 'Papers', href: '/papers' },
     { label: 'Notes', href: '/notes' },
     { label: 'Videos', href: '/videos' },
+    { 
+      label: (
+        <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+          Announcements
+          {hasNewAnnouncement && (
+            <span style={{ width: '8px', height: '8px', background: '#ef4444', borderRadius: '50%', boxShadow: '0 0 10px rgba(239, 68, 68, 0.5)' }}></span>
+          )}
+        </span>
+      ), 
+      href: '/announcements' 
+    },
     ...(auth.authenticated ? [{ label: 'Favorites', href: '/favorites' }] : []),
-    { label: 'Feedback', href: '/feedback' },
     { label: 'Contact', href: '/contact' },
   ];
 

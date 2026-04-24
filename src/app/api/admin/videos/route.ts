@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const videos = await (prisma as any).video.findMany({
+    const videos = await prisma.video.findMany({
       include: { subject: true, chapter: true },
       orderBy: [{ chapterId: 'asc' }, { lectureNumber: 'asc' }, { createdAt: 'desc' }]
     });
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     if (!title || !youtubeLink || !category) {
       return NextResponse.json({ error: 'All fields required' }, { status: 400 });
     }
-    const video = await (prisma as any).video.create({
+    const video = await prisma.video.create({
       data: { 
         title, 
         youtubeLink, 

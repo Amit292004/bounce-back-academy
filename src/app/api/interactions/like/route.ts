@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     const targetModel = modelMap[targetType];
     if (!targetModel) return NextResponse.json({ error: 'Invalid target type' }, { status: 400 });
 
-    const existingLike = await (prisma as any).like.findUnique({
+    const existingLike = await prisma.like.findUnique({
       where: {
         userId_targetId_targetType: { userId, targetId, targetType }
       }
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     if (existingLike) {
       await prisma.$transaction([
-        (prisma as any).like.delete({ where: { id: existingLike.id } }),
+        prisma.like.delete({ where: { id: existingLike.id } }),
         targetModel.update({
           where: { id: targetId },
           data: { likesCount: { decrement: 1 } }
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ liked: false });
     } else {
       await prisma.$transaction([
-        (prisma as any).like.create({
+        prisma.like.create({
           data: { userId, targetId, targetType }
         }),
         targetModel.update({

@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const papers = await (prisma as any).questionPaper.findMany({
+    const papers = await prisma.questionPaper.findMany({
       include: { subject: true, year: true, chapter: true },
       orderBy: { createdAt: 'desc' }
     });
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'All required fields must be provided' }, { status: 400 });
     }
 
-    const paper = await (prisma as any).questionPaper.create({
+    const paper = await prisma.questionPaper.create({
       data: {
         title,
         className,

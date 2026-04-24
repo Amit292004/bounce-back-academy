@@ -61,9 +61,19 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
-        <Script
-          id="theme-detection"
-          strategy="beforeInteractive"
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "Bounce Back Academy",
+              "alternateName": ["Bounce Back", "BBA"],
+              "url": "https://bouncebackacademy.vercel.app/"
+            })
+          }}
+        />
+        <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
