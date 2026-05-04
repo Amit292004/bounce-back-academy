@@ -7,7 +7,7 @@ import styles from './page.module.css';
 export default function ContactPage() {
   const socialLinks = [
     { name: 'WhatsApp', url: 'https://wa.me/917628024274', icon: <FaWhatsapp />, color: '#25D366' },
-    { name: 'Instagram', url: 'https://www.instagram.com/am____it_292004/', icon: <FaInstagram />, color: '#E1306C' },
+    { name: 'Instagram', url: 'https://www.instagram.com/bouncebackacdemy', icon: <FaInstagram />, color: '#E1306C' },
     { name: 'Telegram', url: 'https://t.me/amit292004', icon: <FaTelegramPlane />, color: '#0088cc' },
     { name: 'YouTube', url: 'https://www.youtube.com/@BounceBackAcademy', icon: <FaYoutube />, color: '#FF0000' },
     { name: 'LinkedIn', url: 'https://www.linkedin.com/in/amit-sharma-142a26359/', icon: <FaLinkedin />, color: '#0077b5' },
@@ -46,9 +46,9 @@ export default function ContactPage() {
                 <FaPhoneAlt className={styles.phoneIcon} />
                 <span>7628024274</span>
               </a>
-              <a href="mailto:amitsharma72020@gmail.com" className={styles.contactPill}>
+              <a href="mailto:bouncebackacademy.edu@gmail.com" className={styles.contactPill}>
                 <FaEnvelope className={styles.emailIcon} />
-                <span>amitsharma72020@gmail.com</span>
+                <span>bouncebackacademy.edu@gmail.com</span>
               </a>
             </div>
           </div>

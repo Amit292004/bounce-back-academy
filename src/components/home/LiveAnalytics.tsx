@@ -15,13 +15,13 @@ export default function LiveAnalytics() {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch('/api/analytics');
+      const res = await fetch('/api/analytics', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         setStats(data);
       }
-    } catch (err) {
-      console.error("Failed to fetch stats", err);
+    } catch {
+      // Silently ignore – will retry on next interval
     } finally {
       setLoading(false);
     }

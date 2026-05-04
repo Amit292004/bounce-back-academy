@@ -30,6 +30,14 @@ export async function GET() {
       activeNow: Math.max(1, activeNow)
     });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch analytics' }, { status: 500 });
+    console.error('[analytics] DB error:', error);
+    // Return zeroed fallback so the client never gets a network-level failure
+    return NextResponse.json({
+      users: 0,
+      papers: 0,
+      notes: 0,
+      videos: 0,
+      activeNow: 0
+    });
   }
 }

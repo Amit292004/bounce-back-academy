@@ -141,8 +141,8 @@ export default function VideosPage() {
   }, [authReady, fetchVideos]);
 
   const currentClassName = selectedCategory;
-  const filteredChapters = chapters.filter(ch => 
-    (currentClassName && currentClassName !== 'General' ? ch.className === currentClassName : true) && 
+  const filteredChapters = chapters.filter(ch =>
+    (currentClassName && currentClassName !== 'General' ? ch.className === currentClassName : true) &&
     (selectedSubject ? ch.subjectId === selectedSubject : true)
   );
 
@@ -180,32 +180,32 @@ export default function VideosPage() {
       </div>
 
       {/* Dropdown Filters */}
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        gap: '1.5rem', 
-        marginBottom: '3rem', 
-        padding: 'clamp(1.25rem, 5vw, 2rem)', 
-        background: 'var(--surface)', 
-        border: '1px solid var(--surface-border)', 
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1.5rem',
+        marginBottom: '3rem',
+        padding: 'clamp(1.25rem, 5vw, 2rem)',
+        background: 'var(--surface)',
+        border: '1px solid var(--surface-border)',
         borderRadius: 'var(--radius-lg)',
         width: '100%',
         boxShadow: 'var(--shadow-sm)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--surface-border)', paddingBottom: '0.75rem', marginBottom: '0.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', opacity: 0.8 }}>
-            <FaFilter style={{ color: 'var(--primary)' }} /> 
+            <FaFilter style={{ color: 'var(--primary)' }} />
             <span style={{ fontSize: '0.95rem', fontWeight: 700, letterSpacing: '0.02em' }}>Refine Your Search</span>
           </div>
           <button
             onClick={() => { setSelectedCategory(''); setSelectedSubject(''); setSelectedChapter(''); }}
-            style={{ 
-              background: 'transparent', 
-              border: 'none', 
-              color: 'var(--primary)', 
-              fontSize: '0.85rem', 
-              fontWeight: 600, 
-              cursor: 'pointer', 
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--primary)',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              cursor: 'pointer',
               opacity: (selectedCategory || selectedSubject || selectedChapter) ? 1 : 0.4,
               transition: 'var(--transition)',
               pointerEvents: (selectedCategory || selectedSubject || selectedChapter) ? 'auto' : 'none'
@@ -255,15 +255,15 @@ export default function VideosPage() {
         {(selectedCategory || selectedSubject || selectedChapter) && (
           <button
             onClick={() => { setSelectedCategory(''); setSelectedSubject(''); setSelectedChapter(''); }}
-            style={{ 
-              padding: '0.85rem 1.5rem', 
-              background: 'rgba(239,68,68,0.08)', 
-              border: '1px solid rgba(239,68,68,0.2)', 
-              borderRadius: 'var(--radius-md)', 
-              color: '#ef4444', 
-              cursor: 'pointer', 
-              fontSize: '0.9rem', 
-              fontWeight: 700, 
+            style={{
+              padding: '0.85rem 1.5rem',
+              background: 'rgba(239,68,68,0.08)',
+              border: '1px solid rgba(239,68,68,0.2)',
+              borderRadius: 'var(--radius-md)',
+              color: '#ef4444',
+              cursor: 'pointer',
+              fontSize: '0.9rem',
+              fontWeight: 700,
               width: '100%',
               textAlign: 'center',
               transition: 'var(--transition)',
@@ -289,11 +289,11 @@ export default function VideosPage() {
           {videos.map((video, idx) => {
             const videoId = getYoutubeId(video.youtubeLink);
             return (
-              <div 
-                key={video.id} 
-                className="tactile-card" 
-                style={{ 
-                  overflow: 'hidden', 
+              <div
+                key={video.id}
+                className="tactile-card"
+                style={{
+                  overflow: 'hidden',
                   borderRadius: 'var(--radius-md)',
                   animation: `fadeIn 0.5s ease-out forwards ${idx * 0.05}s`,
                   opacity: 0
@@ -328,7 +328,7 @@ export default function VideosPage() {
                       )}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem', borderTop: '1px solid var(--surface-border)', paddingTop: '0.75rem' }}>
-                      <InteractionButtons 
+                      <InteractionButtons
                         targetId={video.id}
                         targetType="VIDEO"
                         initialLikes={video.likesCount}
@@ -339,10 +339,10 @@ export default function VideosPage() {
                         isAuthenticated={isAuthenticated}
                       />
                       {video.pdfUrl && (
-                        <a 
-                          href={video.pdfUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
+                        <a
+                          href={video.pdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="haptic-btn"
                           style={{ fontSize: '0.8rem', color: 'var(--primary)', textDecoration: 'none', border: '1px solid var(--primary)', padding: '0.25rem 0.75rem', borderRadius: 'var(--radius-sm)', fontWeight: 600, transition: 'var(--transition)' }}
                           onMouseEnter={e => e.currentTarget.style.background = 'rgba(99,102,241,0.1)'}

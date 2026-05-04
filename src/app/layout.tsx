@@ -81,10 +81,26 @@ export default function RootLayout({
                 "description": "Free NBSE study material for Classes 8 to 12, CUET, JEE & NEET. Download question papers, notes, and watch video lectures by Amit Sharma.",
                 "founder": {
                   "@type": "Person",
-                  "name": "Amit Sharma"
+                  "name": "Amit Sharma",
+                  "jobTitle": "Founder & Educator",
+                  "url": "https://bouncebackacademy.vercel.app/",
+                  "sameAs": [
+                    "https://www.instagram.com/bouncebackacdemy",
+                    "https://www.linkedin.com/in/amit-sharma-142a26359/",
+                    "https://t.me/amit292004"
+                  ]
+                },
+                "contactPoint": {
+                  "@type": "ContactPoint",
+                  "contactType": "customer support",
+                  "email": "bouncebackacademy.edu@gmail.com",
+                  "telephone": "+91-7628024274",
+                  "availableLanguage": ["English", "Hindi"]
                 },
                 "sameAs": [
-                  "https://www.instagram.com/bouncebackacdemy"
+                  "https://www.instagram.com/bouncebackacdemy",
+                  "https://www.youtube.com/@BounceBackAcademy",
+                  "https://www.linkedin.com/in/amit-sharma-142a26359/"
                 ]
               }
             ])
@@ -107,7 +123,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <ThemeProvider>
           <MainLayoutWrapper>{children}</MainLayoutWrapper>
         </ThemeProvider>
