@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 
+// Fix #9: Removed console.log that fires on every cold-start
 const prismaClientSingleton = () => {
-  console.log("Initializing new PrismaClient...");
   return new PrismaClient({
     log: ['error', 'warn'],
   })
@@ -16,6 +16,3 @@ export const prisma = globalForPrisma.prisma ?? prismaClientSingleton()
 export default prisma
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
-
-
-

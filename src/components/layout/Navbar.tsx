@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { FaBars, FaTimes, FaUserCircle } from 'react-icons/fa';
 import ThemeToggle from '@/components/ThemeToggle';
-
+import styles from './Navbar.module.css';
 
 interface AuthState {
   authenticated: boolean;
@@ -16,6 +16,7 @@ interface AuthState {
 
 export default function Navbar() {
   const pathname = usePathname();
+  // Fix #10: Use router.push instead of window.location.href for SPA navigation
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [auth, setAuth] = useState<AuthState>({ authenticated: false });
@@ -28,17 +29,9 @@ export default function Navbar() {
       try {
         const res = await fetch('/api/announcements/latest');
         const data = await res.json();
-        if (data.latestCreatedAt) {
-          const lastSeen = localStorage.getItem('lastSeenAnnouncement');
-          if (!lastSeen || new Date(data.latestCreatedAt) > new Date(lastSeen)) {
-            setHasNewAnnouncement(true);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to check announcements:", error);
-      }
+        if (data && data.hasNew) setHasNewAnnouncement(true);
+      } catch { }
     };
-
     const checkAuth = async () => {
       try {
         const res = await fetch('/api/student/me');
@@ -63,9 +56,7 @@ export default function Navbar() {
     fetchBranding();
     checkAnnouncements();
 
-    // Listen for profile updates from other components
     window.addEventListener('profileUpdated', checkAuth);
-    // Listen for announcement views
     window.addEventListener('announcementsSeen', () => setHasNewAnnouncement(false));
     return () => {
       window.removeEventListener('profileUpdated', checkAuth);
@@ -83,70 +74,58 @@ export default function Navbar() {
     await fetch('/api/student/logout', { method: 'POST' });
     setAuth({ authenticated: false });
     setMenuOpen(false);
-    window.location.href = '/login';
+    // Fix #10: SPA navigation — no full page reload
+    router.push('/login');
   };
 
   const navLinks = [
     { label: 'Papers', href: '/papers' },
     { label: 'Notes', href: '/notes' },
     { label: 'Videos', href: '/videos' },
-    { 
+    {
       label: (
-        <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+        // Fix #17: aria-label is on the Link itself; dot is decorative
+        <span className={styles.announcementLabel}>
           Announcements
           {hasNewAnnouncement && (
-            <span style={{ width: '8px', height: '8px', background: '#ef4444', borderRadius: '50%', boxShadow: '0 0 10px rgba(239, 68, 68, 0.5)' }}></span>
+            <span className={styles.announcementDot} aria-hidden="true" />
           )}
         </span>
-      ), 
-      href: '/announcements' 
+      ),
+      href: '/announcements'
     },
     ...(auth.authenticated ? [{ label: 'Favorites', href: '/favorites' }] : []),
     { label: 'Contact', href: '/contact' },
   ];
 
-  const isActive = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href));
+  // Fix #16: Use explicit path-segment check to avoid /p matching /papers
+  const isActive = (href: string) =>
+    pathname === href || (href !== '/' && pathname.startsWith(href + '/'));
 
   return (
-    <header
-      style={{
-        position: 'sticky', top: '0', zIndex: 100,
-        background: scrolled ? 'var(--surface)' : 'transparent',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        borderBottom: scrolled ? '1px solid var(--surface-border)' : 'none',
-        transition: 'var(--transition)',
-        color: 'var(--foreground)'
-      }}
-    >
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px' }}>
+    // Fix #5: All inline styles replaced with Navbar.module.css classes
+    <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
+      <div className={styles.inner}>
         {/* Logo */}
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', textDecoration: 'none', minWidth: 0, flexShrink: 1 }}>
+        <Link href="/" className={styles.logoLink}>
           <img
-            src={siteLogo || "/logo.png"}
+            src={siteLogo || '/logo.png'}
             alt="Bounce Back Academy Logo"
-            style={{ width: '42px', height: '42px', borderRadius: '8px', objectFit: 'contain', flexShrink: 0 }}
+            className={styles.logoImg}
           />
-          <span style={{ fontWeight: 800, fontSize: 'clamp(1rem, 3vw, 1.2rem)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <span className={styles.logoText}>
             Bounce Back <span className="text-gradient">Academy</span>
           </span>
         </Link>
+
         {/* Desktop Nav */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }} className="desktop-nav">
+        <nav className={styles.desktopNav} aria-label="Main navigation">
           {navLinks.map(link => (
             <Link
               key={link.href}
               href={link.href}
-              style={{
-                padding: '0.5rem 0.875rem',
-                borderRadius: 'var(--radius-sm)',
-                fontWeight: isActive(link.href) ? 600 : 500,
-                color: isActive(link.href) ? 'var(--primary)' : 'var(--foreground)',
-                background: isActive(link.href) ? 'rgba(99,102,241,0.1)' : 'transparent',
-                fontSize: '0.9rem',
-                transition: 'var(--transition)',
-                opacity: isActive(link.href) ? 1 : 0.85,
-              }}
+              className={`${styles.navLink} ${isActive(link.href) ? styles.navLinkActive : ''}`}
+              aria-current={isActive(link.href) ? 'page' : undefined}
             >
               {link.label}
             </Link>
@@ -154,16 +133,16 @@ export default function Navbar() {
         </nav>
 
         {/* Auth Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }} className="desktop-auth">
+        <div className={styles.desktopAuth}>
           {auth.authenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', opacity: 0.8, fontSize: '0.85rem' }}>
+              <div className={styles.userInfo}>
                 {auth.image ? (
-                  <img src={auth.image} alt="" style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
+                  <img src={auth.image} alt="" className={styles.avatarImg} />
                 ) : (
                   <FaUserCircle style={{ color: 'var(--primary)' }} />
                 )}
-                <span style={{ maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{auth.name || auth.email}</span>
+                <span className={styles.userName}>{auth.name || auth.email}</span>
               </div>
               <Link href="/profile" className="btn-secondary" style={{ padding: '0.45rem 1rem', fontSize: '0.85rem' }}>Profile</Link>
               <button
@@ -187,11 +166,12 @@ export default function Navbar() {
           <ThemeToggle />
         </div>
 
-        {/* Mobile Menu Toggle */}
+        {/* Fix #17: aria-label on the mobile hamburger button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          style={{ background: 'transparent', border: 'none', color: 'var(--foreground)', cursor: 'pointer', fontSize: '1.25rem', padding: '0.5rem', display: 'none' }}
-          className="mobile-menu-btn"
+          className={styles.mobileMenuBtn}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
         >
           {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
@@ -199,39 +179,36 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div style={{ padding: '1rem 1.5rem 1.5rem', borderTop: '1px solid var(--surface-border)', background: 'var(--background)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-
+        <div className={styles.mobileMenu}>
           {navLinks.map(link => (
-            <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)}
-              style={{ padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', fontWeight: 500, background: isActive(link.href) ? 'rgba(99,102,241,0.1)' : 'transparent', color: isActive(link.href) ? 'var(--primary)' : 'var(--foreground)' }}>
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              className={`${styles.mobileNavLink} ${isActive(link.href) ? styles.mobileNavLinkActive : ''}`}
+              aria-current={isActive(link.href) ? 'page' : undefined}
+            >
               {link.label}
             </Link>
           ))}
-          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+          <div className={styles.mobileAuthRow}>
             {auth.authenticated ? (
-              <div style={{ display: 'flex', gap: '0.75rem', flex: 1 }}>
-                <Link href="/profile" className="btn-secondary" style={{ flex: 1, textAlign: 'center' }} onClick={() => setMenuOpen(false)}>Profile</Link>
-                <button onClick={handleLogout} className="btn-secondary" style={{ flex: 1 }}>Logout</button>
+              <div className={styles.mobileAuthButtons}>
+                <Link href="/profile" className={`btn-secondary ${styles.mobileAuthBtn}`} onClick={() => setMenuOpen(false)}>Profile</Link>
+                <button onClick={handleLogout} className={`btn-secondary ${styles.mobileAuthBtn}`}>Logout</button>
               </div>
             ) : (
               <>
-                <Link href="/login" className="btn-secondary" style={{ flex: 1, textAlign: 'center' }} onClick={() => setMenuOpen(false)}>Sign In</Link>
-                <Link href="/register" className="btn-primary" style={{ flex: 1, textAlign: 'center' }} onClick={() => setMenuOpen(false)}>Create Account</Link>
+                <Link href="/login" className={`btn-secondary ${styles.mobileAuthBtn}`} onClick={() => setMenuOpen(false)}>Sign In</Link>
+                <Link href="/register" className={`btn-primary ${styles.mobileAuthBtn}`} onClick={() => setMenuOpen(false)}>Create Account</Link>
               </>
             )}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem' }}>
+            <div className={styles.mobileThemeWrap}>
               <ThemeToggle />
             </div>
           </div>
         </div>
       )}
-
-      <style>{`
-        @media (max-width: 1024px) {
-          .desktop-nav, .desktop-auth { display: none !important; }
-          .mobile-menu-btn { display: flex !important; }
-        }
-      `}</style>
     </header>
   );
 }

@@ -1,9 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { signStudentToken } from '@/lib/auth';
+import { checkRateLimit } from '@/lib/rateLimit';
 
-export async function POST(request: Request) {
+// Fix #3: Rate limit — 8 login attempts per IP per minute
+export async function POST(request: NextRequest) {
+  const limited = await checkRateLimit(request, 8, 60);
+  if (limited) return limited;
+
   try {
     const { email, password } = await request.json();
 
@@ -26,8 +31,8 @@ export async function POST(request: Request) {
     }
 
     if (!user.emailVerified) {
-      return NextResponse.json({ 
-        error: 'Please verify your email to login', 
+      return NextResponse.json({
+        error: 'Please verify your email to login',
         requiresVerification: true,
         email: user.email
       }, { status: 403 });
@@ -36,7 +41,7 @@ export async function POST(request: Request) {
     const token = await signStudentToken({ userId: user.id, email: user.email });
 
     const response = NextResponse.json({ success: true, user: { name: user.name, class: user.class, email: user.email } }, { status: 200 });
-    
+
     response.cookies.set({
       name: 'student_token',
       value: token,
@@ -48,7 +53,8 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error('Student login error:', error);
+    // Fix #8: Log internally, never expose raw error to client
+    console.error('[student/login] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -27,7 +27,8 @@ export async function GET() {
       papers: paperCount,
       notes: noteCount,
       videos: videoCount,
-      activeNow: Math.max(1, activeNow)
+      // Fix #15: Return real count — don't fake a minimum of 1
+      activeNow,
     });
   } catch (error) {
     console.error('[analytics] DB error:', error);

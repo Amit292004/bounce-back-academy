@@ -45,7 +45,7 @@ export default async function Home() {
     console.error("Failed to fetch initial data:", error);
   }
 
-  const bannerAnnouncements = announcements.filter((a: any) => a.type === 'BANNER');
+  const bannerAnnouncements = announcements.filter((a: Announcement) => a.type === 'BANNER');
 
   return (
     <div className={styles.container}>
@@ -67,27 +67,27 @@ export default async function Home() {
             Access premium question papers, comprehensive notes, and curated video lectures to boost your academic performance.
           </p>
           <div className={`${styles.actions} animate-fade-in`}>
-            <Link href={userClass ? `/papers?class=${userClass}` : "/papers"} className={styles.btnPapers}>
+            <Link href={userClass ? `/papers?class=${userClass}` : "/papers"} className={`${styles.heroBtn} ${styles.btnPapers}`}>
               <FileText size={20} /> Explore Papers
             </Link>
-            <Link href={userClass ? `/notes?class=${userClass}` : "/notes"} className={styles.btnNotes}>
+            <Link href={userClass ? `/notes?class=${userClass}` : "/notes"} className={`${styles.heroBtn} ${styles.btnNotes}`}>
               <BookOpen size={20} /> View Notes
             </Link>
-            <Link href={userClass ? `/videos?class=${userClass}` : "/videos"} className={styles.btnVideos}>
+            <Link href={userClass ? `/videos?class=${userClass}` : "/videos"} className={`${styles.heroBtn} ${styles.btnVideos}`}>
               <Video size={20} /> Watch Videos
             </Link>
-            <Link href="/announcements" className={styles.btnAnnouncements} style={{ position: 'relative' }}>
+            <Link href="/announcements" className={`${styles.heroBtn} ${styles.btnAnnouncements}`} style={{ position: 'relative' }}>
               <Megaphone size={20} /> Announcements
               <AnnouncementBadge />
             </Link>
-            <Link href="/feedback" className={styles.btnFeedback}>
+            <Link href="/feedback" className={`${styles.heroBtn} ${styles.btnFeedback}`}>
               <MessageSquare size={20} /> Feedback
             </Link>
-            <Link href="/contact" className={styles.btnContact}>
+            <Link href="/contact" className={`${styles.heroBtn} ${styles.btnContact}`}>
               <Mail size={20} /> Contact
             </Link>
             {userClass && (
-              <Link href="/favorites" className={styles.btnFavorites}>
+              <Link href="/favorites" className={`${styles.heroBtn} ${styles.btnFavorites}`}>
                 <Heart size={20} fill="currentColor" /> Favorites
               </Link>
             )}

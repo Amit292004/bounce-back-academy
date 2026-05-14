@@ -1,9 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { signAdminToken } from '@/lib/auth';
+import { checkRateLimit } from '@/lib/rateLimit';
 
-export async function POST(request: Request) {
+// Fix #3: Rate limit — 5 admin login attempts per IP per minute (stricter than student)
+export async function POST(request: NextRequest) {
+  const limited = await checkRateLimit(request, 5, 60);
+  if (limited) return limited;
+
   try {
     const { username, password } = await request.json();
 
@@ -28,12 +33,12 @@ export async function POST(request: Request) {
     // Instead of full token, set a temporary pre-auth cookie
     const preAuthToken = await signAdminToken({ adminId: admin.id, username: admin.username, preAuth: true });
 
-    const response = NextResponse.json({ 
-      success: true, 
+    const response = NextResponse.json({
+      success: true,
       requiresGoogle: true,
-      adminId: admin.id 
+      adminId: admin.id
     }, { status: 200 });
-    
+
     // Set temporary pre-auth cookie (short lived)
     response.cookies.set({
       name: 'admin_pre_auth',
@@ -46,7 +51,8 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error('Admin login error:', error);
+    // Fix #8: Log internally, never expose raw error to client
+    console.error('[admin/login] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import styles from './Footer.module.css';
 
+// Fix #4: Removed Admin Login link from the public footer
 export default function Footer() {
   return (
     <footer className={styles.footer}>
@@ -11,7 +12,7 @@ export default function Footer() {
             Providing high-quality free study material for NBSE Classes 8 to 12.
           </p>
         </div>
-        
+
         <div className={styles.section}>
           <h4 style={{ fontWeight: 600, marginBottom: '1rem' }}>Quick Links</h4>
           <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -26,17 +27,16 @@ export default function Footer() {
           <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <li><Link href="/contact" className="nav-link">Contact Us</Link></li>
             <li><Link href="/feedback" className="nav-link">Feedback</Link></li>
-            <li><Link href="/admin/login" className="nav-link">Admin Login</Link></li>
           </ul>
         </div>
       </div>
-      
+
       <div className={styles.bottom}>
         <div style={{ marginBottom: '0.5rem' }}>
           © {new Date().getFullYear()} Bounce Back Academy. All rights reserved.
         </div>
         <div style={{ fontWeight: 500 }}>
-          Made with <span style={{ color: '#ef4444' }}>❤️</span> by Amit Sharma
+          Made with <span style={{ color: '#ef4444' }}>♥</span> by Amit Sharma
         </div>
       </div>
     </footer>

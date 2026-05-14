@@ -1,0 +1,203 @@
+/* Fix #5: Navbar styles extracted from inline style props into a CSS module */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: var(--transition);
+  color: var(--foreground);
+}
+
+.header.scrolled {
+  background: var(--surface);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+/* Logo */
+.logoLink {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  text-decoration: none;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.logoImg {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.logoText {
+  font-weight: 800;
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Desktop Nav */
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.navLink {
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  color: var(--foreground);
+  font-size: 0.9rem;
+  transition: var(--transition);
+  opacity: 0.85;
+  text-decoration: none;
+}
+
+.navLink:hover {
+  opacity: 1;
+  background: var(--surface-highlight);
+}
+
+.navLinkActive {
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(99, 102, 241, 0.1);
+  opacity: 1;
+}
+
+/* Announcement dot */
+.announcementLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.announcementDot {
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+  flex-shrink: 0;
+}
+
+/* Desktop Auth */
+.desktopAuth {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0.8;
+  font-size: 0.85rem;
+}
+
+.avatarImg {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userName {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Mobile toggle */
+.mobileMenuBtn {
+  background: transparent;
+  border: none;
+  color: var(--foreground);
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0.5rem;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile menu */
+.mobileMenu {
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--surface-border);
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobileNavLink {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--foreground);
+  transition: var(--transition);
+}
+
+.mobileNavLink:hover {
+  background: var(--surface-highlight);
+}
+
+.mobileNavLinkActive {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+}
+
+.mobileAuthRow {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.mobileAuthButtons {
+  display: flex;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.mobileAuthBtn {
+  flex: 1;
+  text-align: center;
+}
+
+.mobileThemeWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+@media (max-width: 1024px) {
+  .desktopNav,
+  .desktopAuth {
+    display: none;
+  }
+
+  .mobileMenuBtn {
+    display: flex;
+  }
+}

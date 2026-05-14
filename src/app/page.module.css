@@ -56,7 +56,10 @@
   justify-content: center;
 }
 
-.btnPapers, .btnNotes, .btnVideos, .btnAnnouncements, .btnFavorites, .btnFeedback, .btnContact {
+/* Fix #13: One base class drives all shared button styles.
+   Each variant only overrides its unique accent color via a CSS custom property. */
+.heroBtn {
+  --btn-rgb: 99 102 241;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -66,118 +69,52 @@
   font-size: 1rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
-  border: 1px solid transparent;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background: rgba(var(--btn-rgb) / 0.12);
+  border: 1px solid rgba(var(--btn-rgb) / 0.3);
+  color: rgb(var(--btn-rgb));
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Papers - Always vibrant */
+.heroBtn:hover {
+  background: rgba(var(--btn-rgb) / 0.22);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(var(--btn-rgb) / 0.25);
+}
+
+/* Papers gets a solid filled treatment to stand out as the primary CTA */
 .btnPapers {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  background: linear-gradient(135deg, rgb(var(--btn-rgb)) 0%, #4f46e5 100%);
   color: white;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 15px rgba(var(--btn-rgb) / 0.3);
+  border-color: transparent;
 }
 
 .btnPapers:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
   filter: brightness(1.1);
+  color: white;
+  background: linear-gradient(135deg, rgb(var(--btn-rgb)) 0%, #4f46e5 100%);
 }
 
-/* Notes - Emerald */
-.btnNotes {
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: #059669; /* Darker green for light mode */
-}
-:global(html.dark) .btnNotes {
-  background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
-}
+/* Notes – Emerald */
+.btnNotes    { --btn-rgb: 16 185 129; }
+/* Videos – Amber */
+.btnVideos   { --btn-rgb: 245 158 11; }
+/* Announcements – Cyan */
+.btnAnnouncements { --btn-rgb: 6 182 212; }
+/* Favorites – Rose */
+.btnFavorites { --btn-rgb: 236 72 153; }
+/* Feedback – Violet */
+.btnFeedback { --btn-rgb: 139 92 246; }
+/* Contact – Orange */
+.btnContact  { --btn-rgb: 249 115 22; }
 
-.btnNotes:hover {
-  background: rgba(16, 185, 129, 0.2);
-  transform: translateY(-3px);
-}
-
-/* Videos - Amber */
-.btnVideos {
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  color: #d97706; /* Darker amber for light mode */
-}
-:global(html.dark) .btnVideos {
-  background: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
-}
-
-.btnVideos:hover {
-  background: rgba(245, 158, 11, 0.2);
-  transform: translateY(-3px);
-}
-
-/* Announcements - Cyan */
-.btnAnnouncements {
-  background: rgba(6, 182, 212, 0.12);
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  color: #0891b2; /* Darker cyan for light mode */
-}
-:global(html.dark) .btnAnnouncements {
-  background: rgba(6, 182, 212, 0.1);
-  color: #06b6d4;
-}
-
-.btnAnnouncements:hover {
-  background: rgba(6, 182, 212, 0.2);
-  transform: translateY(-3px);
-}
-
-/* Favorites - Rose */
-.btnFavorites {
-  background: rgba(236, 72, 153, 0.12);
-  border: 1px solid rgba(236, 72, 153, 0.3);
-  color: #db2777; /* Darker rose for light mode */
-}
-:global(html.dark) .btnFavorites {
-  background: rgba(236, 72, 153, 0.1);
-  color: #ec4899;
-}
-
-.btnFavorites:hover {
-  background: rgba(236, 72, 153, 0.2);
-  transform: translateY(-3px);
-}
-
-/* Feedback - Violet */
-.btnFeedback {
-  background: rgba(139, 92, 246, 0.12);
-  border: 1px solid rgba(139, 92, 246, 0.3);
-  color: #7c3aed;
-}
-:global(html.dark) .btnFeedback {
-  background: rgba(139, 92, 246, 0.1);
-  color: #8b5cf6;
-}
-.btnFeedback:hover {
-  background: rgba(139, 92, 246, 0.2);
-  transform: translateY(-3px);
-  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
-}
-
-/* Contact - Orange */
-.btnContact {
-  background: rgba(249, 115, 22, 0.12);
-  border: 1px solid rgba(249, 115, 22, 0.3);
-  color: #ea580c;
-}
-:global(html.dark) .btnContact {
-  background: rgba(249, 115, 22, 0.1);
-  color: #f97316;
-}
-.btnContact:hover {
-  background: rgba(249, 115, 22, 0.2);
-  transform: translateY(-3px);
-  box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2);
-}
+/* Dark mode: slightly brighter text so it reads on dark backgrounds */
+:global(html.dark) .btnNotes    { color: #10b981; }
+:global(html.dark) .btnVideos   { color: #f59e0b; }
+:global(html.dark) .btnAnnouncements { color: #06b6d4; }
+:global(html.dark) .btnFavorites { color: #ec4899; }
+:global(html.dark) .btnFeedback { color: #8b5cf6; }
+:global(html.dark) .btnContact  { color: #f97316; }
 
 .section {
   padding: 4rem 2rem;
@@ -232,7 +169,7 @@
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
+  0%   { transform: scale(1); }
   100% { transform: scale(1.1); }
 }
 
@@ -240,7 +177,8 @@
   .hero {
     padding: 4rem 1rem;
   }
-  .btnPapers, .btnNotes, .btnVideos, .btnAnnouncements, .btnFavorites, .btnFeedback, .btnContact {
+
+  .heroBtn {
     width: 100%;
     justify-content: center;
   }
@@ -255,5 +193,5 @@
   font-size: 0.9rem;
   position: relative;
   z-index: 50;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }

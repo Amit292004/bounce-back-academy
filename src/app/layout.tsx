@@ -48,10 +48,23 @@ export async function generateMetadata(): Promise<Metadata> {
     verification: {
       google: "RD88kClebuq3g0JxmGSaFloIen2rk_aCSH7ge3nSJwg",
     },
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "default",
+      title: "Bounce Back Academy",
+    },
   };
 }
 
+export const viewport = {
+  themeColor: "#6366f1",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 import { ThemeProvider } from "@/components/ThemeProvider";
+import PWARegistration from "@/components/PWARegistration";
 
 export default function RootLayout({
   children,
@@ -108,11 +121,13 @@ export default function RootLayout({
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `
+            // Fix #14: Use system preference as fallback instead of always defaulting to dark
+          __html: `
               (function() {
                 try {
                   var localTheme = localStorage.getItem('bba-theme');
-                  if (localTheme === 'dark' || (!localTheme && true)) {
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (localTheme === 'dark' || (!localTheme && prefersDark)) {
                     document.documentElement.classList.add('dark');
                   } else {
                     document.documentElement.classList.remove('dark');
@@ -123,8 +138,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body suppressHydrationWarning>
+      {/* Fix #22: suppressHydrationWarning belongs only on <html> for theme injection, not <body> */}
+      <body>
         <ThemeProvider>
+          <PWARegistration />
           <MainLayoutWrapper>{children}</MainLayoutWrapper>
         </ThemeProvider>
       </body>
