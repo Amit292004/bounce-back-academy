@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+// Groq client is instantiated inside the handler to prevent build-time crashes if API key is missing
+
 
 const DIFFICULTY_PROMPTS: Record<string, string> = {
   basic: 'Use very simple language (Class 8-9 level). Avoid complex terminology. Give very short, easy-to-understand answers with relatable real-life examples.',
@@ -30,6 +31,13 @@ Formatting rules (STRICTLY follow these):
 
 export async function POST(request: Request) {
   try {
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      console.error('[/api/ask] GROQ_API_KEY is missing');
+      return NextResponse.json({ error: 'AI service configuration error: API key missing' }, { status: 500 });
+    }
+    const groq = new Groq({ apiKey });
+
     const body = await request.json();
     const { question, subject, examType, difficulty = 'standard', chatHistory } = body;
     console.log(`[/api/ask] New question: "${question?.slice(0, 50)}..."`);

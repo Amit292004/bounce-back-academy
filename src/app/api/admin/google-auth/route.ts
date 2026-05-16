@@ -4,10 +4,18 @@ import { OAuth2Client } from 'google-auth-library';
 import prisma from '@/lib/prisma';
 import { verifyToken, signAdminToken } from '@/lib/auth';
 
-const client = new OAuth2Client(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
+// OAuth2Client is instantiated inside the handler to prevent build-time crashes if Client ID is missing
+
 
 export async function POST(request: Request) {
   try {
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      console.error('[/api/admin/google-auth] NEXT_PUBLIC_GOOGLE_CLIENT_ID is missing');
+      return NextResponse.json({ error: 'Google configuration error' }, { status: 500 });
+    }
+    const client = new OAuth2Client(clientId);
+
     const { token } = await request.json();
     const cookieStore = await cookies();
     const preAuthToken = cookieStore.get('admin_pre_auth')?.value;
