@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextProxy } from 'next/server'
 import { verifyToken } from '@/lib/auth'
 
+// Vercel Deployment Trigger: Finalizing environment variable and proxy migration
 export const proxy: NextProxy = async (request) => {
   const { pathname } = request.nextUrl
 
