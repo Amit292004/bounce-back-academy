@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import type { NextProxy } from 'next/server'
 import { verifyToken } from '@/lib/auth'
 
-export async function proxy(request: NextRequest) {
+export const proxy: NextProxy = async (request) => {
   const { pathname } = request.nextUrl
 
   // Admin routes protection
@@ -25,6 +25,8 @@ export async function proxy(request: NextRequest) {
 
   return NextResponse.next()
 }
+
+export default proxy
 
 export const config = {
   matcher: ['/admin/:path*'],

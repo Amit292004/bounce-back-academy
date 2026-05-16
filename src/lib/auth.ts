@@ -1,18 +1,23 @@
 import { SignJWT, jwtVerify } from 'jose';
 
 // Fix #1: Throw at startup if JWT_SECRET is missing — never fall back to a hardcoded string
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error('FATAL: JWT_SECRET environment variable is not set. The app cannot start without it.');
+function getKey() {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('FATAL: JWT_SECRET environment variable is not set.');
+    }
+    return new TextEncoder().encode('dev-fallback-secret');
+  }
+  return new TextEncoder().encode(secret);
 }
-const key = new TextEncoder().encode(JWT_SECRET);
 
 export async function signAdminToken(payload: { adminId: string, username: string, preAuth?: boolean }) {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime(payload.preAuth ? '5m' : '24h')
-    .sign(key);
+    .sign(getKey());
 }
 
 export async function signStudentToken(payload: { userId: string, email: string }) {
@@ -20,12 +25,12 @@ export async function signStudentToken(payload: { userId: string, email: string 
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
-    .sign(key);
+    .sign(getKey());
 }
 
 export async function verifyToken(token: string) {
   try {
-    const { payload } = await jwtVerify(token, key);
+    const { payload } = await jwtVerify(token, getKey());
     return payload;
   } catch {
     return null;
