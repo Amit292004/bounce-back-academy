@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { FaBars, FaTimes, FaUserCircle } from 'react-icons/fa';
+import { FaBars, FaTimes, FaUserCircle, FaRobot } from 'react-icons/fa';
 import ThemeToggle from '@/components/ThemeToggle';
 import styles from './Navbar.module.css';
 
@@ -82,6 +82,16 @@ export default function Navbar() {
     { label: 'Papers', href: '/papers' },
     { label: 'Notes', href: '/notes' },
     { label: 'Videos', href: '/videos' },
+    {
+      label: (
+        <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <FaRobot style={{ color: 'var(--primary)', fontSize: '0.9em' }} />
+          <span>Ask AI</span>
+          <span style={{ fontSize: '0.6rem', background: 'linear-gradient(135deg,var(--primary),var(--accent))', color: 'white', padding: '1px 5px', borderRadius: '999px', fontWeight: 700, letterSpacing: '0.04em' }}>FREE</span>
+        </span>
+      ),
+      href: '/ask'
+    },
     {
       label: (
         // Fix #17: aria-label is on the Link itself; dot is decorative

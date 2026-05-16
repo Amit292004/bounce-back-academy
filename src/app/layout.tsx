@@ -27,7 +27,11 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s | Bounce Back Academy",
     },
     description: defaultDesc,
+    applicationName: 'Bounce Back Academy',
     metadataBase: new URL("https://bouncebackacademy.vercel.app"),
+    alternates: {
+      canonical: "https://bouncebackacademy.vercel.app",
+    },
     openGraph: {
       title: "Bounce Back Academy",
       description: description,
@@ -65,6 +69,7 @@ export const viewport = {
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 import PWARegistration from "@/components/PWARegistration";
+
 
 export default function RootLayout({
   children,

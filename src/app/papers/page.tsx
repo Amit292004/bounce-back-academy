@@ -43,9 +43,9 @@ function PapersContent() {
   const [loading, setLoading] = useState(true);
 
   const [selectedClass, setSelectedClass] = useState(searchParams.get('class') || '');
-  const [selectedSubject, setSelectedSubject] = useState('');
-  const [selectedYear, setSelectedYear] = useState('');
-  const [selectedChapter, setSelectedChapter] = useState('');
+  const [selectedSubject, setSelectedSubject] = useState(searchParams.get('subject') || '');
+  const [selectedYear, setSelectedYear] = useState(searchParams.get('year') || '');
+  const [selectedChapter, setSelectedChapter] = useState(searchParams.get('chapter') || '');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authReady, setAuthReady] = useState(false);
 
@@ -281,7 +281,7 @@ function PapersContent() {
             </label>
             <CustomSelect
               value={selectedSubject}
-              onChange={(val) => { setSelectedSubject(val); setSelectedChapter(''); }}
+              onChange={(val) => { setSelectedSubject(val); setSelectedChapter(''); updateURL({ subject: val, chapter: '' }); }}
               placeholder="All Subjects"
               options={[
                 { value: '', label: 'All Subjects' },
@@ -299,7 +299,7 @@ function PapersContent() {
               </label>
               <CustomSelect
                 value={selectedChapter}
-                onChange={(val) => setSelectedChapter(val)}
+                onChange={(val) => { setSelectedChapter(val); updateURL({ chapter: val }); }}
                 placeholder="All Chapters"
                 disabled={!selectedSubject && !selectedClass}
                 options={[
@@ -316,7 +316,7 @@ function PapersContent() {
               </label>
               <CustomSelect
                 value={selectedYear}
-                onChange={(val) => setSelectedYear(val)}
+                onChange={(val) => { setSelectedYear(val); updateURL({ year: val }); }}
                 placeholder="All Years"
                 options={[
                   { value: '', label: 'All Years' },

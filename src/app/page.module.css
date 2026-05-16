@@ -105,7 +105,8 @@
 .btnFavorites { --btn-rgb: 236 72 153; }
 /* Feedback – Violet */
 .btnFeedback { --btn-rgb: 139 92 246; }
-/* Contact – Orange */
+/* Doubt Solver – Indigo/Purple */
+.btnAsk      { --btn-rgb: 99 102 241; }
 .btnContact  { --btn-rgb: 249 115 22; }
 
 /* Dark mode: slightly brighter text so it reads on dark backgrounds */

@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Fetch subjects and courses to create dynamic category URLs
   let subjects: { id: string; name: string }[] = [];
   let courses: { id: string; name: string }[] = [];
-  
+
   try {
     subjects = await prisma.subject.findMany({ select: { id: true, name: true } });
     courses = await prisma.course.findMany({ select: { id: true, name: true } });

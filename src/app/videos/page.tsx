@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { FaYoutube, FaFilter } from 'react-icons/fa';
 import InteractionButtons from '@/components/InteractionButtons';
 import CustomSelect from '@/components/CustomSelect';
@@ -23,20 +24,31 @@ interface Video {
 
 interface Subject { id: string; name: string; }
 interface Course { id: string; name: string; }
-
 interface Chapter { id: string; name: string; number: number; className: string; subjectId: string; }
 
-export default function VideosPage() {
+function VideosContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  
   const [videos, setVideos] = useState<Video[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedSubject, setSelectedSubject] = useState('');
-  const [selectedChapter, setSelectedChapter] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('class') || '');
+  const [selectedSubject, setSelectedSubject] = useState(searchParams.get('subject') || '');
+  const [selectedChapter, setSelectedChapter] = useState(searchParams.get('chapter') || '');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authReady, setAuthReady] = useState(false);
+
+  const updateURL = (params: Record<string, string>) => {
+    const newParams = new URLSearchParams(searchParams.toString());
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) newParams.set(key, value);
+      else newParams.delete(key);
+    });
+    router.push(`${window.location.pathname}?${newParams.toString()}`);
+  };
 
   const fetchMeta = async () => {
     try {
@@ -81,7 +93,7 @@ export default function VideosPage() {
         if (cachedMe) {
           const data = JSON.parse(cachedMe);
           setIsAuthenticated(data.authenticated);
-          if (data.authenticated && data.class) {
+          if (data.authenticated && data.class && !searchParams.get('class') && !selectedCategory) {
             setSelectedCategory(data.class);
           }
           setAuthReady(true);
@@ -93,7 +105,7 @@ export default function VideosPage() {
           sessionStorage.setItem('bb_student_me', JSON.stringify(data));
           if (!cachedMe) {
             setIsAuthenticated(data.authenticated);
-            if (data.authenticated && data.class) {
+            if (data.authenticated && data.class && !searchParams.get('class') && !selectedCategory) {
               setSelectedCategory(data.class);
             }
             setAuthReady(true);
@@ -163,7 +175,7 @@ export default function VideosPage() {
       {/* Category Filters */}
       <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
         <button
-          onClick={() => { setSelectedCategory(''); setSelectedSubject(''); setSelectedChapter(''); }}
+          onClick={() => { setSelectedCategory(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
           style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: !selectedCategory ? 'var(--primary)' : 'transparent', color: !selectedCategory ? 'white' : 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)' }}
         >
           All
@@ -171,7 +183,13 @@ export default function VideosPage() {
         {courses.map(course => (
           <button
             key={course.id}
-            onClick={() => { setSelectedCategory(course.name === selectedCategory ? '' : course.name); setSelectedSubject(''); setSelectedChapter(''); }}
+            onClick={() => { 
+              const newCat = course.name === selectedCategory ? '' : course.name;
+              setSelectedCategory(newCat); 
+              setSelectedSubject(''); 
+              setSelectedChapter(''); 
+              updateURL({ class: newCat, subject: '', chapter: '' });
+            }}
             style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedCategory === course.name ? 'var(--primary)' : 'transparent', color: selectedCategory === course.name ? 'white' : 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)' }}
           >
             {course.name}
@@ -198,7 +216,7 @@ export default function VideosPage() {
             <span style={{ fontSize: '0.95rem', fontWeight: 700, letterSpacing: '0.02em' }}>Refine Your Search</span>
           </div>
           <button
-            onClick={() => { setSelectedCategory(''); setSelectedSubject(''); setSelectedChapter(''); }}
+            onClick={() => { setSelectedCategory(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
             style={{
               background: 'transparent',
               border: 'none',
@@ -224,7 +242,7 @@ export default function VideosPage() {
             </label>
             <CustomSelect
               value={selectedSubject}
-              onChange={(val) => { setSelectedSubject(val); setSelectedChapter(''); }}
+              onChange={(val) => { setSelectedSubject(val); setSelectedChapter(''); updateURL({ subject: val, chapter: '' }); }}
               placeholder="All Subjects"
               options={[
                 { value: '', label: 'All Subjects' },
@@ -241,7 +259,7 @@ export default function VideosPage() {
             </label>
             <CustomSelect
               value={selectedChapter}
-              onChange={(val) => setSelectedChapter(val)}
+              onChange={(val) => { setSelectedChapter(val); updateURL({ chapter: val }); }}
               placeholder="All Chapters"
               disabled={!selectedSubject && !selectedCategory}
               options={[
@@ -254,7 +272,7 @@ export default function VideosPage() {
 
         {(selectedCategory || selectedSubject || selectedChapter) && (
           <button
-            onClick={() => { setSelectedCategory(''); setSelectedSubject(''); setSelectedChapter(''); }}
+            onClick={() => { setSelectedCategory(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
             style={{
               padding: '0.85rem 1.5rem',
               background: 'rgba(239,68,68,0.08)',
@@ -360,5 +378,13 @@ export default function VideosPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function VideosPage() {
+  return (
+    <Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', opacity: 0.6 }}>Loading page...</div>}>
+      <VideosContent />
+    </Suspense>
   );
 }

@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 
 import LiveAnalytics from "@/components/home/LiveAnalytics";
 
-import { FileText, BookOpen, Video, Heart, Megaphone, MessageSquare, Mail } from "lucide-react";
+import { FileText, BookOpen, Video, Heart, Megaphone, MessageSquare, Mail, Sparkles } from "lucide-react";
 
 import AnnouncementBadge from "@/components/home/AnnouncementBadge";
 
@@ -76,6 +76,9 @@ export default async function Home() {
             <Link href={userClass ? `/videos?class=${userClass}` : "/videos"} className={`${styles.heroBtn} ${styles.btnVideos}`}>
               <Video size={20} /> Watch Videos
             </Link>
+            <Link href="/ask" className={`${styles.heroBtn} ${styles.btnAsk}`}>
+              <Sparkles size={20} /> Doubt Solver
+            </Link>
             <Link href="/announcements" className={`${styles.heroBtn} ${styles.btnAnnouncements}`} style={{ position: 'relative' }}>
               <Megaphone size={20} /> Announcements
               <AnnouncementBadge />
@@ -104,56 +107,56 @@ export default async function Home() {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Select Your Class</h2>
         <div className={styles.grid}>
-          <Link href="/papers?class=8">
+          <Link href="/class/8">
             <div className={`glass-panel ${styles.card}`}>
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🏫</div>
               <h3 className={`${styles.cardTitle} text-gradient`}>Class 8</h3>
               <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
             </div>
           </Link>
-          <Link href="/papers?class=9">
+          <Link href="/class/9">
             <div className={`glass-panel ${styles.card}`}>
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎒</div>
               <h3 className={`${styles.cardTitle} text-gradient`}>Class 9</h3>
               <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
             </div>
           </Link>
-          <Link href="/papers?class=10">
+          <Link href="/class/10">
             <div className={`glass-panel ${styles.card}`}>
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📖</div>
               <h3 className={`${styles.cardTitle} text-gradient`}>Class 10</h3>
               <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
             </div>
           </Link>
-          <Link href="/papers?class=11">
+          <Link href="/class/11">
             <div className={`glass-panel ${styles.card}`}>
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎓</div>
               <h3 className={`${styles.cardTitle} text-gradient`}>Class 11</h3>
               <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
             </div>
           </Link>
-          <Link href="/papers?class=12">
+          <Link href="/class/12">
             <div className={`glass-panel ${styles.card}`}>
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📜</div>
               <h3 className={`${styles.cardTitle} text-gradient`}>Class 12</h3>
               <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
             </div>
           </Link>
-          <Link href="/papers?class=CUET">
+          <Link href="/class/CUET">
             <div className={`glass-panel ${styles.card}`}>
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎯</div>
               <h3 className={`${styles.cardTitle} text-gradient`}>CUET</h3>
               <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
             </div>
           </Link>
-          <Link href="/papers?class=JEE">
+          <Link href="/class/JEE">
             <div className={`glass-panel ${styles.card}`}>
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🚀</div>
               <h3 className={`${styles.cardTitle} text-gradient`}>JEE</h3>
               <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
             </div>
           </Link>
-          <Link href="/papers?class=NEET">
+          <Link href="/class/NEET">
             <div className={`glass-panel ${styles.card}`}>
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🩺</div>
               <h3 className={`${styles.cardTitle} text-gradient`}>NEET</h3>
@@ -196,6 +199,14 @@ export default async function Home() {
             </h3>
             <p style={{ opacity: 0.8, marginBottom: '1rem' }}>Watch new video lectures uploaded by our instructors.</p>
             <Link href="/videos" className="text-gradient">View all →</Link>
+          </div>
+          <div className={`glass-panel ${styles.card}`}>
+            <h3 className={styles.cardTitle}>
+              <Sparkles size={24} color="#a855f7" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.4rem' }} />
+              AI Doubt Solver
+            </h3>
+            <p style={{ opacity: 0.8, marginBottom: '1rem' }}>Get instant, step-by-step solutions for your NBSE, JEE, and NEET doubts.</p>
+            <Link href="/ask" className="text-gradient">Try AI Tutor →</Link>
           </div>
         </div>
       </section>
