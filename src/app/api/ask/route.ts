@@ -36,6 +36,7 @@ export async function POST(request: Request) {
       console.error('[/api/ask] GROQ_API_KEY is missing');
       return NextResponse.json({ error: 'AI service configuration error: API key missing' }, { status: 500 });
     }
+    console.log(`[/api/ask] GROQ_API_KEY detected (len: ${apiKey.length})`);
     const groq = new Groq({ apiKey });
 
     const body = await request.json();
@@ -100,8 +101,11 @@ export async function POST(request: Request) {
       },
     });
   } catch (err: unknown) {
-    console.error('[/api/ask] Error:', err);
+    console.error('[/api/ask] FULL ERROR:', err);
     const message = err instanceof Error ? err.message : 'Unknown error';
-    return NextResponse.json({ error: `AI service error: ${message}` }, { status: 500 });
+    return NextResponse.json({ 
+      error: `AI service error: ${message}`,
+      details: process.env.NODE_ENV === 'development' ? String(err) : undefined 
+    }, { status: 500 });
   }
 }
