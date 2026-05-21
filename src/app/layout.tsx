@@ -9,17 +9,9 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-import { headers } from "next/headers";
-
 export async function generateMetadata(): Promise<Metadata> {
   const defaultTitle = "Bounce Back Academy – Free NBSE Study Material for Classes 8–12";
   const defaultDesc = "Free NBSE study material for Classes 8 to 12, CUET, JEE & NEET. Download question papers, notes, and watch video lectures.";
-
-  let imageUrl = "/logo.png";
-  let description = defaultDesc;
-
-  // WhatsApp branding is handled via /ad route metadata
-  // Keeping layout metadata static avoids Prisma SSR issues with Turbopack
 
   return {
     title: {
@@ -34,16 +26,16 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       title: "Bounce Back Academy",
-      description: description,
+      description: defaultDesc,
       url: "https://bouncebackacademy.vercel.app",
       siteName: "Bounce Back Academy",
-      images: [{ url: imageUrl }],
+      images: [{ url: "/logo.png" }],
       locale: "en_IN",
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      images: [imageUrl],
+      images: ["/logo.png"],
     },
     robots: {
       index: true,

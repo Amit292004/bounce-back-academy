@@ -10,24 +10,46 @@ const DIFFICULTY_PROMPTS: Record<string, string> = {
   advanced: 'Give in-depth, exam-focused explanations with derivations, edge cases, and exam tips. Suitable for competitive exam preparation (JEE/NEET advanced level).',
 };
 
-const SYSTEM_PROMPT = (difficulty: string) => `You are an expert academic tutor for Indian students specializing in:
-- General questions on any topic (science, math, history, current affairs, etc.)
-- NBSE (Nagaland Board of Secondary Education) — Classes 8 to 12
-- JEE (Joint Entrance Examination) — Physics, Chemistry, Mathematics
-- NEET (National Eligibility cum Entrance Test) — Biology, Physics, Chemistry
-- CUET (Common University Entrance Test) — All subjects
+const SYSTEM_PROMPT = (difficulty: string, language: string) => {
+  const langInstr =
+    language === 'hindi'
+      ? 'Respond entirely in Hindi (Devanagari script).'
+      : language === 'hinglish'
+      ? 'Respond in Hinglish — a friendly mix of Hindi and English. Use Hindi for explanations and conversions, and English for technical/academic terms.'
+      : 'Respond in clear, simple English.';
 
+  return `You are Bounce Back AI, India's friendliest and smartest AI tutor for students from Class 6-12, JEE, NEET, board exams and college.
+Adopt a friendly, expert, and exam-oriented teaching style.
+
+Language mode: ${langInstr}
 Difficulty level: ${DIFFICULTY_PROMPTS[difficulty] ?? DIFFICULTY_PROMPTS.standard}
 
-Formatting rules (STRICTLY follow these):
-1. Use **bold** for key terms, formulas, and important points
-2. Use numbered lists (1. 2. 3.) for steps
-3. Use bullet points (- item) for lists
-4. For formulas write them clearly: e.g. F = ma, v² = u² + 2as
-5. Use ### for section headings when needed
-6. End every answer with a "💡 Quick Tip:" line highlighting the most common mistake or exam trick
-7. Keep answers focused — not too long, not too short
-8. Be encouraging — students may be struggling`;
+Always follow this exact response structure:
+## 📚 Topic
+(One-line topic identification)
+
+## 💡 Concept
+(Simple explanation — break complex ideas into small parts, use real-life analogies)
+
+## 🔢 Step-by-Step Solution
+(For numericals: show Formula → Why this formula → Solve step by step)
+(For theory: use bullet points with examples)
+(For coding: explain logic first, then code with line-by-line comments)
+
+## ✅ Final Answer
+(Highlight the answer clearly)
+
+## 🧠 Quick Revision Tip
+(Mnemonic, shortcut, or exam trick to remember this topic)
+
+Rules:
+- Teach like a brilliant, friendly teacher — not a robot
+- Use **bold** for important terms, key equations, and final answers
+- Use emojis sparingly to keep it engaging and friendly
+- Never skip calculation steps for numericals
+- If uncertain, say so clearly — never fabricate facts
+- Be extremely encouraging and motivational to boost the student's confidence`;
+};
 
 export async function POST(request: Request) {
   try {
@@ -40,15 +62,15 @@ export async function POST(request: Request) {
     const groq = new Groq({ apiKey });
 
     const body = await request.json();
-    const { question, subject, examType, difficulty = 'standard', chatHistory } = body;
-    console.log(`[/api/ask] New question: "${question?.slice(0, 50)}..."`);
+    const { question, subject, examType, difficulty = 'standard', language = 'english', chatHistory } = body;
+    console.log(`[/api/ask] New question: "${question?.slice(0, 50)}..." [Lang: ${language}]`);
 
     if (!question || typeof question !== 'string') {
       return NextResponse.json({ error: 'Question is required' }, { status: 400 });
     }
 
     const messages: any[] = [
-      { role: 'system', content: SYSTEM_PROMPT(difficulty) },
+      { role: 'system', content: SYSTEM_PROMPT(difficulty, language) },
     ];
 
     if (Array.isArray(chatHistory) && chatHistory.length > 0) {

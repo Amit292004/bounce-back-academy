@@ -8,9 +8,9 @@ export async function GET() {
       return NextResponse.json(branding || {});
     }
     return NextResponse.json({});
-  } catch (error) {
-    console.error('Branding GET error:', error);
-    return NextResponse.json({ error: 'Failed to fetch branding' }, { status: 500 });
+  } catch {
+    // Branding is optional — return empty object so callers can gracefully degrade
+    return NextResponse.json({});
   }
 }
 

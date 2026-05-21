@@ -49,6 +49,8 @@ model Subject {
 model Course {
   id        String   @id @default(cuid())
   name      String   @unique
+  imageUrl  String?
+  caption   String?
   createdAt DateTime @default(now())
 }
 

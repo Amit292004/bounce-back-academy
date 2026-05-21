@@ -23,6 +23,11 @@ const DIFFICULTY_LEVELS = [
   { id: 'standard', label: 'Standard', color: '#6366f1' },
   { id: 'advanced', label: 'Advanced', color: '#ec4899' },
 ];
+const LANGUAGES = [
+  { id: 'english',  label: '🇬🇧 English' },
+  { id: 'hinglish', label: '🇮🇳 Hinglish' },
+  { id: 'hindi',    label: '🔤 Hindi' },
+];
 
 interface Subject { id: string; name: string; }
 const SUGGESTIONS = [
@@ -86,6 +91,7 @@ export default function AskPage() {
   const [subjectsLoading,  setSubjectsLoading]  = useState(true);
   const [isAuthenticated,  setIsAuthenticated]  = useState<boolean | null>(null);
   const [isListening,      setIsListening]      = useState(false);
+  const [language,         setLanguage]         = useState('english');
   const router = useRouter();
 
   const chatEndRef  = useRef<HTMLDivElement>(null);
@@ -192,6 +198,7 @@ export default function AskPage() {
           examType:   examType  || undefined,
           subject:    subject   || undefined,
           difficulty,
+          language,
           chatHistory: messages.map(m => ({ role: m.role, content: m.content })),
         }),
       });
@@ -229,7 +236,7 @@ export default function AskPage() {
       abortRef.current = null;
       textareaRef.current?.focus();
     }
-  }, [input, isStreaming, messages, examType, subject, difficulty, streamingContent]);
+  }, [input, isStreaming, messages, examType, subject, difficulty, streamingContent, language]);
 
   const regenerate = useCallback(() => {
     const lastUser = [...messages].reverse().find(m => m.role === 'user');
@@ -352,6 +359,17 @@ export default function AskPage() {
                 className={`${styles.diffPill} ${difficulty === d.id ? styles.diffPillActive : ''}`}
                 style={{ '--dc': d.color } as React.CSSProperties}
               >{d.label}</button>
+            ))}
+          </div>
+
+          {/* Language pills */}
+          <div className={styles.controlGroup}>
+            {LANGUAGES.map(l => (
+              <button
+                key={l.id} id={`lang-${l.id}`}
+                onClick={() => setLanguage(l.id)}
+                className={`${styles.pill} ${language === l.id ? styles.pillActive : ''}`}
+              >{l.label}</button>
             ))}
           </div>
         </div>

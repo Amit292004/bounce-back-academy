@@ -14,7 +14,8 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    return NextResponse.json({ error: 'Heartbeat failed' }, { status: 500 });
+  } catch {
+    // Session tracking is best-effort; DB errors should not surface as 500s
+    return NextResponse.json({ success: true });
   }
 }

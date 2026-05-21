@@ -29,7 +29,12 @@ export default function Navbar() {
       try {
         const res = await fetch('/api/announcements/latest');
         const data = await res.json();
-        if (data && data.hasNew) setHasNewAnnouncement(true);
+        if (data && data.latestCreatedAt) {
+          const lastSeen = localStorage.getItem('lastSeenAnnouncement');
+          if (!lastSeen || new Date(data.latestCreatedAt) > new Date(lastSeen)) {
+            setHasNewAnnouncement(true);
+          }
+        }
       } catch { }
     };
     const checkAuth = async () => {

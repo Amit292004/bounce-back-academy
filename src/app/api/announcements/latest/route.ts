@@ -9,7 +9,8 @@ export async function GET() {
       select: { createdAt: true }
     });
     return NextResponse.json({ latestCreatedAt: latest?.createdAt || null });
-  } catch (error) {
-    return NextResponse.json({ latestCreatedAt: null }, { status: 500 });
+  } catch {
+    // DB unreachable — treat as no announcements, not a server error
+    return NextResponse.json({ latestCreatedAt: null });
   }
 }

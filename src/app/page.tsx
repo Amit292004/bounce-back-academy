@@ -1,8 +1,19 @@
 import Link from "next/link";
 import styles from "./page.module.css";
-import announcementStyles from "@/components/home/AnnouncementsSection.module.css";
 import { prisma } from "@/lib/prisma";
-import { Announcement } from "@prisma/client";
+import { Announcement, Course } from "@prisma/client";
+
+function getCourseIcon(name: string) {
+  if (name.includes('8')) return '🏫';
+  if (name.includes('9')) return '🎒';
+  if (name.includes('10')) return '📖';
+  if (name.includes('11')) return '🎓';
+  if (name.includes('12')) return '📜';
+  if (name.toUpperCase().includes('CUET')) return '🎯';
+  if (name.toUpperCase().includes('JEE')) return '🚀';
+  if (name.toUpperCase().includes('NEET')) return '🩺';
+  return '📚';
+}
 
 import { cookies } from "next/headers";
 import { verifyToken } from "@/lib/auth";
@@ -19,6 +30,7 @@ import AnnouncementBadge from "@/components/home/AnnouncementBadge";
 export default async function Home() {
   let announcements: Announcement[] = [];
   let userClass: string | null = null;
+  let courses: Course[] = [];
 
   try {
     // Fetch announcements
@@ -26,6 +38,11 @@ export default async function Home() {
       where: { isActive: true },
       orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
       take: 20,
+    });
+
+    // Fetch courses from db
+    courses = await prisma.course.findMany({
+      orderBy: { createdAt: 'asc' }
     });
 
     // Fetch user class for smart redirects
@@ -98,73 +115,37 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Live Analytics */}
-      <div style={{ padding: '0 2rem' }}>
-        <LiveAnalytics />
-      </div>
 
       {/* Class-wise Section */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Select Your Class</h2>
         <div className={styles.grid}>
-          <Link href="/class/8">
-            <div className={`glass-panel ${styles.card}`}>
-              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🏫</div>
-              <h3 className={`${styles.cardTitle} text-gradient`}>Class 8</h3>
-              <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
-            </div>
-          </Link>
-          <Link href="/class/9">
-            <div className={`glass-panel ${styles.card}`}>
-              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎒</div>
-              <h3 className={`${styles.cardTitle} text-gradient`}>Class 9</h3>
-              <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
-            </div>
-          </Link>
-          <Link href="/class/10">
-            <div className={`glass-panel ${styles.card}`}>
-              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📖</div>
-              <h3 className={`${styles.cardTitle} text-gradient`}>Class 10</h3>
-              <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
-            </div>
-          </Link>
-          <Link href="/class/11">
-            <div className={`glass-panel ${styles.card}`}>
-              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎓</div>
-              <h3 className={`${styles.cardTitle} text-gradient`}>Class 11</h3>
-              <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
-            </div>
-          </Link>
-          <Link href="/class/12">
-            <div className={`glass-panel ${styles.card}`}>
-              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📜</div>
-              <h3 className={`${styles.cardTitle} text-gradient`}>Class 12</h3>
-              <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
-            </div>
-          </Link>
-          <Link href="/class/CUET">
-            <div className={`glass-panel ${styles.card}`}>
-              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎯</div>
-              <h3 className={`${styles.cardTitle} text-gradient`}>CUET</h3>
-              <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
-            </div>
-          </Link>
-          <Link href="/class/JEE">
-            <div className={`glass-panel ${styles.card}`}>
-              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🚀</div>
-              <h3 className={`${styles.cardTitle} text-gradient`}>JEE</h3>
-              <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
-            </div>
-          </Link>
-          <Link href="/class/NEET">
-            <div className={`glass-panel ${styles.card}`}>
-              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🩺</div>
-              <h3 className={`${styles.cardTitle} text-gradient`}>NEET</h3>
-              <p style={{ opacity: 0.8 }}>Study materials & past papers</p>
-            </div>
-          </Link>
+          {courses.map((course) => (
+            <Link href={`/class/${encodeURIComponent(course.name)}`} key={course.id}>
+              <div className={`glass-panel ${styles.card}`} style={{ textAlign: 'center' }}>
+                <div style={{ marginBottom: '0.5rem', minHeight: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {course.imageUrl ? (
+                    <img src={course.imageUrl} alt={course.name} style={{ maxHeight: '50px', maxWidth: '100%', objectFit: 'contain' }} />
+                  ) : (
+                    <span style={{ fontSize: '2rem' }}>{getCourseIcon(course.name)}</span>
+                  )}
+                </div>
+                <h3 className={`${styles.cardTitle} text-gradient`}>
+                  {course.name.toLowerCase().includes('class') ? course.name : `Class ${course.name}`}
+                </h3>
+                <p style={{ opacity: 0.8 }}>
+                  {course.caption || "Study materials & past papers"}
+                </p>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
+
+      {/* Live Analytics */}
+      <div style={{ padding: '0 2rem' }}>
+        <LiveAnalytics />
+      </div>
 
       {/* Latest Content */}
       <section className={styles.section}>
