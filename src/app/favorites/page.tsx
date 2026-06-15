@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { FaHeart, FaBookmark, FaYoutube, FaBook, FaFileAlt, FaEye, FaDownload } from 'react-icons/fa';
 import Link from 'next/link';
 import InteractionButtons from '@/components/InteractionButtons';
+import { logger } from '@/lib/logger'
 
 export default function FavoritesPage() {
   const [data, setData] = useState<{ videos: any[], notes: any[], papers: any[] }>({ videos: [], notes: [], papers: [] });
@@ -30,7 +31,7 @@ export default function FavoritesPage() {
           window.location.href = '/login';
         }
       } catch (error) {
-        console.error('Failed to fetch favorites:', error);
+        logger.error('Failed to fetch favorites:', error);
       } finally {
         setLoading(false);
       }

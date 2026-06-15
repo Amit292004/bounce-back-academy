@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FaTrash, FaUpload, FaEye } from 'react-icons/fa';
+import { logger } from '@/lib/logger'
 
 export default function PapersPage() {
   const [papers, setPapers] = useState<any[]>([]);
@@ -96,7 +97,7 @@ export default function PapersPage() {
       setViewUrl('');
       setChapterId('');
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert(err.message || 'Upload failed');
     } finally {
       setUploading(false);
@@ -109,7 +110,7 @@ export default function PapersPage() {
       await fetch(`/api/admin/papers/${id}`, { method: 'DELETE' });
       setPapers(papers.filter(p => p.id !== id));
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   };
 

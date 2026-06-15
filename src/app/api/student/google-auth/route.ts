@@ -3,6 +3,7 @@ import { OAuth2Client } from 'google-auth-library';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { signStudentToken } from '@/lib/auth';
+import { logger } from '@/lib/logger'
 
 export async function POST(request: Request) {
   try {
@@ -14,7 +15,7 @@ export async function POST(request: Request) {
 
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.replace(/['"]/g, '');
     if (!clientId) {
-      console.error('NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured');
+      logger.error('NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured');
       return NextResponse.json({ error: 'Google configuration missing' }, { status: 500 });
     }
 
@@ -85,7 +86,7 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error('Google auth error:', error);
+    logger.error('Google auth error:', error);
     return NextResponse.json({ error: 'Authentication failed. Please try again.' }, { status: 500 });
   }
 }

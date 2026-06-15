@@ -1,0 +1,630 @@
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 2rem);
+  color: var(--foreground);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.badge {
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: var(--primary);
+  padding: 0.4rem 1rem;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.title {
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+  color: var(--foreground);
+  opacity: 0.75;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+/* Quiz categories grid */
+.quizGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+}
+
+.quizCard {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.quizCard:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.cardHeader {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.classBadge {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--primary);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
+.subjectBadge {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--foreground);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.72rem;
+  opacity: 0.8;
+}
+
+.quizCardTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.quizMeta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin-bottom: 1.5rem;
+  margin-top: auto;
+}
+
+.startBtn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 99px;
+  padding: 0.65rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.startBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Full Mock Tests Section */
+.mockSection {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  padding: 2.25rem;
+}
+
+.mockSectionTitle {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mockDesc {
+  font-size: 0.92rem;
+  opacity: 0.75;
+  line-height: 1.5;
+  margin-bottom: 1.75rem;
+}
+
+.mockLinksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.mockLinkCard {
+  background: var(--surface-highlight);
+  border: 1px solid var(--surface-border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--foreground);
+  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.mockLinkCard:hover {
+  border-color: var(--primary);
+  background: var(--surface);
+}
+
+.actionArrow {
+  opacity: 0.5;
+  transition: all 0.2s ease;
+}
+
+.mockLinkCard:hover .actionArrow {
+  transform: translateX(3px);
+  opacity: 1;
+  color: var(--primary);
+}
+
+/* 2. LIVE QUIZ INTERACTIVE VIEW */
+.quizContainer {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.quizPanelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.exitBtn {
+  background: none;
+  border: 1px solid var(--surface-border);
+  color: var(--foreground);
+  padding: 0.45rem 1.2rem;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exitBtn:hover {
+  background: var(--surface-highlight);
+  border-color: #ff4040;
+  color: #ff4040;
+}
+
+.timerPill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  padding: 0.45rem 1.1rem;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* Progress Box */
+.progressBox {
+  margin-bottom: 2.25rem;
+}
+
+.progressText {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.7;
+  margin-bottom: 0.5rem;
+}
+
+.progressBarWrapper {
+  width: 100%;
+  height: 6px;
+  background: var(--surface-highlight);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 99px;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Question card & option list */
+.questionCard {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 20px;
+  padding: 2.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.questionText {
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.45;
+  margin-bottom: 2rem;
+}
+
+.optionsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.optionItem {
+  background: var(--surface-highlight);
+  border: 1.5px solid var(--surface-border);
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--foreground);
+  text-align: left;
+  outline: none;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.optionItem:hover {
+  background: var(--surface);
+  border-color: var(--primary);
+}
+
+.optionLetter {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.optionContent {
+  flex: 1;
+  font-weight: 500;
+}
+
+/* Selected option states */
+.optionSelected {
+  border-color: var(--primary) !important;
+  background: rgba(99, 102, 241, 0.08) !important;
+}
+
+.optionSelected .optionLetter {
+  background: var(--primary);
+  color: #fff;
+}
+
+.optionCorrect {
+  border-color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+  color: #10b981 !important;
+}
+
+.optionCorrect .optionLetter {
+  background: #10b981 !important;
+  color: #fff !important;
+}
+
+.optionWrong {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.08) !important;
+  color: #ef4444 !important;
+}
+
+.optionWrong .optionLetter {
+  background: #ef4444 !important;
+  color: #fff !important;
+}
+
+.correctIcon {
+  color: #10b981;
+  font-size: 1.1rem;
+  margin-left: 1rem;
+}
+
+.wrongIcon {
+  color: #ef4444;
+  font-size: 1.1rem;
+  margin-left: 1rem;
+}
+
+/* Explanation Box */
+.explanationBox {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--surface-border);
+  animation: fadeIn 0.3s ease;
+}
+
+.explanationBox h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.explanationBox p {
+  font-size: 0.88rem;
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Action Rows */
+.actionRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.actionBtn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 99px;
+  padding: 0.75rem 2rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  transition: all 0.2s ease;
+}
+
+.actionBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+}
+
+.actionDisabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* 3. SCORE SUMMARY WIN VIEW */
+.summaryCard {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 3rem 2rem;
+  border-radius: 24px;
+}
+
+.trophyWrapper {
+  margin-bottom: 1.5rem;
+}
+
+.trophyIcon {
+  font-size: 4rem;
+  color: #ffd700;
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4));
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.summaryTitle {
+  font-size: 1.85rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+}
+
+.summarySubtitle {
+  opacity: 0.75;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.summaryStatsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2.25rem;
+}
+
+.summaryStatItem {
+  background: var(--surface-highlight);
+  border: 1px solid var(--surface-border);
+  padding: 1rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sumLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.6;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.sumValue {
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.xpAwardCard {
+  background: rgba(99, 102, 241, 0.08);
+  border: 1.5px solid var(--primary);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.xpAwardCard h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  opacity: 0.8;
+  margin-bottom: 0.35rem;
+}
+
+.xpText {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin-bottom: 0.35rem;
+}
+
+.xpAwardCard p {
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
+.summaryActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.restartBtn {
+  background: var(--surface-highlight);
+  border: 1px solid var(--surface-border);
+  color: var(--foreground);
+  padding: 0.7rem 1.5rem;
+  border-radius: 99px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.restartBtn:hover {
+  background: var(--surface);
+  border-color: var(--primary);
+}
+
+.dashboardBtn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 99px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.dashboardBtn:hover {
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+@media (max-width: 600px) {
+  .mockSection { padding: 1.5rem; }
+  .mockLinksGrid { grid-template-columns: 1fr; }
+  .questionCard { padding: 1.5rem; }
+  .optionItem { padding: 0.9rem 1rem; }
+}
+
+/* Class Filter Chips */
+.filterChips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filterChip {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--foreground);
+  padding: 0.5rem 1.25rem;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.filterChip:hover {
+  background: var(--surface-highlight);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.activeChip {
+  background: var(--primary) !important;
+  color: #fff !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Loading spinners */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  gap: 1.5rem;
+  opacity: 0.8;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3.5px solid var(--surface-border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+

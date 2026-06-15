@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { logger } from '@/lib/logger'
 
 export default function Error({
   error,
@@ -12,7 +13,7 @@ export default function Error({
 }) {
   useEffect(() => {
     // Log to an error reporting service in production
-    console.error("[app error boundary]", error);
+    logger.error("[app error boundary]", error);
   }, [error]);
 
   return (

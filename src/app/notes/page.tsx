@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FaBook, FaDownload, FaEye, FaFilter } from 'react-icons/fa';
+import { FaBook, FaDownload, FaEye, FaFilter, FaSearch, FaTimes } from 'react-icons/fa';
 import InteractionButtons from '@/components/InteractionButtons';
 import { getDownloadLink, getViewLink, handleDownload } from '@/lib/utils';
 import CustomSelect from '@/components/CustomSelect';
@@ -25,7 +25,47 @@ interface Note {
 
 interface Subject { id: string; name: string; }
 interface Chapter { id: string; name: string; number: number; className: string; subjectId: string; }
-interface Course { id: string; name: string; }
+interface Course  { id: string; name: string; }
+
+function getSubjectColor(name: string) {
+  const n = name.toLowerCase();
+  if (n.includes('math'))    return { color: '#6366f1', bg: 'rgba(99,102,241,0.1)' };
+  if (n.includes('science')) return { color: '#10b981', bg: 'rgba(16,185,129,0.1)' };
+  if (n.includes('english')) return { color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' };
+  if (n.includes('social'))  return { color: '#ec4899', bg: 'rgba(236,72,153,0.1)' };
+  if (n.includes('hindi'))   return { color: '#f97316', bg: 'rgba(249,115,22,0.1)' };
+  if (n.includes('physics')) return { color: '#06b6d4', bg: 'rgba(6,182,212,0.1)' };
+  if (n.includes('chem'))    return { color: '#a855f7', bg: 'rgba(168,85,247,0.1)' };
+  if (n.includes('bio'))     return { color: '#84cc16', bg: 'rgba(132,204,22,0.1)' };
+  return { color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' };
+}
+
+function SkeletonCard() {
+  return (
+    <div style={{
+      background: 'var(--surface-card)',
+      border: '1px solid var(--surface-border)',
+      borderRadius: 'var(--radius-md)',
+      padding: '1.5rem',
+    }}>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+        <div className="skeleton" style={{ width: 52, height: 52, borderRadius: 14, flexShrink: 0 }} />
+        <div style={{ flex: 1 }}>
+          <div className="skeleton skeleton-text" style={{ width: '70%', marginBottom: '0.5rem' }} />
+          <div className="skeleton skeleton-text" style={{ width: '40%', height: '0.75rem' }} />
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+        <div className="skeleton" style={{ width: 70, height: 22, borderRadius: 999 }} />
+        <div className="skeleton" style={{ width: 80, height: 22, borderRadius: 999 }} />
+      </div>
+      <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+        <div className="skeleton" style={{ width: 80, height: 36, borderRadius: 8 }} />
+        <div className="skeleton" style={{ width: 100, height: 36, borderRadius: 8 }} />
+      </div>
+    </div>
+  );
+}
 
 function NotesContent() {
   const searchParams = useSearchParams();
@@ -36,11 +76,13 @@ function NotesContent() {
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
   const [selectedClass, setSelectedClass] = useState(searchParams.get('class') || '');
   const [selectedSubject, setSelectedSubject] = useState(searchParams.get('subject') || '');
   const [selectedChapter, setSelectedChapter] = useState(searchParams.get('chapter') || '');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authReady, setAuthReady] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   const updateURL = (params: Record<string, string>) => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -52,36 +94,16 @@ function NotesContent() {
   };
 
   const fetchMeta = async () => {
-    const cachedSub = sessionStorage.getItem('bb_subjects');
-    const cachedChap = sessionStorage.getItem('bb_chapters');
-    const cachedCourses = sessionStorage.getItem('bb_courses');
-    if (cachedSub) setSubjects(JSON.parse(cachedSub));
-    if (cachedChap) setChapters(JSON.parse(cachedChap));
-    if (cachedCourses) setCourses(JSON.parse(cachedCourses));
-
     const [subRes, chapRes, coursesRes] = await Promise.all([
       fetch('/api/admin/subjects'),
       fetch('/api/admin/chapters'),
-      fetch('/api/admin/courses')
+      fetch('/api/admin/courses'),
     ]);
-    if (subRes.ok) {
-      const d = await subRes.json();
-      setSubjects(d);
-      sessionStorage.setItem('bb_subjects', JSON.stringify(d));
-    }
-    if (chapRes.ok) {
-      const d = await chapRes.json();
-      setChapters(d);
-      sessionStorage.setItem('bb_chapters', JSON.stringify(d));
-    }
-    if (coursesRes.ok) {
-      const d = await coursesRes.json();
-      setCourses(d);
-      sessionStorage.setItem('bb_courses', JSON.stringify(d));
-    }
+    if (subRes.ok) setSubjects(await subRes.json());
+    if (chapRes.ok) setChapters(await chapRes.json());
+    if (coursesRes.ok) setCourses(await coursesRes.json());
   };
 
-  // On mount: fetch auth first, set default class, THEN allow notes fetch
   useEffect(() => {
     fetchMeta();
     (async () => {
@@ -95,7 +117,6 @@ function NotesContent() {
           }
           setAuthReady(true);
         }
-
         const res = await fetch('/api/student/me');
         if (res.ok) {
           const data = await res.json();
@@ -126,25 +147,12 @@ function NotesContent() {
     if (selectedSubject) params.set('subject', selectedSubject);
     if (selectedChapter) params.set('chapter', selectedChapter);
     const url = `/api/notes?${params.toString()}`;
-
-    const cached = sessionStorage.getItem(`bb_notes_${url}`);
-    if (cached) {
-      setNotes(JSON.parse(cached));
-      setLoading(false);
-    } else {
-      setLoading(true);
-    }
-
+    setLoading(true);
     const res = await fetch(url);
-    if (res.ok) {
-      const data = await res.json();
-      setNotes(data);
-      sessionStorage.setItem(`bb_notes_${url}`, JSON.stringify(data));
-    }
+    if (res.ok) setNotes(await res.json());
     setLoading(false);
   }, [selectedClass, selectedSubject, selectedChapter]);
 
-  // Only fetch notes after auth check is done (so class filter is applied from the start)
   useEffect(() => {
     if (authReady) fetchNotes();
   }, [authReady, fetchNotes]);
@@ -157,24 +165,105 @@ function NotesContent() {
     updateURL({ class: newVal, subject: '', chapter: '' });
   };
 
-  const filteredChapters = chapters.filter(ch => 
-    (selectedClass ? ch.className === selectedClass : true) && 
+  const filteredChapters = chapters.filter(ch =>
+    (selectedClass ? ch.className === selectedClass : true) &&
     (selectedSubject ? ch.subjectId === selectedSubject : true)
   );
 
+  const filteredNotes = notes.filter(n =>
+    !search || n.title.toLowerCase().includes(search.toLowerCase()) || n.subject.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const hasFilters = !!(selectedClass || selectedSubject || selectedChapter);
+
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'clamp(1rem, 5vw, 2rem) clamp(0.75rem, 3vw, 1.5rem)' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(1.5rem,5vw,2.5rem) clamp(1rem,3vw,1.5rem)' }}>
+
+      {/* Page Header */}
       <div style={{ marginBottom: '2.5rem' }} className="animate-fade-in">
-        <h1 style={{ fontSize: 'clamp(1.75rem, 8vw, 2.5rem)', fontWeight: 800, marginBottom: '0.5rem' }}>
+        <h1 style={{ fontSize: 'clamp(2rem,7vw,2.8rem)', fontWeight: 900, marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>
           Study <span className="kinetic-text">Notes</span>
         </h1>
-        <p style={{ opacity: 0.7, fontSize: 'clamp(0.9rem, 4vw, 1rem)' }}>Comprehensive notes for all levels. View free, download after login.</p>
+        <p style={{ opacity: 0.65, fontSize: '1rem', lineHeight: 1.65 }}>
+          Comprehensive notes for all levels. View free — download after login.
+        </p>
       </div>
 
-      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+      {/* Search Bar */}
+      <div style={{
+        display: 'flex',
+        gap: '0.75rem',
+        marginBottom: '1.5rem',
+        flexWrap: 'wrap',
+      }}>
+        <div style={{
+          flex: 1,
+          minWidth: 200,
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'center',
+        }}>
+          <FaSearch style={{ position: 'absolute', left: '1rem', color: 'var(--primary)', opacity: 0.6, zIndex: 1 }} />
+          <input
+            type="text"
+            placeholder="Search notes by title or subject…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '0.75rem 1rem 0.75rem 2.75rem',
+              background: 'var(--surface)',
+              border: '1px solid var(--surface-border)',
+              borderRadius: 'var(--radius-md)',
+              color: 'var(--foreground)',
+              fontSize: '0.95rem',
+              outline: 'none',
+              transition: 'border-color 0.2s ease',
+            }}
+            onFocus={e => (e.target.style.borderColor = 'var(--primary)')}
+            onBlur={e => (e.target.style.borderColor = 'var(--surface-border)')}
+          />
+          {search && (
+            <button onClick={() => setSearch('')} style={{ position: 'absolute', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--foreground)', opacity: 0.5 }}>
+              <FaTimes />
+            </button>
+          )}
+        </div>
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.75rem 1.25rem',
+            background: showFilters ? 'var(--primary)' : 'var(--surface)',
+            color: showFilters ? 'white' : 'var(--foreground)',
+            border: '1px solid var(--surface-border)',
+            borderRadius: 'var(--radius-md)',
+            cursor: 'pointer',
+            fontWeight: 600,
+            fontSize: '0.9rem',
+            transition: 'all 0.2s ease',
+            position: 'relative',
+          }}
+        >
+          <FaFilter />
+          Filters
+          {hasFilters && <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#ec4899', position: 'absolute', top: 6, right: 6 }} />}
+        </button>
+      </div>
+
+      {/* Class Chip Filters */}
+      <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
         <button
           onClick={() => handleClassSelect('')}
-          style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: !selectedClass ? 'var(--primary)' : 'transparent', color: 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)', fontSize: '0.875rem' }}
+          style={{
+            padding: '0.45rem 1.1rem', borderRadius: 999,
+            border: '1px solid var(--surface-border)',
+            background: !selectedClass ? 'var(--primary)' : 'var(--surface)',
+            color: !selectedClass ? 'white' : 'var(--foreground)',
+            cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s ease', fontSize: '0.82rem',
+          }}
         >
           All Classes
         </button>
@@ -182,144 +271,148 @@ function NotesContent() {
           <button
             key={course.id}
             onClick={() => handleClassSelect(course.name)}
-            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedClass === course.name ? 'var(--primary)' : 'transparent', color: selectedClass === course.name ? 'white' : 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)', fontSize: '0.875rem' }}
+            style={{
+              padding: '0.45rem 1.1rem', borderRadius: 999,
+              border: `1px solid ${selectedClass === course.name ? 'var(--primary)' : 'var(--surface-border)'}`,
+              background: selectedClass === course.name ? 'var(--primary)' : 'var(--surface)',
+              color: selectedClass === course.name ? 'white' : 'var(--foreground)',
+              cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s ease', fontSize: '0.82rem',
+            }}
           >
             {course.name}
           </button>
         ))}
       </div>
 
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        gap: '1.5rem', 
-        marginBottom: '3rem', 
-        padding: 'clamp(1.25rem, 5vw, 2rem)', 
-        background: 'var(--surface)', 
-        border: '1px solid var(--surface-border)', 
-        borderRadius: 'var(--radius-lg)',
-        width: '100%',
-        boxShadow: 'var(--shadow-sm)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--surface-border)', paddingBottom: '0.75rem', marginBottom: '0.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', opacity: 0.8 }}>
-            <FaFilter style={{ color: 'var(--primary)' }} /> 
-            <span style={{ fontSize: '0.95rem', fontWeight: 700, letterSpacing: '0.02em' }}>Refine Your Search</span>
-          </div>
-          <button
-            onClick={() => { setSelectedClass(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
-            style={{ 
-              background: 'transparent', 
-              border: 'none', 
-              color: 'var(--primary)', 
-              fontSize: '0.85rem', 
-              fontWeight: 600, 
-              cursor: 'pointer', 
-              opacity: (selectedClass || selectedSubject || selectedChapter) ? 1 : 0.4,
-              transition: 'var(--transition)',
-              pointerEvents: (selectedClass || selectedSubject || selectedChapter) ? 'auto' : 'none'
-            }}
-          >
-            Clear All
-          </button>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label style={{ fontSize: '0.85rem', opacity: 0.7, fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <div style={{ width: '4px', height: '12px', background: 'var(--primary)', borderRadius: '2px' }}></div>
-              Select Subject
+      {/* Collapsible Filter Panel */}
+      {showFilters && (
+        <div style={{
+          marginBottom: '1.5rem',
+          padding: '1.5rem',
+          background: 'var(--surface)',
+          border: '1px solid var(--surface-border)',
+          borderRadius: 'var(--radius-lg)',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gap: '1rem',
+        }} className="animate-fade-in">
+          <div>
+            <label style={{ fontSize: '0.8rem', fontWeight: 700, opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
+              <div style={{ width: 4, height: 12, background: 'var(--primary)', borderRadius: 2 }} /> Subject
             </label>
             <CustomSelect
               value={selectedSubject}
               onChange={(val) => { setSelectedSubject(val); setSelectedChapter(''); updateURL({ subject: val, chapter: '' }); }}
               placeholder="All Subjects"
-              options={[
-                { value: '', label: 'All Subjects' },
-                ...subjects.map(s => ({ value: s.id, label: s.name }))
-              ]}
+              options={[{ value: '', label: 'All Subjects' }, ...subjects.map(s => ({ value: s.id, label: s.name }))]}
             />
           </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label style={{ fontSize: '0.85rem', opacity: 0.7, fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <div style={{ width: '4px', height: '12px', background: '#10b981', borderRadius: '2px' }}></div>
-              Select Chapter
+          <div>
+            <label style={{ fontSize: '0.8rem', fontWeight: 700, opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
+              <div style={{ width: 4, height: 12, background: '#10b981', borderRadius: 2 }} /> Chapter
             </label>
             <CustomSelect
               value={selectedChapter}
               onChange={(val) => { setSelectedChapter(val); updateURL({ chapter: val }); }}
               placeholder="All Chapters"
               disabled={!selectedSubject && !selectedClass}
-              options={[
-                { value: '', label: 'All Chapters' },
-                ...filteredChapters.map(ch => ({ value: ch.id, label: `Ch ${ch.number}: ${ch.name}` }))
-              ]}
+              options={[{ value: '', label: 'All Chapters' }, ...filteredChapters.map(ch => ({ value: ch.id, label: `Ch ${ch.number}: ${ch.name}` }))]}
             />
           </div>
+          {hasFilters && (
+            <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+              <button
+                onClick={() => { setSelectedClass(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
+                style={{ padding: '0.7rem 1.2rem', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 'var(--radius-md)', color: '#ef4444', cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem', width: '100%' }}
+              >
+                Clear All Filters
+              </button>
+            </div>
+          )}
         </div>
+      )}
 
-        {(selectedClass || selectedSubject || selectedChapter) && (
-          <button
-            onClick={() => { setSelectedClass(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
-            style={{ 
-              padding: '0.85rem 1.5rem', 
-              background: 'rgba(239,68,68,0.08)', 
-              border: '1px solid rgba(239,68,68,0.2)', 
-              borderRadius: 'var(--radius-md)', 
-              color: '#ef4444', 
-              cursor: 'pointer', 
-              fontSize: '0.9rem', 
-              fontWeight: 700, 
-              width: '100%',
-              textAlign: 'center',
-              transition: 'var(--transition)',
-              marginTop: '0.5rem'
-            }}
-          >
-            Reset All Filters
-          </button>
-        )}
-      </div>
+      {/* Results count */}
+      {!loading && (
+        <p style={{ fontSize: '0.85rem', opacity: 0.5, marginBottom: '1.25rem', fontWeight: 600 }}>
+          {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''} found
+        </p>
+      )}
 
+      {/* Notes Grid */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '4rem', opacity: 0.6 }}>Loading notes...</div>
-      ) : notes.length === 0 ? (
-        <div className="glass-morphism" style={{ padding: '4rem', textAlign: 'center', opacity: 0.6 }}>
-          <FaBook style={{ fontSize: '3rem', marginBottom: '1rem' }} />
-          <p>No notes found for the selected filters.</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.2rem' }}>
+          {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+        </div>
+      ) : filteredNotes.length === 0 ? (
+        <div style={{
+          padding: '5rem 2rem',
+          textAlign: 'center',
+          background: 'var(--surface)',
+          border: '1px solid var(--surface-border)',
+          borderRadius: 'var(--radius-lg)',
+        }}>
+          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📚</div>
+          <h3 style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '1.25rem' }}>No notes found</h3>
+          <p style={{ opacity: 0.55, marginBottom: '1.5rem', maxWidth: 360, margin: '0 auto 1.5rem' }}>
+            {search ? `No notes match "${search}". Try a different search or clear your filters.` : 'No notes available for the selected filters yet. Check back soon!'}
+          </p>
+          <button
+            onClick={() => { setSearch(''); setSelectedClass(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
+            className="btn-primary"
+            style={{ border: 'none', cursor: 'pointer' }}
+          >
+            Clear Filters
+          </button>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {notes.map((note, idx) => (
-            <div 
-              key={note.id} 
-              className="tactile-card" 
-              style={{ 
-                padding: '1.25rem 1.5rem', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between', 
-                flexWrap: 'wrap', 
-                gap: '1rem',
-                borderRadius: 'var(--radius-md)',
-                animation: `fadeIn 0.5s ease-out forwards ${idx * 0.05}s`,
-                opacity: 0
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: 'var(--radius-sm)', background: 'rgba(139,92,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)', flexShrink: 0, fontSize: '1.2rem' }}>
-                  <FaBook />
-                </div>
-                <div>
-                  <h3 style={{ fontWeight: 700, marginBottom: '0.35rem', fontSize: '1.05rem' }}>{note.title}</h3>
-                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(99,102,241,0.1)', borderRadius: '999px', color: 'var(--primary)', fontWeight: 600 }}>{note.className.startsWith('Class') || ['CUET', 'JEE', 'NEET'].includes(note.className) ? note.className : `Class ${note.className}`}</span>
-                    <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(139,92,246,0.1)', borderRadius: '999px', color: 'var(--accent)', fontWeight: 600 }}>{note.subject.name}</span>
-                    {note.chapter && (
-                      <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(16,185,129,0.1)', borderRadius: '999px', color: '#10b981', fontWeight: 600 }}>Ch {note.chapter.number}: {note.chapter.name}</span>
-                    )}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.2rem' }}>
+          {filteredNotes.map((note, idx) => {
+            const { color, bg } = getSubjectColor(note.subject.name);
+            return (
+              <div
+                key={note.id}
+                className="premium-card"
+                style={{
+                  padding: '1.5rem',
+                  animation: `fadeIn 0.5s ease-out forwards ${idx * 0.04}s`,
+                  opacity: 0,
+                }}
+              >
+                {/* Card Header */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem' }}>
+                  <div style={{
+                    width: 52, height: 52,
+                    borderRadius: 14,
+                    background: bg,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color, fontSize: '1.4rem', flexShrink: 0,
+                    border: `1px solid ${color}33`,
+                  }}>
+                    <FaBook />
                   </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <h3 style={{ fontWeight: 700, fontSize: '0.97rem', marginBottom: '0.4rem', lineHeight: 1.35 }}
+                        title={note.title}>
+                      {note.title}
+                    </h3>
+                    <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                      <span className="badge badge-primary">
+                        {note.className.startsWith('Class') || ['CUET','JEE','NEET'].includes(note.className)
+                          ? note.className : `Class ${note.className}`}
+                      </span>
+                      <span className="badge" style={{ background: bg, color }}>
+                        {note.subject.name}
+                      </span>
+                      {note.chapter && (
+                        <span className="badge badge-success">Ch {note.chapter.number}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Interaction row */}
+                <div style={{ marginBottom: '1rem' }}>
                   <InteractionButtons
                     targetId={note.id}
                     targetType="NOTE"
@@ -331,33 +424,49 @@ function NotesContent() {
                     isAuthenticated={isAuthenticated}
                   />
                 </div>
+
+                {/* Action Buttons */}
+                <div style={{ display: 'flex', gap: '0.6rem' }}>
+                  {(note.viewUrl || note.downloadFile) && (
+                    <a
+                      href={(() => {
+                        const base = getViewLink(note.viewUrl || note.downloadFile);
+                        if (base.startsWith('/view')) return `${base}&title=${encodeURIComponent(note.title)}`;
+                        return base;
+                      })()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-secondary haptic-btn"
+                      style={{ flex: 1, justifyContent: 'center', padding: '0.6rem', fontSize: '0.85rem', borderRadius: 'var(--radius-sm)', textAlign: 'center' }}
+                    >
+                      <FaEye style={{ marginRight: '0.4rem' }} /> View
+                    </a>
+                  )}
+                  {!isAuthenticated ? (
+                    <Link
+                      href="/login"
+                      className="btn-primary haptic-btn"
+                      style={{ flex: 1, justifyContent: 'center', padding: '0.6rem', fontSize: '0.85rem', borderRadius: 'var(--radius-sm)', textAlign: 'center' }}
+                    >
+                      <FaDownload style={{ marginRight: '0.4rem' }} /> Login to Download
+                    </Link>
+                  ) : (note.downloadFile || note.viewUrl) ? (
+                    <button
+                      onClick={() => handleDownload(getDownloadLink(note.downloadFile || note.viewUrl), `${note.title}.pdf`)}
+                      className="btn-primary haptic-btn"
+                      style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem', borderRadius: 'var(--radius-sm)', border: 'none', cursor: 'pointer' }}
+                    >
+                      <FaDownload style={{ marginRight: '0.4rem' }} /> Download
+                    </button>
+                  ) : (
+                    <button disabled className="btn-primary" style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem', borderRadius: 'var(--radius-sm)', opacity: 0.4, cursor: 'not-allowed' }}>
+                      Not Available
+                    </button>
+                  )}
+                </div>
               </div>
-              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                {(note.viewUrl || note.downloadFile) && (
-                  <a href={`${getViewLink(note.viewUrl || note.downloadFile)}&title=${encodeURIComponent(note.title)}`} target="_blank" rel="noopener noreferrer" className="btn-secondary haptic-btn" style={{ padding: '0.6rem 1.25rem', fontSize: '0.875rem', borderRadius: 'var(--radius-sm)' }}>
-                    <FaEye /> View
-                  </a>
-                )}
-                {!isAuthenticated ? (
-                  <Link href="/login" className="btn-primary haptic-btn" style={{ padding: '0.6rem 1.25rem', fontSize: '0.875rem', borderRadius: 'var(--radius-sm)' }}>
-                    <FaDownload /> Login
-                  </Link>
-                ) : (note.downloadFile || note.viewUrl) ? (
-                  <button 
-                    onClick={() => handleDownload(getDownloadLink(note.downloadFile || note.viewUrl), `${note.title}.pdf`)}
-                    className="btn-primary haptic-btn" 
-                    style={{ padding: '0.6rem 1.25rem', fontSize: '0.875rem', borderRadius: 'var(--radius-sm)', border: 'none', cursor: 'pointer' }}
-                  >
-                    <FaDownload /> Download
-                  </button>
-                ) : (
-                  <button disabled className="btn-primary" style={{ padding: '0.6rem 1.25rem', fontSize: '0.875rem', borderRadius: 'var(--radius-sm)', opacity: 0.5, cursor: 'not-allowed' }}>
-                    <FaDownload /> Empty
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
@@ -366,7 +475,17 @@ function NotesContent() {
 
 export default function NotesPage() {
   return (
-    <Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', opacity: 0.6 }}>Loading page...</div>}>
+    <Suspense fallback={
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '2.5rem 1.5rem' }}>
+        <div className="skeleton" style={{ width: 280, height: 48, marginBottom: '0.75rem' }} />
+        <div className="skeleton skeleton-text" style={{ width: 360, marginBottom: '2rem' }} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.2rem' }}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="skeleton" style={{ height: 200, borderRadius: 'var(--radius-md)' }} />
+          ))}
+        </div>
+      </div>
+    }>
       <NotesContent />
     </Suspense>
   );

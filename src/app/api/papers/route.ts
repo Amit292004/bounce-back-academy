@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
+import { logger } from '@/lib/logger'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -26,10 +27,14 @@ export async function GET(request: Request) {
     if (chapterId) where.chapterId = chapterId;
 
     const mode = searchParams.get('mode'); // 'year-wise' or 'chapter-wise'
-    if (mode === 'year-wise') {
-      where.chapterId = null;
-    } else if (mode === 'chapter-wise') {
-      where.chapterId = { not: null };
+    // Bug Fix #6: Only apply the mode filter when no explicit chapterId was provided,
+    // otherwise the mode unconditionally overrides the specific chapter filter.
+    if (!chapterId) {
+      if (mode === 'year-wise') {
+        where.chapterId = null;
+      } else if (mode === 'chapter-wise') {
+        where.chapterId = { not: null };
+      }
     }
 
     const papers = await prisma.questionPaper.findMany({
@@ -58,7 +63,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(papers);
   } catch (error) {
-    console.error('Fetch papers error:', error);
+    logger.error('Fetch papers error:', error);
     return NextResponse.json({ error: 'Failed to fetch papers' }, { status: 500 });
   }
 }

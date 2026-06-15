@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
+import { logger } from '@/lib/logger'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -49,7 +50,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(notes);
   } catch (error) {
-    console.error('Fetch notes error:', error);
+    logger.error('Fetch notes error:', error);
     return NextResponse.json({ error: 'Failed to fetch notes' }, { status: 500 });
   }
 }

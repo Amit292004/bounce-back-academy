@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 import announcementStyles from "@/components/home/AnnouncementsSection.module.css";
 import Link from "next/link";
 import MarkSeen from "@/components/announcements/MarkSeen";
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic';
 
@@ -15,7 +16,7 @@ export default async function AnnouncementsPage() {
       orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
     });
   } catch (error) {
-    console.error("Failed to fetch announcements:", error);
+    logger.error("Failed to fetch announcements:", error);
   }
 
   return (

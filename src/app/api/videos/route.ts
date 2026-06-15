@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
+import { logger } from '@/lib/logger'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -52,7 +53,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(videos);
   } catch (error) {
-    console.error('Fetch videos error:', error);
+    logger.error('Fetch videos error:', error);
     return NextResponse.json({ error: 'Failed to fetch videos' }, { status: 500 });
   }
 }

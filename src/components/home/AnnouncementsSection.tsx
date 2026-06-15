@@ -3,6 +3,7 @@
 import { Announcement } from "@prisma/client";
 import styles from "./AnnouncementsSection.module.css";
 import { useEffect, useState } from "react";
+import { logger } from '@/lib/logger'
 
 export default function AnnouncementsSection() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
@@ -17,7 +18,7 @@ export default function AnnouncementsSection() {
         const data = await res.json();
         setAnnouncements(data.filter((a: any) => a.isActive).slice(0, 5));
       } catch (error) {
-        console.error("Failed to fetch announcements:", error);
+        logger.error("Failed to fetch announcements:", error);
       } finally {
         setLoading(false);
       }

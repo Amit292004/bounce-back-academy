@@ -24,6 +24,7 @@ model User {
   createdAt   DateTime @default(now())
   likes       Like[]
   favorites   Favorite[]
+  purchases   Purchase[]
 }
 
 model Admin {
@@ -44,6 +45,7 @@ model Subject {
   notes     Note[]
   videos    Video[]
   chapters  Chapter[]
+  quizzes   Quiz[]
 }
 
 model Course {
@@ -183,3 +185,71 @@ model Chapter {
 
   @@unique([name, className, subjectId])
 }
+
+model Quiz {
+  id           String         @id @default(cuid())
+  title        String
+  className    String
+  subjectId    String?
+  subject      Subject?       @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  questions    QuizQuestion[]
+  createdAt    DateTime       @default(now())
+}
+
+model QuizQuestion {
+  id           String   @id @default(cuid())
+  quizId       String
+  quiz         Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  questionText String?
+  imageUrl     String?
+  type         String   @default("TEXT") // "MCQ" or "TEXT"
+  options      String?  // Pipe-separated MCQ options (e.g. "A|B|C|D")
+  answer       String   // Correct answer to match against
+  explanation  String?
+  timeLimit    Int      @default(30)     // Custom time limit for this question in seconds
+  createdAt    DateTime @default(now())
+}
+
+model PremiumItem {
+  id            String      @id @default(cuid())
+  title         String
+  description   String
+  type          String      // "NOTE" | "PYQ" | "COURSE" | "LECTURE"
+  price         Float
+  originalPrice Float?
+  imageUrl      String?
+  features      String?     // Pipe-separated feature highlights (e.g. "Direct PDF download | Live QA support")
+  resourceId    String?     // Specific resource ID for redirection upon purchase
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  purchases     Purchase[]
+  contents      PremiumContent[]
+}
+
+model Purchase {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  premiumItemId String
+  premiumItem   PremiumItem @relation(fields: [premiumItemId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+
+  @@unique([userId, premiumItemId])
+}
+
+model PremiumContent {
+  id            String      @id @default(cuid())
+  premiumItemId String
+  premiumItem   PremiumItem @relation(fields: [premiumItemId], references: [id], onDelete: Cascade)
+  contentType   String      // "NOTE" | "VIDEO" | "PAPER"
+  title         String
+  description   String?
+  // For NOTE/PAPER
+  viewUrl       String?     // Google Drive / PDF embed URL
+  downloadUrl   String?     // Direct download link
+  // For VIDEO
+  youtubeLink   String?     // YouTube embed link
+  sortOrder     Int         @default(0)
+  createdAt     DateTime    @default(now())
+}
+

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FaTrash, FaPlus } from 'react-icons/fa';
+import { logger } from '@/lib/logger'
 
 interface Subject {
   id: string;
@@ -23,7 +24,7 @@ export default function SubjectsPage() {
       const data = await res.json();
       setSubjects(data);
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     } finally {
       setLoading(false);
     }
@@ -42,7 +43,7 @@ export default function SubjectsPage() {
       setNewSubject('');
       fetchSubjects();
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   };
 
@@ -53,7 +54,7 @@ export default function SubjectsPage() {
       await fetch(`/api/admin/subjects/${id}`, { method: 'DELETE' });
       fetchSubjects();
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   };
 

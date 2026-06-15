@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger'
 
 /**
  * Converts a standard Google Drive share link into a direct download link.
@@ -46,7 +47,7 @@ export function getDownloadLink(url: string): string {
       }
     }
   } catch (e) {
-    console.error("Error parsing link:", e);
+    logger.error("Error parsing link:", e);
   }
   
   return url;
@@ -103,7 +104,7 @@ export async function handleDownload(url: string, fileName?: string) {
     document.body.removeChild(link);
     window.URL.revokeObjectURL(blobUrl);
   } catch (error) {
-    console.error('Download failed:', error);
+    logger.error('Download failed:', error);
     // Fallback: open in new tab if fetch fails
     window.open(url, '_blank');
   }

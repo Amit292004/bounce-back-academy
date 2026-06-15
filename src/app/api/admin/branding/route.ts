@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/logger'
 
 export async function GET() {
   try {
@@ -44,7 +45,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(branding);
   } catch (error) {
-    console.error('Branding save error:', error);
+    logger.error('Branding save error:', error);
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }

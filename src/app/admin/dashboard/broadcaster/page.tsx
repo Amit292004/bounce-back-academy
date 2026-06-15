@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FaPaperPlane, FaImage, FaCheckCircle, FaTrash, FaInfoCircle, FaEnvelopeOpenText, FaHistory } from 'react-icons/fa';
+import { logger } from '@/lib/logger'
 
 interface User {
   id: string;
@@ -38,7 +39,7 @@ export default function BroadcasterPage() {
         setUsers(data);
       }
     } catch (err) {
-      console.error('Failed to fetch users:', err);
+      logger.error('Failed to fetch users:', err);
     } finally {
       setLoading(false);
     }

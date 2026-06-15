@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FaTrash, FaPlus } from 'react-icons/fa';
+import { logger } from '@/lib/logger'
 
 interface Year {
   id: string;
@@ -23,7 +24,7 @@ export default function YearsPage() {
       const data = await res.json();
       setYears(data);
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     } finally {
       setLoading(false);
     }
@@ -42,7 +43,7 @@ export default function YearsPage() {
       setNewYear('');
       fetchYears();
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   };
 
@@ -53,7 +54,7 @@ export default function YearsPage() {
       await fetch(`/api/admin/years/${id}`, { method: 'DELETE' });
       fetchYears();
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   };
 

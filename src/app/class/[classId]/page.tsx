@@ -8,8 +8,11 @@ interface Props {
 }
 
 export default async function ClassHub({ params }: Props) {
-  const { classId } = await params;
-  
+  const { classId: rawClassId } = await params;
+  // Bug Fix #1 & #2: classId arrives URL-encoded (e.g. "Class%2010").
+  // Decode it first so DB queries and display use the real name (e.g. "Class 10").
+  const classId = decodeURIComponent(rawClassId);
+
   const isSpecial = ['CUET', 'JEE', 'NEET'].includes(classId.toUpperCase());
   const dbClassName = isSpecial ? classId.toUpperCase() : (classId.toLowerCase().startsWith('class') ? classId : `Class ${classId}`);
   const displayTitle = dbClassName;
@@ -29,7 +32,9 @@ export default async function ClassHub({ params }: Props) {
       take: 5
     }),
     prisma.video.findMany({
-      where: { subject: { chapters: { some: { className: dbClassName } } } }, // videos don't have direct className, they link via chapter/subject
+      // Bug Fix #3: Videos have a direct `category` field that stores the class name.
+      // The previous join via subject->chapters was incorrect and always returned nothing.
+      where: { category: dbClassName },
       include: { subject: true },
       orderBy: { createdAt: 'desc' },
       take: 5

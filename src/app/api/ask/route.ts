@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
+import { logger } from '@/lib/logger'
 
 // Groq client is instantiated inside the handler to prevent build-time crashes if API key is missing
 
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
   try {
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
-      console.error('[/api/ask] GROQ_API_KEY is missing');
+      logger.error('[/api/ask] GROQ_API_KEY is missing');
       return NextResponse.json({ error: 'AI service configuration error: API key missing' }, { status: 500 });
     }
     console.log(`[/api/ask] GROQ_API_KEY detected (len: ${apiKey.length})`);
@@ -123,7 +124,7 @@ export async function POST(request: Request) {
       },
     });
   } catch (err: unknown) {
-    console.error('[/api/ask] FULL ERROR:', err);
+    logger.error('[/api/ask] FULL ERROR:', err);
     const message = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json({ 
       error: `AI service error: ${message}`,

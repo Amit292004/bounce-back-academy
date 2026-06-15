@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FaTrash, FaPlus, FaEye, FaEyeSlash, FaImage } from 'react-icons/fa';
+import { logger } from '@/lib/logger'
 
 interface Announcement {
   id: string;
@@ -71,7 +72,7 @@ export default function AnnouncementsPage() {
       
       fetchAnnouncements();
     } catch (error) {
-      console.error("Error adding announcement:", error);
+      logger.error("Error adding announcement:", error);
       alert("Failed to add announcement.");
     } finally {
       setLoading(false);

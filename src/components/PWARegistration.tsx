@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { logger } from '@/lib/logger'
 
 export default function PWARegistration() {
   useEffect(() => {
@@ -11,7 +12,7 @@ export default function PWARegistration() {
           console.log('Service Worker registered with scope:', registration.scope);
         })
         .catch((error) => {
-          console.error('Service Worker registration failed:', error);
+          logger.error('Service Worker registration failed:', error);
         });
     }
   }, []);

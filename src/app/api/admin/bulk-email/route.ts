@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 import { sendBulkAnnouncement } from '@/lib/email';
 import { verifyToken } from '@/lib/auth';
+import { logger } from '@/lib/logger'
 
 export async function POST(request: Request) {
   try {
@@ -70,7 +71,7 @@ export async function POST(request: Request) {
       sentCount
     });
   } catch (error: any) {
-    console.error('Bulk email error:', error);
+    logger.error('Bulk email error:', error);
     return NextResponse.json({
       error: 'Failed to send bulk emails.',
       details: error.message

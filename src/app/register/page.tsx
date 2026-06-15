@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import styles from '../login/page.module.css';
+import { logger } from '@/lib/logger'
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -73,7 +74,7 @@ export default function RegisterPage() {
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || 'Registration failed');
-        if (data.details) console.error('Registration details:', data.details);
+        if (data.details) logger.error('Registration details:', data.details);
       } else {
         if (data.requiresVerification) {
           // Pass devOtp in URL for local testing when email isn't configured

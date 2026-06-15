@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { logger } from '@/lib/logger'
 
 export async function POST(request: Request) {
   try {
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, user });
   } catch (error) {
-    console.error('Profile pic upload error:', error);
+    logger.error('Profile pic upload error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -45,7 +46,7 @@ export async function DELETE() {
 
     return NextResponse.json({ success: true, user });
   } catch (error) {
-    console.error('Profile pic removal error:', error);
+    logger.error('Profile pic removal error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

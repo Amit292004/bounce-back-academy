@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { logger } from '@/lib/logger'
 
 export async function GET() {
   try {
@@ -63,7 +64,7 @@ export async function GET() {
       papers: sortedPapers
     });
   } catch (error) {
-    console.error('Fetch favorites error:', error);
+    logger.error('Fetch favorites error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

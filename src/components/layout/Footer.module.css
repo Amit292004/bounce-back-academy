@@ -1,55 +1,175 @@
 .footer {
-  padding: 3rem 2rem;
-  background: var(--surface);
+  position: relative;
+  margin-top: 4rem;
   border-top: 1px solid var(--surface-border);
-  margin-top: auto;
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  overflow: hidden;
 }
 
-.container {
+.glow {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(99,102,241,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.inner {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 3.5rem 1.5rem 2rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+}
+
+/* Brand */
+.logoRow {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 2.5rem;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
 }
 
-.section {
-  flex: 1;
-  min-width: 250px;
+.logoImg {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  border-radius: 6px;
 }
 
-.bottom {
-  text-align: center;
-  margin-top: 3rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--surface-border);
+.logoText {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.gradientText {
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tagline {
+  font-size: 0.85rem;
+  line-height: 1.65;
   opacity: 0.6;
-  font-size: 0.875rem;
+  max-width: 280px;
+  margin-bottom: 1.5rem;
 }
 
-@media (max-width: 768px) {
-  .footer {
-    padding: 3rem 1.5rem;
-  }
+.socialRow {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
 
-  .container {
-    flex-direction: column;
+.socialBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.youtube   { background: rgba(255,0,0,0.08);    color: #ff4040; border-color: rgba(255,0,0,0.2);    }
+.instagram { background: rgba(228,64,95,0.08);  color: #e4405f; border-color: rgba(228,64,95,0.2);  }
+.telegram  { background: rgba(40,167,229,0.08); color: #28a7e5; border-color: rgba(40,167,229,0.2); }
+
+.youtube:hover   { background: rgba(255,0,0,0.15);    transform: translateY(-2px); }
+.instagram:hover { background: rgba(228,64,95,0.15);  transform: translateY(-2px); }
+.telegram:hover  { background: rgba(40,167,229,0.15); transform: translateY(-2px); }
+
+/* Link columns */
+.colTitle {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.4;
+  margin-bottom: 1.1rem;
+}
+
+.linkList {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.footerLink {
+  font-size: 0.88rem;
+  opacity: 0.68;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.footerLink:hover {
+  opacity: 1;
+  color: var(--primary);
+  transform: translateX(3px);
+}
+
+/* Bottom bar */
+.bottom {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  opacity: 0.62;
+}
+
+.bottomLeft {
+  font-weight: 500;
+}
+
+.bottomRight {
+  font-weight: 500;
+}
+
+.heart {
+  color: #ef4444;
+  display: inline-block;
+  animation: heartBeat 1.8s ease infinite;
+}
+
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.35); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.18); }
+  56%       { transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .inner {
+    grid-template-columns: 1fr 1fr;
     gap: 2rem;
-    text-align: center;
   }
-
-  .section {
-    min-width: 100%;
-  }
-
-  .section p {
-    margin: 0 auto;
-  }
+  .brand { grid-column: 1 / -1; }
 }
 
-@media (max-width: 480px) {
-  .footer {
-    padding: 2rem 1rem;
-  }
+@media (max-width: 540px) {
+  .inner { grid-template-columns: 1fr; padding: 2rem 1rem 1.5rem; }
+  .bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
 }

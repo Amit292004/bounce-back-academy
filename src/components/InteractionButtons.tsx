@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { FaHeart, FaRegHeart, FaShareAlt, FaBookmark, FaRegBookmark } from 'react-icons/fa';
+import { logger } from '@/lib/logger'
 
 interface InteractionButtonsProps {
   targetId: string;
@@ -98,7 +99,7 @@ export default function InteractionButtons({
       });
     } catch (error) {
       if ((error as Error).name !== 'AbortError') {
-        console.error('Share error:', error);
+        logger.error('Share error:', error);
       }
     }
   };

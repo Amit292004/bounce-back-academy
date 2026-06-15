@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import prisma from '@/lib/prisma';
+import { logger } from '@/lib/logger'
 
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -14,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     subjects = await prisma.subject.findMany({ select: { id: true, name: true } });
     courses = await prisma.course.findMany({ select: { id: true, name: true } });
   } catch (error) {
-    console.error("Error fetching data for sitemap:", error);
+    logger.error("Error fetching data for sitemap:", error);
   }
 
   const sitemapEntries: MetadataRoute.Sitemap = [

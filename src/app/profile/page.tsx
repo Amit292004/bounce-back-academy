@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FaUserCircle, FaEdit, FaSave, FaTimes, FaCalendarAlt, FaEnvelope, FaPhone, FaGraduationCap, FaBookmark } from 'react-icons/fa';
+import { logger } from '@/lib/logger'
 
 interface UserProfile {
   id: string;
@@ -123,7 +124,7 @@ export default function ProfilePage() {
         setMessage({ type: 'error', text: data.error || 'Failed to save profile picture' });
       }
     } catch (err: any) {
-      console.error('Upload error:', err);
+      logger.error('Upload error:', err);
       setMessage({ type: 'error', text: err.message || 'Something went wrong during upload.' });
     } finally {
       setUploading(false);

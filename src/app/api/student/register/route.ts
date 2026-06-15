@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { signStudentToken } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rateLimit';
+import { logger } from '@/lib/logger'
 
 // Fix #3: Rate limit — 3 registrations per IP per 10 minutes
 export async function POST(request: NextRequest) {
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
         await sendOTP(email, otp);
         emailSent = true;
       } catch (emailErr) {
-        console.error('Failed to send OTP email:', emailErr);
+        logger.error('Failed to send OTP email:', emailErr);
       }
     } else {
       // Log OTP to server console so you can verify in development
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     // Fix #8: Never send raw error details to the client
-    console.error('[register] error:', error);
+    logger.error('[register] error:', error);
     return NextResponse.json({ error: 'Registration failed. Please try again.' }, { status: 500 });
   }
 }

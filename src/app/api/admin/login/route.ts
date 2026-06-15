@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { signAdminToken } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rateLimit';
+import { logger } from '@/lib/logger'
 
 // Fix #3: Rate limit — 5 admin login attempts per IP per minute (stricter than student)
 export async function POST(request: NextRequest) {
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (error) {
     // Fix #8: Log internally, never expose raw error to client
-    console.error('[admin/login] error:', error);
+    logger.error('[admin/login] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

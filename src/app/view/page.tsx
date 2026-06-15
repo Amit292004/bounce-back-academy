@@ -1,6 +1,7 @@
 'use client';
 
 import React, { use } from 'react';
+import { useRouter } from 'next/navigation';
 import { getDownloadLink, handleDownload } from '@/lib/utils';
 import { FaDownload, FaArrowLeft } from 'react-icons/fa';
 import Link from 'next/link';
@@ -13,6 +14,7 @@ interface ViewPageProps {
 }
 
 export default function ViewPage({ searchParams }: ViewPageProps) {
+  const router = useRouter();
   const { url, title } = use(searchParams);
 
   if (!url) {
@@ -80,9 +82,14 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
         zIndex: 1001
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', maxWidth: '70%' }}>
-          <Link href="/notes" style={{ color: 'var(--foreground)', opacity: 0.8, display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem' }}>
+          {/* Bug Fix #9: Back button was hardcoded to /notes even when viewing a paper.
+              Using router.back() sends the user to wherever they came from. */}
+          <button
+            onClick={() => router.back()}
+            style={{ background: 'none', border: 'none', color: 'var(--foreground)', opacity: 0.8, display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem', cursor: 'pointer', padding: 0 }}
+          >
             <FaArrowLeft /> <span className="hide-mobile">Back</span>
-          </Link>
+          </button>
           <h1 style={{ 
             fontSize: '0.95rem', 
             margin: 0, 
@@ -120,7 +127,9 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
         />
       </div>
 
-      <style jsx>{`
+      {/* Bug Fix #4: <style jsx> is a Styled-JSX feature that only works in the
+          Pages Router. In App Router it is silently ignored — use a plain <style> tag. */}
+      <style>{`
         @media (max-width: 640px) {
           .hide-mobile {
             display: none;

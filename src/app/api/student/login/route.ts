@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { signStudentToken } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rateLimit';
+import { logger } from '@/lib/logger'
 
 // Fix #3: Rate limit — 8 login attempts per IP per minute
 export async function POST(request: NextRequest) {
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (error) {
     // Fix #8: Log internally, never expose raw error to client
-    console.error('[student/login] error:', error);
+    logger.error('[student/login] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
 import { FaTrash, FaPlus, FaUpload, FaEdit, FaSave, FaTimes, FaImage } from 'react-icons/fa';
+import { logger } from '@/lib/logger'
 
 interface Course {
   id: string;
@@ -36,7 +37,7 @@ export default function CoursesPage() {
       const data = await res.json();
       setCourses(data);
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     } finally {
       setLoading(false);
     }
@@ -83,7 +84,7 @@ export default function CoursesPage() {
       if (fileInputRef.current) fileInputRef.current.value = '';
       fetchCourses();
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   };
 
@@ -97,7 +98,7 @@ export default function CoursesPage() {
       setEditingId(null);
       fetchCourses();
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   };
 
@@ -115,7 +116,7 @@ export default function CoursesPage() {
       await fetch(`/api/admin/courses/${id}`, { method: 'DELETE' });
       fetchCourses();
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   };
 

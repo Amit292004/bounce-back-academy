@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic';
 
@@ -31,7 +32,7 @@ export async function GET() {
       activeNow,
     });
   } catch (error) {
-    console.error('[analytics] DB error:', error);
+    logger.error('[analytics] DB error:', error);
     // Return zeroed fallback so the client never gets a network-level failure
     return NextResponse.json({
       users: 0,

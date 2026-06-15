@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { logger } from '@/lib/logger'
 
 export async function DELETE(
   request: Request,
@@ -12,7 +13,7 @@ export async function DELETE(
     });
     return NextResponse.json({ message: 'Chapter deleted' });
   } catch (error: any) {
-    console.error('Error deleting chapter:', error);
+    logger.error('Error deleting chapter:', error);
     return NextResponse.json({ error: 'Failed to delete chapter', details: error.message }, { status: 500 });
   }
 }

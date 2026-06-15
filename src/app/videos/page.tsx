@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { FaYoutube, FaFilter } from 'react-icons/fa';
 import InteractionButtons from '@/components/InteractionButtons';
 import CustomSelect from '@/components/CustomSelect';
+import { logger } from '@/lib/logger'
 
 interface Video {
   id: string;
@@ -80,7 +81,7 @@ function VideosContent() {
         sessionStorage.setItem('bb_courses', JSON.stringify(d));
       }
     } catch (error) {
-      console.error('Failed to fetch metadata:', error);
+      logger.error('Failed to fetch metadata:', error);
     }
   };
 
@@ -112,6 +113,8 @@ function VideosContent() {
           }
         } else if (!cachedMe) {
           setIsAuthenticated(false);
+          // Bug Fix #7: authReady must become true even if the API returns non-OK,
+          // otherwise content never loads when auth is unavailable.
           setAuthReady(true);
         }
       } catch {

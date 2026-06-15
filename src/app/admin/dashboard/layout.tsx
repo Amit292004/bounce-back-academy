@@ -6,9 +6,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { 
   FaHome, FaBook, FaCalendarAlt, FaFileAlt, 
   FaVideo, FaBullhorn, FaImages, FaUsers, FaComments, FaSignOutAlt,
-  FaBars, FaTimes, FaAd, FaPaperPlane
+  FaBars, FaTimes, FaAd, FaPaperPlane, FaStore
 } from 'react-icons/fa';
 import styles from './layout.module.css';
+import { getDriveImageUrl } from '@/lib/driveImage';
 
 export default function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -41,6 +42,8 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
     { label: 'Question Papers', href: '/admin/dashboard/papers', icon: <FaFileAlt /> },
     { label: 'Notes', href: '/admin/dashboard/notes', icon: <FaFileAlt /> },
     { label: 'Videos', href: '/admin/dashboard/videos', icon: <FaVideo /> },
+    { label: 'Quizzes & Tests', href: '/admin/dashboard/quizzes', icon: <FaFileAlt /> },
+    { label: 'Premium Store', href: '/admin/dashboard/premium', icon: <FaStore /> },
     { label: 'Announcements', href: '/admin/dashboard/announcements', icon: <FaBullhorn /> },
     { label: 'Advertising', href: '/admin/dashboard/advertising', icon: <FaAd /> },
     { label: 'Branding', href: '/admin/dashboard/branding', icon: <FaImages /> },
@@ -62,7 +65,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
         <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--surface-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
             <img 
-              src={branding.siteLogo || "/logo.png"} 
+              src={getDriveImageUrl(branding.siteLogo) || "/logo.png"} 
               alt="Bounce Back Academy Logo" 
               style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'contain' }} 
             />
@@ -103,7 +106,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
         <div style={{ padding: '1.5rem', borderTop: '1px solid var(--surface-border)' }}>
           {branding.adminPhoto && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-              <img src={branding.adminPhoto} alt="Admin" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)' }} />
+              <img src={getDriveImageUrl(branding.adminPhoto) || ""} alt="Admin" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)' }} />
               <div>
                 <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--foreground)' }}>Administrator</p>
                 <p style={{ fontSize: '0.7rem', opacity: 0.6 }}>Manage Platform</p>

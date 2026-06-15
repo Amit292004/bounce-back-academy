@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FaTrash, FaPlus } from 'react-icons/fa';
+import { logger } from '@/lib/logger'
 
 export default function ChaptersPage() {
   const [chapters, setChapters] = useState<any[]>([]);
@@ -35,7 +36,7 @@ export default function ChaptersPage() {
       if (subjectsData.length > 0 && !subjectId) setSubjectId(subjectsData[0].id);
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      logger.error('Error fetching data:', error);
       setLoading(false);
     }
   };
@@ -60,7 +61,7 @@ export default function ChaptersPage() {
         alert(err.error || 'Failed to create chapter');
       }
     } catch (error) {
-      console.error('Error creating chapter:', error);
+      logger.error('Error creating chapter:', error);
     } finally {
       setCreating(false);
     }
@@ -77,7 +78,7 @@ export default function ChaptersPage() {
         alert(err.error + (err.details ? ': ' + err.details : ''));
       }
     } catch (error: any) {
-      console.error('Error deleting chapter:', error);
+      logger.error('Error deleting chapter:', error);
       alert('Error deleting chapter: ' + error.message);
     }
   };

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { signStudentToken } from '@/lib/auth';
+import { logger } from '@/lib/logger'
 
 export async function POST(request: Request) {
   try {
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error('Verification error:', error);
+    logger.error('Verification error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 import { put } from '@vercel/blob';
+import { logger } from '@/lib/logger'
 
 // Configure Cloudinary
 cloudinary.config({
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ url: result.secure_url || result.url });
     }
   } catch (error: any) {
-    console.error('--- UPLOAD ERROR ---', error);
+    logger.error('--- UPLOAD ERROR ---', error);
     
     return NextResponse.json({ 
       error: error.message || 'Upload Failed',
