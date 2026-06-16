@@ -2,9 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
-// @ts-ignore
-import Razorpay from 'razorpay';
-import { logger } from '@/lib/logger'
+import { logger } from '@/lib/logger';
 
 export async function POST(request: Request) {
   try {
@@ -52,40 +50,76 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, alreadyUnlocked: true, message: 'You have already unlocked this item!' });
     }
 
-    // 5. Dynamic Commerce Mode Check
-    const hasKeys = !!(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET);
+    // 5. Fetch user details for Cashfree customer_details
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, email: true, mobile: true }
+    });
 
-    if (hasKeys) {
+    // 6. Dynamic Commerce Mode Check — use Cashfree if keys are set
+    const hasCashfreeKeys = !!(process.env.CASHFREE_APP_ID && process.env.CASHFREE_SECRET_KEY);
+
+    if (hasCashfreeKeys) {
       try {
-        const razorpay = new Razorpay({
-          key_id: process.env.RAZORPAY_KEY_ID!,
-          key_secret: process.env.RAZORPAY_KEY_SECRET!
+        const isProduction = (process.env.CASHFREE_ENV || 'production') === 'production';
+        const cashfreeBaseUrl = isProduction
+          ? 'https://api.cashfree.com/pg'
+          : 'https://sandbox.cashfree.com/pg';
+
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://bounce-back-academy-en1o.vercel.app';
+        const returnUrl = `${appUrl}/payment/return?order_id={order_id}&premiumItemId=${premiumItemId}`;
+
+        // Unique order ID — use timestamp + item id slice for uniqueness
+        const orderId = `bba_${Date.now()}_${premiumItemId.slice(0, 8)}`;
+
+        const orderPayload = {
+          order_id: orderId,
+          order_amount: premiumItem.price,
+          order_currency: 'INR',
+          customer_details: {
+            customer_id: userId,
+            customer_name: user?.name || 'Student',
+            customer_email: user?.email || 'student@bouncebackacademy.com',
+            customer_phone: user?.mobile || '9999999999'
+          },
+          order_meta: {
+            return_url: returnUrl,
+            notify_url: `${appUrl}/api/premium/purchase/webhook`
+          },
+          order_note: premiumItem.title
+        };
+
+        const cfResponse = await fetch(`${cashfreeBaseUrl}/orders`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-client-id': process.env.CASHFREE_APP_ID!,
+            'x-client-secret': process.env.CASHFREE_SECRET_KEY!,
+            'x-api-version': '2023-08-01'
+          },
+          body: JSON.stringify(orderPayload)
         });
 
-        // Amount in paise (1 INR = 100 paise)
-        const amountInPaise = Math.round(premiumItem.price * 100);
+        if (!cfResponse.ok) {
+          const cfError = await cfResponse.json();
+          logger.error('Cashfree order creation failed:', cfError);
+          // Fall through to simulated mode
+        } else {
+          const cfData = await cfResponse.json();
 
-        const order = await razorpay.orders.create({
-          amount: amountInPaise,
-          currency: 'INR',
-          receipt: `receipt_${premiumItem.id.slice(0, 20)}`,
-          notes: {
-            premiumItemId: premiumItem.id,
-            userId: userId
-          }
-        });
-
-        return NextResponse.json({
-          mode: 'razorpay',
-          keyId: process.env.RAZORPAY_KEY_ID,
-          orderId: order.id,
-          amount: order.amount,
-          currency: order.currency,
-          premiumItem
-        });
-      } catch (err: any) {
-        logger.error('Failed to create Razorpay order, falling back to simulated mode:', err);
-        // Fall back gracefully to simulation if order creation fails due to network/keys issues
+          return NextResponse.json({
+            mode: 'cashfree',
+            paymentSessionId: cfData.payment_session_id,
+            orderId: cfData.order_id,
+            amount: premiumItem.price,
+            currency: 'INR',
+            environment: isProduction ? 'production' : 'sandbox',
+            premiumItem
+          });
+        }
+      } catch (err) {
+        logger.error('Failed to create Cashfree order, falling back to simulated mode:', err);
+        // Fall back gracefully to simulation
       }
     }
 

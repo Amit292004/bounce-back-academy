@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
-import crypto from 'crypto';
-import { logger } from '@/lib/logger'
+import { logger } from '@/lib/logger';
 
 export async function POST(request: Request) {
   try {
@@ -23,12 +22,10 @@ export async function POST(request: Request) {
     const userId = payload.userId as string;
 
     // 2. Parse payload
-    const { 
-      premiumItemId, 
-      razorpay_order_id, 
-      razorpay_payment_id, 
-      razorpay_signature, 
-      simulatedConfirm 
+    const {
+      premiumItemId,
+      cashfreeOrderId,
+      simulatedConfirm
     } = await request.json();
 
     if (!premiumItemId) {
@@ -44,9 +41,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Premium listing was not found.' }, { status: 404 });
     }
 
-    // 3. Handle Simulated Confirmation Mode
+    // 3. Handle Simulated Confirmation Mode (local dev fallback)
     if (simulatedConfirm) {
-      // Record simulated unlock directly in the DB
       const purchase = await prisma.purchase.upsert({
         where: {
           userId_premiumItemId: {
@@ -68,27 +64,48 @@ export async function POST(request: Request) {
       });
     }
 
-    // 4. Handle Real Razorpay Cryptographic Verification Mode
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return NextResponse.json({ error: 'Payment verification parameters are missing.' }, { status: 400 });
+    // 4. Handle Real Cashfree Verification — fetch order status from Cashfree API
+    if (!cashfreeOrderId) {
+      return NextResponse.json({ error: 'Cashfree order ID is required for verification.' }, { status: 400 });
     }
 
-    const secret = process.env.RAZORPAY_KEY_SECRET;
-    if (!secret) {
-      return NextResponse.json({ error: 'Razorpay system is not configured on the server.' }, { status: 500 });
+    const appId = process.env.CASHFREE_APP_ID;
+    const secretKey = process.env.CASHFREE_SECRET_KEY;
+
+    if (!appId || !secretKey) {
+      return NextResponse.json({ error: 'Payment gateway is not configured on the server.' }, { status: 500 });
     }
 
-    // Create signature hash: order_id | payment_id
-    const hashText = `${razorpay_order_id}|${razorpay_payment_id}`;
-    const expectedSignature = crypto
-      .createHmac('sha256', secret)
-      .update(hashText)
-      .digest('hex');
+    const isProduction = (process.env.CASHFREE_ENV || 'production') === 'production';
+    const cashfreeBaseUrl = isProduction
+      ? 'https://api.cashfree.com/pg'
+      : 'https://sandbox.cashfree.com/pg';
 
-    const isVerified = expectedSignature === razorpay_signature;
+    // Fetch order status from Cashfree
+    const cfResponse = await fetch(`${cashfreeBaseUrl}/orders/${cashfreeOrderId}`, {
+      method: 'GET',
+      headers: {
+        'x-client-id': appId,
+        'x-client-secret': secretKey,
+        'x-api-version': '2023-08-01'
+      }
+    });
 
-    if (!isVerified) {
-      return NextResponse.json({ error: 'Invalid payment signature. Verification failed.' }, { status: 400 });
+    if (!cfResponse.ok) {
+      const cfError = await cfResponse.json();
+      logger.error('Cashfree order fetch failed:', cfError);
+      return NextResponse.json({ error: 'Failed to verify payment with Cashfree.' }, { status: 400 });
+    }
+
+    const cfOrder = await cfResponse.json();
+
+    // Check if payment is successful
+    if (cfOrder.order_status !== 'PAID') {
+      logger.warn('Cashfree order not PAID:', cfOrder.order_status);
+      return NextResponse.json(
+        { error: `Payment not completed. Status: ${cfOrder.order_status}` },
+        { status: 400 }
+      );
     }
 
     // Write verified unlock to DB

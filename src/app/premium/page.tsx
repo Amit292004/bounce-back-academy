@@ -108,15 +108,15 @@ export default function PremiumStorePage() {
     }
   };
 
-  const loadRazorpayScript = () => {
+  const loadCashfreeScript = (): Promise<boolean> => {
     return new Promise((resolve) => {
       // Check if already loaded
-      if ((window as any).Razorpay) {
+      if ((window as any).Cashfree) {
         resolve(true);
         return;
       }
       const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
       script.onload = () => resolve(true);
       script.onerror = () => resolve(false);
       document.body.appendChild(script);
@@ -146,64 +146,23 @@ export default function PremiumStorePage() {
         return;
       }
 
-      if (orderData.mode === 'razorpay') {
-        // Trigger Real Razorpay Standard Popup
-        const scriptLoaded = await loadRazorpayScript();
+      if (orderData.mode === 'cashfree') {
+        // Load Cashfree JS SDK v3
+        const scriptLoaded = await loadCashfreeScript();
         if (!scriptLoaded) {
-          alert('Failed to load payment gateway script. Please check your network.');
+          alert('Failed to load Cashfree payment SDK. Please check your network.');
           return;
         }
 
-        const options = {
-          key: orderData.keyId,
-          amount: orderData.amount,
-          currency: orderData.currency,
-          name: 'Bounce Back Academy',
-          description: orderData.premiumItem.title,
-          image: '/logo.png',
-          order_id: orderData.orderId,
-          handler: async function (response: any) {
-            // Trigger cryptographic verification on backend
-            setCheckoutItem(item);
-            setCheckoutStep('processing');
-            setLoaderMessage('Verifying payment signature...');
+        const cashfree = new (window as any).Cashfree({
+          mode: orderData.environment || 'production'
+        });
 
-            try {
-              const verifyRes = await fetch('/api/premium/purchase/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  premiumItemId: item.id,
-                  razorpay_order_id: response.razorpay_order_id,
-                  razorpay_payment_id: response.razorpay_payment_id,
-                  razorpay_signature: response.razorpay_signature
-                })
-              });
-
-              if (verifyRes.ok) {
-                setCheckoutStep('success');
-                setItems(prev => prev.map(l => l.id === item.id ? { ...l, unlocked: true } : l));
-              } else {
-                const data = await verifyRes.json();
-                alert(data.error || 'Payment verification failed.');
-                setCheckoutItem(null);
-              }
-            } catch {
-              alert('Error verifying payment.');
-              setCheckoutItem(null);
-            }
-          },
-          prefill: {
-            name: '',
-            email: '',
-          },
-          theme: {
-            color: '#6366f1' // Brand Indigo HSL color
-          }
-        };
-
-        const rzp = new (window as any).Razorpay(options);
-        rzp.open();
+        // Cashfree checkout redirects to return_url after payment
+        cashfree.checkout({
+          paymentSessionId: orderData.paymentSessionId,
+          redirectTarget: '_self'
+        });
       } else {
         // Fall back to gorgeous simulated drawer
         setCheckoutItem(item);
@@ -560,7 +519,7 @@ export default function PremiumStorePage() {
                 <FaCheckCircle className={styles.successIcon} />
                 <h3 className={styles.successTitle}>Access Unlocked!</h3>
                 <p className={styles.successText}>
-                  Simulated checkout complete! Your paid notes, paper, or lectures have been successfully authorized.
+                  Your purchase is complete! Your paid notes, papers, or lectures have been successfully unlocked.
                 </p>
                 <a href={getDirectAccessUrl(checkoutItem)} className="btn-primary" style={{ width: '100%', padding: '0.8rem 1.5rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontWeight: 800 }}>
                   <FaBookOpen /> Access Unlocked Material <FaArrowRight />

@@ -78,11 +78,11 @@ export default function PremiumDetailPage() {
     }
   };
 
-  const loadRazorpayScript = (): Promise<boolean> => {
+  const loadCashfreeScript = (): Promise<boolean> => {
     return new Promise(resolve => {
-      if ((window as any).Razorpay) { resolve(true); return; }
+      if ((window as any).Cashfree) { resolve(true); return; }
       const s = document.createElement('script');
-      s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      s.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
       s.onload = () => resolve(true);
       s.onerror = () => resolve(false);
       document.body.appendChild(s);
@@ -115,42 +115,19 @@ export default function PremiumDetailPage() {
         return;
       }
 
-      if (orderData.mode === 'razorpay') {
-        const loaded = await loadRazorpayScript();
-        if (!loaded) { alert('Failed to load payment gateway.'); return; }
+      if (orderData.mode === 'cashfree') {
+        const loaded = await loadCashfreeScript();
+        if (!loaded) { alert('Failed to load Cashfree payment SDK.'); return; }
 
-        const options = {
-          key: orderData.keyId,
-          amount: orderData.amount,
-          currency: orderData.currency,
-          name: 'Bounce Back Academy',
-          description: item?.title,
-          order_id: orderData.orderId,
-          handler: async (response: any) => {
-            setShowCheckout(true);
-            setCheckoutStep('processing');
-            setLoaderMessage('Verifying payment signature...');
-            const verifyRes = await fetch('/api/premium/purchase/verify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                premiumItemId: itemId,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature
-              })
-            });
-            if (verifyRes.ok) {
-              setCheckoutStep('success');
-              fetchItem();
-            } else {
-              alert('Payment verification failed.');
-              setShowCheckout(false);
-            }
-          },
-          theme: { color: '#6366f1' }
-        };
-        new (window as any).Razorpay(options).open();
+        const cashfree = new (window as any).Cashfree({
+          mode: orderData.environment || 'production'
+        });
+
+        // Cashfree checkout redirects to return_url after payment
+        cashfree.checkout({
+          paymentSessionId: orderData.paymentSessionId,
+          redirectTarget: '_self'
+        });
       } else {
         setShowCheckout(true);
         setCheckoutStep('details');
