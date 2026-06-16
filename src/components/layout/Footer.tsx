@@ -65,7 +65,7 @@ export default function Footer() {
           <h4 className={styles.colTitle}>Support</h4>
           <ul className={styles.linkList}>
             <li><Link href="/contact" className={styles.footerLink}>Contact Us</Link></li>
-            <li><Link href="/feedback" className={styles.footerLink}>Give Feedback</Link></li>
+            <li><Link href="/feedback" className={styles.footerLink}>Contact Support</Link></li>
             <li><a href="mailto:bouncebackacademy.edu@gmail.com" className={styles.footerLink}>Email Us</a></li>
             <li><Link href="/register" className={styles.footerLink}>Create Account</Link></li>
             <li><Link href="/login" className={styles.footerLink}>Sign In</Link></li>

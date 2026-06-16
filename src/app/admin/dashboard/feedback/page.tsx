@@ -32,7 +32,7 @@ export default function FeedbackPage() {
 
   return (
     <div>
-      <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem' }}>User Feedback</h1>
+      <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem' }}>Support Tickets</h1>
       <p style={{ opacity: 0.6, marginBottom: '2rem' }}>Messages submitted by students on the contact page.</p>
 
       {loading ? (

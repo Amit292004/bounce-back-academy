@@ -23,12 +23,15 @@ export async function POST(request: Request) {
 }
 
 // GET /api/reviews — fetch approved reviews for homepage
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const limit = searchParams.get('limit');
+    
     const reviews = await prisma.review.findMany({
       where: { approved: true },
       orderBy: { createdAt: 'desc' },
-      take: 9,
+      ...(limit === 'all' ? {} : { take: Number(limit) || 9 }),
     });
     return NextResponse.json(reviews);
   } catch {

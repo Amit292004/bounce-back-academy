@@ -1,39 +1,14 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { FaPaperPlane, FaCheckCircle, FaComments, FaQuoteLeft } from 'react-icons/fa';
+import { useState } from 'react';
+import { FaPaperPlane, FaCheckCircle, FaHeadset } from 'react-icons/fa';
 import styles from './page.module.css';
-
-interface FeedbackItem {
-  id: string;
-  name: string;
-  className: string;
-  message: string;
-  createdAt: string;
-}
 
 export default function FeedbackPage() {
   const [form, setForm] = useState({ name: '', className: '10', message: '' });
-  const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [listLoading, setListLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
-
-  const fetchFeedbacks = async () => {
-    try {
-      const res = await fetch('/api/feedback');
-      if (res.ok) setFeedbacks(await res.json());
-    } catch {
-      // silent fail for list
-    } finally {
-      setListLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchFeedbacks();
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,10 +24,9 @@ export default function FeedbackPage() {
 
       if (res.ok) {
         setSubmitted(true);
-        fetchFeedbacks(); // Refresh list
       } else {
         const data = await res.json();
-        setError(data.error || 'Failed to submit feedback. Please try again.');
+        setError(data.error || 'Failed to submit. Please try again.');
       }
     } catch {
       setError('Something went wrong. Please check your connection.');
@@ -69,16 +43,16 @@ export default function FeedbackPage() {
             <div className={styles.successIcon}>
               <FaCheckCircle />
             </div>
-            <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '1rem' }}>Thank You!</h2>
+            <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '1rem' }}>Message Sent!</h2>
             <p style={{ opacity: 0.7, fontSize: '1.1rem', marginBottom: '2rem' }}>
-              Your feedback has been received. We appreciate your input and will use it to improve the academy.
+              Thank you for reaching out. Our team will review your message shortly.
             </p>
             <button 
               onClick={() => setSubmitted(false)}
               className="btn-secondary"
               style={{ padding: '0.75rem 2rem' }}
             >
-              Submit Another
+              Send Another Message
             </button>
           </div>
         </div>
@@ -121,10 +95,10 @@ export default function FeedbackPage() {
             </div>
 
             <div className={styles.inputGroup}>
-              <label htmlFor="message">Your Message</label>
+              <label htmlFor="message">Your Issue or Question</label>
               <textarea
                 id="message"
-                placeholder="What's on your mind?"
+                placeholder="Describe your issue or ask a question..."
                 rows={5}
                 value={form.message}
                 onChange={e => setForm({ ...form, message: e.target.value })}
@@ -139,7 +113,7 @@ export default function FeedbackPage() {
             )}
 
             <button type="submit" className={`btn-primary ${styles.submitBtn}`} disabled={loading}>
-              <FaPaperPlane /> {loading ? 'Submitting...' : 'Submit Feedback'}
+              <FaPaperPlane /> {loading ? 'Sending...' : 'Send Message'}
             </button>
           </form>
         </div>
@@ -157,51 +131,18 @@ export default function FeedbackPage() {
           padding: '0.4rem 1rem', borderRadius: '999px', fontSize: '0.875rem', 
           marginBottom: '1.5rem', backdropFilter: 'blur(10px)' 
         }}>
-          <FaComments /> Feedback
+          <FaHeadset /> Support
         </div>
         <h1 style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-          Share Your <span className="text-gradient">Feedback</span>
+          Contact <span className="text-gradient">Support</span>
         </h1>
         <p style={{ opacity: 0.7, fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
-          Help us improve Bounce Back Academy by sharing your thoughts, suggestions, or issues.
+          Having trouble? Want to report a bug? Send us a message and our team will look into it.
         </p>
       </div>
 
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 1.5rem 6rem' }}>
         {renderContent()}
-
-        {/* Feedback List */}
-        <div className={styles.listSection}>
-          <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '2rem', textAlign: 'center' }}>
-            What Others Are <span className="text-gradient">Saying</span>
-          </h3>
-
-          {listLoading ? (
-            <p style={{ textAlign: 'center', opacity: 0.5 }}>Loading feedback...</p>
-          ) : feedbacks.length === 0 ? (
-            <p style={{ textAlign: 'center', opacity: 0.5 }}>No feedback shared yet. Be the first!</p>
-          ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-              {feedbacks.map(fb => (
-                <div key={fb.id} className={styles.feedbackCard}>
-                  <div className={styles.feedbackHeader}>
-                    <div>
-                      <span className={styles.userName}>{fb.name}</span>
-                      <span className={styles.userClass}>Class {fb.className}</span>
-                    </div>
-                    <span className={styles.date}>
-                      {new Date(fb.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-                    </span>
-                  </div>
-                  <p className={styles.message}>
-                    <FaQuoteLeft style={{ opacity: 0.2, marginRight: '0.5rem', fontSize: '0.8rem' }} />
-                    {fb.message}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

@@ -85,7 +85,12 @@ export default async function Home() {
       {/* ── Quick Access ── */}
       <section className={styles.quickSection}>
         <div className={styles.quickInner}>
-          <p className={styles.quickLabel}>Quick Access</p>
+          <div style={{ marginBottom: '0.75rem' }}>
+            <div style={{ fontSize: '0.75rem', opacity: 0.5, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.25rem' }}>
+              Swipe / Scroll to explore &rarr;
+            </div>
+            <p className={styles.quickLabel} style={{ marginBottom: 0 }}>Quick Access</p>
+          </div>
           <div className={styles.quickGrid}>
             {[
               { href: '/papers',       label: 'Question Papers',    tag: 'Study' },
@@ -197,8 +202,8 @@ export default async function Home() {
           <Link href="/feedback" className={styles.connectCard}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--foreground)', opacity: 0.7 }}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <div>
-              <div className={styles.connectName}>Give Feedback</div>
-              <div className={styles.connectDesc}>Help us improve the platform</div>
+              <div className={styles.connectName}>Support Tickets</div>
+              <div className={styles.connectDesc}>Get help or report issues</div>
             </div>
             <svg className={styles.connectArrow} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </Link>

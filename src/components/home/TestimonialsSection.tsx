@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import styles from './TestimonialsSection.module.css';
 
 interface Review {
@@ -148,6 +149,27 @@ export default function TestimonialsSection() {
             ))
         }
       </div>
+
+      {/* View All Button */}
+      {reviews.length > 3 && (
+        <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+          <Link
+            href="/reviews"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+              padding: '0.75rem 1.5rem', borderRadius: '12px',
+              background: 'var(--surface-card)', color: 'var(--foreground)',
+              fontWeight: 700, fontSize: '0.9rem', border: '1px solid var(--surface-border)',
+              textDecoration: 'none', cursor: 'pointer', transition: 'var(--transition)',
+              boxShadow: 'var(--shadow-sm)'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--surface-border)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--surface-card)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+          >
+            View all {reviews.length} reviews →
+          </Link>
+        </div>
+      )}
 
       {/* Review submission modal */}
       {showForm && (
