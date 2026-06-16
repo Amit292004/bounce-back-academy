@@ -73,6 +73,28 @@ export async function POST(request: Request) {
       }, { status: 403 });
     }
 
+    // Auto-populate admin photo from Google profile picture if not already set
+    const googlePicture = googlePayload.picture;
+    if (googlePicture) {
+      try {
+        const existingBranding = await prisma.branding.findFirst();
+        if (existingBranding) {
+          if (!existingBranding.adminPhoto) {
+            await prisma.branding.update({
+              where: { id: existingBranding.id },
+              data: { adminPhoto: googlePicture }
+            });
+          }
+        } else {
+          await prisma.branding.create({
+            data: { adminPhoto: googlePicture }
+          });
+        }
+      } catch (err) {
+        logger.error('Failed to auto-populate admin photo from Google:', err);
+      }
+    }
+
     // Success! Issue full admin token
     const fullToken = await signAdminToken({ adminId: admin.id, username: admin.username });
 
