@@ -34,7 +34,12 @@ export default function BrandingPage() {
     fd.append('file', file);
     fd.append('folder', folder);
     const res = await fetch('/api/upload', { method: 'POST', body: fd });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      setMessage(`Upload failed: ${err.details || err.error || res.statusText}`);
+      setTimeout(() => setMessage(''), 5000);
+      return null;
+    }
     const data = await res.json();
     return data.url || data.path || null;
   };

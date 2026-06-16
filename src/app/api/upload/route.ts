@@ -52,11 +52,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ url: result.secure_url || result.url });
     }
   } catch (error: any) {
-    logger.error('--- UPLOAD ERROR ---', error);
+    logger.error('--- UPLOAD ERROR ---', JSON.stringify(error, Object.getOwnPropertyNames(error)));
+    console.error('--- RAW ERROR ---', error);
     
     return NextResponse.json({ 
       error: error.message || 'Upload Failed',
-      details: error.error?.message || error.message 
+      details: error.error?.message || error.message || JSON.stringify(error)
     }, { status: 500 });
   }
 }
