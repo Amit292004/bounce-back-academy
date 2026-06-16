@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { cookies } from 'next/headers';
+import { verifyToken } from '@/lib/auth';
 
 async function isAdmin() {
   const cookieStore = await cookies();
-  return cookieStore.get('admin_session')?.value === 'true';
+  const token = cookieStore.get('admin_token')?.value;
+  if (!token) return false;
+  const payload = await verifyToken(token);
+  return !!(payload && payload.adminId);
 }
 
 // GET /api/admin/reviews — all reviews (pending + approved)
