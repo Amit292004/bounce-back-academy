@@ -133,6 +133,16 @@ model Feedback {
   createdAt DateTime @default(now())
 }
 
+model Review {
+  id        String   @id @default(cuid())
+  name      String
+  className String
+  quote     String
+  score     String?
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
 model Branding {
   id               String   @id @default(cuid())
   siteLogo         String?

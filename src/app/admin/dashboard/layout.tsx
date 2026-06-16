@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { 
   FaHome, FaBook, FaCalendarAlt, FaFileAlt, 
   FaVideo, FaBullhorn, FaImages, FaUsers, FaComments, FaSignOutAlt,
-  FaBars, FaTimes, FaAd, FaPaperPlane, FaStore
+  FaBars, FaTimes, FaAd, FaPaperPlane, FaStore, FaStar
 } from 'react-icons/fa';
 import styles from './layout.module.css';
 import { getDriveImageUrl } from '@/lib/driveImage';
@@ -50,6 +50,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
     { label: 'Broadcaster', href: '/admin/dashboard/broadcaster', icon: <FaPaperPlane /> },
     { label: 'Users', href: '/admin/dashboard/users', icon: <FaUsers /> },
     { label: 'Feedback', href: '/admin/dashboard/feedback', icon: <FaComments /> },
+    { label: 'Reviews', href: '/admin/dashboard/reviews', icon: <FaStar /> },
   ];
 
   return (
