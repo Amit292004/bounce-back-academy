@@ -145,6 +145,7 @@ export default function Navbar() {
   const [megaOpen, setMegaOpen] = useState<'resources' | 'platform' | null>(null);
   const megaRef = useRef<HTMLDivElement>(null);
 
+  // Main initialization effect (branding, announcements, event listeners)
   useEffect(() => {
     const checkAnnouncements = async () => {
       const cached = sessionStorage.getItem('bb_announcement_checked');
@@ -159,12 +160,6 @@ export default function Navbar() {
           }
           sessionStorage.setItem('bb_announcement_checked', 'true');
         }
-      } catch { }
-    };
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('/api/student/me');
-        if (res.ok) setAuth(await res.json());
       } catch { }
     };
     const fetchBranding = async () => {
@@ -184,17 +179,35 @@ export default function Navbar() {
         }
       } catch { }
     };
-    checkAuth();
     fetchBranding();
     checkAnnouncements();
-    window.addEventListener('profileUpdated', checkAuth);
     const onAnnouncementsSeen = () => setHasNewAnnouncement(false);
     window.addEventListener('announcementsSeen', onAnnouncementsSeen);
     return () => {
-      window.removeEventListener('profileUpdated', checkAuth);
       window.removeEventListener('announcementsSeen', onAnnouncementsSeen);
     };
   }, []);
+
+  // Auth checking effect (runs on mount, pathname changes, or custom profile update event)
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/student/me');
+        if (res.ok) {
+          setAuth(await res.json());
+        } else {
+          setAuth({ authenticated: false });
+        }
+      } catch {
+        setAuth({ authenticated: false });
+      }
+    };
+    checkAuth();
+    window.addEventListener('profileUpdated', checkAuth);
+    return () => {
+      window.removeEventListener('profileUpdated', checkAuth);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
