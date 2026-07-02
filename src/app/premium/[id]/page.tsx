@@ -453,7 +453,7 @@ export default function PremiumDetailPage() {
             <div className={styles.viewerActions}>
               {activeContent.downloadUrl && (
                 <button
-                  onClick={() => handleDownload(getDownloadLink(activeContent.downloadUrl), `${activeContent.title}.pdf`)}
+                  onClick={() => handleDownload(getDownloadLink(activeContent.downloadUrl || ''), `${activeContent.title}.pdf`)}
                   className="btn-primary"
                   style={{ fontSize: '0.9rem', padding: '0.65rem 1.25rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                 >

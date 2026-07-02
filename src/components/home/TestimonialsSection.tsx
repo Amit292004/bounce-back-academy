@@ -380,7 +380,6 @@ export default function TestimonialsSection() {
                       transition: 'var(--transition)',
                       display: 'flex',
                       alignItems: 'center',
-                      justifycontent: 'center',
                       justifyContent: 'center',
                       gap: '0.45rem',
                     }}
