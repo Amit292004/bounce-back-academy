@@ -6,8 +6,13 @@ const prisma = new PrismaClient({
 })
 
 async function main() {
-  const username = process.env.ADMIN_USERNAME || 'Amitsharmabouncebackacademy@2026'
-  const password = process.env.ADMIN_PASSWORD || 'Amitsharmanagalanduniversity@2027'
+  const username = process.env.ADMIN_USERNAME
+  const password = process.env.ADMIN_PASSWORD
+
+  if (!username || !password) {
+    console.error('Error: ADMIN_USERNAME and ADMIN_PASSWORD environment variables must be set.')
+    process.exit(1)
+  }
 
   const existingAdmin = await prisma.admin.findUnique({
     where: { username }
