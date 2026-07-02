@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   FaPaperPlane, FaRobot, FaUser, FaTrash, FaLightbulb,
   FaStop, FaCopy, FaCheck, FaRedo, FaHistory, FaBookmark,
@@ -16,6 +17,19 @@ interface Message {
   timestamp: Date;
   id: string;
 }
+
+const SparkleIcon = ({ size = 20, className }: { size?: number, className?: string }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="currentColor" 
+    className={className}
+    style={{ display: 'inline-block', verticalAlign: 'middle' }}
+  >
+    <path d="M12 2c0 5.523 4.477 10 10 10-5.523 0-10 4.477-10 10 0-5.523-4.477-10-10-10 5.523 0 10-4.477 10-10z" />
+  </svg>
+);
 
 const EXAM_TYPES = ['General', 'NBSE', 'JEE', 'NEET', 'CUET'];
 const DIFFICULTY_LEVELS = [
@@ -124,6 +138,11 @@ export default function AskPage() {
       .catch(() => setSubjectsLoading(false));
     fetch('/api/student/me').then(r => setIsAuthenticated(r.ok)).catch(() => setIsAuthenticated(false));
     setHistory(loadHistory());
+    
+    // Auto-open sidebar on desktop screens
+    if (window.innerWidth > 768) {
+      setShowHistory(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -254,14 +273,18 @@ export default function AskPage() {
     <div className={styles.page}>
 
       {/* ── Sidebar ─────────────────────────────────────────────── */}
-      <aside className={`${styles.sidebar} ${showHistory ? styles.sidebarOpen : ''}`}>
+      <aside className={`${styles.sidebar} ${showHistory ? styles.sidebarOpen : styles.sidebarCollapsed}`}>
         <div className={styles.sidebarHeader}>
           <div className={styles.sidebarLogo}>
-            <FaRobot />
+            <SparkleIcon size={16} />
           </div>
           <span className={styles.sidebarTitle}>AI Tutor</span>
-          <button className={styles.sidebarClose} onClick={() => setShowHistory(false)}>
-            <FaTimes />
+          <button className={styles.sidebarClose} onClick={() => setShowHistory(false)} title="Collapse sidebar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect width="18" height="18" x="3" y="3" rx="2" />
+              <path d="M9 3v18" />
+              <path d="m16 15-3-3 3-3" />
+            </svg>
           </button>
         </div>
 
@@ -301,18 +324,35 @@ export default function AskPage() {
         {/* ── Top Bar ─────────────────────────────────────────── */}
         <header className={styles.topBar}>
           <div className={styles.topBarLeft}>
-            <button className={styles.historyToggle} onClick={() => setShowHistory(v => !v)} title="History">
-              <FaHistory />
-              {history.length > 0 && <span className={styles.historyBadge}>{history.length}</span>}
+            <button className={styles.historyToggle} onClick={() => setShowHistory(v => !v)} title="Toggle Sidebar">
+              {showHistory ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="18" height="18" x="3" y="3" rx="2" />
+                  <path d="M9 3v18" />
+                  <path d="m16 15-3-3 3-3" />
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="18" height="18" x="3" y="3" rx="2" />
+                  <path d="M9 3v18" />
+                  <path d="m13 9 3 3-3 3" />
+                </svg>
+              )}
+              {history.length > 0 && !showHistory && <span className={styles.historyBadge}>{history.length}</span>}
             </button>
             <div className={styles.brandRow}>
+              <Link href="/" className={styles.homeBackBtn} title="Back to Homepage">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12" />
+                  <polyline points="12 19 5 12 12 5" />
+                </svg>
+              </Link>
               <div className={`${styles.aiOrb} ${isStreaming ? styles.aiOrbActive : ''}`}>
-                <FaRobot />
+                <SparkleIcon size={16} />
                 {isStreaming && <span className={styles.orbRing} />}
               </div>
               <div>
-                <h1 className={styles.brandTitle}>BBA <span className={styles.brandAi}>AI Tutor</span></h1>
-                <p className={styles.brandSub}>NBSE · JEE · NEET · CUET</p>
+                <h1 className={styles.brandTitle}>AI Tutor</h1>
               </div>
             </div>
           </div>
@@ -403,7 +443,24 @@ export default function AskPage() {
             /* ── Empty / Welcome State ── */
             <div className={styles.welcome}>
               <div className={styles.welcomeOrb}>
-                <FaLightbulb />
+                <svg 
+                  width="36" 
+                  height="36" 
+                  viewBox="0 0 24 24" 
+                  className={styles.welcomeSparkle}
+                >
+                  <defs>
+                    <linearGradient id="welcome-sparkle-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#6366f1" />
+                      <stop offset="50%" stopColor="#8b5cf6" />
+                      <stop offset="100%" stopColor="#ec4899" />
+                    </linearGradient>
+                  </defs>
+                  <path 
+                    d="M12 2c0 5.523 4.477 10 10 10-5.523 0-10 4.477-10 10 0-5.523-4.477-10-10-10 5.523 0 10-4.477 10-10z" 
+                    fill="url(#welcome-sparkle-grad)"
+                  />
+                </svg>
                 <div className={styles.welcomeOrbGlow} />
               </div>
               <h2 className={styles.welcomeTitle}>What do you want to learn today?</h2>
@@ -434,43 +491,44 @@ export default function AskPage() {
             /* ── Messages ── */
             <div className={styles.messageList}>
               {messages.map((msg, idx) => (
-                <div key={msg.id} className={`${styles.messageRow} ${msg.role === 'user' ? styles.userRow : styles.aiRow}`}
+                <div key={msg.id} className={msg.role === 'user' ? styles.userMessageRow : styles.aiMessageRow}
                   style={{ animationDelay: `${idx * 0.04}s` }}>
 
-                  {msg.role === 'assistant' && (
-                    <div className={styles.aiAvatar}>
-                      <FaRobot />
+                  {msg.role === 'user' ? (
+                    <div className={styles.userBubble}>
+                      <p className={styles.userText}>{msg.content}</p>
+                      <span className={styles.userMsgTime}>
+                        {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
                     </div>
-                  )}
-
-                  <div className={`${styles.bubble} ${msg.role === 'user' ? styles.userBubble : styles.aiBubble}`}>
-                    {msg.role === 'assistant' ? (
-                      <>
-                        <div className={styles.markdownContent}
-                          dangerouslySetInnerHTML={{ __html: `<p class="md-p">${renderMarkdown(msg.content)}</p>` }}
-                        />
-                        <div className={styles.msgActions}>
-                          <span className={styles.msgTime}>
-                            {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                          <button className={styles.actionBtn} onClick={() => copyToClipboard(msg.content, msg.id)}>
-                            {copiedId === msg.id ? <><FaCheck /> Copied</> : <><FaCopy /> Copy</>}
+                  ) : (
+                    <div className={styles.aiCard}>
+                      <div className={styles.aiCardHeader}>
+                        <div className={styles.aiCardHeaderLeft}>
+                          <SparkleIcon size={13} className={styles.aiCardSparkle} />
+                          <span>AI Tutor</span>
+                        </div>
+                        <div className={styles.aiCardHeaderRight}>
+                          <button className={styles.cardActionBtn} onClick={() => copyToClipboard(msg.content, msg.id)}>
+                            {copiedId === msg.id ? <><FaCheck size={10} /> Copied</> : <><FaCopy size={10} /> Copy</>}
                           </button>
                           {msg.id === lastAiId && (
-                            <button className={styles.actionBtn} onClick={regenerate} disabled={isStreaming}>
-                              <FaRedo /> Retry
+                            <button className={styles.cardActionBtn} onClick={regenerate} disabled={isStreaming}>
+                              <FaRedo size={10} /> Retry
                             </button>
                           )}
                         </div>
-                      </>
-                    ) : (
-                      <p className={styles.userText}>{msg.content}</p>
-                    )}
-                  </div>
-
-                  {msg.role === 'user' && (
-                    <div className={styles.userAvatar}>
-                      <FaUser />
+                      </div>
+                      <div className={styles.aiCardBody}>
+                        <div className={styles.markdownContent}
+                          dangerouslySetInnerHTML={{ __html: `<p class="md-p">${renderMarkdown(msg.content)}</p>` }}
+                        />
+                      </div>
+                      <div className={styles.aiCardFooter}>
+                        <span className={styles.msgTime}>
+                          {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -478,19 +536,29 @@ export default function AskPage() {
 
               {/* Streaming bubble */}
               {isStreaming && (
-                <div className={`${styles.messageRow} ${styles.aiRow}`}>
-                  <div className={styles.aiAvatar}><FaRobot /></div>
-                  <div className={`${styles.bubble} ${styles.aiBubble}`}>
-                    {streamingContent ? (
-                      <div className={styles.markdownContent}
-                        dangerouslySetInnerHTML={{ __html: `<p class="md-p">${renderMarkdown(streamingContent)}</p><span class="typing-cursor">▍</span>` }}
-                      />
-                    ) : (
-                      <div className={styles.thinkingRow}>
-                        <div className={styles.thinkingDots}><span /><span /><span /></div>
-                        <span className={styles.thinkingText}>Thinking…</span>
+                <div className={styles.aiMessageRow}>
+                  <div className={styles.aiCard}>
+                    <div className={styles.aiCardHeader}>
+                      <div className={styles.aiCardHeaderLeft}>
+                        <SparkleIcon size={13} className={styles.aiCardSparkle} />
+                        <span>AI Tutor</span>
                       </div>
-                    )}
+                      <div className={styles.aiCardHeaderRight}>
+                        <span className={styles.thinkingStatus}>Generating...</span>
+                      </div>
+                    </div>
+                    <div className={styles.aiCardBody}>
+                      {streamingContent ? (
+                        <div className={styles.markdownContent}
+                          dangerouslySetInnerHTML={{ __html: `<p class="md-p">${renderMarkdown(streamingContent)}</p><span class="typing-cursor">▍</span>` }}
+                        />
+                      ) : (
+                        <div className={styles.thinkingRow}>
+                          <div className={styles.thinkingDots}><span /><span /><span /></div>
+                          <span className={styles.thinkingText}>Thinking…</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}

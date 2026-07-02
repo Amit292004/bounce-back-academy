@@ -10,6 +10,7 @@ import SignupReminder from './SignupReminder';
 export default function MainLayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith('/admin');
+  const isAskRoute = pathname === '/ask';
 
   useEffect(() => {
     // Generate or get session ID for real-time tracking
@@ -38,11 +39,11 @@ export default function MainLayoutWrapper({ children }: { children: React.ReactN
 
   return (
     <>
-      {!isAdminRoute && <Navbar />}
+      {!isAdminRoute && !isAskRoute && <Navbar />}
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         {children}
       </main>
-      {!isAdminRoute && <Footer />}
+      {!isAdminRoute && !isAskRoute && <Footer />}
       {!isAdminRoute && <SignupReminder />}
     </>
   );

@@ -80,13 +80,14 @@ export async function handleDownload(url: string, fileName?: string) {
   // Attempting to fetch them will throw a TypeError and trigger the Next.js error overlay.
   // We can skip fetch and directly use an anchor tag to let the browser handle the native download prompt.
   if (url.includes('drive.google.com')) {
-    const link = document.createElement('a');
-    link.href = url;
-    link.target = '_blank';
-    link.download = fileName || 'download';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    let iframe = document.getElementById('hidden-download-iframe') as HTMLIFrameElement;
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.id = 'hidden-download-iframe';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+    }
+    iframe.src = url;
     return;
   }
   

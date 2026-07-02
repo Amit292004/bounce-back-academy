@@ -6,6 +6,7 @@ import Link from 'next/link';
 export default function SignupReminder() {
   const [visible, setVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true); // default true = hidden until confirmed logged-out
+  const [siteLogo, setSiteLogo] = useState<string | null>(null);
 
   useEffect(() => {
     // Always check auth — do NOT skip based on sessionStorage
@@ -24,7 +25,27 @@ export default function SignupReminder() {
         setIsLoggedIn(true); // network error → assume logged in, don't annoy users
       }
     };
+
+    const fetchBranding = async () => {
+      const cached = sessionStorage.getItem('bb_branding_logo');
+      if (cached) {
+        setSiteLogo(cached);
+        return;
+      }
+      try {
+        const res = await fetch('/api/admin/branding');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.siteLogo) {
+            setSiteLogo(data.siteLogo);
+            sessionStorage.setItem('bb_branding_logo', data.siteLogo);
+          }
+        }
+      } catch { }
+    };
+
     checkAuth();
+    fetchBranding();
   }, []);
 
   useEffect(() => {
@@ -113,16 +134,21 @@ export default function SignupReminder() {
           width: 44px;
           height: 44px;
           border-radius: 12px;
-          background: linear-gradient(135deg, #6366f1, #8b5cf6);
+          background: rgba(99, 102, 241, 0.1);
+          border: 1px solid rgba(99, 102, 241, 0.2);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.3rem;
           flex-shrink: 0;
           position: relative;
           z-index: 1;
           animation: sr-iconPulse 2.5s ease-in-out infinite;
-          box-shadow: 0 4px 14px rgba(99,102,241,0.45);
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
+        .sr-icon-img {
+          width: 24px;
+          height: 24px;
+          object-fit: contain;
         }
 
         .sr-body {
@@ -239,7 +265,13 @@ export default function SignupReminder() {
 
         <div className="sr-border">
           <div className="sr-card">
-            <div className="sr-icon">🎓</div>
+            <div className="sr-icon">
+              <img 
+                src={siteLogo || "/logo.png"} 
+                alt="Bounce Back Academy Logo" 
+                className="sr-icon-img"
+              />
+            </div>
             <div className="sr-body">
               <p className="sr-title">
                 Create your free account!

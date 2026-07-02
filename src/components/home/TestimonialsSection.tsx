@@ -97,7 +97,7 @@ export default function TestimonialsSection() {
         <button
           onClick={() => { setShowForm(true); setSubmitted(false); setError(''); }}
           style={{
-            display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+            display: 'inline-flex', alignItems: 'center', gap: '0.45rem',
             padding: '0.55rem 1.1rem', borderRadius: '8px',
             background: 'var(--gradient-primary)', color: 'white',
             fontWeight: 700, fontSize: '0.82rem', border: 'none',
@@ -105,7 +105,20 @@ export default function TestimonialsSection() {
             transition: 'var(--transition)', whiteSpace: 'nowrap',
           }}
         >
-          ✍️ Write a Review
+          <svg 
+            width="14" 
+            height="14" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2.5" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+          </svg>
+          Write a Review
         </button>
       </div>
 
@@ -207,7 +220,28 @@ export default function TestimonialsSection() {
 
             {submitted ? (
               <div style={{ textAlign: 'center', padding: '1rem 0' }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎉</div>
+                <div style={{ marginBottom: '1.25rem', display: 'flex', justifyContent: 'center' }}>
+                  <div style={{
+                    width: '56px', height: '56px', borderRadius: '50%',
+                    background: 'rgba(16, 185, 129, 0.1)',
+                    border: '1px solid rgba(16, 185, 129, 0.2)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#10b981', boxShadow: '0 0 20px rgba(16, 185, 129, 0.15)'
+                  }}>
+                    <svg 
+                      width="24" 
+                      height="24" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="3" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                </div>
                 <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--foreground)' }}>
                   Thank you for your review!
                 </h3>
@@ -225,8 +259,30 @@ export default function TestimonialsSection() {
               </div>
             ) : (
               <>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.25rem', color: 'var(--foreground)' }}>
-                  ✍️ Share Your Experience
+                <h3 style={{ 
+                  fontSize: '1.15rem', 
+                  fontWeight: 700, 
+                  marginBottom: '0.35rem', 
+                  color: 'var(--foreground)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <svg 
+                    width="18" 
+                    height="18" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="var(--primary)" 
+                    strokeWidth="2.5" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                    style={{ flexShrink: 0 }}
+                  >
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                  </svg>
+                  Share Your Experience
                 </h3>
                 <p style={{ opacity: 0.55, fontSize: '0.82rem', marginBottom: '1.5rem', color: 'var(--foreground)' }}>
                   Your review helps other students discover Bounce Back Academy.
@@ -322,9 +378,33 @@ export default function TestimonialsSection() {
                       fontWeight: 700, border: 'none', cursor: submitting ? 'not-allowed' : 'pointer',
                       fontSize: '0.88rem', opacity: (submitting || form.quote.length < 20) ? 0.6 : 1,
                       transition: 'var(--transition)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifycontent: 'center',
+                      justifyContent: 'center',
+                      gap: '0.45rem',
                     }}
                   >
-                    {submitting ? 'Submitting...' : '🚀 Submit Review'}
+                    {submitting ? (
+                      'Submitting...'
+                    ) : (
+                      <>
+                        <svg 
+                          width="14" 
+                          height="14" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2.5" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        >
+                          <line x1="22" y1="2" x2="11" y2="13" />
+                          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                        </svg>
+                        <span>Submit Review</span>
+                      </>
+                    )}
                   </button>
                   <p style={{ fontSize: '0.72rem', opacity: 0.45, textAlign: 'center', color: 'var(--foreground)', margin: 0 }}>
                     Reviews are reviewed by our team before appearing publicly.
