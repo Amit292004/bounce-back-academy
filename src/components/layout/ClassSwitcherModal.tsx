@@ -36,6 +36,16 @@ function getCourseColor(name: string): string {
   }
   return '#8b5cf6'; // fallback violet
 }
+const FALLBACK_COURSES: Course[] = [
+  { id: 'fb1', name: 'Class 8', imageUrl: null, caption: null },
+  { id: 'fb2', name: 'Class 9', imageUrl: null, caption: null },
+  { id: 'fb3', name: 'Class 10', imageUrl: null, caption: null },
+  { id: 'fb4', name: 'Class 11', imageUrl: null, caption: null },
+  { id: 'fb5', name: 'Class 12', imageUrl: null, caption: null },
+  { id: 'fb6', name: 'CUET', imageUrl: null, caption: null },
+  { id: 'fb7', name: 'JEE', imageUrl: null, caption: null },
+  { id: 'fb8', name: 'NEET', imageUrl: null, caption: null },
+];
 
 export default function ClassSwitcherModal({ isOpen, onClose, currentClass }: ClassSwitcherModalProps) {
   const router = useRouter();
@@ -55,35 +65,20 @@ export default function ClassSwitcherModal({ isOpen, onClose, currentClass }: Cl
         const res = await fetch('/api/admin/courses');
         if (res.ok) {
           const data = await res.json();
-          if (data && data.length > 0) {
+          if (Array.isArray(data) && data.length > 0) {
             setCourses(data);
           } else {
             // Fallback courses if database is empty
-            setCourses([
-              { id: 'fb1', name: 'Class 8', imageUrl: null, caption: null },
-              { id: 'fb2', name: 'Class 9', imageUrl: null, caption: null },
-              { id: 'fb3', name: 'Class 10', imageUrl: null, caption: null },
-              { id: 'fb4', name: 'Class 11', imageUrl: null, caption: null },
-              { id: 'fb5', name: 'Class 12', imageUrl: null, caption: null },
-              { id: 'fb6', name: 'CUET', imageUrl: null, caption: null },
-              { id: 'fb7', name: 'JEE', imageUrl: null, caption: null },
-              { id: 'fb8', name: 'NEET', imageUrl: null, caption: null },
-            ]);
+            setCourses(FALLBACK_COURSES);
           }
+        } else {
+          // If response is not ok, use fallbacks
+          setCourses(FALLBACK_COURSES);
         }
       } catch (err) {
         console.error('Failed to load courses:', err);
-        // On error, also use fallbacks
-        setCourses([
-          { id: 'fb1', name: 'Class 8', imageUrl: null, caption: null },
-          { id: 'fb2', name: 'Class 9', imageUrl: null, caption: null },
-          { id: 'fb3', name: 'Class 10', imageUrl: null, caption: null },
-          { id: 'fb4', name: 'Class 11', imageUrl: null, caption: null },
-          { id: 'fb5', name: 'Class 12', imageUrl: null, caption: null },
-          { id: 'fb6', name: 'CUET', imageUrl: null, caption: null },
-          { id: 'fb7', name: 'JEE', imageUrl: null, caption: null },
-          { id: 'fb8', name: 'NEET', imageUrl: null, caption: null },
-        ]);
+        // On network error, also use fallbacks
+        setCourses(FALLBACK_COURSES);
       } finally {
         setIsFetching(false);
       }
