@@ -43,19 +43,49 @@ export default function ClassSwitcherModal({ isOpen, onClose, currentClass }: Cl
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
 
+  const [isFetching, setIsFetching] = useState(true);
+
   useEffect(() => {
     if (!isOpen) return;
 
     // Fetch courses list
     const fetchCourses = async () => {
+      setIsFetching(true);
       try {
         const res = await fetch('/api/admin/courses');
         if (res.ok) {
           const data = await res.json();
-          setCourses(data);
+          if (data && data.length > 0) {
+            setCourses(data);
+          } else {
+            // Fallback courses if database is empty
+            setCourses([
+              { id: 'fb1', name: 'Class 8', imageUrl: null, caption: null },
+              { id: 'fb2', name: 'Class 9', imageUrl: null, caption: null },
+              { id: 'fb3', name: 'Class 10', imageUrl: null, caption: null },
+              { id: 'fb4', name: 'Class 11', imageUrl: null, caption: null },
+              { id: 'fb5', name: 'Class 12', imageUrl: null, caption: null },
+              { id: 'fb6', name: 'CUET', imageUrl: null, caption: null },
+              { id: 'fb7', name: 'JEE', imageUrl: null, caption: null },
+              { id: 'fb8', name: 'NEET', imageUrl: null, caption: null },
+            ]);
+          }
         }
       } catch (err) {
         console.error('Failed to load courses:', err);
+        // On error, also use fallbacks
+        setCourses([
+          { id: 'fb1', name: 'Class 8', imageUrl: null, caption: null },
+          { id: 'fb2', name: 'Class 9', imageUrl: null, caption: null },
+          { id: 'fb3', name: 'Class 10', imageUrl: null, caption: null },
+          { id: 'fb4', name: 'Class 11', imageUrl: null, caption: null },
+          { id: 'fb5', name: 'Class 12', imageUrl: null, caption: null },
+          { id: 'fb6', name: 'CUET', imageUrl: null, caption: null },
+          { id: 'fb7', name: 'JEE', imageUrl: null, caption: null },
+          { id: 'fb8', name: 'NEET', imageUrl: null, caption: null },
+        ]);
+      } finally {
+        setIsFetching(false);
       }
     };
 
@@ -132,34 +162,44 @@ export default function ClassSwitcherModal({ isOpen, onClose, currentClass }: Cl
         </div>
 
         <div className={styles.grid}>
-          {courses.map((course) => {
-            const color = getCourseColor(course.name);
-            const isActive = currentClass
-              ? currentClass.toLowerCase() === course.name.toLowerCase()
-              : false;
+          {isFetching ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+              Loading classes...
+            </div>
+          ) : courses.length === 0 ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+              No classes available.
+            </div>
+          ) : (
+            courses.map((course) => {
+              const color = getCourseColor(course.name);
+              const isActive = currentClass
+                ? currentClass.toLowerCase() === course.name.toLowerCase()
+                : false;
 
-            return (
-              <button
-                key={course.id}
-                className={`${styles.card} ${isActive ? styles.activeCard : ''}`}
-                onClick={() => handleSelectClass(course.name)}
-                disabled={loading}
-              >
-                <div className={styles.cardLeft}>
-                  <div className={styles.accentBar} style={{ background: color }} />
-                  <div className={styles.cardInfo}>
-                    <span className={styles.className}>{course.name}</span>
-                    {course.caption && <span className={styles.classCaption}>{course.caption}</span>}
+              return (
+                <button
+                  key={course.id}
+                  className={`${styles.card} ${isActive ? styles.activeCard : ''}`}
+                  onClick={() => handleSelectClass(course.name)}
+                  disabled={loading}
+                >
+                  <div className={styles.cardLeft}>
+                    <div className={styles.accentBar} style={{ background: color }} />
+                    <div className={styles.cardInfo}>
+                      <span className={styles.className}>{course.name}</span>
+                      {course.caption && <span className={styles.classCaption}>{course.caption}</span>}
+                    </div>
                   </div>
-                </div>
-                {isActive && (
-                  <div className={styles.checkCircle} style={{ background: color }}>
-                    <Check size={12} strokeWidth={3} />
-                  </div>
-                )}
-              </button>
-            );
-          })}
+                  {isActive && (
+                    <div className={styles.checkCircle} style={{ background: color }}>
+                      <Check size={12} strokeWidth={3} />
+                    </div>
+                  )}
+                </button>
+              );
+            })
+          )}
         </div>
       </div>
     </div>
