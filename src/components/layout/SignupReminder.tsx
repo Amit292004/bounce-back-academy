@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function SignupReminder() {
   const [visible, setVisible] = useState(false);
@@ -89,6 +90,13 @@ export default function SignupReminder() {
           width: calc(100% - 2rem);
           max-width: 520px;
           animation: sr-slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          transition: bottom 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+          .sr-outer {
+            bottom: calc(4.5rem + env(safe-area-inset-bottom));
+          }
         }
 
         .sr-border {
@@ -256,19 +264,18 @@ export default function SignupReminder() {
         }
       `}</style>
 
-      <div
-        className="sr-outer"
-        style={{ position: 'fixed', bottom: '1.5rem', left: '50%', transform: 'translateX(-50%)', zIndex: 9999, width: 'calc(100% - 2rem)', maxWidth: '520px' }}
-      >
+      <div className="sr-outer">
         {/* Close button OUTSIDE clipping containers */}
         <button onClick={handleDismiss} className="sr-close" aria-label="Dismiss">✕</button>
 
         <div className="sr-border">
           <div className="sr-card">
             <div className="sr-icon">
-              <img 
+              <Image 
                 src={siteLogo || "/logo.png"} 
                 alt="Bounce Back Academy Logo" 
+                width={24}
+                height={24}
                 className="sr-icon-img"
               />
             </div>

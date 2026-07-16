@@ -18,7 +18,8 @@ export async function POST(request: Request) {
     const modelMap: Record<string, any> = {
       'VIDEO': prisma.video,
       'NOTE': prisma.note,
-      'PAPER': prisma.questionPaper
+      'PAPER': prisma.questionPaper,
+      'QUIZ': prisma.quiz
     };
 
     const targetModel = modelMap[targetType];
@@ -30,25 +31,37 @@ export async function POST(request: Request) {
       }
     });
 
+    const hasCountField = targetType !== 'QUIZ';
+
     if (existingLike) {
-      await prisma.$transaction([
-        prisma.like.delete({ where: { id: existingLike.id } }),
-        targetModel.update({
-          where: { id: targetId },
-          data: { likesCount: { decrement: 1 } }
-        })
-      ]);
+      if (hasCountField) {
+        await prisma.$transaction([
+          prisma.like.delete({ where: { id: existingLike.id } }),
+          targetModel.update({
+            where: { id: targetId },
+            data: { likesCount: { decrement: 1 } }
+          })
+        ]);
+      } else {
+        await prisma.like.delete({ where: { id: existingLike.id } });
+      }
       return NextResponse.json({ liked: false });
     } else {
-      await prisma.$transaction([
-        prisma.like.create({
+      if (hasCountField) {
+        await prisma.$transaction([
+          prisma.like.create({
+            data: { userId, targetId, targetType }
+          }),
+          targetModel.update({
+            where: { id: targetId },
+            data: { likesCount: { increment: 1 } }
+          })
+        ]);
+      } else {
+        await prisma.like.create({
           data: { userId, targetId, targetType }
-        }),
-        targetModel.update({
-          where: { id: targetId },
-          data: { likesCount: { increment: 1 } }
-        })
-      ]);
+        });
+      }
       return NextResponse.json({ liked: true });
     }
   } catch (error) {

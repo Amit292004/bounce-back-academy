@@ -55,6 +55,7 @@ export default function TestimonialsSection() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchReviews(); }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

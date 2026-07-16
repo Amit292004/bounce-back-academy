@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FaBook, FaDownload, FaEye, FaFilter, FaSearch, FaTimes } from 'react-icons/fa';
+import { FaBook, FaDownload, FaEye, FaSearch, FaTimes } from 'react-icons/fa';
 import InteractionButtons from '@/components/InteractionButtons';
 import { getDownloadLink, getViewLink, handleDownload } from '@/lib/utils';
-import CustomSelect from '@/components/CustomSelect';
+import styles from './page.module.css';
 
 interface Note {
   id: string;
@@ -82,7 +82,6 @@ function NotesContent() {
   const [selectedChapter, setSelectedChapter] = useState(searchParams.get('chapter') || '');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authReady, setAuthReady] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
 
   const updateURL = (params: Record<string, string>) => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -229,108 +228,87 @@ function NotesContent() {
             </button>
           )}
         </div>
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            padding: '0.75rem 1.25rem',
-            background: showFilters ? 'var(--primary)' : 'var(--surface)',
-            color: showFilters ? 'white' : 'var(--foreground)',
-            border: '1px solid var(--surface-border)',
-            borderRadius: 'var(--radius-md)',
-            cursor: 'pointer',
-            fontWeight: 600,
-            fontSize: '0.9rem',
-            transition: 'all 0.2s ease',
-            position: 'relative',
-          }}
-        >
-          <FaFilter />
-          Filters
-          {hasFilters && <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#ec4899', position: 'absolute', top: 6, right: 6 }} />}
-        </button>
       </div>
 
-      {/* Class Chip Filters */}
-      <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-        <button
-          onClick={() => handleClassSelect('')}
-          style={{
-            padding: '0.45rem 1.1rem', borderRadius: 999,
-            border: '1px solid var(--surface-border)',
-            background: !selectedClass ? 'var(--primary)' : 'var(--surface)',
-            color: !selectedClass ? 'white' : 'var(--foreground)',
-            cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s ease', fontSize: '0.82rem',
-          }}
-        >
-          All Classes
-        </button>
-        {courses.map(course => (
-          <button
-            key={course.id}
-            onClick={() => handleClassSelect(course.name)}
-            style={{
-              padding: '0.45rem 1.1rem', borderRadius: 999,
-              border: `1px solid ${selectedClass === course.name ? 'var(--primary)' : 'var(--surface-border)'}`,
-              background: selectedClass === course.name ? 'var(--primary)' : 'var(--surface)',
-              color: selectedClass === course.name ? 'white' : 'var(--foreground)',
-              cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s ease', fontSize: '0.82rem',
-            }}
-          >
-            {course.name}
-          </button>
-        ))}
-      </div>
+      {/* ── SaaS Filter Bar ── */}
+      <div className={styles.filterBarWrapper}>
+        <div className={styles.filterBar}>
 
-      {/* Collapsible Filter Panel */}
-      {showFilters && (
-        <div style={{
-          marginBottom: '1.5rem',
-          padding: '1.5rem',
-          background: 'var(--surface)',
-          border: '1px solid var(--surface-border)',
-          borderRadius: 'var(--radius-lg)',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '1rem',
-        }} className="animate-fade-in">
-          <div>
-            <label style={{ fontSize: '0.8rem', fontWeight: 700, opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
-              <div style={{ width: 4, height: 12, background: 'var(--primary)', borderRadius: 2 }} /> Subject
-            </label>
-            <CustomSelect
+          {/* Filter icon */}
+          <div className={styles.filterBarIcon}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+            </svg>
+          </div>
+
+          {/* Class */}
+          <div className={styles.filterBarSegment}>
+            <span className={styles.filterBarLabel}>Class</span>
+            <select
+              value={selectedClass}
+              onChange={e => {
+                const val = e.target.value;
+                setSelectedClass(val);
+                setSelectedSubject('');
+                setSelectedChapter('');
+                updateURL({ class: val, subject: '', chapter: '' });
+              }}
+              className={styles.filterBarSelect}
+            >
+              <option value="">All Classes</option>
+              {courses.map(c => (
+                <option key={c.id} value={c.name}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Subject */}
+          <div className={styles.filterBarSegment}>
+            <span className={styles.filterBarLabel}>Subject</span>
+            <select
               value={selectedSubject}
-              onChange={(val) => { setSelectedSubject(val); setSelectedChapter(''); updateURL({ subject: val, chapter: '' }); }}
-              placeholder="All Subjects"
-              options={[{ value: '', label: 'All Subjects' }, ...subjects.map(s => ({ value: s.id, label: s.name }))]}
-            />
+              onChange={e => {
+                const val = e.target.value;
+                setSelectedSubject(val);
+                setSelectedChapter('');
+                updateURL({ subject: val, chapter: '' });
+              }}
+              className={styles.filterBarSelect}
+            >
+              <option value="">All Subjects</option>
+              {subjects.map(s => (
+                <option key={s.id} value={s.id}>{s.name}</option>
+              ))}
+            </select>
           </div>
-          <div>
-            <label style={{ fontSize: '0.8rem', fontWeight: 700, opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
-              <div style={{ width: 4, height: 12, background: '#10b981', borderRadius: 2 }} /> Chapter
-            </label>
-            <CustomSelect
+
+          {/* Chapter */}
+          <div className={styles.filterBarSegment}>
+            <span className={styles.filterBarLabel}>Chapter</span>
+            <select
               value={selectedChapter}
-              onChange={(val) => { setSelectedChapter(val); updateURL({ chapter: val }); }}
-              placeholder="All Chapters"
+              onChange={e => { setSelectedChapter(e.target.value); updateURL({ chapter: e.target.value }); }}
+              className={styles.filterBarSelect}
               disabled={!selectedSubject && !selectedClass}
-              options={[{ value: '', label: 'All Chapters' }, ...filteredChapters.map(ch => ({ value: ch.id, label: `Ch ${ch.number}: ${ch.name}` }))]}
-            />
+            >
+              <option value="">All Chapters</option>
+              {filteredChapters.map(ch => (
+                <option key={ch.id} value={ch.id}>Ch {ch.number}: {ch.name}</option>
+              ))}
+            </select>
           </div>
+
+          {/* Clear — only when filters active */}
           {hasFilters && (
-            <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-              <button
-                onClick={() => { setSelectedClass(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
-                style={{ padding: '0.7rem 1.2rem', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 'var(--radius-md)', color: '#ef4444', cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem', width: '100%' }}
-              >
-                Clear All Filters
-              </button>
-            </div>
+            <button
+              className={styles.clearSegment}
+              onClick={() => { setSelectedClass(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
+            >
+              <FaTimes size={10} /> Clear
+            </button>
           )}
         </div>
-      )}
+      </div>
 
       {/* Results count */}
       {!loading && (

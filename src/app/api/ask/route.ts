@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import Groq from 'groq-sdk';
-import { logger } from '@/lib/logger'
+import { logger } from '@/lib/logger';
+import { checkRateLimit } from '@/lib/rateLimit';
+import { verifyToken } from '@/lib/auth';
 
 // Groq client is instantiated inside the handler to prevent build-time crashes if API key is missing
 
@@ -59,8 +62,22 @@ export async function POST(request: Request) {
       logger.error('[/api/ask] GROQ_API_KEY is missing');
       return NextResponse.json({ error: 'AI service configuration error: API key missing' }, { status: 500 });
     }
-    console.log(`[/api/ask] GROQ_API_KEY detected (len: ${apiKey.length})`);
     const groq = new Groq({ apiKey });
+
+    // 1. Check Rate Limit (5 requests per minute)
+    const rateLimitResponse = await checkRateLimit(request as any, 5, 60);
+    if (rateLimitResponse) return rateLimitResponse;
+
+    // 2. Enforce Authentication
+    const cookieStore = await cookies();
+    const token = cookieStore.get('student_token')?.value;
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized: Please log in to use the AI Tutor' }, { status: 401 });
+    }
+    const payload = await verifyToken(token);
+    if (!payload?.userId) {
+      return NextResponse.json({ error: 'Unauthorized: Invalid session' }, { status: 401 });
+    }
 
     const body = await request.json();
     const { question, subject, examType, difficulty = 'standard', language = 'english', chatHistory } = body;

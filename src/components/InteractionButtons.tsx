@@ -6,7 +6,7 @@ import { logger } from '@/lib/logger'
 
 interface InteractionButtonsProps {
   targetId: string;
-  targetType: 'VIDEO' | 'NOTE' | 'PAPER';
+  targetType: 'VIDEO' | 'NOTE' | 'PAPER' | 'QUIZ';
   initialLikes?: number;
   initialShares?: number;
   initialFavorites?: number;

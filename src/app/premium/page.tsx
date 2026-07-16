@@ -22,6 +22,7 @@ interface PremiumItem {
   features: string | null;
   resourceId: string | null;
   unlocked: boolean;
+  className?: string | null;
 }
 
 const STATIC_FALLBACK_PACKAGES: PremiumItem[] = [
@@ -66,7 +67,10 @@ const STATIC_FALLBACK_PACKAGES: PremiumItem[] = [
 export default function PremiumStorePage() {
   const [items, setItems] = useState<PremiumItem[]>([]);
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const [selectedClassFilter, setSelectedClassFilter] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [courses, setCourses] = useState<any[]>([]);
+  const [materialTypes, setMaterialTypes] = useState<any[]>([]);
 
   // Checkout states
   const [checkoutItem, setCheckoutItem] = useState<PremiumItem | null>(null);
@@ -85,7 +89,49 @@ export default function PremiumStorePage() {
 
   useEffect(() => {
     fetchPremiumItems();
+    fetchClasses();
+    fetchMaterialTypes();
   }, []);
+
+  const fetchClasses = async () => {
+    try {
+      const res = await fetch('/api/admin/courses');
+      if (res.ok) {
+        setCourses(await res.json());
+      }
+    } catch (err) {
+      logger.error('Failed to load courses:', err);
+    }
+  };
+
+  const fetchMaterialTypes = async () => {
+    try {
+      const res = await fetch('/api/admin/material-types');
+      if (res.ok) {
+        setMaterialTypes(await res.json());
+      }
+    } catch (err) {
+      logger.error('Failed to load material types:', err);
+    }
+  };
+
+  const getTypeLabel = (code: string) => {
+    const matched = materialTypes.find(mt => mt.code === code);
+    if (matched) return matched.name;
+    if (code === 'NOTE') return 'Study Notes';
+    if (code === 'PYQ') return 'Board PYQ';
+    if (code === 'COURSE') return 'Full Course';
+    if (code === 'LECTURE') return 'Lecture';
+    return code;
+  };
+
+  const getTypeColor = (code: string) => {
+    if (code === 'NOTE') return 'var(--primary)';
+    if (code === 'PYQ') return '#10b981';
+    if (code === 'COURSE') return '#f59e0b';
+    if (code === 'LECTURE') return '#ef4444';
+    return 'var(--primary)';
+  };
 
   const fetchPremiumItems = async () => {
     try {
@@ -226,6 +272,7 @@ export default function PremiumStorePage() {
     else if (item.type === 'PYQ') base = '/papers';
     else if (item.type === 'COURSE') base = `/class/${item.resourceId || ''}`;
     else if (item.type === 'LECTURE') base = '/videos';
+    else base = `/premium/${item.id}`; // Default redirect for custom material types
 
     if (item.resourceId && item.type !== 'COURSE') {
       return `${base}?id=${item.resourceId}`;
@@ -234,7 +281,13 @@ export default function PremiumStorePage() {
   };
 
   const filteredItems = items.filter(item => {
-    return selectedFilter === 'all' || item.type === selectedFilter;
+    const matchesType = selectedFilter === 'all' || item.type === selectedFilter;
+    const matchesClass = selectedClassFilter === 'all' || (() => {
+      if (!item.className) return false;
+      const normalize = (name: string) => name.toLowerCase().replace('class', '').trim();
+      return normalize(item.className) === normalize(selectedClassFilter);
+    })();
+    return matchesType && matchesClass;
   });
 
   if (loading) {
@@ -261,17 +314,51 @@ export default function PremiumStorePage() {
         </p>
       </div>
 
-      {/* 2. Category Filters */}
-      <div className={styles.filterChips}>
-        {['all', 'NOTE', 'PYQ', 'COURSE', 'LECTURE'].map((type) => (
-          <button
-            key={type}
-            className={`${styles.filterChip} ${selectedFilter === type ? styles.activeChip : ''}`}
-            onClick={() => setSelectedFilter(type)}
-          >
-            {type === 'all' ? 'All Packages' : type === 'NOTE' ? 'Study Notes' : type === 'PYQ' ? 'Board PYQs' : type === 'COURSE' ? 'Full Courses' : 'Lectures'}
-          </button>
-        ))}
+      {/* SaaS-style segmented filter bar */}
+      <div className={styles.filterBarWrapper}>
+        <div className={styles.filterBar}>
+          {/* Filter icon segment */}
+          <div className={styles.filterBarIcon}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+            </svg>
+          </div>
+
+          {/* Category segment */}
+          <div className={styles.filterBarSegment}>
+            <span className={styles.filterBarLabel}>Category</span>
+            <select
+              value={selectedFilter}
+              onChange={(e) => setSelectedFilter(e.target.value)}
+              className={styles.filterBarSelect}
+            >
+              <option value="all">All Categories</option>
+              {(materialTypes.length > 0 ? materialTypes : [
+                { name: 'Study Notes', code: 'NOTE' },
+                { name: 'Board PYQ', code: 'PYQ' },
+                { name: 'Full Course', code: 'COURSE' },
+                { name: 'Lecture', code: 'LECTURE' }
+              ]).map((mt) => (
+                <option key={mt.code} value={mt.code}>{mt.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Class segment */}
+          <div className={styles.filterBarSegment}>
+            <span className={styles.filterBarLabel}>Class</span>
+            <select
+              value={selectedClassFilter}
+              onChange={(e) => setSelectedClassFilter(e.target.value)}
+              className={styles.filterBarSelect}
+            >
+              <option value="all">All Classes</option>
+              {courses.map((c) => (
+                <option key={c.id} value={c.name}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
 
       {/* 3. Items Grid */}
@@ -316,19 +403,33 @@ export default function PremiumStorePage() {
                   }}
                 >
                   <span style={{ fontSize: '2rem' }}>
-                    {item.type === 'NOTE' ? '📚' : item.type === 'PYQ' ? '📝' : item.type === 'COURSE' ? '🎓' : '🎬'}
+                    {item.type === 'NOTE' ? '📚' : item.type === 'PYQ' ? '📝' : item.type === 'COURSE' ? '🎓' : item.type === 'LECTURE' ? '🎬' : '📦'}
                   </span>
                   <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>No image added</span>
                 </div>
-                <span className={styles.typeBadge} style={{
-                  background: item.type === 'NOTE' ? 'var(--primary)' : item.type === 'PYQ' ? '#10b981' : item.type === 'COURSE' ? '#f59e0b' : '#ef4444',
-                  color: '#fff'
-                }}>
-                  {item.type === 'NOTE' ? 'Study Notes' : item.type === 'PYQ' ? 'Board PYQ' : item.type === 'COURSE' ? 'Full Course' : 'Lecture'}
-                </span>
               </div>
 
               <div className={styles.cardContent}>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
+                  <span style={{
+                    padding: '0.2rem 0.5rem', borderRadius: '4px',
+                    border: `1px solid ${getTypeColor(item.type)}`,
+                    color: getTypeColor(item.type),
+                    fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em'
+                  }}>
+                    {getTypeLabel(item.type)}
+                  </span>
+                  {item.className && (
+                    <span style={{
+                      padding: '0.2rem 0.5rem', borderRadius: '4px',
+                      border: '1px solid var(--surface-border)',
+                      color: 'var(--foreground)',
+                      fontSize: '0.65rem', fontWeight: 700, opacity: 0.8
+                    }}>
+                      {item.className}
+                    </span>
+                  )}
+                </div>
                 <h3 className={styles.cardTitle}>{item.title}</h3>
                 <p className={styles.cardDesc}>{item.description}</p>
 

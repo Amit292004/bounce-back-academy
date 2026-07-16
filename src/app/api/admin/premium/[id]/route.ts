@@ -25,7 +25,7 @@ export async function PUT(
     const { id } = await params;
 
     // 2. Parse request payload
-    const { title, description, type, price, originalPrice, imageUrl, features, resourceId, isActive } = await request.json();
+    const { title, description, type, price, originalPrice, imageUrl, features, resourceId, isActive, className } = await request.json();
 
     // Process pipe-separated features array or string
     let processedFeatures: string | null | undefined = undefined;
@@ -47,7 +47,8 @@ export async function PUT(
         ...(imageUrl !== undefined && { imageUrl: imageUrl?.trim() || null }),
         ...(processedFeatures !== undefined && { features: processedFeatures }),
         ...(resourceId !== undefined && { resourceId: resourceId?.trim() || null }),
-        ...(isActive !== undefined && { isActive: !!isActive })
+        ...(isActive !== undefined && { isActive: !!isActive }),
+        ...(className !== undefined && { className: className?.trim() || null })
       }
     });
 

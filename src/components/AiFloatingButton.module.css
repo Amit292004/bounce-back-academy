@@ -104,9 +104,9 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .wrapper {
-    bottom: 1.25rem;
+    bottom: calc(58px + env(safe-area-inset-bottom) + 0.75rem);
     right: 1rem;
   }
 

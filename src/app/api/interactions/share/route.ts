@@ -9,16 +9,19 @@ export async function POST(request: Request) {
     const modelMap: Record<string, any> = {
       'VIDEO': prisma.video,
       'NOTE': prisma.note,
-      'PAPER': prisma.questionPaper
+      'PAPER': prisma.questionPaper,
+      'QUIZ': prisma.quiz
     };
 
     const targetModel = modelMap[targetType];
     if (!targetModel) return NextResponse.json({ error: 'Invalid target type' }, { status: 400 });
 
-    await targetModel.update({
-      where: { id: targetId },
-      data: { sharesCount: { increment: 1 } }
-    });
+    if (targetType !== 'QUIZ') {
+      await targetModel.update({
+        where: { id: targetId },
+        data: { sharesCount: { increment: 1 } }
+      });
+    }
 
     return NextResponse.json({ shared: true });
   } catch (error) {

@@ -8,16 +8,19 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const className = searchParams.get('class');
   const subjectId = searchParams.get('subject');
+  const chapterId = searchParams.get('chapter');
 
   try {
     const where: any = {};
     if (className) where.className = className;
     if (subjectId) where.subjectId = subjectId;
+    if (chapterId) where.chapterId = chapterId;
 
     const quizzes = await prisma.quiz.findMany({
       where,
       include: {
         subject: true,
+        chapter: true,
         questions: {
           orderBy: { createdAt: 'asc' }
         }

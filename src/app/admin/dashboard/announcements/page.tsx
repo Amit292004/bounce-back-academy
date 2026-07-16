@@ -11,14 +11,17 @@ interface Announcement {
   type: string;
   isActive: boolean;
   priority: number;
+  className?: string | null;
   createdAt: string;
 }
 
 export default function AnnouncementsPage() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
   const [message, setMessage] = useState('');
   const [priority, setPriority] = useState(0);
   const [type, setType] = useState('SECTION');
+  const [className, setClassName] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -26,7 +29,14 @@ export default function AnnouncementsPage() {
     fetch('/api/admin/announcements').then(res => res.json()).then(setAnnouncements);
   };
 
-  useEffect(() => { fetchAnnouncements(); }, []);
+  const fetchCourses = () => {
+    fetch('/api/admin/courses').then(res => res.json()).then(setCourses);
+  };
+
+  useEffect(() => {
+    fetchAnnouncements();
+    fetchCourses();
+  }, []);
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,13 +68,15 @@ export default function AnnouncementsPage() {
           message: message || null, 
           priority, 
           imageUrl,
-          type 
+          type,
+          className: className || null
         }),
       });
 
       setMessage('');
       setPriority(0);
       setType('SECTION');
+      setClassName('');
       setImage(null);
       // Reset file input
       const fileInput = document.getElementById('image-upload') as HTMLInputElement;
@@ -113,6 +125,15 @@ export default function AnnouncementsPage() {
     setAnnouncements(announcements.map(x => x.id === a.id ? updated : x));
   };
 
+  const handleClassChange = async (a: Announcement, val: string) => {
+    const updated = await fetch('/api/admin/announcements', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: a.id, className: val || null }),
+    }).then(res => res.json());
+    setAnnouncements(announcements.map(x => x.id === a.id ? updated : x));
+  };
+
   return (
     <div>
       <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem' }}>Announcements</h1>
@@ -134,24 +155,42 @@ export default function AnnouncementsPage() {
             </label>
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <label style={{ fontSize: '0.85rem', opacity: 0.7 }}>Announcement Message:</label>
             <input
               type="text"
               value={message}
               onChange={e => setMessage(e.target.value)}
               placeholder={type === 'BANNER' ? "Announcement Message (Required for banner)" : "Announcement Message (optional if image provided)"}
               required={type === 'BANNER'}
-              style={{ flex: '1 1 300px', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', background: 'var(--surface-highlight)', color: 'var(--foreground)', border: '1px solid var(--surface-border)', outline: 'none' }}
+              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', background: 'var(--surface-highlight)', color: 'var(--foreground)', border: '1px solid var(--surface-border)', outline: 'none' }}
             />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <label style={{ fontSize: '0.85rem', opacity: 0.7, whiteSpace: 'nowrap' }}>Priority:</label>
+          </div>
+
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: '1 1 200px' }}>
+              <label style={{ fontSize: '0.85rem', opacity: 0.7 }}>Target Class/Course (Optional):</label>
+              <select
+                value={className}
+                onChange={e => setClassName(e.target.value)}
+                style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'var(--surface-highlight)', color: 'var(--foreground)', border: '1px solid var(--surface-border)', outline: 'none' }}
+              >
+                <option value="">Global (All Classes)</option>
+                {courses.map(c => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', width: '120px' }}>
+              <label style={{ fontSize: '0.85rem', opacity: 0.7 }}>Priority:</label>
               <input
                 type="number"
                 value={priority}
                 onChange={e => setPriority(Number(e.target.value))}
                 min={0}
                 max={100}
-                style={{ width: '80px', padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'var(--surface-highlight)', color: 'var(--foreground)', border: '1px solid var(--surface-border)', outline: 'none', textAlign: 'center' }}
+                style={{ padding: '0.75rem', borderRadius: 'var(--radius-sm)', background: 'var(--surface-highlight)', color: 'var(--foreground)', border: '1px solid var(--surface-border)', outline: 'none', textAlign: 'center' }}
               />
             </div>
           </div>
@@ -213,6 +252,7 @@ export default function AnnouncementsPage() {
           <thead>
             <tr style={{ borderBottom: '1px solid var(--surface-border)', background: 'var(--surface-highlight)' }}>
               <th style={{ padding: '0.85rem 1rem' }}>Content</th>
+              <th style={{ padding: '0.85rem 1rem', width: '150px', textAlign: 'center' }}>Target Class</th>
               <th style={{ padding: '0.85rem 1rem', width: '120px', textAlign: 'center' }}>Type</th>
               <th style={{ padding: '0.85rem 1rem', width: '100px', textAlign: 'center' }}>Priority</th>
               <th style={{ padding: '0.85rem 1rem', width: '90px', textAlign: 'center' }}>Visible</th>
@@ -221,7 +261,7 @@ export default function AnnouncementsPage() {
           </thead>
           <tbody>
             {announcements.length === 0 ? (
-              <tr><td colSpan={5} style={{ padding: '2rem', textAlign: 'center', opacity: 0.5 }}>No announcements yet.</td></tr>
+              <tr><td colSpan={6} style={{ padding: '2rem', textAlign: 'center', opacity: 0.5 }}>No announcements yet.</td></tr>
             ) : announcements.map(a => (
               <tr key={a.id} style={{ borderBottom: '1px solid var(--surface-border)', opacity: a.isActive ? 1 : 0.45, transition: 'opacity 0.2s' }}>
                 <td style={{ padding: '0.85rem 1rem' }}>
@@ -235,6 +275,18 @@ export default function AnnouncementsPage() {
                     )}
                     <span style={{ fontWeight: 500 }}>{a.message || 'Image only'}</span>
                   </div>
+                </td>
+                <td style={{ padding: '0.85rem 1rem', textAlign: 'center' }}>
+                  <select
+                    value={a.className || ""}
+                    onChange={e => handleClassChange(a, e.target.value)}
+                    style={{ fontSize: '0.8rem', padding: '0.2rem 0.5rem', borderRadius: '4px', background: 'var(--surface-highlight)', color: 'var(--foreground)', border: '1px solid var(--surface-border)', cursor: 'pointer' }}
+                  >
+                    <option value="">Global (All)</option>
+                    {courses.map(c => (
+                      <option key={c.id} value={c.name}>{c.name}</option>
+                    ))}
+                  </select>
                 </td>
                 <td style={{ padding: '0.85rem 1rem', textAlign: 'center' }}>
                   <button 

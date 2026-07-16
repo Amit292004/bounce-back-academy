@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { FaBars, FaTimes, FaUserCircle, FaRobot, FaChevronDown } from 'react-icons/fa';
@@ -14,7 +15,15 @@ interface AuthState {
   image?: string | null;
 }
 
-const resources = [
+interface NavItem {
+  label: string;
+  href: string;
+  desc: string;
+  icon: React.ReactNode;
+  badge?: string;
+}
+
+const resources: NavItem[] = [
   {
     label: 'Question Papers',
     href: '/papers',
@@ -58,7 +67,7 @@ const resources = [
   },
 ];
 
-const platform = [
+const platform: NavItem[] = [
   {
     label: 'Quiz & Tests',
     href: '/quiz',
@@ -136,6 +145,7 @@ const platform = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = useState(pathname);
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [auth, setAuth] = useState<AuthState>({ authenticated: false });
@@ -226,11 +236,17 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  // Close mega on route change
-  useEffect(() => { setMegaOpen(null); setMenuOpen(false); }, [pathname]);
+  // Close mega on route change during render to avoid cascading updates
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setMegaOpen(null);
+    setMenuOpen(false);
+  }
 
   const handleLogout = async () => {
     await fetch('/api/student/logout', { method: 'POST' });
+    document.cookie = "selected_class=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    localStorage.removeItem('selectedClass');
     setAuth({ authenticated: false });
     setMenuOpen(false);
     router.push('/login');
@@ -252,8 +268,8 @@ export default function Navbar() {
       <div className={styles.inner}>
 
         {/* Logo */}
-        <Link href="/" className={styles.logoLink}>
-          <img src={siteLogo || '/logo.png'} alt="Bounce Back Academy" className={styles.logoImg} />
+        <Link href="/?noredirect=true" className={styles.logoLink}>
+          <Image src={siteLogo || '/logo.png'} alt="Bounce Back Academy" width={32} height={32} className={styles.logoImg} />
           <span className={styles.logoText}>
             Bounce Back <span className={styles.logoBrand}>Academy</span>
           </span>
@@ -290,7 +306,7 @@ export default function Navbar() {
           {megaOpen && (
             <div className={`${styles.mega} ${styles.megaOpen}`} role="dialog" aria-label={megaOpen === 'resources' ? 'Resources menu' : 'Platform menu'}>
               <div className={styles.megaGrid}>
-                {(megaOpen === 'resources' ? resources : platform).map((item: any) => (
+                {(megaOpen === 'resources' ? resources : platform).map((item) => (
                   <Link key={item.href} href={item.href} className={styles.megaItem} onClick={() => setMegaOpen(null)}>
                     <div className={styles.megaIcon}>{item.icon}</div>
                     <div>
@@ -313,7 +329,7 @@ export default function Navbar() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <div className={styles.userInfo}>
                 {auth.image
-                  ? <img src={auth.image} alt="" className={styles.avatarImg} />
+                  ? <Image src={auth.image} alt="" width={32} height={32} className={styles.avatarImg} />
                   : <FaUserCircle style={{ color: 'var(--primary)', fontSize: '1.2rem' }} />}
                 <span className={styles.userName}>{auth.name || auth.email}</span>
               </div>
@@ -345,7 +361,7 @@ export default function Navbar() {
         <div className={styles.mobileMenu}>
           <div className={styles.mobileSection}>
             <p className={styles.mobileSectionHead}>Resources</p>
-            {resources.map((item: any) => (
+            {resources.map((item) => (
               <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className={`${styles.mobileLink} ${isActive(item.href) ? styles.mobileLinkActive : ''}`}>
                 <span className={styles.mobileLinkIcon}>{item.icon}</span>
                 <span>{item.label}</span>

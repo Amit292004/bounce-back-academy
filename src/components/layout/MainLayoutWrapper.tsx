@@ -4,13 +4,18 @@ import React, { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Navbar from './Navbar';
 import Footer from './Footer';
-
 import SignupReminder from './SignupReminder';
+import GlobalBottomNav from './GlobalBottomNav';
 
 export default function MainLayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith('/admin');
   const isAskRoute = pathname === '/ask';
+  const isClassRoute = pathname?.startsWith('/class');
+  const isAuthRoute = pathname === '/login' || pathname === '/register';
+  
+  const hideLayout = isAdminRoute || isAskRoute;
+  const showGlobalBottomNav = !isAdminRoute && !isAuthRoute;
 
   useEffect(() => {
     // Generate or get session ID for real-time tracking
@@ -39,12 +44,16 @@ export default function MainLayoutWrapper({ children }: { children: React.ReactN
 
   return (
     <>
-      {!isAdminRoute && !isAskRoute && <Navbar />}
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      {!hideLayout && <Navbar />}
+      <main 
+        className={showGlobalBottomNav ? "global-mobile-padded" : ""} 
+        style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+      >
         {children}
       </main>
-      {!isAdminRoute && !isAskRoute && <Footer />}
+      {!hideLayout && <Footer />}
       {!isAdminRoute && <SignupReminder />}
+      {showGlobalBottomNav && <GlobalBottomNav />}
     </>
   );
 }

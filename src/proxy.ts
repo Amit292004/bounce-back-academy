@@ -6,6 +6,25 @@ import { verifyToken } from '@/lib/auth'
 export const proxy: NextProxy = async (request) => {
   const { pathname } = request.nextUrl
 
+  // API routes protection
+  if (pathname.startsWith('/api/admin')) {
+    if (pathname === '/api/admin/login' || pathname === '/api/admin/google-auth' || pathname === '/api/admin/logout') {
+      return NextResponse.next()
+    }
+
+    const token = request.cookies.get('admin_token')?.value
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 })
+    }
+
+    const verifiedToken = await verifyToken(token)
+    if (!verifiedToken) {
+      const response = NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 })
+      response.cookies.delete('admin_token')
+      return response
+    }
+  }
+
   // Admin routes protection
   if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
     const token = request.cookies.get('admin_token')?.value
@@ -30,5 +49,5 @@ export const proxy: NextProxy = async (request) => {
 export default proxy
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/api/admin/:path*'],
 }

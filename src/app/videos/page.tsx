@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { FaYoutube, FaFilter } from 'react-icons/fa';
+import { FaYoutube, FaTimes } from 'react-icons/fa';
 import InteractionButtons from '@/components/InteractionButtons';
-import CustomSelect from '@/components/CustomSelect';
+import styles from './page.module.css';
 import { logger } from '@/lib/logger'
 
 interface Video {
@@ -166,6 +166,8 @@ function VideosContent() {
     return match ? match[1] : null;
   };
 
+  const hasFilters = !!(selectedCategory || selectedSubject || selectedChapter);
+
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'clamp(1rem, 5vw, 2rem) clamp(0.75rem, 3vw, 1.5rem)' }}>
       <div style={{ marginBottom: '2.5rem' }} className="animate-fade-in">
@@ -175,127 +177,84 @@ function VideosContent() {
         <p style={{ opacity: 0.7, fontSize: 'clamp(0.9rem, 4vw, 1rem)' }}>Curated YouTube video lectures by class and subject. Watch free anytime.</p>
       </div>
 
-      {/* Category Filters */}
-      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-        <button
-          onClick={() => { setSelectedCategory(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
-          style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: !selectedCategory ? 'var(--primary)' : 'transparent', color: !selectedCategory ? 'white' : 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)' }}
-        >
-          All
-        </button>
-        {courses.map(course => (
-          <button
-            key={course.id}
-            onClick={() => { 
-              const newCat = course.name === selectedCategory ? '' : course.name;
-              setSelectedCategory(newCat); 
-              setSelectedSubject(''); 
-              setSelectedChapter(''); 
-              updateURL({ class: newCat, subject: '', chapter: '' });
-            }}
-            style={{ padding: '0.5rem 1.25rem', borderRadius: '999px', border: '1px solid var(--surface-border)', background: selectedCategory === course.name ? 'var(--primary)' : 'transparent', color: selectedCategory === course.name ? 'white' : 'var(--foreground)', cursor: 'pointer', fontWeight: 500, transition: 'var(--transition)' }}
-          >
-            {course.name}
-          </button>
-        ))}
-      </div>
+      {/* ── SaaS Filter Bar ── */}
+      <div className={styles.filterBarWrapper}>
+        <div className={styles.filterBar}>
 
-      {/* Dropdown Filters */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1.5rem',
-        marginBottom: '3rem',
-        padding: 'clamp(1.25rem, 5vw, 2rem)',
-        background: 'var(--surface)',
-        border: '1px solid var(--surface-border)',
-        borderRadius: 'var(--radius-lg)',
-        width: '100%',
-        boxShadow: 'var(--shadow-sm)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--surface-border)', paddingBottom: '0.75rem', marginBottom: '0.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', opacity: 0.8 }}>
-            <FaFilter style={{ color: 'var(--primary)' }} />
-            <span style={{ fontSize: '0.95rem', fontWeight: 700, letterSpacing: '0.02em' }}>Refine Your Search</span>
+          {/* Filter icon */}
+          <div className={styles.filterBarIcon}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+            </svg>
           </div>
-          <button
-            onClick={() => { setSelectedCategory(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--primary)',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              opacity: (selectedCategory || selectedSubject || selectedChapter) ? 1 : 0.4,
-              transition: 'var(--transition)',
-              pointerEvents: (selectedCategory || selectedSubject || selectedChapter) ? 'auto' : 'none'
-            }}
-          >
-            Clear All
-          </button>
-        </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          {/* Subject Row */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label style={{ fontSize: '0.85rem', opacity: 0.7, fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <div style={{ width: '4px', height: '12px', background: 'var(--primary)', borderRadius: '2px' }}></div>
-              Select Subject
-            </label>
-            <CustomSelect
+          {/* Class */}
+          <div className={styles.filterBarSegment}>
+            <span className={styles.filterBarLabel}>Class</span>
+            <select
+              value={selectedCategory}
+              onChange={e => {
+                const val = e.target.value;
+                setSelectedCategory(val);
+                setSelectedSubject('');
+                setSelectedChapter('');
+                updateURL({ class: val, subject: '', chapter: '' });
+              }}
+              className={styles.filterBarSelect}
+            >
+              <option value="">All Classes</option>
+              {courses.map(c => (
+                <option key={c.id} value={c.name}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Subject */}
+          <div className={styles.filterBarSegment}>
+            <span className={styles.filterBarLabel}>Subject</span>
+            <select
               value={selectedSubject}
-              onChange={(val) => { setSelectedSubject(val); setSelectedChapter(''); updateURL({ subject: val, chapter: '' }); }}
-              placeholder="All Subjects"
-              options={[
-                { value: '', label: 'All Subjects' },
-                ...subjects.map(s => ({ value: s.id, label: s.name }))
-              ]}
-            />
+              onChange={e => {
+                const val = e.target.value;
+                setSelectedSubject(val);
+                setSelectedChapter('');
+                updateURL({ subject: val, chapter: '' });
+              }}
+              className={styles.filterBarSelect}
+            >
+              <option value="">All Subjects</option>
+              {subjects.map(s => (
+                <option key={s.id} value={s.id}>{s.name}</option>
+              ))}
+            </select>
           </div>
 
-          {/* Chapter Row */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label style={{ fontSize: '0.85rem', opacity: 0.7, fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <div style={{ width: '4px', height: '12px', background: '#10b981', borderRadius: '2px' }}></div>
-              Select Chapter
-            </label>
-            <CustomSelect
+          {/* Chapter */}
+          <div className={styles.filterBarSegment}>
+            <span className={styles.filterBarLabel}>Chapter</span>
+            <select
               value={selectedChapter}
-              onChange={(val) => { setSelectedChapter(val); updateURL({ chapter: val }); }}
-              placeholder="All Chapters"
+              onChange={e => { setSelectedChapter(e.target.value); updateURL({ chapter: e.target.value }); }}
+              className={styles.filterBarSelect}
               disabled={!selectedSubject && !selectedCategory}
-              options={[
-                { value: '', label: 'All Chapters' },
-                ...filteredChapters.map(ch => ({ value: ch.id, label: `Ch ${ch.number}: ${ch.name}` }))
-              ]}
-            />
+            >
+              <option value="">All Chapters</option>
+              {filteredChapters.map(ch => (
+                <option key={ch.id} value={ch.id}>Ch {ch.number}: {ch.name}</option>
+              ))}
+            </select>
           </div>
-        </div>
 
-        {(selectedCategory || selectedSubject || selectedChapter) && (
-          <button
-            onClick={() => { setSelectedCategory(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
-            style={{
-              padding: '0.85rem 1.5rem',
-              background: 'rgba(239,68,68,0.08)',
-              border: '1px solid rgba(239,68,68,0.2)',
-              borderRadius: 'var(--radius-md)',
-              color: '#ef4444',
-              cursor: 'pointer',
-              fontSize: '0.9rem',
-              fontWeight: 700,
-              width: '100%',
-              textAlign: 'center',
-              transition: 'var(--transition)',
-              marginTop: '0.5rem'
-            }}
-            onMouseOver={e => e.currentTarget.style.background = 'rgba(239,68,68,0.15)'}
-            onMouseOut={e => e.currentTarget.style.background = 'rgba(239,68,68,0.08)'}
-          >
-            Reset All Filters
-          </button>
-        )}
+          {/* Clear — only when filters active */}
+          {hasFilters && (
+            <button
+              className={styles.clearSegment}
+              onClick={() => { setSelectedCategory(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
+            >
+              <FaTimes size={10} /> Clear
+            </button>
+          )}
+        </div>
       </div>
 
       {loading ? (

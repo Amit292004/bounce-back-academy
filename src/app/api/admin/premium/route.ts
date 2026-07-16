@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     }
 
     // 2. Parse request payload
-    const { title, description, type, price, originalPrice, imageUrl, features, resourceId } = await request.json();
+    const { title, description, type, price, originalPrice, imageUrl, features, resourceId, className } = await request.json();
 
     if (!title || !description || !type || price === undefined) {
       return NextResponse.json({ error: 'Title, description, type, and price are required.' }, { status: 400 });
@@ -78,7 +78,8 @@ export async function POST(request: Request) {
         originalPrice: originalPrice ? parseFloat(originalPrice) : null,
         imageUrl: imageUrl?.trim() || null,
         features: processedFeatures,
-        resourceId: resourceId?.trim() || null
+        resourceId: resourceId?.trim() || null,
+        className: className?.trim() || null
       }
     });
 

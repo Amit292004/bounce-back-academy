@@ -41,14 +41,9 @@ export function getDriveDirectUrl(url: string | null | undefined): string | null
 export function getDriveImageUrl(url: string | null | undefined): string | null {
   if (!url || url.trim() === '') return null;
 
-  const isGoogleDrive = 
-    url.includes('drive.google.com') || 
-    url.includes('googleusercontent.com') ||
-    url.includes('drive.usercontent.google.com');
-
-  if (isGoogleDrive) {
-    // Return our local API proxy endpoint
-    return `/api/proxy-image?url=${encodeURIComponent(url)}`;
+  const fileId = getDriveFileId(url);
+  if (fileId) {
+    return `https://lh3.googleusercontent.com/d/${fileId}`;
   }
 
   // Return non-Drive URLs as-is

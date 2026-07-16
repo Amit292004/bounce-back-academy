@@ -10,12 +10,20 @@ interface Subject {
   name: string;
 }
 
+interface Chapter {
+  id: string;
+  name: string;
+  number: number;
+}
+
 interface Quiz {
   id: string;
   title: string;
   className: string;
   subjectId?: string | null;
   subject?: Subject | null;
+  chapterId?: string | null;
+  chapter?: Chapter | null;
   _count: {
     questions: number;
   };
@@ -25,9 +33,12 @@ interface Quiz {
 export default function AdminQuizzesPage() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
   const [newTitle, setNewTitle] = useState('');
-  const [newClass, setNewClass] = useState('10');
+  const [newClass, setNewClass] = useState('');
   const [newSubjectId, setNewSubjectId] = useState('');
+  const [newChapterId, setNewChapterId] = useState('');
   const [loading, setLoading] = useState(true);
   const [selectedClassFilter, setSelectedClassFilter] = useState('all');
 
@@ -35,11 +46,21 @@ export default function AdminQuizzesPage() {
     fetchInitialData();
   }, []);
 
+  useEffect(() => {
+    if (newClass && newSubjectId) {
+      fetchChapters(newClass, newSubjectId);
+    } else {
+      setChapters([]);
+      setNewChapterId('');
+    }
+  }, [newClass, newSubjectId]);
+
   const fetchInitialData = async () => {
     try {
-      const [qzRes, sbRes] = await Promise.all([
+      const [qzRes, sbRes, clRes] = await Promise.all([
         fetch('/api/admin/quizzes'),
-        fetch('/api/admin/subjects')
+        fetch('/api/admin/subjects'),
+        fetch('/api/admin/courses')
       ]);
 
       if (qzRes.ok) setQuizzes(await qzRes.json());
@@ -48,10 +69,32 @@ export default function AdminQuizzesPage() {
         setSubjects(subs);
         if (subs.length > 0) setNewSubjectId(subs[0].id);
       }
+      if (clRes.ok) {
+        const cls = await clRes.json();
+        setCourses(cls);
+        if (cls.length > 0) setNewClass(cls[0].name);
+      }
     } catch (err) {
       logger.error('Failed to fetch initial admin quiz data:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchChapters = async (cls: string, subId: string) => {
+    try {
+      const res = await fetch(`/api/admin/chapters?className=${cls}&subjectId=${subId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setChapters(data);
+        if (data.length > 0) {
+          setNewChapterId(data[0].id);
+        } else {
+          setNewChapterId('');
+        }
+      }
+    } catch (err) {
+      logger.error('Failed to fetch chapters:', err);
     }
   };
 
@@ -66,7 +109,8 @@ export default function AdminQuizzesPage() {
         body: JSON.stringify({
           title: newTitle.trim(),
           className: newClass,
-          subjectId: newSubjectId || null
+          subjectId: newSubjectId || null,
+          chapterId: newChapterId || null
         })
       });
 
@@ -98,7 +142,9 @@ export default function AdminQuizzesPage() {
   };
 
   const filteredQuizzes = quizzes.filter(q => {
-    return selectedClassFilter === 'all' || q.className === selectedClassFilter;
+    if (selectedClassFilter === 'all') return true;
+    const normalize = (name: string) => name.toLowerCase().replace('class', '').trim();
+    return normalize(q.className) === normalize(selectedClassFilter);
   });
 
   if (loading) return <div>Loading quizzes dashboard...</div>;
@@ -107,12 +153,25 @@ export default function AdminQuizzesPage() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 700 }}>Manage Quizzes & Tests</h1>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          {['all', '9', '10', '11', '12'].map((c) => (
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => setSelectedClassFilter('all')}
+            className={selectedClassFilter === 'all' ? 'btn-primary' : 'btn-secondary'}
+            style={{
+              padding: '0.4rem 1rem',
+              borderRadius: 'var(--radius-sm)',
+              fontSize: '0.85rem',
+              border: '1px solid var(--surface-border)',
+              cursor: 'pointer'
+            }}
+          >
+            All Classes
+          </button>
+          {courses.map((c) => (
             <button
-              key={c}
-              onClick={() => setSelectedClassFilter(c)}
-              className={selectedClassFilter === c ? 'btn-primary' : 'btn-secondary'}
+              key={c.id}
+              onClick={() => setSelectedClassFilter(c.name)}
+              className={selectedClassFilter === c.name ? 'btn-primary' : 'btn-secondary'}
               style={{
                 padding: '0.4rem 1rem',
                 borderRadius: 'var(--radius-sm)',
@@ -121,7 +180,7 @@ export default function AdminQuizzesPage() {
                 cursor: 'pointer'
               }}
             >
-              {c === 'all' ? 'All Classes' : `Class ${c}`}
+              {c.name}
             </button>
           ))}
         </div>
@@ -146,7 +205,7 @@ export default function AdminQuizzesPage() {
             />
           </div>
 
-          <div style={{ flex: '1 1 120px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ flex: '1 1 180px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <label style={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.7 }}>Class</label>
             <select
               value={newClass}
@@ -156,10 +215,10 @@ export default function AdminQuizzesPage() {
                 border: '1px solid var(--surface-border)', background: 'var(--surface-highlight)', color: 'var(--foreground)'
               }}
             >
-              <option value="9">Class 9</option>
-              <option value="10">Class 10</option>
-              <option value="11">Class 11</option>
-              <option value="12">Class 12</option>
+              {courses.map(c => (
+                <option key={c.id} value={c.name}>{c.name}</option>
+              ))}
+              {courses.length === 0 && <option value="">No Classes Configured</option>}
             </select>
           </div>
 
@@ -177,6 +236,23 @@ export default function AdminQuizzesPage() {
                 <option key={s.id} value={s.id}>{s.name}</option>
               ))}
               {subjects.length === 0 && <option value="">No Subjects Configured</option>}
+            </select>
+          </div>
+
+          <div style={{ flex: '1 1 180px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.7 }}>Chapter (Optional)</label>
+            <select
+              value={newChapterId}
+              onChange={(e) => setNewChapterId(e.target.value)}
+              style={{
+                padding: '0.75rem', borderRadius: 'var(--radius-sm)',
+                border: '1px solid var(--surface-border)', background: 'var(--surface-highlight)', color: 'var(--foreground)'
+              }}
+            >
+              <option value="">General (No Chapter)</option>
+              {chapters.map(c => (
+                <option key={c.id} value={c.id}>Ch {c.number}: {c.name}</option>
+              ))}
             </select>
           </div>
 
@@ -205,8 +281,17 @@ export default function AdminQuizzesPage() {
               </tr>
             ) : filteredQuizzes.map(quiz => (
               <tr key={quiz.id} style={{ borderBottom: '1px solid var(--surface-border)' }}>
-                <td style={{ padding: '1rem', fontWeight: 600 }}>Class {quiz.className}</td>
-                <td style={{ padding: '1rem' }}>{quiz.subject?.name || 'General'}</td>
+                <td style={{ padding: '1rem', fontWeight: 600 }}>
+                  {quiz.className.toLowerCase().includes('class') ? quiz.className : `Class ${quiz.className}`}
+                </td>
+                <td style={{ padding: '1rem' }}>
+                  <div>{quiz.subject?.name || 'General'}</div>
+                  {quiz.chapter && (
+                    <div style={{ fontSize: '0.8rem', opacity: 0.6 }}>
+                      Ch {quiz.chapter.number}: {quiz.chapter.name}
+                    </div>
+                  )}
+                </td>
                 <td style={{ padding: '1rem', fontWeight: 500 }}>{quiz.title}</td>
                 <td style={{ padding: '1rem', textAlign: 'center' }}>
                   <span style={{ padding: '0.2rem 0.6rem', borderRadius: '4px', background: 'rgba(99,102,241,0.1)', color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 600 }}>

@@ -30,13 +30,15 @@ export default function ContactPage() {
 
           <div className={styles.profileCard}>
             <div className={styles.profileImageContainer}>
-              <Image
-                src="/amit-sharma.jpg"
-                alt="Amit Sharma"
-                width={120}
-                height={120}
-                className={styles.profileImage}
-              />
+              <div className={styles.profileImageInner}>
+                <Image
+                  src="/amit-sharma.jpg"
+                  alt="Amit Sharma"
+                  width={120}
+                  height={120}
+                  className={styles.profileImage}
+                />
+              </div>
             </div>
             <h2 className={styles.profileName}>Amit Sharma</h2>
             <p className={styles.profileRole}>Founder, Bounce Back Academy</p>
@@ -55,7 +57,10 @@ export default function ContactPage() {
 
           <div className={styles.noteBanner}>
             <p>
-              📚 Online Classes available only for <span className={styles.highlightBlue}>Maths</span> and <span className={styles.highlightPurple}>Science</span> subjects.
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'6px',flexShrink:0}}>
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>Online Classes available only for <span className={styles.highlightBlue}>Maths</span> and <span className={styles.highlightPurple}>Science</span> subjects.
             </p>
           </div>
         </div>
@@ -81,19 +86,6 @@ export default function ContactPage() {
             ))}
           </div>
 
-          <div className={styles.subscribeBox}>
-            <h3 className={styles.subscribeTitle}>
-              📌 Subscribe to Bounce Back Academy
-            </h3>
-            <a
-              href="https://www.youtube.com/@BounceBackAcademy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.subscribeBtn}
-            >
-              Subscribe Now &rarr;
-            </a>
-          </div>
         </div>
       </div>
     </div>

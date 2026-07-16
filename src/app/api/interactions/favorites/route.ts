@@ -23,8 +23,9 @@ export async function GET() {
     const videoIds = favoritesData.filter((f: any) => f.targetType === 'VIDEO').map((f: any) => f.targetId);
     const noteIds = favoritesData.filter((f: any) => f.targetType === 'NOTE').map((f: any) => f.targetId);
     const paperIds = favoritesData.filter((f: any) => f.targetType === 'PAPER').map((f: any) => f.targetId);
+    const quizIds = favoritesData.filter((f: any) => f.targetType === 'QUIZ').map((f: any) => f.targetId);
 
-    const [videos, notes, papers] = await Promise.all([
+    const [videos, notes, papers, quizzes] = await Promise.all([
       prisma.video.findMany({
         where: { id: { in: videoIds } },
         include: { subject: true }
@@ -36,6 +37,10 @@ export async function GET() {
       prisma.questionPaper.findMany({
         where: { id: { in: paperIds } },
         include: { subject: true, year: true }
+      }),
+      prisma.quiz.findMany({
+        where: { id: { in: quizIds } },
+        include: { subject: true, chapter: true, questions: true }
       })
     ]);
 
@@ -57,11 +62,13 @@ export async function GET() {
     const sortedVideos = videoIds.map((id: any) => videos.find((v: any) => v.id === id)).filter(Boolean).map(mapItem);
     const sortedNotes = noteIds.map((id: any) => notes.find((n: any) => n.id === id)).filter(Boolean).map(mapItem);
     const sortedPapers = paperIds.map((id: any) => papers.find((p: any) => p.id === id)).filter(Boolean).map(mapItem);
+    const sortedQuizzes = quizIds.map((id: any) => quizzes.find((q: any) => q.id === id)).filter(Boolean).map(mapItem);
 
     return NextResponse.json({
       videos: sortedVideos,
       notes: sortedNotes,
-      papers: sortedPapers
+      papers: sortedPapers,
+      quizzes: sortedQuizzes
     });
   } catch (error) {
     logger.error('Fetch favorites error:', error);

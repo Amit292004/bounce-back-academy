@@ -60,20 +60,31 @@
   -webkit-backdrop-filter: blur(12px);
   border-radius: 1.5rem;
   padding: 2.5rem 2rem;
-  text-align: left;
+  text-align: center;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--surface-border);
   margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .profileImageContainer {
   width: 120px;
   height: 120px;
   border-radius: 1.25rem;
-  background: #f59e0b; /* Orange background as seen in image */
   overflow: hidden;
   margin-bottom: 1.5rem;
-  border: 4px solid var(--background);
+  border: 3px solid var(--surface-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.profileImageInner {
+  width: 100%;
+  height: 100%;
+  border-radius: 1.05rem; /* slightly less to account for border */
+  overflow: hidden;
+  background: #f59e0b;
 }
 
 .profileImage {
@@ -113,6 +124,18 @@
   text-decoration: none;
   color: var(--foreground);
   transition: all 0.2s ease;
+  overflow: hidden;
+  min-width: 0;
+  width: 100%;
+  text-align: left; /* Explicitly align text to left */
+}
+
+.contactPill span {
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word; /* Wrap cleanly instead of harsh character breaks */
+  font-size: 0.9rem; /* Slightly smaller to fit better on compact screens */
+  line-height: 1.4;
 }
 
 .contactPill:hover {
@@ -200,38 +223,99 @@
 
 /* Subscribe Box */
 .subscribeBox {
+  position: relative;
   background: linear-gradient(135deg, var(--surface) 0%, var(--surface-highlight) 100%);
-  border-radius: 1.5rem;
-  padding: 3rem 2rem;
+  border-radius: 2rem;
+  padding: 3rem 2rem 2.5rem;
   text-align: center;
-  border: 1px solid var(--surface-border);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 8px 32px rgba(99,102,241,0.15), var(--shadow-md);
+  overflow: hidden;
+}
+.subscribeBox::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 2rem;
+  padding: 1.5px;
+  background: linear-gradient(135deg, #6366f1, #a855f7, #6366f1);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Icon wrapper */
+.subscribeIconWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.subscribeIcon {
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(0 4px 24px rgba(99,102,241,0.5));
+}
+
+/* Spinning dashed ring animation */
+.spinRing {
+  animation: spinRing 8s linear infinite;
+  transform-origin: 40px 40px;
+}
+@keyframes spinRing {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Sparkles */
+.spark1, .spark2, .spark3 {
+  position: absolute;
+  animation: sparkle 2s ease-in-out infinite;
+  color: #a855f7;
+}
+.spark1 { top: -6px; right: -6px; animation-delay: 0s; }
+.spark2 { bottom: -4px; left: -10px; animation-delay: 0.7s; color: #6366f1; }
+.spark3 { top: 6px; left: -6px; animation-delay: 1.4s; }
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.6) rotate(0deg); }
+  50%       { opacity: 1; transform: scale(1.2) rotate(20deg); }
 }
 
 .subscribeTitle {
-  font-size: 1.75rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  margin-bottom: 2rem;
-  line-height: 1.3;
+  margin-bottom: 1.75rem;
+  line-height: 1.35;
   color: var(--foreground);
 }
 
+.subscribeBrand {
+  background: linear-gradient(90deg, #6366f1, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .subscribeBtn {
-  display: inline-block;
-  background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
   color: white;
-  padding: 1rem 2.5rem;
-  border-radius: 0.75rem;
-  font-size: 1.125rem;
+  padding: 0.85rem 2.25rem;
+  border-radius: 0.875rem;
+  font-size: 1.05rem;
   font-weight: 700;
   text-decoration: none;
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 4px 20px rgba(99,102,241,0.4);
   transition: all 0.3s ease;
+  letter-spacing: 0.01em;
 }
 
 .subscribeBtn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.4);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(99,102,241,0.5);
 }
 
 /* Responsive */

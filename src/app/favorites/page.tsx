@@ -1,15 +1,54 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { FaHeart, FaBookmark, FaYoutube, FaBook, FaFileAlt, FaEye, FaDownload } from 'react-icons/fa';
+import { 
+  ArrowLeft, 
+  Video as VideoIcon, 
+  FileText, 
+  BookOpen, 
+  Play, 
+  X, 
+  Bookmark, 
+  AlertCircle, 
+  Eye,
+  Trophy
+} from 'lucide-react';
 import Link from 'next/link';
 import InteractionButtons from '@/components/InteractionButtons';
-import { logger } from '@/lib/logger'
+import { logger } from '@/lib/logger';
+import styles from './page.module.css';
+
+// ─── VideoThumbnail Component ─────────────────────────────────────────────────
+const VideoThumbnail = ({ src, alt }: { src: string | null; alt: string }) => {
+  const [isError, setIsError] = useState(false);
+  if (isError || !src) {
+    return (
+      <div className={styles.videoThumbFallback}>
+        <Play size={20} fill="white" color="white" />
+      </div>
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={styles.videoThumbImg}
+      onError={() => setIsError(true)}
+    />
+  );
+};
 
 export default function FavoritesPage() {
-  const [data, setData] = useState<{ videos: any[], notes: any[], papers: any[] }>({ videos: [], notes: [], papers: [] });
+  const [data, setData] = useState<{ videos: any[], notes: any[], papers: any[], quizzes: any[] }>({ 
+    videos: [], 
+    notes: [], 
+    papers: [],
+    quizzes: []
+  });
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [activeTab, setActiveTab] = useState<'all' | 'videos' | 'notes' | 'papers' | 'quizzes'>('all');
+  const [selectedVideo, setSelectedVideo] = useState<any | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,7 +63,12 @@ export default function FavoritesPage() {
         const res = await fetch('/api/interactions/favorites');
         if (res.ok) {
           const fetchedData = await res.json();
-          setData(fetchedData);
+          setData({
+            videos: fetchedData.videos || [],
+            notes: fetchedData.notes || [],
+            papers: fetchedData.papers || [],
+            quizzes: fetchedData.quizzes || []
+          });
           setIsAuthenticated(true);
           sessionStorage.setItem('bb_favorites', JSON.stringify(fetchedData));
         } else if (res.status === 401 && !cachedFavs) {
@@ -45,186 +89,320 @@ export default function FavoritesPage() {
   };
 
   if (loading) {
-    return <div style={{ textAlign: 'center', padding: '4rem', opacity: 0.6 }}>Loading your favorites...</div>;
+    return (
+      <div className={styles.favoritesShell}>
+        <div style={{ textAlign: 'center', padding: '4rem', opacity: 0.6 }}>
+          Loading your favorites...
+        </div>
+      </div>
+    );
   }
 
-  const hasAnyFavorites = data.videos.length > 0 || data.notes.length > 0 || data.papers.length > 0;
+  // Filter dynamic counts
+  const videosCount = data.videos?.length || 0;
+  const notesCount = data.notes?.length || 0;
+  const papersCount = data.papers?.length || 0;
+  const quizzesCount = data.quizzes?.length || 0;
+
+  const hasAnyFavorites = videosCount > 0 || notesCount > 0 || papersCount > 0 || quizzesCount > 0;
+
+  const tabsList = [
+    { id: 'all' as const, label: 'All', icon: <Bookmark size={14} /> },
+    { id: 'videos' as const, label: `Videos (${videosCount})`, icon: <VideoIcon size={14} /> },
+    { id: 'notes' as const, label: `Notes (${notesCount})`, icon: <FileText size={14} /> },
+    { id: 'papers' as const, label: `Papers (${papersCount})`, icon: <BookOpen size={14} /> },
+    { id: 'quizzes' as const, label: `Quizzes (${quizzesCount})`, icon: <Trophy size={14} /> },
+  ];
+
+  // Helper to determine if a section should render based on activeTab
+  const shouldRender = (tabId: 'videos' | 'notes' | 'papers' | 'quizzes') => {
+    if (activeTab === 'all') return (data[tabId]?.length || 0) > 0;
+    return activeTab === tabId && (data[tabId]?.length || 0) > 0;
+  };
+
+  const isTabEmpty = (tabId: 'all' | 'videos' | 'notes' | 'papers' | 'quizzes') => {
+    if (tabId === 'all') return !hasAnyFavorites;
+    return (data[tabId]?.length || 0) === 0;
+  };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'clamp(1rem, 5vw, 2rem) clamp(0.75rem, 3vw, 1.5rem)' }}>
-      <div style={{ marginBottom: '2.5rem' }}>
-        <h1 style={{ fontSize: 'clamp(1.75rem, 8vw, 2.5rem)', fontWeight: 800, marginBottom: '0.5rem' }}>
-          My <span className="text-gradient">Favorites</span>
-        </h1>
-        <p style={{ opacity: 0.7, fontSize: 'clamp(0.9rem, 4vw, 1rem)', marginBottom: '1.5rem' }}>All your saved study materials in one place.</p>
-
-        {hasAnyFavorites && (
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            {data.videos.length > 0 && (
-              <a href="#videos" className="glass-panel" style={{ padding: '0.5rem 1.25rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderRadius: '999px', textDecoration: 'none', color: 'var(--foreground)' }}>
-                <FaYoutube style={{ color: '#ff0000' }} /> Videos ({data.videos.length})
-              </a>
-            )}
-            {data.notes.length > 0 && (
-              <a href="#notes" className="glass-panel" style={{ padding: '0.5rem 1.25rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderRadius: '999px', textDecoration: 'none', color: 'var(--foreground)' }}>
-                <FaBook style={{ color: 'var(--accent)' }} /> Notes ({data.notes.length})
-              </a>
-            )}
-            {data.papers.length > 0 && (
-              <a href="#papers" className="glass-panel" style={{ padding: '0.5rem 1.25rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderRadius: '999px', textDecoration: 'none', color: 'var(--foreground)' }}>
-                <FaFileAlt style={{ color: 'var(--primary)' }} /> Papers ({data.papers.length})
-              </a>
-            )}
+    <div className={styles.favoritesShell}>
+      
+      {/* ── COMPACT HEADER ── */}
+      <div className={styles.classHeader}>
+        <div className={styles.classHeaderInner}>
+          <div className={styles.classHeaderLeft}>
+            <Link href="/" className={styles.classBackBtn} title="Back to home">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </Link>
+            <span className={styles.classHeaderTitle}>My Favorites</span>
           </div>
-        )}
+          <nav className={styles.classHeaderTabs}>
+            {tabsList.map(tab => (
+              <button
+                key={tab.id}
+                className={`${styles.classTabBtn} ${activeTab === tab.id ? styles.classTabBtnActive : ""}`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
       </div>
 
-      {!hasAnyFavorites ? (
-        <div className="glass-panel" style={{ padding: 'clamp(2rem, 10vw, 4rem) 1rem', textAlign: 'center', opacity: 0.6 }}>
-          <FaBookmark style={{ fontSize: '3rem', marginBottom: '1rem' }} />
-          <p style={{ fontSize: '1.1rem', marginBottom: '1.5rem' }}>You haven't added any favorites yet.</p>
-          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/videos" className="btn-secondary" style={{ padding: '0.5rem 1.25rem' }}>Videos</Link>
-            <Link href="/notes" className="btn-secondary" style={{ padding: '0.5rem 1.25rem' }}>Notes</Link>
-            <Link href="/papers" className="btn-secondary" style={{ padding: '0.5rem 1.25rem' }}>Papers</Link>
+      {/* ── MAIN CONTENT ── */}
+      <main className={styles.appMain}>
+        <div className={styles.tabContent}>
+
+          {isTabEmpty(activeTab) ? (
+            <div className={styles.emptyState}>
+              <Bookmark className={styles.emptyIcon} />
+              <h4>No favorites found</h4>
+              <p>
+                {activeTab === 'all' 
+                  ? "You haven't bookmarked any study materials yet. Explore our classes to get started." 
+                  : `You haven't bookmarked any ${activeTab} yet. Explore classes to save materials.`}
+              </p>
+              <div className={styles.emptyActions}>
+                <Link href="/videos" className={`btn-secondary ${styles.emptyBtn}`}>Browse Videos</Link>
+                <Link href="/notes" className={`btn-secondary ${styles.emptyBtn}`}>Browse Notes</Link>
+                <Link href="/papers" className={`btn-secondary ${styles.emptyBtn}`}>Browse Papers</Link>
+              </div>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+              
+              {/* Videos Section */}
+              {shouldRender('videos') && (
+                <section>
+                  <div className={styles.sectionHeader}>
+                    <h3><VideoIcon size={18} style={{ color: '#ff0000' }} /> Videos</h3>
+                  </div>
+                  <div className={styles.gridContent}>
+                    {data.videos.map(video => {
+                      const ytId = getYoutubeId(video.youtubeLink);
+                      const thumb = ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : null;
+                      return (
+                        <div 
+                          key={video.id} 
+                          className={styles.videoCard}
+                          onClick={() => setSelectedVideo(video)}
+                        >
+                          <div className={styles.videoThumb}>
+                            <VideoThumbnail src={thumb} alt={video.title} />
+                            <div className={styles.videoPlayOverlay}>
+                              <Play size={16} fill="white" color="white" />
+                            </div>
+                          </div>
+                          <div className={styles.videoInfo}>
+                            <div className={styles.videoMeta}>
+                              <span className={styles.videoTag}>Lecture Video</span>
+                            </div>
+                            <h4 className={styles.videoTitle}>{video.title}</h4>
+                            <div style={{ marginTop: 'auto', paddingTop: '0.75rem', borderTop: '1px solid var(--surface-border)' }} onClick={e => e.stopPropagation()}>
+                              <InteractionButtons 
+                                targetId={video.id}
+                                targetType="VIDEO"
+                                initialLikes={video.likesCount}
+                                initialShares={video.sharesCount}
+                                initialFavorites={video.favoritesCount}
+                                isLiked={video.isLiked}
+                                isFavorited={video.isFavorited}
+                                isAuthenticated={isAuthenticated}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              )}
+
+              {/* Notes Section */}
+              {shouldRender('notes') && (
+                <section>
+                  <div className={styles.sectionHeader}>
+                    <h3><FileText size={18} style={{ color: '#0d9488' }} /> Study Notes</h3>
+                  </div>
+                  <div className={styles.listContent}>
+                    {data.notes.map(note => (
+                      <div key={note.id} className={styles.docCard}>
+                        <div className={styles.docIcon} style={{ background: 'rgba(13,148,136,0.1)', color: '#0d9488' }}>
+                          <FileText size={18} />
+                        </div>
+                        <div className={styles.docInfo}>
+                          <h4 className={styles.docTitle}>{note.title}</h4>
+                          <div className={styles.docMeta}>
+                            <span className={styles.metaClass}>Class {note.className}</span>
+                            <span className={styles.metaSubject}>{note.subject?.name || "Subject"}</span>
+                          </div>
+                          <div style={{ marginTop: '0.25rem' }}>
+                            <InteractionButtons 
+                              targetId={note.id}
+                              targetType="NOTE"
+                              initialLikes={note.likesCount}
+                              initialShares={note.sharesCount}
+                              initialFavorites={note.favoritesCount}
+                              isLiked={note.isLiked}
+                              isFavorited={note.isFavorited}
+                              isAuthenticated={isAuthenticated}
+                            />
+                          </div>
+                        </div>
+                        <a 
+                          href={note.viewUrl || note.downloadFile} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className={`btn-secondary ${styles.viewBtn}`}
+                        >
+                          <Eye size={14} /> View
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Papers Section */}
+              {shouldRender('papers') && (
+                <section>
+                  <div className={styles.sectionHeader}>
+                    <h3><BookOpen size={18} style={{ color: 'var(--primary)' }} /> Question Papers</h3>
+                  </div>
+                  <div className={styles.listContent}>
+                    {data.papers.map(paper => (
+                      <div key={paper.id} className={styles.docCard}>
+                        <div className={styles.docIcon} style={{ background: 'rgba(99,102,241,0.1)', color: 'var(--primary)' }}>
+                          <BookOpen size={18} />
+                        </div>
+                        <div className={styles.docInfo}>
+                          <h4 className={styles.docTitle}>{paper.title}</h4>
+                          <div className={styles.docMeta}>
+                            <span className={styles.metaClass}>Class {paper.className}</span>
+                            <span className={styles.metaSubject}>{paper.subject?.name || "Subject"}</span>
+                            {paper.year?.year && (
+                              <span className={styles.metaYear}>{paper.year.year}</span>
+                            )}
+                          </div>
+                          <div style={{ marginTop: '0.25rem' }}>
+                            <InteractionButtons 
+                              targetId={paper.id}
+                              targetType="PAPER"
+                              initialLikes={paper.likesCount}
+                              initialShares={paper.sharesCount}
+                              initialFavorites={paper.favoritesCount}
+                              isLiked={paper.isLiked}
+                              isFavorited={paper.isFavorited}
+                              isAuthenticated={isAuthenticated}
+                            />
+                          </div>
+                        </div>
+                        <a 
+                          href={paper.viewUrl || paper.downloadFile} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className={`btn-secondary ${styles.viewBtn}`}
+                        >
+                          <Eye size={14} /> View
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Quizzes Section */}
+              {shouldRender('quizzes') && (
+                <section>
+                  <div className={styles.sectionHeader}>
+                    <h3><Trophy size={18} style={{ color: '#f59e0b' }} /> Quizzes</h3>
+                  </div>
+                  <div className={styles.listContent}>
+                    {data.quizzes.map(quiz => (
+                      <div key={quiz.id} className={styles.docCard}>
+                        <div className={styles.docIcon} style={{ background: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>
+                          <Trophy size={18} />
+                        </div>
+                        <div className={styles.docInfo}>
+                          <h4 className={styles.docTitle}>{quiz.title}</h4>
+                          <div className={styles.docMeta}>
+                            <span className={styles.metaClass}>Class {quiz.className}</span>
+                            {quiz.subject?.name && (
+                              <span className={styles.metaSubject}>{quiz.subject.name}</span>
+                            )}
+                            <span className={styles.metaYear}>{quiz.questions?.length || 0} Questions</span>
+                          </div>
+                          <div style={{ marginTop: '0.25rem' }}>
+                            <InteractionButtons 
+                              targetId={quiz.id}
+                              targetType="QUIZ"
+                              initialLikes={0}
+                              initialShares={0}
+                              initialFavorites={1}
+                              isLiked={false}
+                              isFavorited={true}
+                              isAuthenticated={isAuthenticated}
+                            />
+                          </div>
+                        </div>
+                        <Link 
+                          href={`/class/${encodeURIComponent(quiz.className)}`}
+                          className={`btn-secondary ${styles.viewBtn}`}
+                        >
+                          <Play size={12} fill="currentColor" /> Start
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+            </div>
+          )}
+
+        </div>
+      </main>
+
+      {/* ─── MODAL: VIDEO PLAYER ─── */}
+      {selectedVideo && (
+        <div className={styles.modalBackdrop} onClick={() => setSelectedVideo(null)}>
+          <div className={styles.videoModal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <div>
+                <span className={styles.modalEyebrow}>Now Playing</span>
+                <h3 className={styles.modalTitle}>{selectedVideo.title}</h3>
+              </div>
+              <button className={styles.modalClose} onClick={() => setSelectedVideo(null)}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className={styles.videoEmbed}>
+              {getYoutubeId(selectedVideo.youtubeLink) ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${getYoutubeId(selectedVideo.youtubeLink)}?autoplay=1&rel=0&modestbranding=1`}
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                <div className={styles.videoEmbedError}>
+                  <AlertCircle size={32} opacity={0.5} />
+                  <p>Video link is invalid or missing.</p>
+                  <a href={selectedVideo.youtubeLink} target="_blank" rel="noreferrer" className="btn-secondary" style={{ padding: '0.5rem 1rem' }}>
+                    Open in YouTube
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
-          
-          {/* Videos Section */}
-          {data.videos.length > 0 && (
-            <section id="videos" style={{ scrollMarginTop: '80px' }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <FaYoutube style={{ color: '#ff0000' }} /> Videos
-              </h2>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
-                {data.videos.map(video => {
-                  const videoId = getYoutubeId(video.youtubeLink);
-                  return (
-                    <div key={video.id} className="glass-panel" style={{ overflow: 'hidden' }}>
-                      {videoId ? (
-                        <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, background: '#000' }}>
-                          <iframe
-                            loading="lazy"
-                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                            src={`https://www.youtube.com/embed/${videoId}`}
-                            title={video.title}
-                            allowFullScreen
-                          />
-                        </div>
-                      ) : (
-                        <div style={{ height: '180px', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <FaYoutube style={{ fontSize: '3rem', color: '#ff0000' }} />
-                        </div>
-                      )}
-                      <div style={{ padding: '1rem 1.25rem' }}>
-                        <h3 style={{ fontWeight: 600, marginBottom: '0.5rem', fontSize: '0.95rem' }}>{video.title}</h3>
-                        <InteractionButtons 
-                          targetId={video.id}
-                          targetType="VIDEO"
-                          initialLikes={video.likesCount}
-                          initialShares={video.sharesCount}
-                          initialFavorites={video.favoritesCount}
-                          isLiked={video.isLiked}
-                          isFavorited={video.isFavorited}
-                          isAuthenticated={isAuthenticated}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          )}
-
-          {/* Notes Section */}
-          {data.notes.length > 0 && (
-            <section id="notes" style={{ scrollMarginTop: '80px' }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <FaBook style={{ color: 'var(--accent)' }} /> Study Notes
-              </h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {data.notes.map(note => (
-                  <div key={note.id} className="glass-panel" style={{ padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
-                      <div style={{ width: '42px', height: '42px', borderRadius: 'var(--radius-sm)', background: 'rgba(139,92,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)', flexShrink: 0 }}>
-                        <FaBook />
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <h3 style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{note.title}</h3>
-                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                          <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(99,102,241,0.15)', borderRadius: '999px', color: 'var(--primary)' }}>Class {note.className}</span>
-                          <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(139,92,246,0.15)', borderRadius: '999px', color: 'var(--accent)' }}>{note.subject.name}</span>
-                        </div>
-                        <InteractionButtons 
-                          targetId={note.id}
-                          targetType="NOTE"
-                          initialLikes={note.likesCount}
-                          initialShares={note.sharesCount}
-                          initialFavorites={note.favoritesCount}
-                          isLiked={note.isLiked}
-                          isFavorited={note.isFavorited}
-                          isAuthenticated={isAuthenticated}
-                        />
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', gap: '0.75rem' }}>
-                      <a href={note.viewUrl || note.downloadFile} target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                        <FaEye /> View
-                      </a>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Papers Section */}
-          {data.papers.length > 0 && (
-            <section id="papers" style={{ scrollMarginTop: '80px' }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <FaFileAlt style={{ color: 'var(--primary)' }} /> Question Papers
-              </h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {data.papers.map(paper => (
-                  <div key={paper.id} className="glass-panel" style={{ padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
-                      <div style={{ width: '42px', height: '42px', borderRadius: 'var(--radius-sm)', background: 'rgba(99,102,241,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', flexShrink: 0 }}>
-                        <FaFileAlt />
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <h3 style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{paper.title}</h3>
-                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                          <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(99,102,241,0.15)', borderRadius: '999px', color: 'var(--primary)' }}>Class {paper.className}</span>
-                          <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(139,92,246,0.15)', borderRadius: '999px', color: 'var(--accent)' }}>{paper.subject.name}</span>
-                          <span style={{ fontSize: '0.78rem', padding: '0.15rem 0.5rem', background: 'rgba(255,255,255,0.08)', borderRadius: '999px', opacity: 0.8 }}>{paper.year.year}</span>
-                        </div>
-                        <InteractionButtons 
-                          targetId={paper.id}
-                          targetType="PAPER"
-                          initialLikes={paper.likesCount}
-                          initialShares={paper.sharesCount}
-                          initialFavorites={paper.favoritesCount}
-                          isLiked={paper.isLiked}
-                          isFavorited={paper.isFavorited}
-                          isAuthenticated={isAuthenticated}
-                        />
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', gap: '0.75rem' }}>
-                      <a href={paper.viewUrl || paper.downloadFile} target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                        <FaEye /> View
-                      </a>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-        </div>
       )}
+
     </div>
   );
 }

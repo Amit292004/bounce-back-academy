@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { FaGraduationCap, FaHourglassHalf, FaPlay, FaCheckCircle, FaTimesCircle, FaTrophy, FaArrowRight, FaRedo, FaRegFileAlt, FaKeyboard, FaEye, FaArrowLeft, FaListOl } from 'react-icons/fa';
+import { FaGraduationCap, FaHourglassHalf, FaPlay, FaCheckCircle, FaTimesCircle, FaTrophy, FaArrowRight, FaRedo, FaRegFileAlt, FaKeyboard, FaEye, FaArrowLeft, FaListOl, FaTimes } from 'react-icons/fa';
 import styles from './page.module.css';
 import { logger } from '@/lib/logger'
 
@@ -16,6 +16,12 @@ interface Question {
   timeLimit?: number | null;
 }
 
+interface Chapter {
+  id: string;
+  name: string;
+  number: number;
+}
+
 interface Quiz {
   id: string;
   title: string;
@@ -23,6 +29,7 @@ interface Quiz {
   subject?: {
     name: string;
   } | null;
+  chapter?: Chapter | null;
   questions: Question[];
   createdAt: string;
 }
@@ -95,7 +102,12 @@ export default function StudentQuizPage() {
   const [wrongAnswersCount, setWrongAnswersCount] = useState(0);
   const [earnedXp, setEarnedXp] = useState(0);
   const [selectedClassFilter, setSelectedClassFilter] = useState('all');
+  const [selectedSubjectFilter, setSelectedSubjectFilter] = useState('');
+  const [selectedChapterFilter, setSelectedChapterFilter] = useState('');
   const [loading, setLoading] = useState(true);
+  const [courses, setCourses] = useState<any[]>([]);
+  const [subjects, setSubjects] = useState<{ id: string; name: string }[]>([]);
+  const [chapters, setChapters] = useState<{ id: string; name: string; number: number; className: string; subjectId: string }[]>([]);
   
   // Timer state
   const [timeLeft, setTimeLeft] = useState(30); // 30 seconds per question for text input
@@ -103,7 +115,31 @@ export default function StudentQuizPage() {
 
   useEffect(() => {
     fetchQuizzes();
+    fetchClasses();
+    fetchMeta();
   }, []);
+
+  const fetchClasses = async () => {
+    try {
+      const res = await fetch('/api/admin/courses');
+      if (res.ok) setCourses(await res.json());
+    } catch (err) {
+      logger.error('Failed to load courses:', err);
+    }
+  };
+
+  const fetchMeta = async () => {
+    try {
+      const [subRes, chapRes] = await Promise.all([
+        fetch('/api/admin/subjects'),
+        fetch('/api/admin/chapters'),
+      ]);
+      if (subRes.ok) setSubjects(await subRes.json());
+      if (chapRes.ok) setChapters(await chapRes.json());
+    } catch (err) {
+      logger.error('Failed to load subjects/chapters:', err);
+    }
+  };
 
   const fetchQuizzes = async () => {
     try {
@@ -234,8 +270,20 @@ export default function StudentQuizPage() {
   };
 
   const filteredQuizzes = quizzes.filter(q => {
-    return selectedClassFilter === 'all' || q.className === selectedClassFilter;
+    const normalize = (name: string) => name.toLowerCase().replace('class', '').trim();
+    const matchesClass = selectedClassFilter === 'all' || normalize(q.className) === normalize(selectedClassFilter);
+    const matchesSubject = !selectedSubjectFilter || q.subject?.name === selectedSubjectFilter;
+    const matchesChapter = !selectedChapterFilter || q.chapter?.id === selectedChapterFilter;
+    return matchesClass && matchesSubject && matchesChapter;
   });
+
+  const selectedSubjectId = subjects.find(s => s.name === selectedSubjectFilter)?.id;
+  const filteredChapterOptions = chapters.filter(ch =>
+    (selectedClassFilter !== 'all' ? ch.className === selectedClassFilter : true) &&
+    (selectedSubjectId ? ch.subjectId === selectedSubjectId : true)
+  );
+
+  const hasFilters = selectedClassFilter !== 'all' || !!selectedSubjectFilter || !!selectedChapterFilter;
 
   if (loading) {
     return (
@@ -268,26 +316,96 @@ export default function StudentQuizPage() {
             </p>
           </div>
 
-          {/* Class Filters */}
-          <div className={styles.filterChips} style={{ justifyContent: 'center', marginBottom: '2.5rem' }}>
-            {['all', '9', '10', '11', '12'].map((c) => (
-              <button
-                key={c}
-                className={`${styles.filterChip} ${selectedClassFilter === c ? styles.activeChip : ''}`}
-                onClick={() => setSelectedClassFilter(c)}
-              >
-                {c === 'all' ? 'All Classes' : `Class ${c}`}
-              </button>
-            ))}
+          {/* SaaS Filter Bar */}
+          <div className={styles.filterBarWrapper}>
+            <div className={styles.filterBar}>
+
+              {/* Filter icon */}
+              <div className={styles.filterBarIcon}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+                </svg>
+              </div>
+
+              {/* Class */}
+              <div className={styles.filterBarSegment}>
+                <span className={styles.filterBarLabel}>Class</span>
+                <select
+                  value={selectedClassFilter}
+                  onChange={e => {
+                    setSelectedClassFilter(e.target.value);
+                    setSelectedSubjectFilter('');
+                    setSelectedChapterFilter('');
+                  }}
+                  className={styles.filterBarSelect}
+                >
+                  <option value="all">All Classes</option>
+                  {courses.map((c) => (
+                    <option key={c.id} value={c.name}>{c.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Subject */}
+              <div className={styles.filterBarSegment}>
+                <span className={styles.filterBarLabel}>Subject</span>
+                <select
+                  value={selectedSubjectFilter}
+                  onChange={e => {
+                    setSelectedSubjectFilter(e.target.value);
+                    setSelectedChapterFilter('');
+                  }}
+                  className={styles.filterBarSelect}
+                >
+                  <option value="">All Subjects</option>
+                  {subjects.map((s) => (
+                    <option key={s.id} value={s.name}>{s.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Chapter */}
+              <div className={styles.filterBarSegment}>
+                <span className={styles.filterBarLabel}>Chapter</span>
+                <select
+                  value={selectedChapterFilter}
+                  onChange={e => setSelectedChapterFilter(e.target.value)}
+                  className={styles.filterBarSelect}
+                  disabled={!selectedSubjectFilter && selectedClassFilter === 'all'}
+                >
+                  <option value="">All Chapters</option>
+                  {filteredChapterOptions.map((ch) => (
+                    <option key={ch.id} value={ch.id}>Ch {ch.number}: {ch.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Clear — only when filters active */}
+              {hasFilters && (
+                <button
+                  className={styles.clearSegment}
+                  onClick={() => { setSelectedClassFilter('all'); setSelectedSubjectFilter(''); setSelectedChapterFilter(''); }}
+                >
+                  <FaTimes size={10} /> Clear
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Featured Cards Grid */}
           <div className={styles.quizGrid}>
             {filteredQuizzes.map((quiz) => (
               <div key={quiz.id} className={`glass-panel ${styles.quizCard}`}>
-                <div className={styles.cardHeader}>
-                  <span className={styles.classBadge}>Class {quiz.className}</span>
+                <div className={styles.cardHeader} style={{ flexWrap: 'wrap', rowGap: '0.25rem' }}>
+                  <span className={styles.classBadge}>
+                    {quiz.className.toLowerCase().includes('class') ? quiz.className : `Class ${quiz.className}`}
+                  </span>
                   <span className={styles.subjectBadge}>{quiz.subject?.name || 'General'}</span>
+                  {quiz.chapter && (
+                    <span className={styles.subjectBadge} style={{ background: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>
+                      Ch {quiz.chapter.number}: {quiz.chapter.name}
+                    </span>
+                  )}
                 </div>
                 <h3 className={styles.quizCardTitle}>{quiz.title}</h3>
                 <div className={styles.quizMeta}>

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -12,7 +13,7 @@ export default function Footer() {
         {/* Brand */}
         <div className={styles.brand}>
           <div className={styles.logoRow}>
-            <img src="/logo.png" alt="Bounce Back Academy" className={styles.logoImg} />
+            <Image src="/logo.png" alt="Bounce Back Academy" width={40} height={40} className={styles.logoImg} />
             <span className={styles.logoText}>
               Bounce Back <span className={styles.gradientText}>Academy</span>
             </span>

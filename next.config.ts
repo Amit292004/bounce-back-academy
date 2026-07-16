@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '*.googleusercontent.com' },
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' },
+      { protocol: 'https', hostname: '*.ytimg.com' },
+      { protocol: 'https', hostname: '*.youtube.com' },
     ],
   },
   // Suppress the red error overlay for server-side errors that are safely
@@ -28,7 +30,7 @@ const nextConfig: NextConfig = {
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sdk.cashfree.com https://accounts.google.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://drive.google.com https://*.googleusercontent.com https://*.usercontent.google.com https://*.google.com https://*.supabase.co https://res.cloudinary.com https://*.public.blob.vercel-storage.com",
+              "img-src 'self' data: blob: https://drive.google.com https://*.googleusercontent.com https://*.usercontent.google.com https://*.google.com https://*.supabase.co https://res.cloudinary.com https://*.public.blob.vercel-storage.com https://*.ytimg.com https://*.youtube.com",
               "connect-src 'self' https://*.supabase.co https://*.pooler.supabase.com wss://*.supabase.co https://api.cashfree.com https://sandbox.cashfree.com https://accounts.google.com",
               "frame-src 'self' https://www.youtube.com https://drive.google.com https://docs.google.com https://*.cashfree.com https://accounts.google.com",
               "media-src 'self' blob:",

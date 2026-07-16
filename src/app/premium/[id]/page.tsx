@@ -59,9 +59,21 @@ export default function PremiumDetailPage() {
   // Content viewer
   const [activeContent, setActiveContent] = useState<PremiumContent | null>(null);
 
+  const [materialTypes, setMaterialTypes] = useState<any[]>([]);
+
   useEffect(() => {
-    if (itemId) fetchItem();
+    if (itemId) {
+      fetchItem();
+      fetchMaterialTypes();
+    }
   }, [itemId]);
+
+  const fetchMaterialTypes = async () => {
+    try {
+      const res = await fetch('/api/admin/material-types');
+      if (res.ok) setMaterialTypes(await res.json());
+    } catch {}
+  };
 
   const fetchItem = async () => {
     setLoading(true);
@@ -193,8 +205,26 @@ export default function PremiumDetailPage() {
   if (!item) return null;
 
   const featuresList = item.features ? item.features.split('|').map(f => f.trim()).filter(Boolean) : [];
-  const typeLabel = item.type === 'NOTE' ? 'Study Notes' : item.type === 'PYQ' ? 'Board PYQ' : item.type === 'COURSE' ? 'Full Course' : 'Lecture Pack';
-  const typeColor = item.type === 'NOTE' ? 'var(--primary)' : item.type === 'PYQ' ? '#10b981' : item.type === 'COURSE' ? '#f59e0b' : '#ef4444';
+  const getItemTypeLabel = (code: string) => {
+    const matched = materialTypes.find(mt => mt.code === code);
+    if (matched) return matched.name;
+    if (code === 'NOTE') return 'Study Notes';
+    if (code === 'PYQ') return 'Board PYQ';
+    if (code === 'COURSE') return 'Full Course';
+    if (code === 'LECTURE') return 'Lecture Pack';
+    return code;
+  };
+
+  const getItemTypeColor = (code: string) => {
+    if (code === 'NOTE') return 'var(--primary)';
+    if (code === 'PYQ') return '#10b981';
+    if (code === 'COURSE') return '#f59e0b';
+    if (code === 'LECTURE') return '#ef4444';
+    return 'var(--primary)';
+  };
+
+  const typeLabel = getItemTypeLabel(item.type);
+  const typeColor = getItemTypeColor(item.type);
 
   return (
     <div className={styles.page}>
@@ -239,7 +269,7 @@ export default function PremiumDetailPage() {
               }}
             >
               <span style={{ fontSize: '4rem' }}>
-                {item.type === 'NOTE' ? '📚' : item.type === 'PYQ' ? '📝' : item.type === 'COURSE' ? '🎓' : '🎬'}
+                {item.type === 'NOTE' ? '📚' : item.type === 'PYQ' ? '📝' : item.type === 'COURSE' ? '🎓' : item.type === 'LECTURE' ? '🎬' : '📦'}
               </span>
               <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>No image added</span>
             </div>

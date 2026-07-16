@@ -18,7 +18,8 @@ export async function POST(request: Request) {
     const modelMap: Record<string, any> = {
       'VIDEO': prisma.video,
       'NOTE': prisma.note,
-      'PAPER': prisma.questionPaper
+      'PAPER': prisma.questionPaper,
+      'QUIZ': prisma.quiz
     };
 
     const targetModel = modelMap[targetType];
@@ -30,25 +31,37 @@ export async function POST(request: Request) {
       }
     });
 
+    const hasCountField = targetType !== 'QUIZ';
+
     if (existingFavorite) {
-      await prisma.$transaction([
-        prisma.favorite.delete({ where: { id: existingFavorite.id } }),
-        targetModel.update({
-          where: { id: targetId },
-          data: { favoritesCount: { decrement: 1 } }
-        })
-      ]);
+      if (hasCountField) {
+        await prisma.$transaction([
+          prisma.favorite.delete({ where: { id: existingFavorite.id } }),
+          targetModel.update({
+            where: { id: targetId },
+            data: { favoritesCount: { decrement: 1 } }
+          })
+        ]);
+      } else {
+        await prisma.favorite.delete({ where: { id: existingFavorite.id } });
+      }
       return NextResponse.json({ favorited: false });
     } else {
-      await prisma.$transaction([
-        prisma.favorite.create({
+      if (hasCountField) {
+        await prisma.$transaction([
+          prisma.favorite.create({
+            data: { userId, targetId, targetType }
+          }),
+          targetModel.update({
+            where: { id: targetId },
+            data: { favoritesCount: { increment: 1 } }
+          })
+        ]);
+      } else {
+        await prisma.favorite.create({
           data: { userId, targetId, targetType }
-        }),
-        targetModel.update({
-          where: { id: targetId },
-          data: { favoritesCount: { increment: 1 } }
-        })
-      ]);
+        });
+      }
       return NextResponse.json({ favorited: true });
     }
   } catch (error) {

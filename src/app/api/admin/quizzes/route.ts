@@ -9,6 +9,7 @@ export async function GET() {
     const quizzes = await prisma.quiz.findMany({
       include: {
         subject: true,
+        chapter: true,
         _count: {
           select: { questions: true }
         }
@@ -24,7 +25,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { title, className, subjectId } = await request.json();
+    const { title, className, subjectId, chapterId } = await request.json();
     if (!title || !className) {
       return NextResponse.json({ error: 'Title and Class Name are required' }, { status: 400 });
     }
@@ -33,10 +34,12 @@ export async function POST(request: Request) {
       data: {
         title,
         className,
-        subjectId: subjectId || null
+        subjectId: subjectId || null,
+        chapterId: chapterId || null
       },
       include: {
-        subject: true
+        subject: true,
+        chapter: true
       }
     });
 

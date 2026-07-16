@@ -20,6 +20,7 @@ interface PremiumItem {
   features: string | null;
   resourceId: string | null;
   isActive: boolean;
+  className?: string | null;
   _count?: {
     purchases: number;
   };
@@ -45,6 +46,14 @@ export default function AdminPremiumStorePage() {
   const [imageUrl, setImageUrl] = useState('');
   const [featuresInput, setFeaturesInput] = useState('');
   const [resourceId, setResourceId] = useState('');
+  const [courses, setCourses] = useState<any[]>([]);
+  const [className, setClassName] = useState('');
+
+  // Material types states
+  const [materialTypes, setMaterialTypes] = useState<any[]>([]);
+  const [showAddTypeModal, setShowAddTypeModal] = useState(false);
+  const [newTypeName, setNewTypeName] = useState('');
+  const [addingType, setAddingType] = useState(false);
 
   // Loaded resource list for easy dropdown linking
   const [resourceOptions, setResourceOptions] = useState<ResourceOption[]>([]);
@@ -58,7 +67,75 @@ export default function AdminPremiumStorePage() {
 
   useEffect(() => {
     fetchListings();
+    fetchCourses();
+    fetchMaterialTypes();
   }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const res = await fetch('/api/admin/courses');
+      if (res.ok) setCourses(await res.json());
+    } catch (err) {
+      logger.error('Failed to load courses:', err);
+    }
+  };
+
+  const fetchMaterialTypes = async () => {
+    try {
+      const res = await fetch('/api/admin/material-types');
+      if (res.ok) {
+        const data = await res.json();
+        setMaterialTypes(data || []);
+      }
+    } catch (err) {
+      logger.error('Failed to load material types:', err);
+    }
+  };
+
+  const handleCreateMaterialType = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTypeName.trim()) return;
+    setAddingType(true);
+
+    try {
+      const res = await fetch('/api/admin/material-types', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newTypeName.trim() })
+      });
+
+      if (res.ok) {
+        setNewTypeName('');
+        fetchMaterialTypes();
+      } else {
+        const err = await res.json();
+        alert(err.error || 'Failed to create material type');
+      }
+    } catch (err) {
+      logger.error('Failed to create material type:', err);
+    } finally {
+      setAddingType(false);
+    }
+  };
+
+  const handleDeleteMaterialType = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this custom material type? Listing packages using this type will remain in DB but its type won\'t be listed in filters.')) return;
+
+    try {
+      const res = await fetch(`/api/admin/material-types/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (res.ok) {
+        fetchMaterialTypes();
+      } else {
+        const err = await res.json();
+        alert(err.error || 'Failed to delete material type');
+      }
+    } catch (err) {
+      logger.error('Failed to delete material type:', err);
+    }
+  };
 
   // Fetch linked resources whenever product type selection changes
   useEffect(() => {
@@ -128,7 +205,8 @@ export default function AdminPremiumStorePage() {
           originalPrice: originalPrice ? parseFloat(originalPrice) : null,
           imageUrl: imageUrl.trim() || null,
           features: processedFeatures,
-          resourceId: resourceId || null
+          resourceId: resourceId || null,
+          className: className || null
         })
       });
 
@@ -141,6 +219,7 @@ export default function AdminPremiumStorePage() {
         setImageUrl('');
         setFeaturesInput('');
         setResourceId('');
+        setClassName('');
         
         // Reload list
         fetchListings();
@@ -225,7 +304,7 @@ export default function AdminPremiumStorePage() {
         </h2>
         <form onSubmit={handleAddProduct} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem' }}>
             {/* Title */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.7 }}>Product Title</label>
@@ -244,7 +323,19 @@ export default function AdminPremiumStorePage() {
 
             {/* Type */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <label style={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.7 }}>Material Type</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.7 }}>Material Type</label>
+                <button
+                  type="button"
+                  onClick={() => setShowAddTypeModal(true)}
+                  style={{
+                    background: 'transparent', border: 'none', color: 'var(--primary)',
+                    fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', padding: 0
+                  }}
+                >
+                  + Create Type
+                </button>
+              </div>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value)}
@@ -253,10 +344,27 @@ export default function AdminPremiumStorePage() {
                   border: '1px solid var(--surface-border)', background: 'var(--surface-highlight)', color: 'var(--foreground)'
                 }}
               >
-                <option value="NOTE">Premium Study Notes</option>
-                <option value="PYQ">Previous Year Questions (PYQs)</option>
-                <option value="COURSE">Structured Classes / Courses</option>
-                <option value="LECTURE">Paid Lectures / Lessons</option>
+                {materialTypes.map(mt => (
+                  <option key={mt.id} value={mt.code}>{mt.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Class Selection Dropdown */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <label style={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.7 }}>Class (Optional)</label>
+              <select
+                value={className}
+                onChange={(e) => setClassName(e.target.value)}
+                style={{
+                  padding: '0.75rem', borderRadius: 'var(--radius-sm)',
+                  border: '1px solid var(--surface-border)', background: 'var(--surface-highlight)', color: 'var(--foreground)'
+                }}
+              >
+                <option value="">-- Global / All Classes --</option>
+                {courses.map(c => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -314,7 +422,7 @@ export default function AdminPremiumStorePage() {
               >
                 <option value="">-- No Direct File Link --</option>
                 {resourceOptions.map(r => (
-                  <option key={r.id} value={r.id}>
+                  <option key={r.id} value={type === 'COURSE' ? (r.name || r.id) : r.id}>
                     {r.title || r.name || 'Untitled'}
                   </option>
                 ))}
@@ -422,14 +530,25 @@ export default function AdminPremiumStorePage() {
                   </div>
                 </td>
                 <td style={{ padding: '1rem' }}>
-                  <span style={{
-                    padding: '0.15rem 0.5rem', borderRadius: '4px',
-                    background: item.type === 'NOTE' ? 'rgba(99,102,241,0.1)' : item.type === 'PYQ' ? 'rgba(16,185,129,0.1)' : item.type === 'COURSE' ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)',
-                    color: item.type === 'NOTE' ? 'var(--primary)' : item.type === 'PYQ' ? '#10b981' : item.type === 'COURSE' ? '#f59e0b' : '#ef4444',
-                    fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase'
-                  }}>
-                    {item.type}
-                  </span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', alignItems: 'flex-start' }}>
+                    <span style={{
+                      padding: '0.15rem 0.5rem', borderRadius: '4px',
+                      background: item.type === 'NOTE' ? 'rgba(99,102,241,0.1)' : item.type === 'PYQ' ? 'rgba(16,185,129,0.1)' : item.type === 'COURSE' ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)',
+                      color: item.type === 'NOTE' ? 'var(--primary)' : item.type === 'PYQ' ? '#10b981' : item.type === 'COURSE' ? '#f59e0b' : '#ef4444',
+                      fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase'
+                    }}>
+                      {item.type}
+                    </span>
+                    {item.className && (
+                      <span style={{
+                        padding: '0.15rem 0.5rem', borderRadius: '4px',
+                        background: 'rgba(255,255,255,0.08)', color: 'var(--foreground)',
+                        fontSize: '0.7rem', fontWeight: 600, opacity: 0.8
+                      }}>
+                        {item.className}
+                      </span>
+                    )}
+                  </div>
                 </td>
                 <td style={{ padding: '1rem', fontWeight: 600 }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
@@ -656,6 +775,79 @@ export default function AdminPremiumStorePage() {
               >
                 Close View
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Create Material Type Modal */}
+      {showAddTypeModal && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 1000, padding: '1rem'
+        }}>
+          <div className="glass-panel" style={{
+            width: '100%', maxWidth: '480px', padding: '2rem',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0 }}>Manage Material Types</h3>
+              <button
+                onClick={() => setShowAddTypeModal(false)}
+                style={{
+                  background: 'rgba(255,255,255,0.08)', border: 'none',
+                  borderRadius: '50%', width: '32px', height: '32px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'var(--foreground)', cursor: 'pointer'
+                }}
+              >
+                <FaTimes />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateMaterialType} style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
+              <input
+                type="text"
+                value={newTypeName}
+                onChange={(e) => setNewTypeName(e.target.value)}
+                placeholder="e.g. Test Series or Mock Exams"
+                required
+                style={{
+                  flex: 1, padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-sm)',
+                  border: '1px solid var(--surface-border)', background: 'var(--surface-highlight)', color: 'var(--foreground)'
+                }}
+              />
+              <button type="submit" className="btn-primary" disabled={addingType} style={{ padding: '0.65rem 1.25rem' }}>
+                {addingType ? 'Adding...' : 'Add'}
+              </button>
+            </form>
+
+            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+              <h4 style={{ fontSize: '0.85rem', fontWeight: 600, opacity: 0.6, marginBottom: '0.75rem', textTransform: 'uppercase' }}>Configured Types</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {materialTypes.map(mt => {
+                  const isProtected = ['NOTE', 'PYQ', 'COURSE', 'LECTURE'].includes(mt.code);
+                  return (
+                    <div key={mt.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0.75rem', background: 'rgba(255,255,255,0.02)', borderRadius: '6px', border: '1px solid var(--surface-border)' }}>
+                      <div>
+                        <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>{mt.name}</span>
+                        <span style={{ fontSize: '0.7rem', opacity: 0.4, marginLeft: '0.5rem' }}>({mt.code})</span>
+                      </div>
+                      {!isProtected && (
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteMaterialType(mt.id)}
+                          style={{ background: 'transparent', border: 'none', color: 'var(--error)', cursor: 'pointer' }}
+                        >
+                          <FaTrash size={12} />
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

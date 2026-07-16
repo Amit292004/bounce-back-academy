@@ -12,7 +12,7 @@ interface Stats {
 }
 
 interface HeroSectionProps {
-  userClass: string | null;
+  userClass?: string | null;
 }
 
 function AnimatedNumber({ value, isLoading }: { value: number; isLoading: boolean }) {
@@ -33,15 +33,21 @@ function AnimatedNumber({ value, isLoading }: { value: number; isLoading: boolea
   return <span>{displayed.toLocaleString()}+</span>;
 }
 
-export default function HeroSection({ userClass }: HeroSectionProps) {
+export default function HeroSection({ userClass: initialUserClass }: HeroSectionProps) {
   const [stats, setStats] = useState<Stats>({ users: 0, papers: 0, notes: 0, videos: 0, activeNow: 0 });
   const [loading, setLoading] = useState(true);
+  const [userClass, setUserClass] = useState(initialUserClass || null);
 
   useEffect(() => {
     fetch('/api/analytics').then(r => r.json())
       .then(d => { setStats(d); setLoading(false); })
       .catch(() => setLoading(false));
-  }, []);
+
+    if (!userClass) {
+      const stored = localStorage.getItem('selectedClass');
+      if (stored) setUserClass(stored);
+    }
+  }, [userClass]);
 
   return (
     <section className={styles.hero}>

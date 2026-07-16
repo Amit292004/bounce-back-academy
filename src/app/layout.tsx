@@ -68,75 +68,66 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = JSON.stringify([
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Bounce Back Academy",
+      "alternateName": ["Bounce Back", "BBA"],
+      "url": "https://bouncebackacademy.vercel.app/"
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Bounce Back Academy",
+      "url": "https://bouncebackacademy.vercel.app/",
+      "logo": "https://bouncebackacademy.vercel.app/logo.png",
+      "description": "Free NBSE study material for Classes 8 to 12, CUET, JEE & NEET. Download question papers, notes, and watch video lectures by Amit Sharma.",
+      "founder": {
+        "@type": "Person",
+        "name": "Amit Sharma",
+        "jobTitle": "Founder & Educator",
+        "url": "https://bouncebackacademy.vercel.app/",
+        "sameAs": [
+          "https://www.instagram.com/bouncebackacdemy",
+          "https://www.linkedin.com/in/amit-sharma-142a26359/",
+          "https://t.me/amit292004"
+        ]
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "bouncebackacademy.edu@gmail.com",
+        "telephone": "+91-7628024274",
+        "availableLanguage": ["English", "Hindi"]
+      },
+      "sameAs": [
+        "https://www.instagram.com/bouncebackacdemy",
+        "https://www.youtube.com/@BounceBackAcademy",
+        "https://www.linkedin.com/in/amit-sharma-142a26359/"
+      ]
+    }
+  ]);
+
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify([
-              {
-                "@context": "https://schema.org",
-                "@type": "WebSite",
-                "name": "Bounce Back Academy",
-                "alternateName": ["Bounce Back", "BBA"],
-                "url": "https://bouncebackacademy.vercel.app/"
-              },
-              {
-                "@context": "https://schema.org",
-                "@type": "EducationalOrganization",
-                "name": "Bounce Back Academy",
-                "url": "https://bouncebackacademy.vercel.app/",
-                "logo": "https://bouncebackacademy.vercel.app/logo.png",
-                "description": "Free NBSE study material for Classes 8 to 12, CUET, JEE & NEET. Download question papers, notes, and watch video lectures by Amit Sharma.",
-                "founder": {
-                  "@type": "Person",
-                  "name": "Amit Sharma",
-                  "jobTitle": "Founder & Educator",
-                  "url": "https://bouncebackacademy.vercel.app/",
-                  "sameAs": [
-                    "https://www.instagram.com/bouncebackacdemy",
-                    "https://www.linkedin.com/in/amit-sharma-142a26359/",
-                    "https://t.me/amit292004"
-                  ]
-                },
-                "contactPoint": {
-                  "@type": "ContactPoint",
-                  "contactType": "customer support",
-                  "email": "bouncebackacademy.edu@gmail.com",
-                  "telephone": "+91-7628024274",
-                  "availableLanguage": ["English", "Hindi"]
-                },
-                "sameAs": [
-                  "https://www.instagram.com/bouncebackacdemy",
-                  "https://www.youtube.com/@BounceBackAcademy",
-                  "https://www.linkedin.com/in/amit-sharma-142a26359/"
-                ]
-              }
-            ])
-          }}
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            // Fix #14: Use system preference as fallback instead of always defaulting to dark
-          __html: `
-              (function() {
-                try {
-                  var localTheme = localStorage.getItem('bba-theme');
-                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (localTheme === 'dark' || (!localTheme && prefersDark)) {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
-      </head>
-      {/* Fix #22: suppressHydrationWarning belongs only on <html> for theme injection, not <body> */}
+      <head />
       <body>
+        {/* Theme init: runs before hydration to avoid flash of wrong colour scheme */}
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('bba-theme'),d=window.matchMedia('(prefers-color-scheme: dark)').matches;if(t==='dark'||(!t&&d)){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}catch(e){}})();`,
+          }}
+        />
+        {/* JSON-LD structured data */}
+        <Script
+          id="json-ld"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{ __html: jsonLd }}
+        />
         <ThemeProvider>
           <PWARegistration />
           <MainLayoutWrapper>{children}</MainLayoutWrapper>

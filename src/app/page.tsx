@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { Course } from '@prisma/client';
-import { cookies } from 'next/headers';
-import { verifyToken } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 import HeroSection from '@/components/home/HeroSection';
 import FeaturesGrid from '@/components/home/FeaturesGrid';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
@@ -12,7 +11,7 @@ import styles from './page.module.css';
 import React from 'react';
 import { logger } from '@/lib/logger'
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 const COURSE_ACCENT: Record<string, string> = {
   '8':   '#6366f1',
@@ -33,7 +32,7 @@ function getCourseAccent(name: string): string {
   return '#6366f1';
 }
 
-export default async function Home() {
+export default async function Home({ searchParams }: { searchParams: Promise<{ noredirect?: string }> }) {
   let userClass: string | null = null;
   let courses: Course[] = [];
   let bannerMessage: string | null = null;
@@ -49,18 +48,6 @@ export default async function Home() {
     ]);
     courses = coursesData;
     bannerMessage = announcementsData[0]?.message ?? null;
-    const cookieStore = await cookies();
-    const token = cookieStore.get('student_token')?.value;
-    if (token) {
-      const payload = await verifyToken(token);
-      if (payload?.userId) {
-        const user = await prisma.user.findUnique({
-          where: { id: payload.userId as string },
-          select: { class: true },
-        });
-        userClass = user?.class ?? null;
-      }
-    }
   } catch (error) {
     logger.error('Failed to fetch initial data:', error);
   }
@@ -77,7 +64,7 @@ export default async function Home() {
       )}
 
       {/* ── Hero ── */}
-      <HeroSection userClass={userClass} />
+      <HeroSection />
 
       {/* ── Separator ── */}
       <div className={styles.sep} />
@@ -123,7 +110,7 @@ export default async function Home() {
       <div className={styles.sep} />
 
       {/* ── Class selection ── */}
-      <section className={styles.classSection}>
+      <section id="classes" className={styles.classSection}>
         <div className={styles.sectionHead}>
           <p className={styles.eyebrow}>Browse by Class</p>
           <h2 className={styles.sectionTitle}>Select your level</h2>

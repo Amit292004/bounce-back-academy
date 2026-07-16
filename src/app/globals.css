@@ -7,7 +7,7 @@
   --accent: #8b5cf6;
   --surface: #ffffff;
   --surface-card: #f5f5f5;
-  --surface-border: rgba(0, 0, 0, 0.09);
+  --surface-border: rgba(0, 0, 0, 0.15);
   --surface-highlight: rgba(0, 0, 0, 0.04);
   --success: #10b981;
   --error: #ef4444;
@@ -33,7 +33,7 @@
   --foreground: #ededed;
   --surface: #141414;
   --surface-card: #1a1a1a;
-  --surface-border: rgba(255,255,255,0.08);
+  --surface-border: rgba(255,255,255,0.14);
   --surface-highlight: rgba(255,255,255,0.04);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
   --shadow-glow: 0 0 20px rgba(99,102,241,0.2);
@@ -457,4 +457,10 @@ select {
       rgba(255, 255, 255, 0.1),
       transparent);
   animation: shimmer 3s infinite;
+}
+
+@media (max-width: 768px) {
+  .global-mobile-padded {
+    padding-bottom: calc(56px + env(safe-area-inset-bottom)) !important;
+  }
 }

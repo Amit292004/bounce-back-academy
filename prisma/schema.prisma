@@ -80,6 +80,10 @@ model QuestionPaper {
   favoritesCount Int    @default(0)
   chapterId    String?
   chapter      Chapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+
+  @@index([className])
+  @@index([subjectId])
+  @@index([chapterId])
 }
 
 model Note {
@@ -96,6 +100,10 @@ model Note {
   favoritesCount Int    @default(0)
   chapterId    String?
   chapter      Chapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+
+  @@index([className])
+  @@index([subjectId])
+  @@index([chapterId])
 }
 
 model Video {
@@ -113,6 +121,10 @@ model Video {
   chapterId      String?
   chapter        Chapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
   lectureNumber  Int      @default(0)
+
+  @@index([category])
+  @@index([subjectId])
+  @@index([chapterId])
 }
 
 model Announcement {
@@ -122,6 +134,7 @@ model Announcement {
   type      String   @default("SECTION") // "BANNER" or "SECTION"
   isActive  Boolean  @default(true)
   priority  Int      @default(0)
+  className String?
   createdAt DateTime @default(now())
 }
 
@@ -191,6 +204,7 @@ model Chapter {
   notes     Note[]
   videos    Video[]
   papers    QuestionPaper[]
+  quizzes   Quiz[]
   createdAt DateTime @default(now())
 
   @@unique([name, className, subjectId])
@@ -202,8 +216,14 @@ model Quiz {
   className    String
   subjectId    String?
   subject      Subject?       @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  chapterId    String?
+  chapter      Chapter?       @relation(fields: [chapterId], references: [id], onDelete: SetNull)
   questions    QuizQuestion[]
   createdAt    DateTime       @default(now())
+
+  @@index([className])
+  @@index([subjectId])
+  @@index([chapterId])
 }
 
 model QuizQuestion {
@@ -231,6 +251,7 @@ model PremiumItem {
   features      String?     // Pipe-separated feature highlights (e.g. "Direct PDF download | Live QA support")
   resourceId    String?     // Specific resource ID for redirection upon purchase
   isActive      Boolean     @default(true)
+  className     String?
   createdAt     DateTime    @default(now())
   purchases     Purchase[]
   contents      PremiumContent[]
@@ -262,4 +283,12 @@ model PremiumContent {
   sortOrder     Int         @default(0)
   createdAt     DateTime    @default(now())
 }
+
+model MaterialType {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  code      String   @unique
+  createdAt DateTime @default(now())
+}
+
 
