@@ -296,8 +296,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
 
   // Premium
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
-  const [promoCode, setPromoCode] = useState("");
-  const [promoStatus, setPromoStatus] = useState<{ success: boolean; text: string } | null>(null);
+
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [enrolledCourses, setEnrolledCourses] = useState<Record<string, boolean>>({});
@@ -476,15 +475,6 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
       quizzes: activeSubject.quizzes.filter(q => q.chapterId === selectedChapterId),
     };
   }, [activeSubject, selectedChapterId]);
-
-  // ─── Premium Enrollment ──────────────────────────────────────────────────
-  const handleApplyPromo = () => {
-    if (promoCode.toUpperCase() === "BBA50") {
-      setPromoStatus({ success: true, text: "Promo applied! 50% OFF." });
-    } else {
-      setPromoStatus({ success: false, text: "Invalid promo code." });
-    }
-  };
 
   const loadCashfreeScript = (): Promise<boolean> => {
     return new Promise(resolve => {
@@ -1509,41 +1499,16 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
               {checkoutStep === 'initial' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div className={styles.priceDisplay}>
-                    <span className={styles.priceVal}>₹{promoStatus?.success ? Math.round(selectedCourse.price / 2) : selectedCourse.price}</span>
-                    {selectedCourse.originalPrice && !promoStatus?.success && (
+                    <span className={styles.priceVal}>₹{selectedCourse.price}</span>
+                    {selectedCourse.originalPrice && (
                       <span className={styles.priceOriginal}>₹{selectedCourse.originalPrice}</span>
                     )}
-                    {selectedCourse.originalPrice && !promoStatus?.success && (
+                    {selectedCourse.originalPrice && (
                       <span className={styles.discountBadge}>
                         {Math.round(((selectedCourse.originalPrice - selectedCourse.price) / selectedCourse.originalPrice) * 100)}% OFF
                       </span>
                     )}
-                    {promoStatus?.success && (
-                      <span className={styles.priceOriginal}>₹{selectedCourse.price}</span>
-                    )}
-                    {promoStatus?.success && (
-                      <span className={styles.discountBadge}>
-                        50% OFF (PROMO)
-                      </span>
-                    )}
                   </div>
-
-                  <div className={styles.promoRow}>
-                    <input
-                      className={styles.promoInput}
-                      type="text"
-                      placeholder="Promo code (try BBA50)"
-                      value={promoCode}
-                      onChange={e => setPromoCode(e.target.value)}
-                    />
-                    <button type="button" className={styles.promoBtn} onClick={handleApplyPromo}>Apply</button>
-                  </div>
-
-                  {promoStatus && (
-                    <p className={`${styles.promoMsg} ${promoStatus.success ? styles.promoSuccess : styles.promoError}`}>
-                      {promoStatus.text}
-                    </p>
-                  )}
 
                   <button
                     type="button"

@@ -2337,52 +2337,6 @@
 .strikePrice { text-decoration: line-through; opacity: 0.4; }
 .discountText { color: #10b981; font-weight: 600; }
 
-.promoRow {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.promoInput {
-  flex: 1;
-  padding: 0.65rem 0.9rem;
-  border-radius: 9px;
-  border: 1px solid var(--surface-border);
-  background: var(--surface-card);
-  color: var(--foreground);
-  font-size: 0.82rem;
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  transition: var(--transition);
-}
-
-.promoInput:focus { border-color: var(--primary); }
-
-.promoBtn {
-  padding: 0.65rem 1rem;
-  border-radius: 9px;
-  border: 1px solid var(--surface-border);
-  background: var(--surface-card);
-  color: var(--foreground);
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  transition: var(--transition);
-}
-
-.promoBtn:hover { background: var(--surface-highlight); }
-
-.promoMsg {
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  margin: 0;
-}
-
-.promoSuccess { background: rgba(16,185,129,0.08); color: #10b981; border: 1px solid rgba(16,185,129,0.2); }
-.promoError   { background: rgba(239,68,68,0.08);  color: #ef4444;  border: 1px solid rgba(239,68,68,0.2); }
-
 .payBtn {
   width: 100%;
   padding: 0.9rem;
