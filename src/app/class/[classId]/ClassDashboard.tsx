@@ -1493,14 +1493,14 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
           MODAL: PREMIUM CHECKOUT
       ══════════════════════════════ */}
       {selectedCourse && (
-        <div className={styles.modalBackdrop} onClick={() => setSelectedCourse(null)}>
-          <div className={styles.checkoutModal} onClick={e => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
+        <div className={styles.checkoutOverlay} onClick={() => setSelectedCourse(null)}>
+          <div className={`glass-panel ${styles.checkoutModal}`} onClick={e => e.stopPropagation()}>
+            <div className={styles.checkoutHeader}>
               <div>
-                <span className={styles.modalEyebrow} style={{ color: "#f59e0b" }}>Enroll Now</span>
-                <h3 className={styles.modalTitle}>{selectedCourse.title}</h3>
+                <span className={styles.modalEyebrow} style={{ color: "#f59e0b", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: "0.25rem", display: "block" }}>Enroll Now</span>
+                <h3 className={styles.checkoutTitle}>{selectedCourse.title}</h3>
               </div>
-              <button className={styles.modalClose} onClick={() => setSelectedCourse(null)}>
+              <button className={styles.checkoutClose} onClick={() => setSelectedCourse(null)}>
                 <X size={20} />
               </button>
             </div>
@@ -1508,26 +1508,27 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
             <div className={styles.checkoutBody}>
               {checkoutStep === 'initial' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <div className={styles.checkoutSummary}>
-                    <div className={styles.checkoutRow}>
+                  <div className={styles.receipt}>
+                    <div className={styles.receiptRow}>
                       <span>Original Price</span>
                       <span className={styles.strikePrice}>₹{selectedCourse.originalPrice ?? selectedCourse.price}</span>
                     </div>
                     {selectedCourse.originalPrice && (
-                      <div className={styles.checkoutRow}>
+                      <div className={styles.receiptRow}>
                         <span>Discount</span>
                         <span className={styles.discountText}>-₹{Math.round(selectedCourse.originalPrice - selectedCourse.price)}</span>
                       </div>
                     )}
                     {promoStatus?.success && (
-                      <div className={styles.checkoutRow}>
+                      <div className={styles.receiptRow}>
                         <span>Promo (BBA50)</span>
                         <span className={styles.discountText}>-₹{Math.round(selectedCourse.price / 2)}</span>
                       </div>
                     )}
-                    <div className={`${styles.checkoutRow} ${styles.checkoutTotal}`}>
+                    <hr className={styles.receiptDivider} />
+                    <div className={styles.receiptTotal}>
                       <span>Total</span>
-                      <strong>₹{promoStatus?.success ? Math.round(selectedCourse.price / 2) : selectedCourse.price}</strong>
+                      <span>₹{promoStatus?.success ? Math.round(selectedCourse.price / 2) : selectedCourse.price}</span>
                     </div>
                   </div>
 
@@ -1552,21 +1553,8 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                     type="button"
                     disabled={isPurchasing}
                     onClick={() => handleEnroll(selectedCourse.id)}
-                    style={{
-                      background: 'var(--primary)',
-                      color: 'white',
-                      padding: '0.85rem',
-                      width: '100%',
-                      fontWeight: 800,
-                      borderRadius: '8px',
-                      border: 'none',
-                      cursor: isPurchasing ? 'not-allowed' : 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '0.5rem',
-                      opacity: isPurchasing ? 0.7 : 1
-                    }}
+                    className="btn-primary"
+                    style={{ padding: '0.85rem', width: '100%', fontWeight: 800 }}
                   >
                     <FaShieldAlt /> {isPurchasing ? 'Processing...' : 'Proceed to Checkout'}
                   </button>
@@ -1611,21 +1599,8 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                   <button
                     type="submit"
                     disabled={isPurchasing}
-                    style={{
-                      background: '#ec4899',
-                      color: 'white',
-                      padding: '0.85rem',
-                      width: '100%',
-                      fontWeight: 800,
-                      borderRadius: '8px',
-                      border: 'none',
-                      cursor: isPurchasing ? 'not-allowed' : 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '0.5rem',
-                      opacity: isPurchasing ? 0.7 : 1
-                    }}
+                    className="btn-primary"
+                    style={{ padding: '0.85rem', width: '100%', fontWeight: 800 }}
                   >
                     <FaShieldAlt /> Simulate Authorize Payment <FaChevronRight size={10} />
                   </button>
