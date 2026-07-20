@@ -25,6 +25,10 @@ export async function POST(request: Request) {
     const targetModel = modelMap[targetType];
     if (!targetModel) return NextResponse.json({ error: 'Invalid target type' }, { status: 400 });
 
+    // Verify target exists
+    const targetExists = await targetModel.findUnique({ where: { id: targetId } });
+    if (!targetExists) return NextResponse.json({ error: 'Target resource not found' }, { status: 404 });
+
     const existingLike = await prisma.like.findUnique({
       where: {
         userId_targetId_targetType: { userId, targetId, targetType }

@@ -43,6 +43,9 @@ export async function POST(request: Request) {
 
     // 3. Handle Simulated Confirmation Mode (local dev fallback)
     if (simulatedConfirm) {
+      if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json({ error: 'Simulated purchases are not allowed in production.' }, { status: 403 });
+      }
       const purchase = await prisma.purchase.upsert({
         where: {
           userId_premiumItemId: {

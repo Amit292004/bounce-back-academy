@@ -292,3 +292,28 @@ model MaterialType {
 }
 
 
+model ForumPost {
+  id          String       @id @default(cuid())
+  title       String
+  content     String
+  category    String       @default("General")
+  authorName  String
+  authorClass String
+  isFounder   Boolean      @default(false)
+  upvotes     Int          @default(1)
+  upvotedBy   String[]     @default([])
+  tags        String[]     @default([])
+  createdAt   DateTime     @default(now())
+  replies     ForumReply[]
+}
+
+model ForumReply {
+  id          String     @id @default(cuid())
+  postId      String
+  post        ForumPost  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  content     String
+  authorName  String
+  authorClass String
+  isFounder   Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+}

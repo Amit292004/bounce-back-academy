@@ -1,9 +1,13 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { signStudentToken } from '@/lib/auth';
-import { logger } from '@/lib/logger'
+import { logger } from '@/lib/logger';
+import { checkRateLimit } from '@/lib/rateLimit';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Rate limit — 5 OTP attempts per IP per minute
+  const limited = await checkRateLimit(request, 5, 60);
+  if (limited) return limited;
   try {
     const { email, otp } = await request.json();
 

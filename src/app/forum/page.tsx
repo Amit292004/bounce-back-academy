@@ -5,120 +5,57 @@ import Link from 'next/link';
 import { FaComments, FaSearch, FaPlus, FaChevronUp, FaUserCircle, FaTag, FaChevronLeft, FaPaperPlane } from 'react-icons/fa';
 import styles from './page.module.css';
 
+interface ForumReply {
+  id: string;
+  postId: string;
+  content: string;
+  authorName: string;
+  authorClass: string;
+  isFounder: boolean;
+  createdAt: string;
+}
+
 interface ForumPost {
   id: string;
   title: string;
   content: string;
-  category: 'Maths' | 'Science' | 'Exam Prep' | 'General';
-  author: {
-    name: string;
-    class: string;
-    isFounder?: boolean;
-  };
+  category: string;
+  authorName: string;
+  authorClass: string;
+  isFounder: boolean;
   upvotes: number;
-  upvotedBy: string[]; // list of user ids/emails who upvoted
+  upvotedBy: string[];
   createdAt: string;
-  replies: ForumReply[];
   tags: string[];
-}
-
-interface ForumReply {
-  id: string;
-  content: string;
-  author: {
-    name: string;
-    class: string;
-    isFounder?: boolean;
+  replies?: ForumReply[];
+  _count?: {
+    replies: number;
   };
-  createdAt: string;
 }
 
 const CATEGORIES = ['All Topics', 'Maths', 'Science', 'Exam Prep', 'General'];
-
-const INITIAL_POSTS: ForumPost[] = [
-  {
-    id: 'post-1',
-    title: '🔥 High-Yield Theorems for Class 10 Science Boards!',
-    content: 'Hi everyone! I have summarized the top 5 most frequently asked physics and chemistry theorems for the upcoming boards. Pay special attention to Joule\'s Law of Heating and Snell\'s Law. Let me know if you need the full PDF notes!',
-    category: 'Science',
-    author: { name: 'Amit Sharma', class: 'Founder', isFounder: true },
-    upvotes: 42,
-    upvotedBy: [],
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(), // 5 hours ago
-    tags: ['Class 10', 'Physics', 'Chemistry', 'Boards'],
-    replies: [
-      {
-        id: 'reply-1',
-        content: 'Wow! This is extremely helpful sir, Snell\'s law derivations are always a bit tricky for me. Please share the notes!',
-        author: { name: 'Rohan Gupta', class: 'Class 10' },
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(),
-      },
-      {
-        id: 'reply-2',
-        content: 'I have uploaded the full Class 10 Science notes package in the /notes section! Do check them out.',
-        author: { name: 'Amit Sharma', class: 'Founder', isFounder: true },
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
-      }
-    ]
-  },
-  {
-    id: 'post-2',
-    title: '📐 Quick Trigonometry Identities Shortcut Method',
-    content: 'Do you get confused with values of sin, cos, tan at 30, 45, 60 degrees? Here is a simple hand-shortcut trick to remember the entire trigonometric table in under 10 seconds. Check it out: for sin, it\'s sqrt(fingers below)/2!',
-    category: 'Maths',
-    author: { name: 'Priya Patel', class: 'Class 11' },
-    upvotes: 28,
-    upvotedBy: [],
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
-    tags: ['Class 11', 'Trigonometry', 'Math Shortcuts'],
-    replies: [
-      {
-        id: 'reply-3',
-        content: 'Oh wow! I never knew about this sin hand trick. Makes remembering identities so much easier! Thanks Priya!',
-        author: { name: 'Sunny Das', class: 'Class 10' },
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString(),
-      }
-    ]
-  },
-  {
-    id: 'post-3',
-    title: '⏰ What is your best revision strategy 1 month before exams?',
-    content: 'Hey guys, with only 4 weeks left for the final exams, I am struggling to manage revision along with schools practicals. Should I solve past year question papers first or focus on re-reading textbook chapters? Let\'s discuss!',
-    category: 'Exam Prep',
-    author: { name: 'Nikhil Roy', class: 'Class 12' },
-    upvotes: 19,
-    upvotedBy: [],
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(), // 1.5 days ago
-    tags: ['Exam Strategy', 'Revision', 'Study Tips'],
-    replies: [
-      {
-        id: 'reply-4',
-        content: 'Focus on 10-year question papers (from our /papers tab). That will give you direct insight into recurring question formats. Then cross-reference weak chapters with revision notes.',
-        author: { name: 'Amit Sharma', class: 'Founder', isFounder: true },
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 30).toISOString(),
-      }
-    ]
-  }
-];
 
 export default function ForumPage() {
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>('All Topics');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDetailLoading, setIsDetailLoading] = useState(false);
   
   // Selected Thread Detail View state
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  const [selectedPost, setSelectedPost] = useState<ForumPost | null>(null);
   const [newReplyText, setNewReplyText] = useState('');
 
   // Create Thread Form state
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostContent, setNewPostContent] = useState('');
-  const [newPostCategory, setNewPostCategory] = useState<'Maths' | 'Science' | 'Exam Prep' | 'General'>('General');
+  const [newPostCategory, setNewPostCategory] = useState<string>('General');
   const [newPostTags, setNewPostTags] = useState('');
 
-  // Fetch current user and load/initialize posts
+  // Fetch current user
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -127,82 +64,131 @@ export default function ForumPage() {
       } catch {}
     };
     fetchUser();
-
-    // Load from LocalStorage
-    const cachedPosts = localStorage.getItem('bb_forum_posts');
-    if (cachedPosts) {
-      setPosts(JSON.parse(cachedPosts));
-    } else {
-      setPosts(INITIAL_POSTS);
-      localStorage.setItem('bb_forum_posts', JSON.stringify(INITIAL_POSTS));
-    }
   }, []);
 
-  // Update localStorage when posts change
-  const savePosts = (updatedPosts: ForumPost[]) => {
-    setPosts(updatedPosts);
-    localStorage.setItem('bb_forum_posts', JSON.stringify(updatedPosts));
+  const fetchPosts = async () => {
+    setIsLoading(true);
+    try {
+      const url = new URL('/api/forum/posts', window.location.origin);
+      if (activeCategory !== 'All Topics') {
+        url.searchParams.set('category', activeCategory);
+      }
+      if (searchQuery.trim()) {
+        url.searchParams.set('search', searchQuery.trim());
+      }
+      const res = await fetch(url.toString());
+      if (res.ok) {
+        const data = await res.json();
+        setPosts(data);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  useEffect(() => {
+    if (!selectedPostId) {
+      const delayDebounceFn = setTimeout(() => {
+        fetchPosts();
+      }, 300);
+      return () => clearTimeout(delayDebounceFn);
+    }
+  }, [activeCategory, searchQuery, selectedPostId]);
+
+  useEffect(() => {
+    if (selectedPostId) {
+      const fetchDetail = async () => {
+        setIsDetailLoading(true);
+        try {
+          const res = await fetch(`/api/forum/posts/${selectedPostId}`);
+          if (res.ok) {
+            const data = await res.json();
+            setSelectedPost(data);
+          }
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setIsDetailLoading(false);
+        }
+      };
+      fetchDetail();
+    } else {
+      setSelectedPost(null);
+    }
+  }, [selectedPostId]);
+
   // Upvote Post
-  const handleUpvote = (postId: string, e: React.MouseEvent) => {
+  const handleUpvote = async (postId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (!currentUser) {
       window.location.href = '/login';
       return;
     }
 
-    const updated = posts.map(post => {
-      if (post.id === postId) {
-        const userId = currentUser.id || currentUser.email;
-        const alreadyUpvoted = post.upvotedBy.includes(userId);
-        return {
-          ...post,
-          upvotes: alreadyUpvoted ? post.upvotes - 1 : post.upvotes + 1,
-          upvotedBy: alreadyUpvoted 
-            ? post.upvotedBy.filter(id => id !== userId)
-            : [...post.upvotedBy, userId]
-        };
+    try {
+      const res = await fetch(`/api/forum/posts/${postId}/upvote`, { method: 'POST' });
+      if (res.ok) {
+        const data = await res.json();
+        
+        // Optimistic UI update
+        if (selectedPost && selectedPost.id === postId) {
+          setSelectedPost(prev => {
+            if (!prev) return prev;
+            const updatedUpvotes = data.upvoted ? prev.upvotes + 1 : prev.upvotes - 1;
+            const updatedUpvotedBy = data.upvoted 
+              ? [...prev.upvotedBy, currentUser.id || currentUser.email]
+              : prev.upvotedBy.filter(id => id !== (currentUser.id || currentUser.email));
+            return { ...prev, upvotes: updatedUpvotes, upvotedBy: updatedUpvotedBy };
+          });
+        }
+        
+        setPosts(prev => prev.map(post => {
+          if (post.id === postId) {
+            const updatedUpvotes = data.upvoted ? post.upvotes + 1 : post.upvotes - 1;
+            const updatedUpvotedBy = data.upvoted 
+              ? [...post.upvotedBy, currentUser.id || currentUser.email]
+              : post.upvotedBy.filter(id => id !== (currentUser.id || currentUser.email));
+            return { ...post, upvotes: updatedUpvotes, upvotedBy: updatedUpvotedBy };
+          }
+          return post;
+        }));
       }
-      return post;
-    });
-    savePosts(updated);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // Submit Reply
-  const handleAddReply = () => {
-    if (!newReplyText.trim()) return;
+  const handleAddReply = async () => {
+    if (!newReplyText.trim() || !selectedPostId) return;
     if (!currentUser) {
       window.location.href = '/login';
       return;
     }
 
-    const newReply: ForumReply = {
-      id: `reply-${Date.now()}`,
-      content: newReplyText.trim(),
-      author: {
-        name: currentUser.name || currentUser.email.split('@')[0],
-        class: `Class ${currentUser.class}`
-      },
-      createdAt: new Date().toISOString()
-    };
-
-    const updated = posts.map(post => {
-      if (post.id === selectedPostId) {
-        return {
-          ...post,
-          replies: [...post.replies, newReply]
-        };
+    try {
+      const res = await fetch(`/api/forum/posts/${selectedPostId}/replies`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: newReplyText.trim() })
+      });
+      if (res.ok) {
+        const reply = await res.json();
+        setSelectedPost(prev => prev ? {
+          ...prev,
+          replies: [...(prev.replies || []), reply]
+        } : prev);
+        setNewReplyText('');
       }
-      return post;
-    });
-
-    savePosts(updated);
-    setNewReplyText('');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // Submit New Post
-  const handleCreatePost = (e: React.FormEvent) => {
+  const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPostTitle.trim() || !newPostContent.trim()) return;
     if (!currentUser) {
@@ -210,149 +196,139 @@ export default function ForumPage() {
       return;
     }
 
-    const tagArray = newPostTags
-      .split(',')
-      .map(t => t.trim())
-      .filter(t => t.length > 0);
+    try {
+      const res = await fetch('/api/forum/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: newPostTitle,
+          content: newPostContent,
+          category: newPostCategory,
+          tags: newPostTags
+        })
+      });
 
-    const newPost: ForumPost = {
-      id: `post-${Date.now()}`,
-      title: newPostTitle.trim(),
-      content: newPostContent.trim(),
-      category: newPostCategory,
-      author: {
-        name: currentUser.name || currentUser.email.split('@')[0],
-        class: `Class ${currentUser.class}`
-      },
-      upvotes: 1,
-      upvotedBy: [currentUser.id || currentUser.email],
-      createdAt: new Date().toISOString(),
-      replies: [],
-      tags: tagArray.length > 0 ? tagArray : [newPostCategory]
-    };
-
-    const updated = [newPost, ...posts];
-    savePosts(updated);
-
-    // Reset Form & Close Modal
-    setNewPostTitle('');
-    setNewPostContent('');
-    setNewPostCategory('General');
-    setNewPostTags('');
-    setShowCreateModal(false);
-    
-    // Jump into detail view of new post
-    setSelectedPostId(newPost.id);
+      if (res.ok) {
+        const newPost = await res.json();
+        // Reset Form & Close Modal
+        setNewPostTitle('');
+        setNewPostContent('');
+        setNewPostCategory('General');
+        setNewPostTags('');
+        setShowCreateModal(false);
+        
+        // Jump into detail view of new post
+        setSelectedPostId(newPost.id);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
-
-  // Filter Posts
-  const filteredPosts = posts.filter(post => {
-    const matchesCategory = activeCategory === 'All Topics' || post.category === activeCategory;
-    const matchesSearch = 
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCategory && matchesSearch;
-  });
-
-  const selectedPost = posts.find(p => p.id === selectedPostId);
 
   return (
     <div className={styles.container}>
       {/* Detail Thread View */}
-      {selectedPostId && selectedPost ? (
+      {selectedPostId ? (
         <div className={styles.detailView}>
           <button onClick={() => setSelectedPostId(null)} className={styles.backBtn}>
             <FaChevronLeft /> Back to Discussions
           </button>
 
-          <div className={`glass-panel ${styles.threadCard}`}>
-            <div className={styles.threadHeader}>
-              <div className={styles.authorMeta}>
-                <FaUserCircle className={styles.authorAvatar} />
-                <div>
-                  <span className={styles.authorName}>
-                    {selectedPost.author.name}
-                    {selectedPost.author.isFounder && <span className={styles.founderBadge}>BBA Founder</span>}
-                  </span>
-                  <span className={styles.authorSub}>
-                    {selectedPost.author.class} • {new Date(selectedPost.createdAt).toLocaleDateString(undefined, {
-                      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                    })}
-                  </span>
-                </div>
-              </div>
-              <button 
-                onClick={(e) => handleUpvote(selectedPost.id, e)} 
-                className={`${styles.voteBtn} ${currentUser && selectedPost.upvotedBy.includes(currentUser.id || currentUser.email) ? styles.voteActive : ''}`}
-              >
-                <FaChevronUp /> {selectedPost.upvotes}
-              </button>
+          {isDetailLoading || !selectedPost ? (
+            <div className={`glass-panel ${styles.emptyState}`}>
+              <p>Loading post details...</p>
             </div>
-
-            <h1 className={styles.threadTitle}>{selectedPost.title}</h1>
-            <p className={styles.threadContent}>{selectedPost.content}</p>
-
-            <div className={styles.threadTags}>
-              <span className={styles.categoryBadge}>{selectedPost.category}</span>
-              {selectedPost.tags.map(tag => (
-                <span key={tag} className={styles.tagBadge}>#{tag}</span>
-              ))}
-            </div>
-          </div>
-
-          {/* Replies Section */}
-          <div className={styles.repliesBox}>
-            <h3 className={styles.repliesTitle}>
-              Replies ({selectedPost.replies.length})
-            </h3>
-
-            <div className={styles.repliesList}>
-              {selectedPost.replies.map(reply => (
-                <div key={reply.id} className={`glass-panel ${styles.replyCard}`}>
-                  <div className={styles.replyAuthor}>
-                    <FaUserCircle className={styles.replyAvatar} />
+          ) : (
+            <>
+              <div className={`glass-panel ${styles.threadCard}`}>
+                <div className={styles.threadHeader}>
+                  <div className={styles.authorMeta}>
+                    <FaUserCircle className={styles.authorAvatar} />
                     <div>
-                      <span className={styles.replyName}>
-                        {reply.author.name}
-                        {reply.author.isFounder && <span className={styles.founderBadge}>BBA Founder</span>}
+                      <span className={styles.authorName}>
+                        {selectedPost.authorName}
+                        {selectedPost.isFounder && <span className={styles.founderBadge}>BBA Founder</span>}
                       </span>
-                      <span className={styles.replySub}>
-                        {reply.author.class} • {new Date(reply.createdAt).toLocaleDateString(undefined, {
+                      <span className={styles.authorSub}>
+                        {selectedPost.authorClass} • {new Date(selectedPost.createdAt).toLocaleDateString(undefined, {
                           month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                         })}
                       </span>
                     </div>
                   </div>
-                  <p className={styles.replyContent}>{reply.content}</p>
+                  <button 
+                    onClick={(e) => handleUpvote(selectedPost.id, e)} 
+                    className={`${styles.voteBtn} ${currentUser && selectedPost.upvotedBy.includes(currentUser.id || currentUser.email) ? styles.voteActive : ''}`}
+                  >
+                    <FaChevronUp /> {selectedPost.upvotes}
+                  </button>
                 </div>
-              ))}
 
-              {selectedPost.replies.length === 0 && (
-                <p className={styles.noReplies}>No replies yet. Be the first to help out!</p>
-              )}
-            </div>
+                <h1 className={styles.threadTitle}>{selectedPost.title}</h1>
+                <p className={styles.threadContent}>{selectedPost.content}</p>
 
-            {/* Post Reply Bar */}
-            {currentUser ? (
-              <div className={styles.addReplyContainer}>
-                <textarea
-                  placeholder="Type a helpful response..."
-                  value={newReplyText}
-                  onChange={(e) => setNewReplyText(e.target.value)}
-                  className={styles.replyInput}
-                  rows={3}
-                />
-                <button onClick={handleAddReply} className={styles.submitReplyBtn}>
-                  <FaPaperPlane /> Post Reply
-                </button>
+                <div className={styles.threadTags}>
+                  <span className={styles.categoryBadge}>{selectedPost.category}</span>
+                  {selectedPost.tags.map(tag => (
+                    <span key={tag} className={styles.tagBadge}>#{tag}</span>
+                  ))}
+                </div>
               </div>
-            ) : (
-              <div className={`glass-panel ${styles.loginPrompt}`}>
-                <p>Please <Link href="/login" style={{ color: 'var(--primary)', fontWeight: 600 }}>Sign In</Link> to join this discussion.</p>
+
+              {/* Replies Section */}
+              <div className={styles.repliesBox}>
+                <h3 className={styles.repliesTitle}>
+                  Replies ({(selectedPost.replies || []).length})
+                </h3>
+
+                <div className={styles.repliesList}>
+                  {(selectedPost.replies || []).map(reply => (
+                    <div key={reply.id} className={`glass-panel ${styles.replyCard}`}>
+                      <div className={styles.replyAuthor}>
+                        <FaUserCircle className={styles.replyAvatar} />
+                        <div>
+                          <span className={styles.replyName}>
+                            {reply.authorName}
+                            {reply.isFounder && <span className={styles.founderBadge}>BBA Founder</span>}
+                          </span>
+                          <span className={styles.replySub}>
+                            {reply.authorClass} • {new Date(reply.createdAt).toLocaleDateString(undefined, {
+                              month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                      <p className={styles.replyContent}>{reply.content}</p>
+                    </div>
+                  ))}
+
+                  {(selectedPost.replies || []).length === 0 && (
+                    <p className={styles.noReplies}>No replies yet. Be the first to help out!</p>
+                  )}
+                </div>
+
+                {/* Post Reply Bar */}
+                {currentUser ? (
+                  <div className={styles.addReplyContainer}>
+                    <textarea
+                      placeholder="Type a helpful response..."
+                      value={newReplyText}
+                      onChange={(e) => setNewReplyText(e.target.value)}
+                      className={styles.replyInput}
+                      rows={3}
+                    />
+                    <button onClick={handleAddReply} className={styles.submitReplyBtn}>
+                      <FaPaperPlane /> Post Reply
+                    </button>
+                  </div>
+                ) : (
+                  <div className={`glass-panel ${styles.loginPrompt}`}>
+                    <p>Please <Link href="/login" style={{ color: 'var(--primary)', fontWeight: 600 }}>Sign In</Link> to join this discussion.</p>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          )}
         </div>
       ) : (
         /* Discussion Bulletin Dashboard */
@@ -405,50 +381,54 @@ export default function ForumPage() {
 
           {/* Thread Cards List */}
           <div className={styles.threadsList}>
-            {filteredPosts.map(post => (
-              <div 
-                key={post.id} 
-                className={`glass-panel ${styles.postCard}`}
-                onClick={() => setSelectedPostId(post.id)}
-              >
-                <div className={styles.postLeft}>
-                  <button 
-                    onClick={(e) => handleUpvote(post.id, e)} 
-                    className={`${styles.votePill} ${currentUser && post.upvotedBy.includes(currentUser.id || currentUser.email) ? styles.votePillActive : ''}`}
-                  >
-                    <FaChevronUp />
-                    <span>{post.upvotes}</span>
-                  </button>
-                </div>
-                <div className={styles.postBody}>
-                  <div className={styles.postMeta}>
-                    <span className={styles.postCategory}>{post.category}</span>
-                    <span className={styles.postAuthor}>Posted by {post.author.name} ({post.author.class})</span>
-                    <span className={styles.postDate}>
-                      {new Date(post.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                    </span>
-                  </div>
-                  <h3 className={styles.postTitle}>{post.title}</h3>
-                  <p className={styles.postPreview}>{post.content}</p>
-                  
-                  <div className={styles.postFooter}>
-                    <div className={styles.postTagsList}>
-                      {post.tags.map(tag => (
-                        <span key={tag} className={styles.postTag}>#{tag}</span>
-                      ))}
-                    </div>
-                    <span className={styles.repliesCount}>
-                      💬 {post.replies.length} replies
-                    </span>
-                  </div>
-                </div>
+            {isLoading ? (
+              <div className={`glass-panel ${styles.emptyState}`}>
+                <p>Loading discussions...</p>
               </div>
-            ))}
-
-            {filteredPosts.length === 0 && (
+            ) : posts.length === 0 ? (
               <div className={`glass-panel ${styles.emptyState}`}>
                 <p>No active discussions found for this topic. Be the first to start a thread!</p>
               </div>
+            ) : (
+              posts.map(post => (
+                <div 
+                  key={post.id} 
+                  className={`glass-panel ${styles.postCard}`}
+                  onClick={() => setSelectedPostId(post.id)}
+                >
+                  <div className={styles.postLeft}>
+                    <button 
+                      onClick={(e) => handleUpvote(post.id, e)} 
+                      className={`${styles.votePill} ${currentUser && post.upvotedBy.includes(currentUser.id || currentUser.email) ? styles.votePillActive : ''}`}
+                    >
+                      <FaChevronUp />
+                      <span>{post.upvotes}</span>
+                    </button>
+                  </div>
+                  <div className={styles.postBody}>
+                    <div className={styles.postMeta}>
+                      <span className={styles.postCategory}>{post.category}</span>
+                      <span className={styles.postAuthor}>Posted by {post.authorName} ({post.authorClass})</span>
+                      <span className={styles.postDate}>
+                        {new Date(post.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                      </span>
+                    </div>
+                    <h3 className={styles.postTitle}>{post.title}</h3>
+                    <p className={styles.postPreview}>{post.content}</p>
+                    
+                    <div className={styles.postFooter}>
+                      <div className={styles.postTagsList}>
+                        {post.tags.map(tag => (
+                          <span key={tag} className={styles.postTag}>#{tag}</span>
+                        ))}
+                      </div>
+                      <span className={styles.repliesCount}>
+                        💬 {post._count?.replies || 0} replies
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))
             )}
           </div>
         </div>
