@@ -2852,3 +2852,164 @@
 
 
 
+.receipt {
+  background: rgba(0,0,0,0.15);
+  border: 1px solid var(--surface-border);
+  border-radius: 10px;
+  padding: 1.1rem;
+  margin-bottom: 1.25rem;
+}
+
+.receiptItem {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.receiptRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  opacity: 0.65;
+  margin-bottom: 0.35rem;
+}
+
+.receiptDivider {
+  height: 1px;
+  background: var(--surface-border);
+  border: none;
+  margin: 0.65rem 0;
+}
+
+.receiptTotal {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.payTabs {
+  display: flex;
+  gap: 1rem;
+  border-bottom: 1px solid var(--surface-border);
+  margin-bottom: 1.1rem;
+}
+
+.payTab {
+  padding: 0.45rem 0.2rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--foreground);
+  opacity: 0.55;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.15s ease;
+}
+
+.payTabActive {
+  opacity: 1;
+  border-bottom-color: var(--primary);
+  color: var(--primary);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.85rem;
+}
+
+.formLabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  opacity: 0.55;
+  letter-spacing: 0.04em;
+}
+
+.formInput {
+  padding: 0.72rem 1rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--surface-border);
+  background: var(--surface-highlight);
+  color: var(--foreground);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.formInput:focus {
+  border-color: var(--primary);
+}
+
+/* Processing state */
+.processingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2.5rem 0;
+}
+
+.checkoutSpinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(99, 102, 241, 0.15);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+.processingMsg {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.processingNote {
+  font-size: 0.8rem;
+  opacity: 0.45;
+}
+
+/* Success state */
+.successState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes bounceIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.successIcon {
+  font-size: 4rem;
+  color: #10b981;
+  animation: pulseGreen 2s infinite;
+}
+
+.successTitle {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.successMsg {
+  font-size: 0.9rem;
+  opacity: 0.65;
+  line-height: 1.6;
+  max-width: 300px;
+}
+

@@ -39,6 +39,7 @@ import {
 
 import { getDriveImageUrl } from "@/lib/driveImage";
 import ClassSwitcherModal from "@/components/layout/ClassSwitcherModal";
+import { FaCreditCard, FaMobileAlt, FaShieldAlt, FaChevronRight } from "react-icons/fa";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -301,6 +302,16 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [enrolledCourses, setEnrolledCourses] = useState<Record<string, boolean>>({});
 
+  // Checkout states
+  const [payTab, setPayTab] = useState<'card' | 'upi'>('card');
+  const [checkoutStep, setCheckoutStep] = useState<'details' | 'processing' | 'success'>('details');
+  const [loaderMessage, setLoaderMessage] = useState('Securing Gateway Connection...');
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [cardCvv, setCardCvv] = useState('');
+  const [upiId, setUpiId] = useState('');
+  const [loadingPaymentInit, setLoadingPaymentInit] = useState(false);
+
   // Progress
   const [completedItems, setCompletedItems] = useState<Record<string, boolean>>({});
 
@@ -466,6 +477,104 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
     };
   }, [activeSubject, selectedChapterId]);
 
+  // ─── Premium Enrollment ──────────────────────────────────────────────────
+  const handleApplyPromo = () => {
+    if (promoCode.toUpperCase() === "BBA50") {
+      setPromoStatus({ success: true, text: "Promo applied! 50% OFF." });
+    } else {
+      setPromoStatus({ success: false, text: "Invalid promo code." });
+    }
+  };
+
+  const loadCashfreeScript = (): Promise<boolean> => {
+    return new Promise(resolve => {
+      if ((window as any).Cashfree) { resolve(true); return; }
+      const s = document.createElement('script');
+      s.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
+      s.onload = () => resolve(true);
+      s.onerror = () => resolve(false);
+      document.body.appendChild(s);
+    });
+  };
+
+  const handleEnroll = async (courseId: string) => {
+    setIsPurchasing(true);
+    setLoadingPaymentInit(true);
+    try {
+      const res = await fetch('/api/premium/purchase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ premiumItemId: courseId })
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        if (res.status === 401) {
+          // If not logged in, we might just redirect or alert
+          alert('Please sign in to purchase premium courses.');
+          return;
+        }
+        alert(data.error || 'Failed to initiate purchase.');
+        return;
+      }
+
+      const orderData = await res.json();
+
+      if (orderData.alreadyUnlocked) {
+        setEnrolledCourses(prev => ({ ...prev, [courseId]: true }));
+        setCheckoutStep('success');
+        setPurchaseSuccess(true);
+        return;
+      }
+
+      if (orderData.mode === 'cashfree') {
+        const loaded = await loadCashfreeScript();
+        if (!loaded) { alert('Failed to load Cashfree payment SDK.'); return; }
+
+        const cashfree = new (window as any).Cashfree({
+          mode: orderData.environment || 'production'
+        });
+
+        cashfree.checkout({
+          paymentSessionId: orderData.paymentSessionId,
+          redirectTarget: '_self'
+        });
+      } else {
+        setCheckoutStep('details');
+        setCardNumber(''); setCardExpiry(''); setCardCvv(''); setUpiId('');
+        // show checkout modal is implicitly true when selectedCourse is set, but we use step for inner flow
+      }
+    } finally {
+      setIsPurchasing(false);
+      setLoadingPaymentInit(false);
+    }
+  };
+
+  const handleAuthorizePayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedCourse) return;
+    setCheckoutStep('processing');
+    setLoaderMessage('Securing Gateway Connection...');
+    setTimeout(() => { setLoaderMessage('Verifying simulated funds...'); }, 1000);
+    setTimeout(() => { setLoaderMessage('Authorizing purchase transaction...'); }, 2200);
+    setTimeout(async () => {
+      const res = await fetch('/api/premium/purchase/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ premiumItemId: selectedCourse.id, simulatedConfirm: true })
+      });
+      if (res.ok) {
+        setCheckoutStep('success');
+        setPurchaseSuccess(true);
+        setEnrolledCourses(prev => ({ ...prev, [selectedCourse.id]: true }));
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to complete payment.');
+        setCheckoutStep('details');
+      }
+    }, 3700);
+  };
+
   const stats = useMemo(() => {
     let videos = 0, notes = 0, papers = 0, quizzes = 0, completed = 0;
     subjects.forEach(s => {
@@ -479,26 +588,6 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
     const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
     return { videos, notes, papers, quizzes, completed, total, progress };
   }, [subjects, completedItems]);
-
-
-
-  const handleApplyPromo = () => {
-    if (promoCode.trim().toUpperCase() === "BBA50") {
-      setPromoStatus({ success: true, text: "✓ Code BBA50 applied! 50% extra discount unlocked." });
-    } else {
-      setPromoStatus({ success: false, text: "Invalid code. Try BBA50." });
-    }
-  };
-
-  const handleEnroll = (courseId: string) => {
-    setIsPurchasing(true);
-    setTimeout(() => {
-      setIsPurchasing(false);
-      setPurchaseSuccess(true);
-      setEnrolledCourses(prev => ({ ...prev, [courseId]: true }));
-    }, 1500);
-  };
-
   const startQuiz = (quiz: Quiz) => {
     setActiveQuiz(quiz);
     setQuestionIndex(0);
@@ -1415,8 +1504,8 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
             </div>
 
             <div className={styles.checkoutBody}>
-              {!purchaseSuccess ? (
-                <>
+              {checkoutStep === 'details' && (
+                <form onSubmit={handleAuthorizePayment} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div className={styles.checkoutSummary}>
                     <div className={styles.checkoutRow}>
                       <span>Original Price</span>
@@ -1448,7 +1537,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                       value={promoCode}
                       onChange={e => setPromoCode(e.target.value)}
                     />
-                    <button className={styles.promoBtn} onClick={handleApplyPromo}>Apply</button>
+                    <button type="button" className={styles.promoBtn} onClick={handleApplyPromo}>Apply</button>
                   </div>
 
                   {promoStatus && (
@@ -1457,15 +1546,59 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                     </p>
                   )}
 
-                  <button
-                    className={styles.payBtn}
-                    disabled={isPurchasing}
-                    onClick={() => handleEnroll(selectedCourse.id)}
-                  >
-                    {isPurchasing ? "Processing..." : `Pay ₹${promoStatus?.success ? Math.round(selectedCourse.price / 2) : selectedCourse.price} via UPI`}
+                  <div className={styles.payTabs}>
+                    <button type="button" className={`${styles.payTab} ${payTab === 'card' ? styles.payTabActive : ''}`} onClick={() => setPayTab('card')}>
+                      <FaCreditCard size={11} /> Credit/Debit Card
+                    </button>
+                    <button type="button" className={`${styles.payTab} ${payTab === 'upi' ? styles.payTabActive : ''}`} onClick={() => setPayTab('upi')}>
+                      <FaMobileAlt size={11} /> Simulated UPI
+                    </button>
+                  </div>
+
+                  {payTab === 'card' ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>CARD NUMBER (Simulated)</label>
+                        <input type="text" maxLength={19} value={cardNumber} onChange={e => setCardNumber(e.target.value.replace(/\D/g, '').replace(/(\d{4})(?=\d)/g, '$1 '))} placeholder="4111 2222 3333 4444" className={styles.formInput} required />
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
+                        <div className={styles.formGroup}>
+                          <label className={styles.formLabel}>EXPIRY</label>
+                          <input type="text" maxLength={5} value={cardExpiry} onChange={e => setCardExpiry(e.target.value.replace(/\D/g, '').replace(/^(\d{2})(?=\d)/g, '$1/'))} placeholder="MM/YY" className={styles.formInput} required />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label className={styles.formLabel}>CVV</label>
+                          <input type="password" maxLength={3} value={cardCvv} onChange={e => setCardCvv(e.target.value.replace(/\D/g, ''))} placeholder="***" className={styles.formInput} required />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className={styles.formGroup}>
+                      <label className={styles.formLabel}>UPI ID (Simulated)</label>
+                      <input type="text" value={upiId} onChange={e => setUpiId(e.target.value)} placeholder="student@okaxis" className={styles.formInput} required />
+                    </div>
+                  )}
+
+                  {/* Cashfree (Prod) or Simulated (Dev) */}
+                  <button type="button" className={styles.payBtn} disabled={isPurchasing} onClick={() => handleEnroll(selectedCourse.id)} style={{ padding: '0.85rem', width: '100%', fontWeight: 800 }}>
+                    <FaShieldAlt /> {isPurchasing ? 'Processing...' : 'Proceed to Checkout'}
                   </button>
-                </>
-              ) : (
+
+                  <button type="submit" className={styles.payBtn} disabled={isPurchasing} style={{ padding: '0.85rem', width: '100%', fontWeight: 800, marginTop: '0.5rem', background: '#ec4899', border: 'none' }}>
+                    <FaShieldAlt /> Simulate Authorize Payment <FaChevronRight size={10} />
+                  </button>
+                </form>
+              )}
+
+              {checkoutStep === 'processing' && (
+                <div className={styles.processingState}>
+                  <div className={styles.checkoutSpinner} />
+                  <span className={styles.processingMsg}>{loaderMessage}</span>
+                  <span className={styles.processingNote}>Please do not close this window.</span>
+                </div>
+              )}
+
+              {checkoutStep === 'success' && (
                 <div className={styles.successState}>
                   <div className={styles.successIcon}>✓</div>
                   <h4>You're enrolled!</h4>
