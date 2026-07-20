@@ -304,7 +304,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
 
   // Checkout states
   const [payTab, setPayTab] = useState<'card' | 'upi'>('card');
-  const [checkoutStep, setCheckoutStep] = useState<'details' | 'processing' | 'success'>('details');
+  const [checkoutStep, setCheckoutStep] = useState<'initial' | 'simulated' | 'processing' | 'success'>('initial');
   const [loaderMessage, setLoaderMessage] = useState('Securing Gateway Connection...');
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
@@ -540,7 +540,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
           redirectTarget: '_self'
         });
       } else {
-        setCheckoutStep('details');
+        setCheckoutStep('simulated');
         setCardNumber(''); setCardExpiry(''); setCardCvv(''); setUpiId('');
         // show checkout modal is implicitly true when selectedCourse is set, but we use step for inner flow
       }
@@ -570,7 +570,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
       } else {
         const data = await res.json();
         alert(data.error || 'Failed to complete payment.');
-        setCheckoutStep('details');
+        setCheckoutStep('simulated');
       }
     }, 3700);
   };
@@ -813,6 +813,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                   className={styles.featuredCourseCard}
                   onClick={() => {
                     setSelectedCourse(premiumItems[0]);
+                    setCheckoutStep('initial');
                     setPromoStatus(null);
                     setPurchaseSuccess(false);
                   }}
@@ -1260,6 +1261,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                           onClick={() => {
                             if (enrolled) return;
                             setSelectedCourse(item);
+                            setCheckoutStep('initial');
                             setPromoStatus(null);
                             setPurchaseSuccess(false);
                           }}
@@ -1504,8 +1506,8 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
             </div>
 
             <div className={styles.checkoutBody}>
-              {checkoutStep === 'details' && (
-                <form onSubmit={handleAuthorizePayment} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {checkoutStep === 'initial' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div className={styles.checkoutSummary}>
                     <div className={styles.checkoutRow}>
                       <span>Original Price</span>
@@ -1546,6 +1548,33 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                     </p>
                   )}
 
+                  <button
+                    type="button"
+                    disabled={isPurchasing}
+                    onClick={() => handleEnroll(selectedCourse.id)}
+                    style={{
+                      background: 'var(--primary)',
+                      color: 'white',
+                      padding: '0.85rem',
+                      width: '100%',
+                      fontWeight: 800,
+                      borderRadius: '8px',
+                      border: 'none',
+                      cursor: isPurchasing ? 'not-allowed' : 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      opacity: isPurchasing ? 0.7 : 1
+                    }}
+                  >
+                    <FaShieldAlt /> {isPurchasing ? 'Processing...' : 'Proceed to Checkout'}
+                  </button>
+                </div>
+              )}
+
+              {checkoutStep === 'simulated' && (
+                <form onSubmit={handleAuthorizePayment} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div className={styles.payTabs}>
                     <button type="button" className={`${styles.payTab} ${payTab === 'card' ? styles.payTabActive : ''}`} onClick={() => setPayTab('card')}>
                       <FaCreditCard size={11} /> Credit/Debit Card
@@ -1579,12 +1608,25 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                     </div>
                   )}
 
-                  {/* Cashfree (Prod) or Simulated (Dev) */}
-                  <button type="button" className={styles.payBtn} disabled={isPurchasing} onClick={() => handleEnroll(selectedCourse.id)} style={{ padding: '0.85rem', width: '100%', fontWeight: 800 }}>
-                    <FaShieldAlt /> {isPurchasing ? 'Processing...' : 'Proceed to Checkout'}
-                  </button>
-
-                  <button type="submit" className={styles.payBtn} disabled={isPurchasing} style={{ padding: '0.85rem', width: '100%', fontWeight: 800, marginTop: '0.5rem', background: '#ec4899', border: 'none' }}>
+                  <button
+                    type="submit"
+                    disabled={isPurchasing}
+                    style={{
+                      background: '#ec4899',
+                      color: 'white',
+                      padding: '0.85rem',
+                      width: '100%',
+                      fontWeight: 800,
+                      borderRadius: '8px',
+                      border: 'none',
+                      cursor: isPurchasing ? 'not-allowed' : 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      opacity: isPurchasing ? 0.7 : 1
+                    }}
+                  >
                     <FaShieldAlt /> Simulate Authorize Payment <FaChevronRight size={10} />
                   </button>
                 </form>
