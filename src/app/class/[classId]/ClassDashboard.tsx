@@ -26,6 +26,7 @@ import {
   Bell,
   Star,
   Heart,
+  PlaySquare,
 
   CheckCheck,
   Zap,
@@ -265,10 +266,18 @@ function getSubjectStyle(name: string) {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export default function ClassDashboard({ className, displayTitle, subjects: propSubjects, announcements, premiumItems }: Props) {
+export default function ClassDashboard({ className, displayTitle, subjects: propSubjects, announcements: propAnnouncements, premiumItems: propPremiumItems }: Props) {
   const subjects = useMemo(() => {
-    return propSubjects.length > 0 ? propSubjects : MOCK_SUBJECTS;
+    return (propSubjects && propSubjects.length > 0) ? propSubjects : MOCK_SUBJECTS;
   }, [propSubjects]);
+
+  const announcements = useMemo(() => {
+    return propAnnouncements || [];
+  }, [propAnnouncements]);
+
+  const premiumItems = useMemo(() => {
+    return propPremiumItems || [];
+  }, [propPremiumItems]);
 
   // Main navigation tabs
   const [activeTab, setActiveTab] = useState<"home" | "study" | "premium" | "notices">("home");
@@ -297,6 +306,32 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
 
   // Favorites
   const [favoritedIds, setFavoritedIds] = useState<Set<string>>(new Set());
+
+  // Recent Video
+  const [recentVideo, setRecentVideo] = useState<{ video: VideoType; subjectId: string; subjectName: string; } | null>(null);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(`recentVideo_${className}`);
+      if (stored) {
+        setRecentVideo(JSON.parse(stored));
+      }
+    } catch (e) {}
+  }, [className]);
+
+  const handleVideoClick = (video: VideoType) => {
+    setSelectedVideo(video);
+    if (selectedSubjectId) {
+      const subject = subjects.find(s => s.id === selectedSubjectId);
+      if (subject) {
+        const data = { video, subjectId: subject.id, subjectName: subject.name };
+        setRecentVideo(data);
+        try {
+          localStorage.setItem(`recentVideo_${className}`, JSON.stringify(data));
+        } catch (e) {}
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchFavs = async () => {
@@ -608,8 +643,13 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
             </div>
 
             {/* Continue Learning */}
-            {subjects[0]?.videos[0] && (() => {
-              const video = subjects[0].videos[0];
+            {(() => {
+              const video = recentVideo?.video || subjects[0]?.videos[0];
+              const subjectName = recentVideo?.subjectName || subjects[0]?.name;
+              const subjectId = recentVideo?.subjectId || subjects[0]?.id;
+              
+              if (!video) return null;
+              
               const ytId = getYoutubeId(video.youtubeLink);
               const thumb = ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : null;
               return (
@@ -619,8 +659,8 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                     className={styles.continueCard}
                     onClick={() => {
                       setActiveTab("study");
-                      setSelectedSubjectId(subjects[0].id);
-                      setSelectedChapterId(subjects[0].chapters[0]?.id || null);
+                      setSelectedSubjectId(subjectId);
+                      setSelectedChapterId(video.chapterId || null);
                       setClassroomTab("videos");
                     }}
                   >
@@ -631,7 +671,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                       </div>
                     </div>
                     <div className={styles.continueInfo}>
-                      <span className={styles.continueMeta}>{subjects[0].name} · Lecture 1</span>
+                      <span className={styles.continueMeta}>{subjectName} · Lecture {video.lectureNumber || 1}</span>
                       <p className={styles.continueTitle}>{video.title}</p>
                     </div>
                     <ChevronRight size={18} className={styles.continueArrow} />
@@ -691,6 +731,12 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                   <div className={styles.featuredCourseBadge}>
                     {premiumItems[0].type}
                   </div>
+                  {premiumItems[0].imageUrl && (
+                    <div className={styles.featuredCourseImage}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={getDriveImageUrl(premiumItems[0].imageUrl) || ""} alt={premiumItems[0].title} className={styles.featuredCourseImg} />
+                    </div>
+                  )}
                   <h4 className={styles.featuredCourseTitle}>{premiumItems[0].title}</h4>
                   <p className={styles.featuredCourseSub}>{premiumItems[0].description}</p>
                   <div className={styles.featuredCourseFooter}>
@@ -894,7 +940,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                         <div
                           key={video.id}
                           className={`${styles.videoCard} ${done ? styles.videoCardDone : ""}`}
-                          onClick={() => setSelectedVideo(video)}
+                          onClick={() => handleVideoClick(video)}
                         >
                           <div className={styles.videoThumb}>
                             <VideoThumbnail src={thumb} alt={video.title} />
@@ -1199,36 +1245,131 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
       {/* ══════════════════════════════
           MODAL: VIDEO PLAYER
       ══════════════════════════════ */}
-      {selectedVideo && (
-        <div className={styles.modalBackdrop} onClick={() => setSelectedVideo(null)}>
-          <div className={styles.videoModal} onClick={e => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <div>
-                <span className={styles.modalEyebrow}>Now Playing</span>
-                <h3 className={styles.modalTitle}>{selectedVideo.title}</h3>
-              </div>
-              <button className={styles.modalClose} onClick={() => setSelectedVideo(null)}><X size={18} /></button>
-            </div>
-
-            <div className={styles.videoEmbed}>
-              {getYoutubeId(selectedVideo.youtubeLink) ? (
-                <iframe
-                  src={`https://www.youtube.com/embed/${getYoutubeId(selectedVideo.youtubeLink)}?autoplay=1&rel=0&modestbranding=1`}
-                  allow="autoplay; fullscreen; picture-in-picture"
-                />
-              ) : (
-                <div className={styles.videoEmbedError}>
-                  <AlertCircle size={32} opacity={0.5} />
-                  <p>Video link is invalid or missing.</p>
-                  <a href={selectedVideo.youtubeLink} target="_blank" rel="noreferrer" className={styles.enrollBtn}>
-                    Open in YouTube
-                  </a>
+      {selectedVideo && (() => {
+        const currentSubject = subjects.find(s => 
+          s.videos.some(v => v.id === selectedVideo.id) || 
+          (selectedVideo.chapterId && s.chapters.some(c => c.id === selectedVideo.chapterId))
+        );
+        const playlistVideos = currentSubject && selectedVideo.chapterId
+          ? currentSubject.videos.filter(v => v.chapterId === selectedVideo.chapterId)
+          : [];
+        const favorited = favoritedIds.has(selectedVideo.id);
+        const completed = !!completedItems[selectedVideo.id];
+        
+        return (
+          <div className={styles.modalBackdrop} onClick={() => setSelectedVideo(null)}>
+            <div className={styles.videoGlow} />
+            <div className={`${styles.videoModal} ${styles.premiumVideoModal}`} onClick={e => e.stopPropagation()}>
+              <div className={styles.modalHeader}>
+                <div>
+                  <span className={styles.modalEyebrow}>
+                    {currentSubject ? currentSubject.name : "Now Playing"} 
+                    {selectedVideo.lectureNumber ? ` · Lecture ${selectedVideo.lectureNumber}` : ""}
+                  </span>
+                  <h3 className={styles.modalTitle}>{selectedVideo.title}</h3>
                 </div>
-              )}
+                <button className={styles.modalClose} onClick={() => setSelectedVideo(null)}><X size={18} /></button>
+              </div>
+
+              <div className={styles.premiumPlayerGrid}>
+                <div className={styles.playerContainer}>
+                  <div className={styles.videoEmbed}>
+                    {getYoutubeId(selectedVideo.youtubeLink) ? (
+                      <iframe
+                        src={`https://www.youtube.com/embed/${getYoutubeId(selectedVideo.youtubeLink)}?autoplay=1&rel=0&modestbranding=1`}
+                        allow="autoplay; fullscreen; picture-in-picture"
+                      />
+                    ) : (
+                      <div className={styles.videoEmbedError}>
+                        <AlertCircle size={32} opacity={0.5} />
+                        <p>Video link is invalid or missing.</p>
+                        <a href={selectedVideo.youtubeLink} target="_blank" rel="noreferrer" className={styles.enrollBtn}>
+                          Open in YouTube
+                        </a>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className={styles.playerActionsRow}>
+                    <button 
+                      className={`${styles.actionBtn} ${favorited ? styles.actionBtnFavActive : ""}`}
+                      onClick={(e) => toggleFavorite(selectedVideo.id, 'VIDEO', e)}
+                    >
+                      <Heart size={16} fill={favorited ? "#ef4444" : "none"} color={favorited ? "#ef4444" : "currentColor"} />
+                      <span>{favorited ? "Favorited" : "Favorite"}</span>
+                    </button>
+
+                    <button 
+                      className={`${styles.actionBtn} ${completed ? styles.actionBtnDoneActive : ""}`}
+                      onClick={(e) => toggleComplete(selectedVideo.id, e)}
+                    >
+                      <CheckCircle2 size={16} color={completed ? "#10b981" : "currentColor"} />
+                      <span>{completed ? "Completed" : "Mark Completed"}</span>
+                    </button>
+
+                    {selectedVideo.pdfUrl && selectedVideo.pdfUrl !== "#" && (
+                      <button 
+                        className={styles.actionBtn}
+                        onClick={() => setSelectedDoc({
+                          title: `${selectedVideo.title} - Notes`,
+                          viewUrl: selectedVideo.pdfUrl || "",
+                          downloadUrl: selectedVideo.pdfUrl || ""
+                        })}
+                      >
+                        <FileText size={16} />
+                        <span>Lecture Notes</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {playlistVideos.length > 1 && (
+                  <div className={styles.playerPlaylist}>
+                    <div className={styles.playlistHeader}>
+                      <PlaySquare size={16} style={{ opacity: 0.7 }} />
+                      <h4>Chapter Lectures ({playlistVideos.length})</h4>
+                    </div>
+                    <div className={styles.playlistList}>
+                      {playlistVideos.map((v, i) => {
+                        const ytId = getYoutubeId(v.youtubeLink);
+                        const thumb = ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : null;
+                        const isCurrent = v.id === selectedVideo.id;
+                        const isDone = !!completedItems[v.id];
+                        
+                        return (
+                          <div 
+                            key={v.id} 
+                            className={`${styles.playlistItem} ${isCurrent ? styles.playlistItemActive : ""} ${isDone ? styles.playlistItemDone : ""}`}
+                            onClick={() => setSelectedVideo(v)}
+                          >
+                            <div className={styles.playlistThumbContainer}>
+                              {thumb ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={thumb} alt={v.title} className={styles.playlistThumb} />
+                              ) : (
+                                <div className={styles.playlistThumbFallback}><Play size={12} fill="currentColor" /></div>
+                              )}
+                              {isCurrent && (
+                                <div className={styles.playingIndicator}>
+                                  <div className={styles.pulseDot} />
+                                </div>
+                              )}
+                            </div>
+                            <div className={styles.playlistItemInfo}>
+                              <span className={styles.playlistLectureNum}>Lecture {v.lectureNumber || (i + 1)}</span>
+                              <h5 className={styles.playlistItemTitle}>{v.title}</h5>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* ══════════════════════════════
           MODAL: DOCUMENT VIEWER

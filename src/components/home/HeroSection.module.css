@@ -237,7 +237,7 @@
 
 /* Responsive */
 @media (max-width: 600px) {
-  .hero { padding: 5rem 1rem 3.5rem; min-height: 100svh; }
+  .hero { padding: 5rem 1rem 7rem; min-height: 100svh; }
 
   .ctas { flex-direction: column; width: 100%; }
   .ctaPrimary, .ctaGhost { width: 100%; justify-content: center; }

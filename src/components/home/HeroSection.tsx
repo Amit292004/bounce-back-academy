@@ -58,7 +58,7 @@ export default function HeroSection({ userClass: initialUserClass }: HeroSection
         {/* Live indicator */}
         <div className={styles.liveChip}>
           <span className={styles.liveDot} />
-          <span>{loading ? '—' : stats.activeNow} students studying right now</span>
+          <span>{loading ? '—' : stats.activeNow} {stats.activeNow === 1 ? 'student' : 'students'} studying right now</span>
         </div>
 
         {/* Headline */}

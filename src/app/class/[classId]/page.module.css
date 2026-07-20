@@ -687,6 +687,22 @@
   margin-bottom: 0.65rem;
 }
 
+.featuredCourseImage {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.8rem;
+  background: var(--surface-highlight);
+}
+
+.featuredCourseImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .featuredCourseTitle {
   font-size: 1.05rem;
   font-weight: 700;
@@ -1715,19 +1731,25 @@
 .modalBackdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 200;
   display: flex;
-  align-items: flex-end;   /* bottom sheet on mobile */
+  align-items: center;     /* centered modal on all viewports */
   justify-content: center;
+  padding: 1rem;
   animation: backdropIn 0.2s ease;
 }
 
 @keyframes backdropIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+@keyframes modalZoom {
+  from { transform: scale(0.96); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
 }
 
 .modalHeader {
@@ -1778,13 +1800,255 @@
 /* ── Video Modal ── */
 .videoModal {
   background: var(--surface);
-  border-radius: 20px 20px 0 0;
+  border-radius: 16px;
   width: 100%;
+  max-width: 680px;
   max-height: 90dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: slideUp 0.25s ease;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--surface-border);
+  animation: modalZoom 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  z-index: 10;
+}
+
+/* Ambient glow container behind the modal */
+.videoGlow {
+  position: absolute;
+  width: 700px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.08) 50%, transparent 100%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 5;
+  animation: glowPulse 8s infinite alternate ease-in-out;
+}
+
+@keyframes glowPulse {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+  100% { transform: scale(1.1) translate(-20px, 10px); opacity: 1; }
+}
+
+.premiumVideoModal {
+  max-width: 980px;
+  max-height: 85vh;
+}
+
+.premiumPlayerGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  flex: 1;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .premiumPlayerGrid {
+    grid-template-columns: 1fr 340px;
+  }
+}
+
+.playerContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.playerActionsRow {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  background: var(--surface);
+  border-top: 1px solid var(--surface-border);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.95rem;
+  border-radius: 8px;
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  color: var(--foreground);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionBtn:hover {
+  background: var(--surface-highlight);
+  border-color: rgba(99, 102, 241, 0.25);
+  transform: translateY(-1px);
+}
+
+.actionBtnFavActive {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+.actionBtnFavActive:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.actionBtnDoneActive {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+.actionBtnDoneActive:hover {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Playlist panel */
+.playerPlaylist {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-card);
+  border-top: 1px solid var(--surface-border);
+  height: 250px;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .playerPlaylist {
+    border-top: none;
+    border-left: 1px solid var(--surface-border);
+    height: 100%;
+  }
+}
+
+.playlistHeader {
+  padding: 0.9rem 1.15rem;
+  border-bottom: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface);
+}
+
+.playlistHeader h4 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  color: var(--foreground);
+}
+
+.playlistList {
+  overflow-y: auto;
+  flex: 1;
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.playlistItem {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--surface);
+  border: 1px solid transparent;
+}
+
+.playlistItem:hover {
+  background: var(--surface-highlight);
+  border-color: var(--surface-border);
+}
+
+.playlistItemActive {
+  background: rgba(99, 102, 241, 0.08) !important;
+  border-color: rgba(99, 102, 241, 0.2) !important;
+}
+
+.playlistThumbContainer {
+  position: relative;
+  width: 80px;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #000;
+  flex-shrink: 0;
+}
+
+.playlistThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.playlistThumbFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.playingIndicator {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulseDot {
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6);
+  animation: playPulse 1.8s infinite;
+}
+
+@keyframes playPulse {
+  0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); transform: scale(0.95); }
+  70% { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0); transform: scale(1.1); }
+  100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); transform: scale(0.95); }
+}
+
+.playlistItemInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.playlistLectureNum {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--primary);
+  opacity: 0.85;
+  margin-bottom: 0.15rem;
+}
+
+.playlistItemTitle {
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--foreground);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.playlistItemDone {
+  opacity: 0.75;
 }
 
 @keyframes slideUp {
@@ -1939,12 +2203,15 @@
 /* ── Doc Modal ── */
 .docModal {
   background: var(--surface);
-  border-radius: 20px 20px 0 0;
+  border-radius: 16px;
   width: 100%;
-  height: 90dvh;
+  max-width: 640px;
+  height: 80vh;
   display: flex;
   flex-direction: column;
-  animation: slideUp 0.25s ease;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--surface-border);
+  animation: modalZoom 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
 }
 
@@ -1963,11 +2230,14 @@
 /* ── Checkout Modal ── */
 .checkoutModal {
   background: var(--surface);
-  border-radius: 20px 20px 0 0;
+  border-radius: 16px;
   width: 100%;
-  max-height: 90dvh;
+  max-width: 480px;
+  max-height: 85dvh;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--surface-border);
   overflow-y: auto;
-  animation: slideUp 0.25s ease;
+  animation: modalZoom 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .checkoutBody {
@@ -2102,13 +2372,16 @@
 /* ── Quiz Modal ── */
 .quizModal {
   background: var(--surface);
-  border-radius: 20px 20px 0 0;
+  border-radius: 16px;
   width: 100%;
-  max-height: 90dvh;
+  max-width: 520px;
+  max-height: 85dvh;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--surface-border);
   overflow: hidden;
-  animation: slideUp 0.25s ease;
+  animation: modalZoom 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .quizBody {
@@ -2453,6 +2726,11 @@
     max-height: 88vh;
   }
 
+  .premiumVideoModal {
+    max-width: 980px;
+    max-height: 85vh;
+  }
+
   .docModal {
     border-radius: 16px;
     max-width: 700px;
@@ -2566,7 +2844,11 @@
   }
 
   .videoModal { max-width: 680px; }
+  .premiumVideoModal { max-width: 940px; }
   .docModal   { max-width: 640px; height: 78vh; }
   .checkoutModal { max-width: 460px; }
   .quizModal  { max-width: 520px; }
 }
+
+
+
