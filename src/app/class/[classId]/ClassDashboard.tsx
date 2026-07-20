@@ -39,7 +39,7 @@ import {
 
 import { getDriveImageUrl } from "@/lib/driveImage";
 import ClassSwitcherModal from "@/components/layout/ClassSwitcherModal";
-import { FaCreditCard, FaMobileAlt, FaShieldAlt, FaChevronRight } from "react-icons/fa";
+import { FaCreditCard, FaMobileAlt, FaShieldAlt, FaChevronRight, FaShoppingCart } from "react-icons/fa";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -1508,28 +1508,24 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
             <div className={styles.checkoutBody}>
               {checkoutStep === 'initial' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <div className={styles.receipt}>
-                    <div className={styles.receiptRow}>
-                      <span>Original Price</span>
-                      <span className={styles.strikePrice}>₹{selectedCourse.originalPrice ?? selectedCourse.price}</span>
-                    </div>
-                    {selectedCourse.originalPrice && (
-                      <div className={styles.receiptRow}>
-                        <span>Discount</span>
-                        <span className={styles.discountText}>-₹{Math.round(selectedCourse.originalPrice - selectedCourse.price)}</span>
-                      </div>
+                  <div className={styles.priceDisplay}>
+                    <span className={styles.priceVal}>₹{promoStatus?.success ? Math.round(selectedCourse.price / 2) : selectedCourse.price}</span>
+                    {selectedCourse.originalPrice && !promoStatus?.success && (
+                      <span className={styles.priceOriginal}>₹{selectedCourse.originalPrice}</span>
+                    )}
+                    {selectedCourse.originalPrice && !promoStatus?.success && (
+                      <span className={styles.discountBadge}>
+                        {Math.round(((selectedCourse.originalPrice - selectedCourse.price) / selectedCourse.originalPrice) * 100)}% OFF
+                      </span>
                     )}
                     {promoStatus?.success && (
-                      <div className={styles.receiptRow}>
-                        <span>Promo (BBA50)</span>
-                        <span className={styles.discountText}>-₹{Math.round(selectedCourse.price / 2)}</span>
-                      </div>
+                      <span className={styles.priceOriginal}>₹{selectedCourse.price}</span>
                     )}
-                    <hr className={styles.receiptDivider} />
-                    <div className={styles.receiptTotal}>
-                      <span>Total</span>
-                      <span>₹{promoStatus?.success ? Math.round(selectedCourse.price / 2) : selectedCourse.price}</span>
-                    </div>
+                    {promoStatus?.success && (
+                      <span className={styles.discountBadge}>
+                        50% OFF (PROMO)
+                      </span>
+                    )}
                   </div>
 
                   <div className={styles.promoRow}>
@@ -1554,10 +1550,20 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                     disabled={isPurchasing}
                     onClick={() => handleEnroll(selectedCourse.id)}
                     className="btn-primary"
-                    style={{ padding: '0.85rem', width: '100%', fontWeight: 800 }}
+                    style={{ padding: '0.85rem', width: '100%', fontWeight: 800, fontSize: '1rem', marginTop: '0.5rem' }}
                   >
-                    <FaShieldAlt /> {isPurchasing ? 'Processing...' : 'Proceed to Checkout'}
+                    {isPurchasing ? 'Processing...' : <><FaShoppingCart style={{ marginRight: '0.3rem' }} /> Unlock Instantly</>}
                   </button>
+
+                  <div className={styles.secureNote}>
+                    <FaShieldAlt style={{ color: '#10b981' }} />
+                    <span>Secure payment · Instant access</span>
+                  </div>
+
+                  <div className={styles.contentSummary}>
+                    <p className={styles.summaryLabel}>This package includes:</p>
+                    <p style={{ opacity: 0.4, fontSize: '0.82rem' }}>Contents being added soon</p>
+                  </div>
                 </div>
               )}
 
