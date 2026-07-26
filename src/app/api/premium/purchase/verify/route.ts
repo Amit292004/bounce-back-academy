@@ -41,10 +41,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Premium listing was not found.' }, { status: 404 });
     }
 
-    // 3. Handle Simulated Confirmation Mode (local dev fallback)
+    const appId = process.env.CASHFREE_APP_ID;
+    const secretKey = process.env.CASHFREE_SECRET_KEY;
+    const hasCashfreeKeys = !!(appId && secretKey);
+
+    // 3. Handle Simulated Confirmation Mode (local dev & unconfigured gateway fallback)
     if (simulatedConfirm) {
-      if (process.env.NODE_ENV === 'production') {
-        return NextResponse.json({ error: 'Simulated purchases are not allowed in production.' }, { status: 403 });
+      if (hasCashfreeKeys && process.env.NODE_ENV === 'production' && process.env.ALLOW_SIMULATED_PURCHASE !== 'true') {
+        return NextResponse.json({ error: 'Simulated purchases are disabled when real payment gateway is configured.' }, { status: 403 });
       }
       const purchase = await prisma.purchase.upsert({
         where: {
@@ -71,9 +75,6 @@ export async function POST(request: Request) {
     if (!cashfreeOrderId) {
       return NextResponse.json({ error: 'Cashfree order ID is required for verification.' }, { status: 400 });
     }
-
-    const appId = process.env.CASHFREE_APP_ID;
-    const secretKey = process.env.CASHFREE_SECRET_KEY;
 
     if (!appId || !secretKey) {
       return NextResponse.json({ error: 'Payment gateway is not configured on the server.' }, { status: 500 });

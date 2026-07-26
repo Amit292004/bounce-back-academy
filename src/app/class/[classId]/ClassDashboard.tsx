@@ -433,6 +433,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
       });
       if (res.ok) {
         setCheckoutStep('success');
+        setLivePremiumItems(prev => prev.map(item => item.id === checkoutItem.id ? { ...item, unlocked: true } : item));
         try {
           const freshRes = await fetch('/api/premium');
           if (freshRes.ok) setLivePremiumItems(await freshRes.json());
