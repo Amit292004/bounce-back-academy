@@ -53,7 +53,7 @@ export default function GlobalBottomNav() {
   const tabs = [
     { href: '/?noredirect=true', label: 'Home', icon: <Home size={20} /> },
     { href: '/#classes', label: targetClass || 'Classes', icon: <GraduationCap size={20} /> },
-    { href: targetClass ? `/class/${encodeURIComponent(targetClass)}?tab=premium` : '/premium', label: 'Premium', icon: <Star size={20} /> },
+    { href: '/premium', label: 'Premium', icon: <Star size={20} /> },
     { href: '/favorites', label: 'Favourites', icon: <Heart size={20} /> },
   ];
 
@@ -68,9 +68,9 @@ export default function GlobalBottomNav() {
           const isActive = isHomeTab
             ? (pathname === '/' && currentHash !== '#classes')
             : isClassesTab
-              ? ((pathname === '/' && currentHash === '#classes') || (isClassRoute && searchParams?.get('tab') !== 'premium'))
+              ? ((pathname === '/' && currentHash === '#classes') || isClassRoute)
               : isPremiumTab
-                ? (pathname?.startsWith('/premium') || (isClassRoute && searchParams?.get('tab') === 'premium'))
+                ? pathname?.startsWith('/premium')
                 : pathname?.startsWith(tab.href);
 
           return (
@@ -85,9 +85,6 @@ export default function GlobalBottomNav() {
                   } else {
                     setIsSwitcherOpen(true);
                   }
-                } else if (isPremiumTab && targetClass) {
-                  e.preventDefault();
-                  router.push(`/class/${encodeURIComponent(targetClass)}?tab=premium`);
                 } else {
                   setCurrentHash('');
                 }
