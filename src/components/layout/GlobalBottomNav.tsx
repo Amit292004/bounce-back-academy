@@ -48,11 +48,12 @@ export default function GlobalBottomNav() {
   }, [pathname, currentHash]);
 
   const targetClass = currentClass || savedClass;
+  const searchParams = usePathname() ? new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '') : null;
 
   const tabs = [
     { href: '/?noredirect=true', label: 'Home', icon: <Home size={20} /> },
     { href: '/#classes', label: targetClass || 'Classes', icon: <GraduationCap size={20} /> },
-    { href: '/premium', label: 'Premium', icon: <Star size={20} /> },
+    { href: targetClass ? `/class/${encodeURIComponent(targetClass)}?tab=premium` : '/premium', label: 'Premium', icon: <Star size={20} /> },
     { href: '/favorites', label: 'Favourites', icon: <Heart size={20} /> },
   ];
 
@@ -62,15 +63,19 @@ export default function GlobalBottomNav() {
         {tabs.map(tab => {
           const isClassesTab = tab.href.includes('#classes');
           const isHomeTab = tab.href.startsWith('/?noredirect=true') || tab.href === '/';
+          const isPremiumTab = tab.label === 'Premium';
+
           const isActive = isHomeTab
             ? (pathname === '/' && currentHash !== '#classes')
             : isClassesTab
-              ? ((pathname === '/' && currentHash === '#classes') || pathname?.startsWith('/class'))
-              : pathname?.startsWith(tab.href);
+              ? ((pathname === '/' && currentHash === '#classes') || (isClassRoute && searchParams?.get('tab') !== 'premium'))
+              : isPremiumTab
+                ? (pathname?.startsWith('/premium') || (isClassRoute && searchParams?.get('tab') === 'premium'))
+                : pathname?.startsWith(tab.href);
 
           return (
             <Link
-              key={tab.href}
+              key={tab.label}
               href={tab.href}
               onClick={(e) => {
                 if (isClassesTab) {
@@ -80,6 +85,9 @@ export default function GlobalBottomNav() {
                   } else {
                     setIsSwitcherOpen(true);
                   }
+                } else if (isPremiumTab && targetClass) {
+                  e.preventDefault();
+                  router.push(`/class/${encodeURIComponent(targetClass)}?tab=premium`);
                 } else {
                   setCurrentHash('');
                 }

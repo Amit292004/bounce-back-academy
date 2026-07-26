@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import styles from "./page.module.css";
 import {
   FileText,
@@ -281,8 +282,16 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
   }, [propPremiumItems]);
 
   // Main navigation tabs
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<"home" | "study" | "premium" | "notices">("home");
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
+
+  useEffect(() => {
+    const tabParam = searchParams?.get("tab");
+    if (tabParam === "premium" || tabParam === "study" || tabParam === "notices" || tabParam === "home") {
+      setActiveTab(tabParam as any);
+    }
+  }, [searchParams]);
 
   // Study drill-down
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
@@ -294,22 +303,147 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
   const [selectedDoc, setSelectedDoc] = useState<{ title: string; viewUrl: string; downloadUrl: string } | null>(null);
   const [activeQuiz, setActiveQuiz] = useState<Quiz | null>(null);
 
-  // Premium
-  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  // Premium Package & Checkout States
+  const [livePremiumItems, setLivePremiumItems] = useState<any[]>([]);
+  const [selectedPackageDetail, setSelectedPackageDetail] = useState<any | null>(null);
+  const [loadingPackageDetail, setLoadingPackageDetail] = useState(false);
 
-  const [isPurchasing, setIsPurchasing] = useState(false);
-  const [purchaseSuccess, setPurchaseSuccess] = useState(false);
-  const [enrolledCourses, setEnrolledCourses] = useState<Record<string, boolean>>({});
-
-  // Checkout states
+  const [checkoutItem, setCheckoutItem] = useState<any | null>(null);
   const [payTab, setPayTab] = useState<'card' | 'upi'>('card');
-  const [checkoutStep, setCheckoutStep] = useState<'initial' | 'simulated' | 'processing' | 'success'>('initial');
+  const [checkoutStep, setCheckoutStep] = useState<'details' | 'processing' | 'success'>('details');
   const [loaderMessage, setLoaderMessage] = useState('Securing Gateway Connection...');
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvv, setCardCvv] = useState('');
   const [upiId, setUpiId] = useState('');
-  const [loadingPaymentInit, setLoadingPaymentInit] = useState(false);
+  const [isPurchasing, setIsPurchasing] = useState(false);
+
+  const fetchLivePremium = async () => {
+    try {
+      const res = await fetch('/api/premium');
+      if (res.ok) {
+        const data = await res.json();
+        setLivePremiumItems(data);
+      }
+    } catch {}
+  };
+
+  useEffect(() => {
+    fetchLivePremium();
+  }, []);
+
+  const displayPremiumItems = useMemo(() => {
+    const source = livePremiumItems.length > 0 ? livePremiumItems : propPremiumItems;
+    return source.filter((item: any) => {
+      if (!item.className) return true;
+      const norm = (name: string) => name.toLowerCase().replace('class', '').trim();
+      return norm(item.className) === norm(className);
+    });
+  }, [livePremiumItems, propPremiumItems, className]);
+
+  const loadCashfreeScript = (): Promise<boolean> => {
+    return new Promise(resolve => {
+      if ((window as any).Cashfree) { resolve(true); return; }
+      const s = document.createElement('script');
+      s.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
+      s.onload = () => resolve(true);
+      s.onerror = () => resolve(false);
+      document.body.appendChild(s);
+    });
+  };
+
+  const handleOpenPremiumItem = async (item: any) => {
+    if (item.unlocked) {
+      setLoadingPackageDetail(true);
+      try {
+        const res = await fetch(`/api/premium/${item.id}`);
+        if (res.ok) {
+          const detail = await res.json();
+          setSelectedPackageDetail(detail);
+        }
+      } catch {
+        alert('Failed to load package contents.');
+      } finally {
+        setLoadingPackageDetail(false);
+      }
+    } else {
+      setIsPurchasing(true);
+      try {
+        const res = await fetch('/api/premium/purchase', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ premiumItemId: item.id })
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          if (res.status === 401) {
+            alert('Please sign in to purchase premium courses.');
+            window.location.href = '/login';
+            return;
+          }
+          alert(data.error || 'Failed to initiate purchase.');
+          return;
+        }
+
+        const orderData = await res.json();
+
+        if (orderData.alreadyUnlocked) {
+          fetchLivePremium();
+          handleOpenPremiumItem({ ...item, unlocked: true });
+          return;
+        }
+
+        if (orderData.mode === 'cashfree') {
+          const loaded = await loadCashfreeScript();
+          if (!loaded) { alert('Failed to load Cashfree payment SDK.'); return; }
+
+          const cashfree = new (window as any).Cashfree({
+            mode: orderData.environment || 'production'
+          });
+
+          cashfree.checkout({
+            paymentSessionId: orderData.paymentSessionId,
+            redirectTarget: '_self'
+          });
+        } else {
+          setCheckoutItem(item);
+          setCheckoutStep('details');
+          setCardNumber(''); setCardExpiry(''); setCardCvv(''); setUpiId('');
+        }
+      } finally {
+        setIsPurchasing(false);
+      }
+    }
+  };
+
+  const handleAuthorizePayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!checkoutItem) return;
+
+    setCheckoutStep('processing');
+    setLoaderMessage('Securing Gateway Connection...');
+    setTimeout(() => { setLoaderMessage('Verifying simulated funds...'); }, 1000);
+    setTimeout(() => { setLoaderMessage('Authorizing purchase transaction...'); }, 2200);
+    setTimeout(async () => {
+      const res = await fetch('/api/premium/purchase/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ premiumItemId: checkoutItem.id, simulatedConfirm: true })
+      });
+      if (res.ok) {
+        setCheckoutStep('success');
+        try {
+          const freshRes = await fetch('/api/premium');
+          if (freshRes.ok) setLivePremiumItems(await freshRes.json());
+        } catch {}
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to complete payment.');
+        setCheckoutStep('details');
+      }
+    }, 3700);
+  };
 
   // Progress
   const [completedItems, setCompletedItems] = useState<Record<string, boolean>>({});
@@ -476,94 +610,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
     };
   }, [activeSubject, selectedChapterId]);
 
-  const loadCashfreeScript = (): Promise<boolean> => {
-    return new Promise(resolve => {
-      if ((window as any).Cashfree) { resolve(true); return; }
-      const s = document.createElement('script');
-      s.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
-      s.onload = () => resolve(true);
-      s.onerror = () => resolve(false);
-      document.body.appendChild(s);
-    });
-  };
 
-  const handleEnroll = async (courseId: string) => {
-    setIsPurchasing(true);
-    setLoadingPaymentInit(true);
-    try {
-      const res = await fetch('/api/premium/purchase', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ premiumItemId: courseId })
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        if (res.status === 401) {
-          // If not logged in, we might just redirect or alert
-          alert('Please sign in to purchase premium courses.');
-          return;
-        }
-        alert(data.error || 'Failed to initiate purchase.');
-        return;
-      }
-
-      const orderData = await res.json();
-
-      if (orderData.alreadyUnlocked) {
-        setEnrolledCourses(prev => ({ ...prev, [courseId]: true }));
-        setCheckoutStep('success');
-        setPurchaseSuccess(true);
-        return;
-      }
-
-      if (orderData.mode === 'cashfree') {
-        const loaded = await loadCashfreeScript();
-        if (!loaded) { alert('Failed to load Cashfree payment SDK.'); return; }
-
-        const cashfree = new (window as any).Cashfree({
-          mode: orderData.environment || 'production'
-        });
-
-        cashfree.checkout({
-          paymentSessionId: orderData.paymentSessionId,
-          redirectTarget: '_self'
-        });
-      } else {
-        setCheckoutStep('simulated');
-        setCardNumber(''); setCardExpiry(''); setCardCvv(''); setUpiId('');
-        // show checkout modal is implicitly true when selectedCourse is set, but we use step for inner flow
-      }
-    } finally {
-      setIsPurchasing(false);
-      setLoadingPaymentInit(false);
-    }
-  };
-
-  const handleAuthorizePayment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedCourse) return;
-    setCheckoutStep('processing');
-    setLoaderMessage('Securing Gateway Connection...');
-    setTimeout(() => { setLoaderMessage('Verifying simulated funds...'); }, 1000);
-    setTimeout(() => { setLoaderMessage('Authorizing purchase transaction...'); }, 2200);
-    setTimeout(async () => {
-      const res = await fetch('/api/premium/purchase/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ premiumItemId: selectedCourse.id, simulatedConfirm: true })
-      });
-      if (res.ok) {
-        setCheckoutStep('success');
-        setPurchaseSuccess(true);
-        setEnrolledCourses(prev => ({ ...prev, [selectedCourse.id]: true }));
-      } else {
-        const data = await res.json();
-        alert(data.error || 'Failed to complete payment.');
-        setCheckoutStep('simulated');
-      }
-    }, 3700);
-  };
 
   const stats = useMemo(() => {
     let videos = 0, notes = 0, papers = 0, quizzes = 0, completed = 0;
@@ -791,7 +838,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
             </section>
 
             {/* Featured Premium Course */}
-            {premiumItems.length > 0 && (
+            {displayPremiumItems.length > 0 && (
               <section className={styles.section}>
                 <div className={styles.sectionHeader}>
                   <h3 className={styles.sectionTitle}>Upgrade Your Prep</h3>
@@ -801,31 +848,27 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                 </div>
                 <div
                   className={styles.featuredCourseCard}
-                  onClick={() => {
-                    setSelectedCourse(premiumItems[0]);
-                    setCheckoutStep('initial');
-                    setPromoStatus(null);
-                    setPurchaseSuccess(false);
-                  }}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleOpenPremiumItem(displayPremiumItems[0])}
                 >
                   <div className={styles.featuredCourseBadge}>
-                    {premiumItems[0].type}
+                    {displayPremiumItems[0].type}
                   </div>
-                  {premiumItems[0].imageUrl && (
+                  {displayPremiumItems[0].imageUrl && (
                     <div className={styles.featuredCourseImage}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={getDriveImageUrl(premiumItems[0].imageUrl) || ""} alt={premiumItems[0].title} className={styles.featuredCourseImg} />
+                      <img src={getDriveImageUrl(displayPremiumItems[0].imageUrl) || ""} alt={displayPremiumItems[0].title} className={styles.featuredCourseImg} />
                     </div>
                   )}
-                  <h4 className={styles.featuredCourseTitle}>{premiumItems[0].title}</h4>
-                  <p className={styles.featuredCourseSub}>{premiumItems[0].description}</p>
+                  <h4 className={styles.featuredCourseTitle}>{displayPremiumItems[0].title}</h4>
+                  <p className={styles.featuredCourseSub}>{displayPremiumItems[0].description}</p>
                   <div className={styles.featuredCourseFooter}>
                     <div className={styles.featuredPrice}>
-                      <strong>₹{premiumItems[0].price}</strong>
-                      {premiumItems[0].originalPrice && <span>₹{premiumItems[0].originalPrice}</span>}
+                      <strong>₹{displayPremiumItems[0].price}</strong>
+                      {displayPremiumItems[0].originalPrice && <span>₹{displayPremiumItems[0].originalPrice}</span>}
                     </div>
                     <div className={styles.featuredLink}>
-                      <span>Explore Prep</span>
+                      <span>{displayPremiumItems[0].unlocked ? 'View Content' : 'Explore Prep'}</span>
                       <ChevronRight size={14} className={styles.featuredArrow} />
                     </div>
                   </div>
@@ -1198,25 +1241,18 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
             </div>
 
             {/* Course cards — fetched live from DB */}
-            {premiumItems.length === 0 ? (
+            {displayPremiumItems.length === 0 ? (
               <div className={styles.emptyState}>
                 <Star size={36} opacity={0.3} />
                 <p>No premium courses available yet</p>
               </div>
             ) : (
               <div className={styles.courseList}>
-                {premiumItems.map(item => {
-                  const enrolled = enrolledCourses[item.id];
+                {displayPremiumItems.map((item: any) => {
+                  const isUnlocked = !!item.unlocked;
                   const features = item.features ? item.features.split("|").filter(Boolean) : [];
-                  const TYPE_BADGE_COLORS: Record<string, string> = {
-                    COURSE: "#6366f1",
-                    NOTE: "#10b981",
-                    PYQ: "#f59e0b",
-                    LECTURE: "#ec4899",
-                  };
-                  const badgeColor = TYPE_BADGE_COLORS[item.type] || "#6366f1";
                   return (
-                    <div key={item.id} className={`${styles.courseCard} ${enrolled ? styles.courseCardEnrolled : ""}`}>
+                    <div key={item.id} className={`${styles.courseCard} ${isUnlocked ? styles.courseCardEnrolled : ""}`}>
                       {item.imageUrl && (
                         <img
                           src={getDriveImageUrl(item.imageUrl) || ""}
@@ -1232,7 +1268,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
 
                       {features.length > 0 && (
                         <div className={styles.courseFeatures}>
-                          {features.map((f, i) => (
+                          {features.map((f: string, i: number) => (
                             <div key={i} className={styles.courseFeature}>
                               <CheckCheck size={14} color="#10b981" />
                               <span>{f}</span>
@@ -1246,18 +1282,25 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                           <strong>₹{item.price}</strong>
                           {item.originalPrice && <span>₹{item.originalPrice}</span>}
                         </div>
-                        <button
-                          className={enrolled ? styles.enrolledBtn : styles.enrollBtn}
-                          onClick={() => {
-                            if (enrolled) return;
-                            setSelectedCourse(item);
-                            setCheckoutStep('initial');
-                            setPromoStatus(null);
-                            setPurchaseSuccess(false);
-                          }}
-                        >
-                          {enrolled ? "✓ Enrolled" : "Enroll Now"}
-                        </button>
+                        {isUnlocked ? (
+                          <button
+                            className={styles.enrolledBtn}
+                            onClick={() => handleOpenPremiumItem(item)}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', border: 'none', cursor: 'pointer' }}
+                          >
+                            <BookOpenCheck size={14} />
+                            <span>View Content</span>
+                          </button>
+                        ) : (
+                          <button
+                            className={styles.enrollBtn}
+                            onClick={() => handleOpenPremiumItem(item)}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', border: 'none', cursor: 'pointer' }}
+                          >
+                            <span>Enroll Now</span>
+                            <ChevronRight size={14} />
+                          </button>
+                        )}
                       </div>
                     </div>
                   );
@@ -1479,67 +1522,155 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
         </div>
       )}
 
+
+
       {/* ══════════════════════════════
-          MODAL: PREMIUM CHECKOUT
+          MODAL: PACKAGE RESOURCES (UNLOCKED)
       ══════════════════════════════ */}
-      {selectedCourse && (
-        <div className={styles.checkoutOverlay} onClick={() => setSelectedCourse(null)}>
-          <div className={`glass-panel ${styles.checkoutModal}`} onClick={e => e.stopPropagation()}>
-            <div className={styles.checkoutHeader}>
+      {selectedPackageDetail && (
+        <div className={styles.modalBackdrop} onClick={() => setSelectedPackageDetail(null)}>
+          <div className={styles.quizModal} onClick={e => e.stopPropagation()} style={{ maxWidth: '640px', width: '90%' }}>
+            <div className={styles.modalHeader}>
               <div>
-                <span className={styles.modalEyebrow} style={{ color: "#f59e0b", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: "0.25rem", display: "block" }}>Enroll Now</span>
-                <h3 className={styles.checkoutTitle}>{selectedCourse.title}</h3>
+                <span className={styles.modalEyebrow} style={{ color: '#10b981' }}>UNLOCKED PACKAGE</span>
+                <h3 className={styles.modalTitle}>{selectedPackageDetail.title}</h3>
               </div>
-              <button className={styles.checkoutClose} onClick={() => setSelectedCourse(null)}>
+              <button className={styles.modalClose} onClick={() => setSelectedPackageDetail(null)}>
                 <X size={20} />
               </button>
             </div>
 
-            <div className={styles.checkoutBody}>
-              {checkoutStep === 'initial' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <div className={styles.priceDisplay}>
-                    <span className={styles.priceVal}>₹{selectedCourse.price}</span>
-                    {selectedCourse.originalPrice && (
-                      <span className={styles.priceOriginal}>₹{selectedCourse.originalPrice}</span>
-                    )}
-                    {selectedCourse.originalPrice && (
-                      <span className={styles.discountBadge}>
-                        {Math.round(((selectedCourse.originalPrice - selectedCourse.price) / selectedCourse.originalPrice) * 100)}% OFF
-                      </span>
-                    )}
-                  </div>
+            <div className={styles.quizBody} style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <p style={{ opacity: 0.8, fontSize: '0.9rem', margin: 0 }}>{selectedPackageDetail.description}</p>
 
-                  <button
-                    type="button"
-                    disabled={isPurchasing}
-                    onClick={() => handleEnroll(selectedCourse.id)}
-                    className="btn-primary"
-                    style={{ padding: '0.85rem', width: '100%', fontWeight: 800, fontSize: '1rem', marginTop: '0.5rem' }}
-                  >
-                    {isPurchasing ? 'Processing...' : <><FaShoppingCart style={{ marginRight: '0.3rem' }} /> Unlock Instantly</>}
-                  </button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
+                <h4 style={{ fontSize: '0.82rem', fontWeight: 800, textTransform: 'uppercase', opacity: 0.6, letterSpacing: '0.05em', margin: 0 }}>
+                  Package Contents ({selectedPackageDetail.contents?.length || 0})
+                </h4>
 
-                  <div className={styles.secureNote}>
-                    <FaShieldAlt style={{ color: '#10b981' }} />
-                    <span>Secure payment · Instant access</span>
-                  </div>
+                {(!selectedPackageDetail.contents || selectedPackageDetail.contents.length === 0) ? (
+                  <p style={{ opacity: 0.5, fontSize: '0.85rem' }}>Resource files will be listed here soon.</p>
+                ) : (
+                  selectedPackageDetail.contents.map((content: any) => (
+                    <div
+                      key={content.id}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '0.85rem 1rem',
+                        borderRadius: '10px',
+                        background: 'var(--surface-highlight)',
+                        border: '1px solid var(--surface-border)',
+                        gap: '0.75rem'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
+                        {content.contentType === 'VIDEO' ? <VideoIcon size={18} color="#ef4444" /> : <FileText size={18} color="#6366f1" />}
+                        <div style={{ minWidth: 0 }}>
+                          <h5 style={{ fontSize: '0.9rem', fontWeight: 700, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{content.title}</h5>
+                          {content.description && <p style={{ fontSize: '0.78rem', opacity: 0.6, margin: 0 }}>{content.description}</p>}
+                        </div>
+                      </div>
 
-                  <div className={styles.contentSummary}>
-                    <p className={styles.summaryLabel}>This package includes:</p>
-                    <p style={{ opacity: 0.4, fontSize: '0.82rem' }}>Contents being added soon</p>
-                  </div>
-                </div>
-              )}
+                      <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
+                        {content.viewUrl && (
+                          <button
+                            className="btn-primary"
+                            style={{ padding: '0.4rem 0.75rem', fontSize: '0.78rem', fontWeight: 700 }}
+                            onClick={() => {
+                              setSelectedPackageDetail(null);
+                              setSelectedDoc({ title: content.title, viewUrl: content.viewUrl, downloadUrl: content.downloadUrl || '#' });
+                            }}
+                          >
+                            View PDF
+                          </button>
+                        )}
+                        {content.youtubeLink && (
+                          <button
+                            className="btn-primary"
+                            style={{ padding: '0.4rem 0.75rem', fontSize: '0.78rem', fontWeight: 700, background: '#ef4444' }}
+                            onClick={() => {
+                              setSelectedPackageDetail(null);
+                              setSelectedVideo({ id: content.id, title: content.title, youtubeLink: content.youtubeLink, pdfUrl: null, chapterId: null, lectureNumber: 1 });
+                            }}
+                          >
+                            Watch
+                          </button>
+                        )}
+                        {content.downloadUrl && (
+                          <a
+                            href={content.downloadUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              padding: '0.4rem',
+                              borderRadius: '6px',
+                              border: '1px solid var(--surface-border)',
+                              color: 'var(--foreground)',
+                              opacity: 0.8
+                            }}
+                          >
+                            <Download size={14} />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-              {checkoutStep === 'simulated' && (
+      {/* ══════════════════════════════
+          MODAL: INLINE CHECKOUT
+      ══════════════════════════════ */}
+      {checkoutItem && (
+        <div className={styles.modalBackdrop} onClick={() => setCheckoutItem(null)}>
+          <div className={styles.quizModal} onClick={e => e.stopPropagation()} style={{ maxWidth: '520px', width: '90%' }}>
+            <div className={styles.modalHeader}>
+              <div>
+                <span className={styles.modalEyebrow} style={{ color: "#f59e0b" }}>VIP CHECKOUT</span>
+                <h3 className={styles.modalTitle}>{checkoutItem.title}</h3>
+              </div>
+              <button className={styles.modalClose} onClick={() => setCheckoutItem(null)}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className={styles.quizBody} style={{ padding: '1.25rem' }}>
+              {checkoutStep === 'details' && (
                 <form onSubmit={handleAuthorizePayment} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <div className={styles.payTabs}>
-                    <button type="button" className={`${styles.payTab} ${payTab === 'card' ? styles.payTabActive : ''}`} onClick={() => setPayTab('card')}>
-                      <FaCreditCard size={11} /> Credit/Debit Card
+                  <div style={{ background: 'var(--surface-highlight)', padding: '1rem', borderRadius: '8px', fontSize: '0.9rem' }}>
+                    <div style={{ fontWeight: 800, marginBottom: '0.5rem' }}>{checkoutItem.title}</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.2rem' }}>
+                      <span>Type:</span>
+                      <span style={{ textTransform: 'uppercase', fontWeight: 700 }}>{checkoutItem.type}</span>
+                    </div>
+                    {checkoutItem.originalPrice && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.2rem' }}>
+                        <span>Original Listing:</span>
+                        <span style={{ textDecoration: 'line-through' }}>₹{checkoutItem.originalPrice.toFixed(2)}</span>
+                      </div>
+                    )}
+                    <hr style={{ margin: '0.5rem 0', borderColor: 'var(--surface-border)' }} />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800 }}>
+                      <span>Total Payable:</span>
+                      <span>₹{checkoutItem.price.toFixed(2)}</span>
+                    </div>
+                  </div>
+
+                  <div className={styles.payTabs} style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button type="button" className={`${styles.payTab} ${payTab === 'card' ? styles.payTabActive : ''}`} onClick={() => setPayTab('card')} style={{ flex: 1, padding: '0.6rem', borderRadius: '6px', cursor: 'pointer' }}>
+                      <FaCreditCard size={11} style={{ marginRight: '0.3rem' }} /> Credit/Debit Card
                     </button>
-                    <button type="button" className={`${styles.payTab} ${payTab === 'upi' ? styles.payTabActive : ''}`} onClick={() => setPayTab('upi')}>
-                      <FaMobileAlt size={11} /> Simulated UPI
+                    <button type="button" className={`${styles.payTab} ${payTab === 'upi' ? styles.payTabActive : ''}`} onClick={() => setPayTab('upi')} style={{ flex: 1, padding: '0.6rem', borderRadius: '6px', cursor: 'pointer' }}>
+                      <FaMobileAlt size={11} style={{ marginRight: '0.3rem' }} /> Simulated UPI
                     </button>
                   </div>
 
@@ -1571,28 +1702,36 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                     type="submit"
                     disabled={isPurchasing}
                     className="btn-primary"
-                    style={{ padding: '0.85rem', width: '100%', fontWeight: 800 }}
+                    style={{ padding: '0.85rem', width: '100%', fontWeight: 800, marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
                   >
-                    <FaShieldAlt /> Simulate Authorize Payment <FaChevronRight size={10} />
+                    <FaShieldAlt /> Authorize Simulated Payment <FaChevronRight size={10} />
                   </button>
                 </form>
               )}
 
               {checkoutStep === 'processing' && (
-                <div className={styles.processingState}>
-                  <div className={styles.checkoutSpinner} />
-                  <span className={styles.processingMsg}>{loaderMessage}</span>
-                  <span className={styles.processingNote}>Please do not close this window.</span>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', padding: '2rem 0' }}>
+                  <div className={styles.spinner} />
+                  <span style={{ fontWeight: 600 }}>{loaderMessage}</span>
+                  <span style={{ opacity: 0.5, fontSize: '0.8rem' }}>Please do not close this window.</span>
                 </div>
               )}
 
               {checkoutStep === 'success' && (
-                <div className={styles.successState}>
-                  <div className={styles.successIcon}>✓</div>
-                  <h4>You're enrolled!</h4>
-                  <p>Access to <strong>{selectedCourse.title}</strong> is now unlocked.</p>
-                  <button className={styles.enrollBtn} onClick={() => { setSelectedCourse(null); setActiveTab("premium"); }}>
-                    Go to Course
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', padding: '1rem 0', textAlign: 'center' }}>
+                  <Award size={48} color="#10b981" />
+                  <h4>Access Unlocked!</h4>
+                  <p>Your purchase is complete! Access to <strong>{checkoutItem.title}</strong> is now unlocked.</p>
+                  <button
+                    className="btn-primary"
+                    style={{ padding: '0.8rem 1.5rem', marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, width: '100%', justifyContent: 'center' }}
+                    onClick={() => {
+                      const itemToOpen = checkoutItem;
+                      setCheckoutItem(null);
+                      handleOpenPremiumItem({ ...itemToOpen, unlocked: true });
+                    }}
+                  >
+                    <BookOpen size={16} /> Open Package Resources <ChevronRight size={14} />
                   </button>
                 </div>
               )}

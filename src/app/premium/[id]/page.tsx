@@ -229,8 +229,8 @@ export default function PremiumDetailPage() {
   return (
     <div className={styles.page}>
       {/* Back */}
-      <button onClick={() => router.push('/premium')} className={styles.backBtn}>
-        <FaArrowLeft size={12} /> Back to Store
+      <button onClick={() => { if (window.history.length > 1) router.back(); else router.push('/premium'); }} className={styles.backBtn}>
+        <FaArrowLeft size={12} /> Back
       </button>
 
       <div className={styles.layout}>

@@ -16,8 +16,13 @@ export default function PaymentReturnPage() {
 
   const [status, setStatus] = useState<Status>('verifying');
   const [message, setMessage] = useState('');
+  const [savedClass, setSavedClass] = useState<string | null>(null);
 
   useEffect(() => {
+    try {
+      const cls = localStorage.getItem('selectedClass');
+      if (cls && cls !== 'Not Selected') setSavedClass(cls);
+    } catch {}
     if (!orderId || !premiumItemId) {
       setStatus('failed');
       setMessage('Invalid payment return. Missing order information.');
@@ -121,7 +126,7 @@ export default function PaymentReturnPage() {
                 </Link>
               )}
               <Link
-                href="/premium"
+                href={savedClass ? `/class/${encodeURIComponent(savedClass)}?tab=premium` : "/premium"}
                 style={{
                   opacity: 0.6,
                   fontSize: '0.9rem',
@@ -129,7 +134,7 @@ export default function PaymentReturnPage() {
                   color: 'inherit'
                 }}
               >
-                ← Back to Premium Store
+                {savedClass ? '← Back to Class Dashboard' : '← Back to Premium Store'}
               </Link>
             </div>
           </>
@@ -167,7 +172,7 @@ export default function PaymentReturnPage() {
                 </Link>
               )}
               <Link
-                href="/premium"
+                href={savedClass ? `/class/${encodeURIComponent(savedClass)}?tab=premium` : "/premium"}
                 style={{
                   opacity: 0.6,
                   fontSize: '0.9rem',
@@ -175,7 +180,7 @@ export default function PaymentReturnPage() {
                   color: 'inherit'
                 }}
               >
-                ← Back to Premium Store
+                {savedClass ? '← Back to Class Dashboard' : '← Back to Premium Store'}
               </Link>
             </div>
             <p style={{ marginTop: '1.5rem', fontSize: '0.8rem', opacity: 0.5 }}>
