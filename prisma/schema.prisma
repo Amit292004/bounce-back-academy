@@ -241,20 +241,35 @@ model QuizQuestion {
 }
 
 model PremiumItem {
-  id            String      @id @default(cuid())
+  id            String           @id @default(cuid())
   title         String
   description   String
-  type          String      // "NOTE" | "PYQ" | "COURSE" | "LECTURE"
+  type          String           // "NOTE" | "PYQ" | "COURSE" | "LECTURE"
   price         Float
   originalPrice Float?
   imageUrl      String?
-  features      String?     // Pipe-separated feature highlights (e.g. "Direct PDF download | Live QA support")
-  resourceId    String?     // Specific resource ID for redirection upon purchase
-  isActive      Boolean     @default(true)
+  features      String?          // Pipe-separated feature highlights (e.g. "Direct PDF download | Live QA support")
+  resourceId    String?          // Specific resource ID for redirection upon purchase
+  isActive      Boolean          @default(true)
   className     String?
-  createdAt     DateTime    @default(now())
+  createdAt     DateTime         @default(now())
   purchases     Purchase[]
+  subjects      PremiumSubject[]
+  modules       PremiumModule[]
   contents      PremiumContent[]
+  notices       PremiumNotice[]
+}
+
+model PremiumNotice {
+  id            String      @id @default(cuid())
+  premiumItemId String
+  premiumItem   PremiumItem @relation(fields: [premiumItemId], references: [id], onDelete: Cascade)
+  title         String
+  content       String
+  tag           String      @default("ANNOUNCEMENT") // "ANNOUNCEMENT" | "SCHEDULE" | "IMPORTANT" | "EXAM"
+  createdAt     DateTime    @default(now())
+
+  @@index([premiumItemId])
 }
 
 model Purchase {
@@ -268,20 +283,54 @@ model Purchase {
   @@unique([userId, premiumItemId])
 }
 
-model PremiumContent {
-  id            String      @id @default(cuid())
+model PremiumSubject {
+  id            String          @id @default(cuid())
   premiumItemId String
-  premiumItem   PremiumItem @relation(fields: [premiumItemId], references: [id], onDelete: Cascade)
-  contentType   String      // "NOTE" | "VIDEO" | "PAPER"
+  premiumItem   PremiumItem     @relation(fields: [premiumItemId], references: [id], onDelete: Cascade)
+  name          String
+  order         Int             @default(0)
+  createdAt     DateTime        @default(now())
+  modules       PremiumModule[]
+}
+
+model PremiumModule {
+  id            String           @id @default(cuid())
+  premiumItemId String
+  premiumItem   PremiumItem      @relation(fields: [premiumItemId], references: [id], onDelete: Cascade)
+  subjectId     String?
+  subject       PremiumSubject?  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  title         String
+  order         Int              @default(0)
+  createdAt     DateTime         @default(now())
+  contents      PremiumContent[]
+}
+
+model PremiumContent {
+  id            String         @id @default(cuid())
+  premiumItemId String
+  premiumItem   PremiumItem    @relation(fields: [premiumItemId], references: [id], onDelete: Cascade)
+  moduleId      String?
+  module        PremiumModule? @relation(fields: [moduleId], references: [id], onDelete: SetNull)
+  contentType   String         // "NOTE" | "VIDEO" | "PAPER"
   title         String
   description   String?
   // For NOTE/PAPER
-  viewUrl       String?     // Google Drive / PDF embed URL
-  downloadUrl   String?     // Direct download link
+  viewUrl       String?        // Google Drive / PDF embed URL
+  downloadUrl   String?        // Direct download link
   // For VIDEO
-  youtubeLink   String?     // YouTube embed link
-  sortOrder     Int         @default(0)
-  createdAt     DateTime    @default(now())
+  youtubeLink   String?        // YouTube embed link
+  sortOrder     Int            @default(0)
+  createdAt     DateTime       @default(now())
+}
+
+model LessonCompletion {
+  id        String   @id @default(cuid())
+  userId    String
+  contentId String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, contentId])
+  @@index([userId])
 }
 
 model MaterialType {

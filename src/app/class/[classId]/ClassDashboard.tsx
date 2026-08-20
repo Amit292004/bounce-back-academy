@@ -354,18 +354,8 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
 
   const handleOpenPremiumItem = async (item: any) => {
     if (item.unlocked) {
-      setLoadingPackageDetail(true);
-      try {
-        const res = await fetch(`/api/premium/${item.id}`);
-        if (res.ok) {
-          const detail = await res.json();
-          setSelectedPackageDetail(detail);
-        }
-      } catch {
-        alert('Failed to load package contents.');
-      } finally {
-        setLoadingPackageDetail(false);
-      }
+      window.location.href = `/premium/${item.id}`;
+      return;
     } else {
       setIsPurchasing(true);
       try {

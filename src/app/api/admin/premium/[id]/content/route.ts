@@ -50,7 +50,7 @@ export async function POST(
     const premiumItem = await (prisma as any).premiumItem.findUnique({ where: { id } });
     if (!premiumItem) return NextResponse.json({ error: 'Premium package not found' }, { status: 404 });
 
-    const { contentType, title, description, viewUrl, downloadUrl, youtubeLink, sortOrder } =
+    const { contentType, title, description, viewUrl, downloadUrl, youtubeLink, sortOrder, moduleId } =
       await request.json();
 
     if (!contentType || !title) {
@@ -60,6 +60,7 @@ export async function POST(
     const content = await (prisma as any).premiumContent.create({
       data: {
         premiumItemId: id,
+        moduleId: moduleId || null,
         contentType,
         title: title.trim(),
         description: description?.trim() || null,
