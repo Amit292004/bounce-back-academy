@@ -74,7 +74,15 @@ export default function RootLayout({
       "@type": "WebSite",
       "name": "Bounce Back Academy",
       "alternateName": ["Bounce Back", "BBA"],
-      "url": "https://bouncebackacademy.vercel.app/"
+      "url": "https://bouncebackacademy.vercel.app/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://bouncebackacademy.vercel.app/notes?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
     },
     {
       "@context": "https://schema.org",
@@ -125,7 +133,7 @@ export default function RootLayout({
         <Script
           id="json-ld"
           type="application/ld+json"
-          strategy="afterInteractive"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: jsonLd }}
         />
         <ThemeProvider>
