@@ -376,15 +376,9 @@ export default function Navbar() {
               <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className={`${styles.mobileLink} ${isActive(item.href) ? styles.mobileLinkActive : ''}`}>
                 <span className={styles.mobileLinkIcon}>{item.icon}</span>
                 <span>{item.label}</span>
+                {'badge' in item && item.badge && <span className={styles.mobileBadge}>{item.badge}</span>}
               </Link>
             ))}
-            <Link href="/announcements" onClick={() => setMenuOpen(false)} className={`${styles.mobileLink} ${isActive('/announcements') ? styles.mobileLinkActive : ''}`}>
-              <span className={styles.mobileLinkIcon}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-              </span>
-              <span>Announcements</span>
-              {hasNewAnnouncement && <span className={styles.dot} />}
-            </Link>
           </div>
           <div className={styles.mobileDivider} />
           <div className={styles.mobileAuthRow}>

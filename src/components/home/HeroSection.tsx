@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './HeroSection.module.css';
 
+import AnimatedTitle, { ROTATING_TOPICS } from './AnimatedTitle';
+
 interface Stats {
   users: number;
   papers: number;
@@ -37,6 +39,7 @@ export default function HeroSection({ userClass: initialUserClass }: HeroSection
   const [stats, setStats] = useState<Stats>({ users: 0, papers: 0, notes: 0, videos: 0, activeNow: 0 });
   const [loading, setLoading] = useState(true);
   const [userClass, setUserClass] = useState(initialUserClass || null);
+  const [activeTopicIndex, setActiveTopicIndex] = useState(0);
 
   useEffect(() => {
     fetch('/api/analytics').then(r => r.json())
@@ -49,10 +52,18 @@ export default function HeroSection({ userClass: initialUserClass }: HeroSection
     }
   }, [userClass]);
 
+  const activeTopic = ROTATING_TOPICS[activeTopicIndex % ROTATING_TOPICS.length] || ROTATING_TOPICS[0];
+
   return (
     <section className={styles.hero}>
       <div className={styles.noise} />
-      <div className={styles.beam} />
+      <div
+        className={styles.beam}
+        style={{
+          background: `radial-gradient(ellipse 60% 60% at 50% 0%, ${activeTopic.beamGlow} 0%, transparent 80%)`,
+          transition: 'background 0.8s ease-in-out',
+        }}
+      />
 
       <div className={styles.inner}>
         {/* Live indicator */}
@@ -63,26 +74,30 @@ export default function HeroSection({ userClass: initialUserClass }: HeroSection
 
         {/* Headline */}
         <h1 className={styles.headline}>
-          The smartest way to<br />
-          <span className={styles.accent}>prepare for NBSE</span>
+          <span className={styles.headlineLead}>The smartest way to prepare for</span>
+          <span className={styles.headlineSubject}>
+            <AnimatedTitle onIndexChange={setActiveTopicIndex} />
+          </span>
         </h1>
 
         <p className={styles.sub}>
-          Free question papers, study notes, video lectures and AI-powered doubt solving for Classes 8–12, CUET, JEE &amp; NEET.
+          Free question papers, study notes, video lectures, real-world skills, and AI-powered doubt solving for Classes 8–12, CUET, JEE &amp; NEET.
         </p>
 
         {/* CTAs */}
         <div className={styles.ctas}>
-          <Link href={userClass ? `/papers?class=${userClass}` : '/papers'} className={styles.ctaPrimary}>
-            Explore Papers
+          <Link href={userClass ? `/class/${encodeURIComponent(userClass)}` : '/#classes'} className={styles.ctaPrimary}>
+            {userClass ? `${userClass} Dashboard` : 'Classes Dashboard'}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </Link>
-          <Link href={userClass ? `/notes?class=${userClass}` : '/notes'} className={styles.ctaGhost}>Study Notes</Link>
-          <Link href="/ask" className={styles.ctaGhost}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/></svg>
-            AI Tutor
-            <span className={styles.freeBadge}>FREE</span>
-          </Link>
+          <div className={styles.ctaSecondaryGroup}>
+            <Link href={userClass ? `/papers?class=${userClass}` : '/papers'} className={styles.ctaGhost}>Explore Papers</Link>
+            <Link href="/ask" className={styles.ctaGhost}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/></svg>
+              AI Tutor
+              <span className={styles.freeBadge}>FREE</span>
+            </Link>
+          </div>
         </div>
 
         {/* Stats bar */}
