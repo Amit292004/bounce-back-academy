@@ -15,8 +15,8 @@ export const ROTATING_TOPICS: RotatingTopic[] = [
   {
     id: "nbse",
     text: "NBSE Boards",
-    gradient: "linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%)",
-    beamGlow: "rgba(16, 185, 129, 0.18)",
+    gradient: "linear-gradient(135deg, #e11d48 0%, #f43f5e 50%, #fb7185 100%)",
+    beamGlow: "rgba(244, 63, 94, 0.18)",
   },
   {
     id: "jee-neet",
