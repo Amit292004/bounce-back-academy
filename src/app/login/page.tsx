@@ -40,6 +40,11 @@ export default function LoginPage() {
       if (!res.ok) {
         setError(data.error || 'Google Sign In failed');
       } else {
+        if (data.user?.class && data.user.class !== 'Not Selected') {
+          localStorage.setItem('selectedClass', data.user.class);
+          document.cookie = `selected_class=${encodeURIComponent(data.user.class)}; path=/; max-age=31536000; SameSite=Lax`;
+          window.dispatchEvent(new Event('profileUpdated'));
+        }
         if (data.needsProfile) {
           router.push('/profile?complete=true');
         } else {
@@ -72,6 +77,11 @@ export default function LoginPage() {
           setError(data.error || 'Login failed');
         }
       } else {
+        if (data.user?.class && data.user.class !== 'Not Selected') {
+          localStorage.setItem('selectedClass', data.user.class);
+          document.cookie = `selected_class=${encodeURIComponent(data.user.class)}; path=/; max-age=31536000; SameSite=Lax`;
+          window.dispatchEvent(new Event('profileUpdated'));
+        }
         router.push('/');
         router.refresh();
       }

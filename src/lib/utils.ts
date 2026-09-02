@@ -75,38 +75,18 @@ export function getViewLink(url: string): string {
 
 export async function handleDownload(url: string, fileName?: string) {
   if (!url) return;
-  
-  // Google Drive and some other external providers strictly block cross-origin client-side fetches (CORS).
-  // Attempting to fetch them will throw a TypeError and trigger the Next.js error overlay.
-  // We can skip fetch and directly use an anchor tag to let the browser handle the native download prompt.
-  if (url.includes('drive.google.com')) {
-    let iframe = document.getElementById('hidden-download-iframe') as HTMLIFrameElement;
-    if (!iframe) {
-      iframe = document.createElement('iframe');
-      iframe.id = 'hidden-download-iframe';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-    }
-    iframe.src = url;
-    return;
-  }
-  
-  try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('Network response was not ok');
-    const blob = await response.blob();
-    const blobUrl = window.URL.createObjectURL(blob);
-    
-    const link = document.createElement('a');
-    link.href = blobUrl;
-    link.download = fileName || url.split('/').pop() || 'download';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(blobUrl);
-  } catch (error) {
-    logger.error('Download failed:', error);
-    // Fallback: open in new tab if fetch fails
-    window.open(url, '_blank');
-  }
+
+  // Route everything through our server-side proxy.
+  // The proxy handles CORS, Google Drive virus-warning confirm tokens,
+  // and streams the file as Content-Disposition: attachment → instant one-click download.
+  const proxyUrl =
+    `/api/download?url=${encodeURIComponent(url)}` +
+    (fileName ? `&name=${encodeURIComponent(fileName)}` : '');
+
+  const link = document.createElement('a');
+  link.href = proxyUrl;
+  link.download = fileName || 'document.pdf';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }

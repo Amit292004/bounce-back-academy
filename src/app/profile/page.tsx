@@ -36,6 +36,10 @@ export default function ProfilePage() {
           return;
         }
         setUser(data);
+        if (data.class && data.class !== 'Not Selected') {
+          localStorage.setItem('selectedClass', data.class);
+          document.cookie = `selected_class=${encodeURIComponent(data.class)}; path=/; max-age=31536000; SameSite=Lax`;
+        }
         setForm({ name: data.name, className: data.class, mobile: data.mobile || '' });
         setLoading(false);
         if (typeof window !== 'undefined' && window.location.search.includes('complete=true')) {
@@ -63,6 +67,11 @@ export default function ProfilePage() {
         setMessage({ type: 'error', text: data.error || 'Failed to update profile.' });
       } else {
         setUser(data);
+        if (data.class && data.class !== 'Not Selected') {
+          localStorage.setItem('selectedClass', data.class);
+          document.cookie = `selected_class=${encodeURIComponent(data.class)}; path=/; max-age=31536000; SameSite=Lax`;
+          window.dispatchEvent(new Event('profileUpdated'));
+        }
         setEditing(false);
         setMessage({ type: 'success', text: 'Profile updated successfully!' });
         setTimeout(() => setMessage(null), 3000);
@@ -208,7 +217,7 @@ export default function ProfilePage() {
             style={{
               position: 'absolute', bottom: '0', right: '0',
               width: '32px', height: '32px', borderRadius: '50%',
-              background: 'var(--primary)', color: 'white',
+              background: 'var(--primary)', color: 'var(--primary-foreground)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', border: '2px solid var(--background)',
               boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
@@ -331,7 +340,7 @@ export default function ProfilePage() {
                 style={{
                   display: 'flex', alignItems: 'center', gap: '0.4rem',
                   padding: '0.5rem 1rem', borderRadius: '8px',
-                  background: 'var(--primary)', color: 'white',
+                  background: 'var(--primary)', color: 'var(--primary-foreground)',
                   border: 'none', cursor: 'pointer',
                   fontWeight: 600, fontSize: '0.875rem',
                 }}
@@ -446,7 +455,7 @@ export default function ProfilePage() {
               onClick={(e) => { e.stopPropagation(); setShowImageModal(false); }}
               style={{
                 position: 'absolute', top: '-1.5rem', right: '-1.5rem',
-                background: 'var(--primary)', color: 'white', border: 'none',
+                background: 'var(--primary)', color: 'var(--primary-foreground)', border: 'none',
                 width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem'
               }}

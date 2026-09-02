@@ -54,12 +54,15 @@ const features = [
     ),
   },
   {
-    title: 'Leaderboard',
-    desc: 'Earn XP for every activity, climb the weekly rankings, and see how you compare with your peers.',
-    href: '/leaderboard',
+    title: 'Premium Store',
+    desc: 'Unlock exclusive handwritten notes, curated past papers, and structured full-length video courses.',
+    href: '/premium',
+    badge: 'New',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+        <rect x="2" y="5" width="20" height="14" rx="2" ry="2"/>
+        <line x1="2" y1="10" x2="22" y2="10"/>
+        <path d="M6 15h2M12 15h4"/>
       </svg>
     ),
   },

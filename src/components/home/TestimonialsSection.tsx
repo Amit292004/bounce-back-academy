@@ -22,13 +22,7 @@ function getInitials(name: string) {
   return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 }
 
-const AVATAR_COLORS = [
-  'linear-gradient(135deg,#6366f1,#8b5cf6)',
-  'linear-gradient(135deg,#ec4899,#f43f5e)',
-  'linear-gradient(135deg,#10b981,#059669)',
-  'linear-gradient(135deg,#f59e0b,#d97706)',
-  'linear-gradient(135deg,#06b6d4,#0891b2)',
-];
+
 
 export default function TestimonialsSection() {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -100,7 +94,7 @@ export default function TestimonialsSection() {
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.45rem',
             padding: '0.55rem 1.1rem', borderRadius: '8px',
-            background: 'var(--gradient-primary)', color: 'white',
+            background: 'var(--primary)', color: 'var(--primary-foreground)',
             fontWeight: 700, fontSize: '0.82rem', border: 'none',
             cursor: 'pointer', boxShadow: 'var(--shadow-glow)',
             transition: 'var(--transition)', whiteSpace: 'nowrap',
@@ -135,20 +129,23 @@ export default function TestimonialsSection() {
           : displayed.map((r, i) => (
               <div key={r.id} className={styles.card}>
                 {/* Stars */}
-                <div style={{ color: '#f59e0b', fontSize: '0.8rem', letterSpacing: '1px', marginBottom: '0.25rem' }}>
-                  ★★★★★
+                <div className={styles.stars}>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <svg key={star} width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  ))}
                 </div>
-                <p className={styles.quote}>&ldquo;{r.quote}&rdquo;</p>
+                
+                {/* Quote Text */}
+                <p className={styles.quote}>{r.quote}</p>
+                
+                {/* Author Info */}
                 <div className={styles.author}>
                   <div
                     className={styles.avatar}
                     style={{
-                      background: AVATAR_COLORS[i % AVATAR_COLORS.length],
-                      color: 'white',
-                      fontWeight: 800,
-                      fontSize: '0.72rem',
-                      border: 'none',
-                      opacity: 1,
+                      background: 'var(--foreground)',
                     }}
                   >
                     {getInitials(r.name)}
@@ -253,7 +250,7 @@ export default function TestimonialsSection() {
                   onClick={() => setShowForm(false)}
                   style={{
                     padding: '0.55rem 1.5rem', borderRadius: '8px',
-                    background: 'var(--gradient-primary)', color: 'white',
+                    background: 'var(--gradient-primary)', color: 'var(--primary-foreground)',
                     fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: '0.85rem',
                   }}
                 >Close</button>
@@ -375,7 +372,7 @@ export default function TestimonialsSection() {
                     disabled={submitting || form.quote.length < 20}
                     style={{
                       padding: '0.65rem', borderRadius: '8px',
-                      background: 'var(--gradient-primary)', color: 'white',
+                      background: 'var(--gradient-primary)', color: 'var(--primary-foreground)',
                       fontWeight: 700, border: 'none', cursor: submitting ? 'not-allowed' : 'pointer',
                       fontSize: '0.88rem', opacity: (submitting || form.quote.length < 20) ? 0.6 : 1,
                       transition: 'var(--transition)',

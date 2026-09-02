@@ -56,10 +56,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${base}/leaderboard`,
+      url: `${base}/premium`,
       lastModified: now,
       changeFrequency: 'daily',
-      priority: 0.7,
+      priority: 0.8,
     },
     {
       url: `${base}/forum`,

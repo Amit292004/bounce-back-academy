@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { Course } from '@prisma/client';
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
+import { verifyToken } from '@/lib/auth';
 import HeroSection from '@/components/home/HeroSection';
 import FeaturesGrid from '@/components/home/FeaturesGrid';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
@@ -38,6 +40,30 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
   let bannerMessage: string | null = null;
 
   try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('student_token')?.value;
+    const selectedClassCookie = cookieStore.get('selected_class')?.value;
+
+    if (token) {
+      const payload = await verifyToken(token);
+      if (payload?.userId) {
+        const user = await prisma.user.findUnique({
+          where: { id: payload.userId as string },
+          select: { class: true },
+        });
+        if (user?.class && user.class !== 'Not Selected') {
+          userClass = user.class;
+        }
+      }
+    }
+
+    if (!userClass && selectedClassCookie) {
+      const decoded = decodeURIComponent(selectedClassCookie);
+      if (decoded && decoded !== 'Not Selected') {
+        userClass = decoded;
+      }
+    }
+
     const [announcementsData, coursesData] = await Promise.all([
       prisma.announcement.findMany({
         where: { isActive: true, type: 'BANNER' },
@@ -64,7 +90,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
       )}
 
       {/* ── Hero ── */}
-      <HeroSection />
+      <HeroSection userClass={userClass} />
 
       {/* ── Separator ── */}
       <div className={styles.sep} />
@@ -85,7 +111,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ n
               { href: '/videos',       label: 'Video Lectures',     tag: 'Study' },
               { href: '/ask',          label: 'AI Doubt Solver',    tag: 'Free' },
               { href: '/quiz',         label: 'Quiz & Tests',       tag: 'Practice' },
-              { href: '/leaderboard',  label: 'Leaderboard',        tag: 'Compete' },
+              { href: '/premium',      label: 'Premium Store',      tag: 'New' },
               { href: '/forum',        label: 'Discussion Forum',   tag: 'Community' },
               { href: '/favorites',    label: 'Saved Favourites',   tag: 'Library' },
               { href: '/announcements',label: 'Announcements',      tag: 'News' },

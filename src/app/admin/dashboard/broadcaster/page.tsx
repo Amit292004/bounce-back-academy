@@ -165,7 +165,7 @@ export default function BroadcasterPage() {
           {/* Range Selection Card */}
           <div className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(99,102,241,0.03)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-              <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-foreground)' }}>
                 <FaEnvelopeOpenText size={18} />
               </div>
               <div>
@@ -351,7 +351,7 @@ export default function BroadcasterPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '2rem' }}>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em' }}>Student Status Directory</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <span style={{ padding: '0.3rem 0.8rem', background: 'var(--primary)', color: 'white', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}>{users.length} Total</span>
+            <span style={{ padding: '0.3rem 0.8rem', background: 'var(--primary)', color: 'var(--primary-foreground)', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}>{users.length} Total</span>
             <span style={{ fontSize: '0.9rem', opacity: 0.5 }}>Real-time delivery tracking for all students.</span>
           </div>
         </div>

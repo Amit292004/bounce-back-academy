@@ -34,81 +34,108 @@
   opacity: 0.5;
 }
 
-/* Grid of 3 cards */
+/* Grid of 3 cards (Professional Bento) */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1px;
-  border: 1px solid var(--surface-border);
-  border-radius: 14px;
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+  border-radius: 24px;
   overflow: hidden;
-  background: var(--surface-border);
+  box-shadow: 0 4px 40px -10px rgba(0,0,0,0.1);
 }
 
 .card {
   background: var(--surface);
-  padding: 2rem 1.75rem;
+  padding: 2.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  transition: background 0.3s ease;
+}
+
+.card:hover {
+  background: color-mix(in srgb, var(--surface) 97%, var(--foreground));
+}
+
+.stars {
+  display: flex;
+  gap: 0.2rem;
+  color: #eab308;
+  margin-bottom: 1.25rem;
 }
 
 .quote {
-  font-size: 0.92rem;
-  line-height: 1.72;
+  font-size: 1.05rem;
+  line-height: 1.75;
   color: var(--foreground);
-  opacity: 0.75;
+  opacity: 0.85;
   flex: 1;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin-bottom: 2rem;
 }
 
 .author {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  border-top: 1px solid var(--surface-border);
-  padding-top: 1.25rem;
+  gap: 1rem;
+  position: relative;
+  padding-top: 1.5rem;
+}
+
+.author::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--foreground) 8%, transparent), transparent);
 }
 
 .avatar {
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: var(--background);
-  border: 1px solid var(--surface-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  color: var(--foreground);
-  opacity: 0.7;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--background);
   flex-shrink: 0;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--foreground) 10%, transparent) inset;
 }
 
 .authorName {
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: -0.01em;
   margin-bottom: 0.15rem;
+  color: var(--foreground);
 }
 
 .authorMeta {
-  font-size: 0.75rem;
-  opacity: 0.45;
+  font-size: 0.8rem;
+  color: var(--foreground);
+  opacity: 0.55;
+  font-weight: 500;
 }
 
 .score {
   margin-left: auto;
   font-size: 0.85rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--foreground);
-  opacity: 0.6;
+  opacity: 0.4;
   flex-shrink: 0;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 @media (max-width: 900px) {
-  .grid { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: 1fr; border-radius: 16px; }
   .section { padding: 4rem 1rem; }
+  .card { padding: 2rem 1.5rem; }
 }

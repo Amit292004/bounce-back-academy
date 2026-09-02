@@ -111,7 +111,7 @@
 
 .startBtn {
   background: var(--primary);
-  color: #fff;
+  color: var(--primary-foreground);
   border: none;
   border-radius: 99px;
   padding: 0.65rem;
@@ -333,7 +333,7 @@
 
 .optionSelected .optionLetter {
   background: var(--primary);
-  color: #fff;
+  color: var(--primary-foreground);
 }
 
 .optionCorrect {
@@ -404,7 +404,7 @@
 
 .actionBtn {
   background: var(--primary);
-  color: #fff;
+  color: var(--primary-foreground);
   border: none;
   border-radius: 99px;
   padding: 0.75rem 2rem;
@@ -551,7 +551,7 @@
 
 .dashboardBtn {
   background: var(--primary);
-  color: #fff;
+  color: var(--primary-foreground);
   border: none;
   padding: 0.7rem 1.5rem;
   border-radius: 99px;

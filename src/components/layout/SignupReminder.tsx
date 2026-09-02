@@ -102,13 +102,8 @@ export default function SignupReminder() {
         .sr-border {
           padding: 1.5px;
           border-radius: 18px;
-          background: linear-gradient(135deg, #6366f1, #ec4899, #8b5cf6, #6366f1);
-          background-size: 300% 300%;
-          animation: sr-borderSpin 4s ease infinite;
-          box-shadow:
-            0 0 24px rgba(99,102,241,0.3),
-            0 0 48px rgba(139,92,246,0.15),
-            0 12px 40px rgba(0,0,0,0.2);
+          background: var(--primary);
+          box-shadow: var(--shadow-glow-lg);
         }
 
         .sr-card {
@@ -130,9 +125,8 @@ export default function SignupReminder() {
           inset: 0;
           background: linear-gradient(
             135deg,
-            rgba(99,102,241,0.06) 0%,
-            rgba(139,92,246,0.03) 50%,
-            rgba(236,72,153,0.05) 100%
+            color-mix(in srgb, var(--primary) 8%, transparent) 0%,
+            transparent 100%
           );
           pointer-events: none;
           border-radius: inherit;
@@ -142,8 +136,8 @@ export default function SignupReminder() {
           width: 44px;
           height: 44px;
           border-radius: 12px;
-          background: rgba(99, 102, 241, 0.1);
-          border: 1px solid rgba(99, 102, 241, 0.2);
+          background: color-mix(in srgb, var(--primary) 10%, transparent);
+          border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -151,7 +145,7 @@ export default function SignupReminder() {
           position: relative;
           z-index: 1;
           animation: sr-iconPulse 2.5s ease-in-out infinite;
-          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+          box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 15%, transparent);
         }
         .sr-icon-img {
           width: 24px;
@@ -207,12 +201,12 @@ export default function SignupReminder() {
           border-radius: 10px;
           font-size: 0.8rem;
           font-weight: 700;
-          color: #fff;
+          color: var(--primary-foreground);
           text-decoration: none;
           white-space: nowrap;
           flex-shrink: 0;
-          background: linear-gradient(135deg, #6366f1, #8b5cf6);
-          box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+          background: var(--primary);
+          box-shadow: var(--shadow-glow);
           transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
           position: relative;
           z-index: 1;
@@ -221,7 +215,8 @@ export default function SignupReminder() {
         }
         .sr-cta:hover {
           transform: translateY(-2px) scale(1.04);
-          box-shadow: 0 8px 24px rgba(99,102,241,0.55);
+          background: var(--primary-hover);
+          box-shadow: var(--shadow-glow-lg);
         }
         .sr-cta:active {
           transform: scale(0.97);

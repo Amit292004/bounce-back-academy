@@ -306,7 +306,7 @@ export default function UsersPage() {
               onClick={(e) => { e.stopPropagation(); setZoomImage(null); }}
               style={{
                 position: 'absolute', top: '-1.5rem', right: '-1.5rem',
-                background: 'var(--primary)', color: 'white', border: 'none',
+                background: 'var(--primary)', color: 'var(--primary-foreground)', border: 'none',
                 width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem'
               }}

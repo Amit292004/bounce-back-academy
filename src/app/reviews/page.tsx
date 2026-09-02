@@ -12,13 +12,7 @@ interface Review {
   score?: string;
 }
 
-const AVATAR_COLORS = [
-  'linear-gradient(135deg,#6366f1,#8b5cf6)',
-  'linear-gradient(135deg,#ec4899,#f43f5e)',
-  'linear-gradient(135deg,#10b981,#059669)',
-  'linear-gradient(135deg,#f59e0b,#d97706)',
-  'linear-gradient(135deg,#06b6d4,#0891b2)',
-];
+
 
 function getInitials(name: string) {
   return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
@@ -79,44 +73,55 @@ export default function AllReviewsPage() {
           ) : (
             reviews.map((r, i) => (
               <div key={r.id} style={{
-                background: 'var(--surface-card)',
-                borderRadius: '16px',
-                padding: '1.5rem',
-                border: '1px solid var(--surface-border)',
+                background: 'var(--surface)',
+                padding: '2.5rem',
+                borderBottom: '1px solid color-mix(in srgb, var(--foreground) 8%, transparent)',
                 display: 'flex', flexDirection: 'column',
-                transition: 'var(--transition)',
-                boxShadow: 'var(--shadow-sm)',
+                transition: 'background 0.3s ease',
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in srgb, var(--surface) 97%, var(--foreground))'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--surface)'; }}
               >
-                <div style={{ color: '#f59e0b', fontSize: '0.8rem', letterSpacing: '1px', marginBottom: '0.75rem' }}>
-                  ★★★★★
+                {/* Stars */}
+                <div style={{ display: 'flex', gap: '0.2rem', color: '#eab308', marginBottom: '1.25rem' }}>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <svg key={star} width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  ))}
                 </div>
+
                 <p style={{
-                  fontSize: '0.9rem', lineHeight: 1.6, opacity: 0.85,
-                  flexGrow: 1, marginBottom: '1.5rem', fontStyle: 'italic'
+                  fontSize: '1.05rem', lineHeight: 1.75, opacity: 0.85,
+                  flexGrow: 1, fontWeight: 400, letterSpacing: '-0.01em', marginBottom: '2rem'
                 }}>
-                  &ldquo;{r.quote}&rdquo;
+                  {r.quote}
                 </p>
                 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: 'auto' }}>
+                <div style={{ 
+                  display: 'flex', alignItems: 'center', gap: '1rem', 
+                  paddingTop: '1.5rem', marginTop: 'auto', position: 'relative'
+                }}>
                   <div style={{
-                    width: '36px', height: '36px', borderRadius: '50%',
-                    background: AVATAR_COLORS[i % AVATAR_COLORS.length],
-                    color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontWeight: 800, fontSize: '0.75rem', flexShrink: 0
+                    position: 'absolute', top: 0, left: 0, width: '100%', height: '1px',
+                    background: 'linear-gradient(90deg, color-mix(in srgb, var(--foreground) 8%, transparent), transparent)'
+                  }} />
+                  <div style={{
+                    width: '44px', height: '44px', borderRadius: '50%',
+                    boxShadow: 'inset 0 0 0 1px color-mix(in srgb, var(--foreground) 10%, transparent)',
+                    background: 'var(--foreground)',
+                    color: 'var(--background)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontWeight: 600, fontSize: '0.85rem', flexShrink: 0, letterSpacing: '0.02em'
                   }}>
                     {getInitials(r.name)}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 700, fontSize: '0.85rem' }}>{r.name}</div>
-                    <div style={{ fontSize: '0.75rem', opacity: 0.6, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.className}</div>
+                    <div style={{ fontWeight: 600, fontSize: '0.95rem', marginBottom: '0.15rem', letterSpacing: '-0.01em' }}>{r.name}</div>
+                    <div style={{ fontSize: '0.8rem', opacity: 0.55, fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.className}</div>
                   </div>
                   {r.score && (
                     <div style={{
-                      fontWeight: 800, fontSize: '0.85rem', color: 'var(--primary)',
-                      background: 'var(--primary-light)', padding: '2px 8px', borderRadius: '8px'
+                      fontWeight: 600, fontSize: '0.85rem', opacity: 0.4, flexShrink: 0, letterSpacing: '-0.01em'
                     }}>
                       {r.score}
                     </div>

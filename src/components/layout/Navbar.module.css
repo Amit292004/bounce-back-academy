@@ -49,7 +49,7 @@
 }
 
 .logoBrand {
-  background: linear-gradient(135deg, #6366f1, #818cf8);
+  background: var(--primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

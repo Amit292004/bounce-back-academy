@@ -540,9 +540,10 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
       if (saved) setCompletedItems(JSON.parse(saved));
     } catch {}
 
-    // Save selected class to cookie for automatic homepage redirect
+    // Save selected class to cookie and localStorage for automatic homepage and hero syncing
     if (className) {
       document.cookie = `selected_class=${encodeURIComponent(className)}; path=/; max-age=31536000; SameSite=Lax`;
+      localStorage.setItem('selectedClass', className);
     }
   }, [className]);
 

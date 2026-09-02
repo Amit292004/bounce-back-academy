@@ -38,7 +38,7 @@ function AnimatedNumber({ value, isLoading }: { value: number; isLoading: boolea
 export default function HeroSection({ userClass: initialUserClass }: HeroSectionProps) {
   const [stats, setStats] = useState<Stats>({ users: 0, papers: 0, notes: 0, videos: 0, activeNow: 0 });
   const [loading, setLoading] = useState(true);
-  const [userClass, setUserClass] = useState(initialUserClass || null);
+  const [userClass, setUserClass] = useState<string | null>(initialUserClass || null);
   const [activeTopicIndex, setActiveTopicIndex] = useState(0);
 
   useEffect(() => {
@@ -46,13 +46,70 @@ export default function HeroSection({ userClass: initialUserClass }: HeroSection
       .then(d => { setStats(d); setLoading(false); })
       .catch(() => setLoading(false));
 
-    if (!userClass) {
+    const syncClass = async () => {
+      try {
+        // 1. Check if user is logged in and fetch their profile selected class
+        const res = await fetch('/api/student/me');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.authenticated && data.class && data.class !== 'Not Selected') {
+            setUserClass(data.class);
+            localStorage.setItem('selectedClass', data.class);
+            document.cookie = `selected_class=${encodeURIComponent(data.class)}; path=/; max-age=31536000; SameSite=Lax`;
+            return;
+          }
+        }
+      } catch {}
+
+      // 2. Fall back to localStorage if not logged in or profile fetch failed
       const stored = localStorage.getItem('selectedClass');
-      if (stored) setUserClass(stored);
-    }
-  }, [userClass]);
+      if (stored && stored !== 'Not Selected') {
+        setUserClass(stored);
+      }
+    };
+
+    syncClass();
+
+    const handleProfileUpdate = () => {
+      syncClass();
+    };
+
+    const handleClassChange = (e: any) => {
+      if (e?.detail) {
+        setUserClass(e.detail);
+      } else {
+        syncClass();
+      }
+    };
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'selectedClass') {
+        if (e.newValue && e.newValue !== 'Not Selected') {
+          setUserClass(e.newValue);
+        } else {
+          setUserClass(null);
+        }
+      }
+    };
+
+    window.addEventListener('profileUpdated', handleProfileUpdate);
+    window.addEventListener('classChanged', handleClassChange);
+    window.addEventListener('storage', handleStorage);
+
+    return () => {
+      window.removeEventListener('profileUpdated', handleProfileUpdate);
+      window.removeEventListener('classChanged', handleClassChange);
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, []);
 
   const activeTopic = ROTATING_TOPICS[activeTopicIndex % ROTATING_TOPICS.length] || ROTATING_TOPICS[0];
+
+  const classDisplayName = userClass
+    ? (userClass.toLowerCase().startsWith('class') || ['cuet', 'jee', 'neet'].includes(userClass.toLowerCase())
+        ? userClass
+        : `Class ${userClass}`)
+    : null;
 
   return (
     <section className={styles.hero}>
@@ -87,7 +144,7 @@ export default function HeroSection({ userClass: initialUserClass }: HeroSection
         {/* CTAs */}
         <div className={styles.ctas}>
           <Link href={userClass ? `/class/${encodeURIComponent(userClass)}` : '/#classes'} className={styles.ctaPrimary}>
-            {userClass ? `${userClass} Dashboard` : 'Classes Dashboard'}
+            {classDisplayName ? `${classDisplayName} Dashboard` : 'Classes Dashboard'}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </Link>
           <div className={styles.ctaSecondaryGroup}>

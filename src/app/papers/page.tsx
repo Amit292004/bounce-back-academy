@@ -32,7 +32,7 @@ interface Course  { id: string; name: string; }
 
 function getSubjectColor(name: string) {
   const n = name.toLowerCase();
-  if (n.includes('math'))    return { color: '#6366f1', bg: 'rgba(99,102,241,0.1)' };
+  if (n.includes('math'))    return { color: 'var(--primary)', bg: 'color-mix(in srgb, var(--primary) 10%, transparent)' };
   if (n.includes('science')) return { color: '#10b981', bg: 'rgba(16,185,129,0.1)' };
   if (n.includes('english')) return { color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' };
   if (n.includes('social'))  return { color: '#ec4899', bg: 'rgba(236,72,153,0.1)' };
@@ -40,7 +40,7 @@ function getSubjectColor(name: string) {
   if (n.includes('physics')) return { color: '#06b6d4', bg: 'rgba(6,182,212,0.1)' };
   if (n.includes('chem'))    return { color: '#a855f7', bg: 'rgba(168,85,247,0.1)' };
   if (n.includes('bio'))     return { color: '#84cc16', bg: 'rgba(132,204,22,0.1)' };
-  return { color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' };
+  return { color: 'var(--primary)', bg: 'color-mix(in srgb, var(--primary) 10%, transparent)' };
 }
 
 function SkeletonCard() {
@@ -222,7 +222,7 @@ function PapersContent() {
               display: 'flex', alignItems: 'center', gap: '0.4rem',
               padding: '0.55rem 1rem', borderRadius: 'var(--radius-sm)', border: 'none',
               background: mode === 'year-wise' ? 'var(--primary)' : 'transparent',
-              color: mode === 'year-wise' ? 'white' : 'var(--foreground)',
+              color: mode === 'year-wise' ? 'var(--primary-foreground)' : 'var(--foreground)',
               cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s ease', fontSize: '0.88rem',
             }}
           >
@@ -234,7 +234,7 @@ function PapersContent() {
               display: 'flex', alignItems: 'center', gap: '0.4rem',
               padding: '0.55rem 1rem', borderRadius: 'var(--radius-sm)', border: 'none',
               background: mode === 'chapter-wise' ? 'var(--primary)' : 'transparent',
-              color: mode === 'chapter-wise' ? 'white' : 'var(--foreground)',
+              color: mode === 'chapter-wise' ? 'var(--primary-foreground)' : 'var(--foreground)',
               cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s ease', fontSize: '0.88rem',
             }}
           >
@@ -443,12 +443,12 @@ function PapersContent() {
                       flexShrink: 0,
                       padding: '0.3rem 0.65rem',
                       borderRadius: 10,
-                      background: 'linear-gradient(135deg, var(--primary), var(--accent))',
-                      color: 'white',
+                      background: 'var(--primary)',
+                      color: 'var(--primary-foreground)',
                       fontWeight: 800,
                       fontSize: '0.82rem',
                       letterSpacing: '0.02em',
-                      boxShadow: '0 4px 12px rgba(99,102,241,0.3)',
+                      boxShadow: 'var(--shadow-md)',
                     }}>
                       {paper.year.year}
                     </div>
@@ -470,7 +470,7 @@ function PapersContent() {
                 </div>
 
                 {/* Action Buttons */}
-                <div style={{ display: 'flex', gap: '0.6rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
                   {(paper.viewUrl || paper.downloadFile) && (
                     <a
                       href={(() => {
@@ -478,32 +478,96 @@ function PapersContent() {
                         if (base.startsWith('/view')) return `${base}&title=${encodeURIComponent(paper.title)}`;
                         return base;
                       })()}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-secondary haptic-btn"
-                      style={{ flex: 1, justifyContent: 'center', padding: '0.6rem', fontSize: '0.85rem', borderRadius: 'var(--radius-sm)', textAlign: 'center' }}
+                      className="haptic-btn"
+                      style={{
+                        flex: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.45rem',
+                        padding: '0.72rem 1rem',
+                        fontSize: '0.875rem',
+                        fontWeight: 700,
+                        borderRadius: 10,
+                        textAlign: 'center',
+                        background: 'var(--surface-card)',
+                        border: '1.5px solid var(--surface-border)',
+                        color: 'var(--foreground)',
+                        textDecoration: 'none',
+                        transition: 'all 0.18s ease',
+                        letterSpacing: '-0.01em',
+                      }}
                     >
-                      <FaEye style={{ marginRight: '0.4rem' }} /> View
+                      <FaEye size={13} /> View
                     </a>
                   )}
                   {!isAuthenticated ? (
                     <Link
                       href="/login"
-                      className="btn-primary haptic-btn"
-                      style={{ flex: 1, justifyContent: 'center', padding: '0.6rem', fontSize: '0.85rem', borderRadius: 'var(--radius-sm)', textAlign: 'center' }}
+                      className="haptic-btn"
+                      style={{
+                        flex: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.45rem',
+                        padding: '0.72rem 1rem',
+                        fontSize: '0.875rem',
+                        fontWeight: 700,
+                        borderRadius: 10,
+                        textAlign: 'center',
+                        background: 'var(--primary)',
+                        boxShadow: 'var(--shadow-glow)',
+                        color: 'var(--primary-foreground)',
+                        textDecoration: 'none',
+                        letterSpacing: '-0.01em',
+                      }}
                     >
-                      <FaDownload style={{ marginRight: '0.4rem' }} /> Login to Download
+                      <FaDownload size={12} /> Login to Download
                     </Link>
                   ) : (paper.downloadFile || paper.viewUrl) ? (
                     <button
                       onClick={() => handleDownload(getDownloadLink(paper.downloadFile || paper.viewUrl), `${paper.title}.pdf`)}
-                      className="btn-primary haptic-btn"
-                      style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem', borderRadius: 'var(--radius-sm)', border: 'none', cursor: 'pointer' }}
+                      className="haptic-btn"
+                      style={{
+                        flex: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.45rem',
+                        padding: '0.72rem 1rem',
+                        fontSize: '0.875rem',
+                        fontWeight: 700,
+                        borderRadius: 10,
+                        background: 'var(--primary)',
+                        boxShadow: 'var(--shadow-glow)',
+                        color: 'var(--primary-foreground)',
+                        border: 'none',
+                        cursor: 'pointer',
+                        letterSpacing: '-0.01em',
+                      }}
                     >
-                      <FaDownload style={{ marginRight: '0.4rem' }} /> Download
+                      <FaDownload size={12} /> Download
                     </button>
                   ) : (
-                    <button disabled className="btn-primary" style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem', borderRadius: 'var(--radius-sm)', opacity: 0.4, cursor: 'not-allowed' }}>
+                    <button
+                      disabled
+                      style={{
+                        flex: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '0.72rem 1rem',
+                        fontSize: '0.875rem',
+                        fontWeight: 700,
+                        borderRadius: 10,
+                        background: 'var(--surface-card)',
+                        border: '1.5px solid var(--surface-border)',
+                        color: 'var(--foreground)',
+                        opacity: 0.35,
+                        cursor: 'not-allowed',
+                      }}
+                    >
                       Not Available
                     </button>
                   )}

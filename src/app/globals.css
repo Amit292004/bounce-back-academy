@@ -1,10 +1,11 @@
 :root {
   --background: #fafafa;
   --foreground: #111111;
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
+  --primary: #171717;
+  --primary-hover: #262626;
+  --primary-foreground: #ffffff;
   --secondary: #ec4899;
-  --accent: #8b5cf6;
+  --accent: #171717;
   --surface: #ffffff;
   --surface-card: #f5f5f5;
   --surface-border: rgba(0, 0, 0, 0.15);
@@ -17,9 +18,9 @@
   --transition: all 0.2s ease;
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-  --shadow-glow: 0 0 20px rgba(99,102,241,0.15);
-  --shadow-glow-lg: 0 0 40px rgba(99,102,241,0.25);
-  --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --shadow-glow: 0 4px 14px rgba(0,0,0,0.1);
+  --shadow-glow-lg: 0 8px 30px rgba(0,0,0,0.12);
+  --gradient-primary: var(--primary);
   --gradient-success: linear-gradient(135deg, #10b981, #059669);
   --gradient-amber: linear-gradient(135deg, #f59e0b, #d97706);
   --gradient-rose: linear-gradient(135deg, #ec4899, #be185d);
@@ -31,13 +32,16 @@
 .dark {
   --background: #0a0a0a;
   --foreground: #ededed;
+  --primary: #ededed;
+  --primary-hover: #d4d4d4;
+  --primary-foreground: #0a0a0a;
   --surface: #141414;
   --surface-card: #1a1a1a;
   --surface-border: rgba(255,255,255,0.14);
   --surface-highlight: rgba(255,255,255,0.04);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
-  --shadow-glow: 0 0 20px rgba(99,102,241,0.2);
-  --shadow-glow-lg: 0 0 50px rgba(99,102,241,0.18);
+  --shadow-glow: 0 4px 14px rgba(255,255,255,0.1);
+  --shadow-glow-lg: 0 8px 30px rgba(255,255,255,0.12);
   --skeleton-base: rgba(255,255,255,0.06);
   --skeleton-shine: rgba(255,255,255,0.11);
 }
@@ -112,8 +116,8 @@ select {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  color: white;
+  background: var(--primary);
+  color: var(--primary-foreground);
   padding: 0.75rem 1.5rem;
   border-radius: var(--radius-sm);
   border: none;
@@ -129,7 +133,8 @@ select {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+  background: var(--primary-hover);
+  box-shadow: var(--shadow-glow-lg);
 }
 
 .btn-secondary {

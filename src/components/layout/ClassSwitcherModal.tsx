@@ -122,8 +122,11 @@ export default function ClassSwitcherModal({ isOpen, onClose, currentClass }: Cl
         });
       }
 
-      // Save to localStorage so client-side state is consistent
+      // Save to localStorage and cookie so client-side and SSR state is consistent
       localStorage.setItem('selectedClass', className);
+      document.cookie = `selected_class=${encodeURIComponent(className)}; path=/; max-age=31536000; SameSite=Lax`;
+      window.dispatchEvent(new CustomEvent('classChanged', { detail: className }));
+      window.dispatchEvent(new Event('profileUpdated'));
 
       // Close modal and navigate directly to the classroom portal for the class
       onClose();

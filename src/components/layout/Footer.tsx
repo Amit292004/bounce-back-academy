@@ -53,7 +53,7 @@ export default function Footer() {
         <div className={styles.col}>
           <h4 className={styles.colTitle}>Platform</h4>
           <ul className={styles.linkList}>
-            <li><Link href="/leaderboard" className={styles.footerLink}>Leaderboard</Link></li>
+            <li><Link href="/premium" className={styles.footerLink}>Premium Store</Link></li>
             <li><Link href="/forum" className={styles.footerLink}>Discussion Forum</Link></li>
             <li><Link href="/announcements" className={styles.footerLink}>Announcements</Link></li>
             <li><Link href="/favorites" className={styles.footerLink}>Saved Favorites</Link></li>
