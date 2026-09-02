@@ -216,9 +216,9 @@
   font-weight: 700;
   padding: 0.12rem 0.4rem;
   border-radius: 4px;
-  background: rgba(99,102,241,0.12);
-  border: 1px solid rgba(99,102,241,0.2);
-  color: #818cf8;
+  background: rgba(249,115,22,0.12);
+  border: 1px solid rgba(249,115,22,0.2);
+  color: #f97316;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -395,9 +395,9 @@
   font-weight: 700;
   padding: 0.12rem 0.4rem;
   border-radius: 4px;
-  background: rgba(99,102,241,0.12);
-  border: 1px solid rgba(99,102,241,0.2);
-  color: #818cf8;
+  background: rgba(249,115,22,0.12);
+  border: 1px solid rgba(249,115,22,0.2);
+  color: #f97316;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }

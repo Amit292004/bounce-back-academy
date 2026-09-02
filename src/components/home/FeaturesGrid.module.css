@@ -107,9 +107,9 @@
   text-transform: uppercase;
   padding: 0.18rem 0.5rem;
   border-radius: 5px;
-  background: rgba(99,102,241,0.1);
-  border: 1px solid rgba(99,102,241,0.2);
-  color: #818cf8;
+  background: rgba(249,115,22,0.1);
+  border: 1px solid rgba(249,115,22,0.2);
+  color: #f97316;
 }
 
 .cardTitle {
