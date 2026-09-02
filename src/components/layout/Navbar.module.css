@@ -418,3 +418,10 @@
     display: flex;
   }
 }
+
+@media (max-width: 768px) {
+  .mobileMenu {
+    padding-bottom: calc(1.25rem + 80px + env(safe-area-inset-bottom, 0px));
+    max-height: calc(100vh - 60px); /* ensure it uses full height but can be scrolled past nav */
+  }
+}
