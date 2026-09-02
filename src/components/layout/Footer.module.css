@@ -169,6 +169,12 @@
   .brand { grid-column: 1 / -1; }
 }
 
+@media (max-width: 768px) {
+  .bottom {
+    padding-bottom: calc(1.25rem + 80px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 @media (max-width: 540px) {
   .inner { grid-template-columns: 1fr; padding: 2rem 1rem 1.5rem; }
   .bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
