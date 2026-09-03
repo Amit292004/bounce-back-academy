@@ -137,23 +137,26 @@ export default function LoginPage() {
 
           {error && <p className={styles.error}>{error}</p>}
 
-          <button type="submit" className="btn-primary" style={{ width: '100%' }} disabled={loading}>
+          <button type="submit" className={styles.submitBtn} disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
-        <div style={{ margin: '1.5rem 0', display: 'flex', alignItems: 'center', textAlign: 'center', color: 'var(--foreground)', opacity: 0.5 }}>
-          <div style={{ flex: 1, borderBottom: '1px solid currentColor' }}></div>
-          <span style={{ padding: '0 10px', fontSize: '0.875rem' }}>or</span>
-          <div style={{ flex: 1, borderBottom: '1px solid currentColor' }}></div>
+        <div className={styles.divider}>
+          <span>or</span>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+        <div className={styles.googleWrapper}>
           <GoogleOAuthProvider clientId={(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '').replace(/['"]/g, '')}>
-
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => setError('Google Sign In failed')}
+              theme="filled_black"
+              size="large"
+              shape="rectangular"
+              text="continue_with"
+              logo_alignment="center"
+              width="400"
             />
           </GoogleOAuthProvider>
         </div>

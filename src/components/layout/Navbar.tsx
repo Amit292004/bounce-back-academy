@@ -273,7 +273,7 @@ export default function Navbar() {
         <Link href="/?noredirect=true" className={styles.logoLink}>
           <Image src={siteLogo || '/logo.png'} alt="Bounce Back Academy" width={32} height={32} className={styles.logoImg} />
           <span className={styles.logoText}>
-            Bounce Back <span className={styles.logoBrand}>Academy</span>
+            Bounce Back Academy
           </span>
         </Link>
 

@@ -70,7 +70,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
               alt="Bounce Back Academy Logo" 
               style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'contain' }} 
             />
-            <h2 className="text-gradient" style={{ fontSize: '1rem', fontWeight: 800 }}>Bounce Back Academy</h2>
+            <h2 style={{ fontSize: '1rem', fontWeight: 800, color: '#ffffff' }}>Bounce Back Academy</h2>
           </div>
           <button 
             className={styles.hamburger} 

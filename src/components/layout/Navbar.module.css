@@ -49,10 +49,11 @@
 }
 
 .logoBrand {
-  background: var(--primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--foreground);
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: initial;
+  background-clip: unset;
 }
 
 /* ── Desktop Nav ── */

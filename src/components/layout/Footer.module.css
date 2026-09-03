@@ -47,13 +47,15 @@
 .logoText {
   font-size: 1rem;
   font-weight: 700;
+  color: var(--foreground);
 }
 
 .gradientText {
-  background: linear-gradient(135deg, #6366f1, #ec4899);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--foreground);
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: initial;
+  background-clip: unset;
 }
 
 .tagline {
@@ -134,22 +136,70 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.82rem;
-  opacity: 0.62;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: var(--foreground);
+  opacity: 0.85;
 }
 
 .bottomLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
   font-weight: 500;
+}
+
+.copyright {
+  white-space: nowrap;
+}
+
+.legalDivider {
+  opacity: 0.4;
+}
+
+.legalGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dot {
+  opacity: 0.4;
+  font-size: 0.75rem;
+}
+
+.bottomLink {
+  color: var(--foreground);
+  text-decoration: none;
+  opacity: 0.75;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.bottomLink:hover {
+  opacity: 1;
+  color: var(--primary);
+  text-decoration: none;
 }
 
 .bottomRight {
-  font-weight: 500;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--foreground);
+  opacity: 0.75;
+  white-space: nowrap;
 }
 
-.heart {
-  color: #ef4444;
-  display: inline-block;
-  animation: heartBeat 1.8s ease infinite;
+.authorLink {
+  font-weight: 600;
+  color: var(--foreground);
+  text-decoration: none;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.authorLink:hover {
+  opacity: 1;
+  color: var(--primary);
 }
 
 @keyframes heartBeat {
@@ -175,7 +225,44 @@
   }
 }
 
+@media (max-width: 640px) {
+  .bottom {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bottomLeft {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .legalDivider {
+    display: none;
+  }
+
+  .legalGroup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .copyright {
+    white-space: normal;
+    text-align: center;
+  }
+
+  .bottomRight {
+    white-space: normal;
+    text-align: center;
+  }
+}
+
 @media (max-width: 540px) {
   .inner { grid-template-columns: 1fr; padding: 2rem 1rem 1.5rem; }
-  .bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
 }

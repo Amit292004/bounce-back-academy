@@ -15,7 +15,7 @@ export default function Footer() {
           <div className={styles.logoRow}>
             <Image src="/logo.png" alt="Bounce Back Academy" width={40} height={40} className={styles.logoImg} />
             <span className={styles.logoText}>
-              Bounce Back <span className={styles.gradientText}>Academy</span>
+              Bounce Back Academy
             </span>
           </div>
           <p className={styles.tagline}>
@@ -61,15 +61,15 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Support */}
+        {/* Support & Legal */}
         <div className={styles.col}>
-          <h4 className={styles.colTitle}>Support</h4>
+          <h4 className={styles.colTitle}>Support &amp; Legal</h4>
           <ul className={styles.linkList}>
             <li><Link href="/contact" className={styles.footerLink}>Contact Us</Link></li>
+            <li><Link href="/privacy" className={styles.footerLink}>Privacy Policy</Link></li>
+            <li><Link href="/terms" className={styles.footerLink}>Terms of Use</Link></li>
             <li><Link href="/feedback" className={styles.footerLink}>Contact Support</Link></li>
             <li><a href="mailto:bouncebackacademy.edu@gmail.com" className={styles.footerLink}>Email Us</a></li>
-            <li><Link href="/register" className={styles.footerLink}>Create Account</Link></li>
-            <li><Link href="/login" className={styles.footerLink}>Sign In</Link></li>
           </ul>
         </div>
 
@@ -77,10 +77,24 @@ export default function Footer() {
 
       <div className={styles.bottom}>
         <div className={styles.bottomLeft}>
-          © {year} Bounce Back Academy. All rights reserved.
+          <span className={styles.copyright}>© {year} Bounce Back Academy. All rights reserved.</span>
+          <span className={styles.legalDivider}>•</span>
+          <span className={styles.legalGroup}>
+            <Link href="/privacy" className={styles.bottomLink}>Privacy Policy</Link>
+            <span className={styles.dot}>•</span>
+            <Link href="/terms" className={styles.bottomLink}>Terms of Use</Link>
+          </span>
         </div>
         <div className={styles.bottomRight}>
-          Made with <span className={styles.heart}>♥</span> by <span className={styles.gradientText}>Amit Sharma</span>
+          Designed &amp; Developed by{' '}
+          <a
+            href="https://www.linkedin.com/in/amit-sharma-142a26359/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.authorLink}
+          >
+            Amit Sharma
+          </a>
         </div>
       </div>
     </footer>
