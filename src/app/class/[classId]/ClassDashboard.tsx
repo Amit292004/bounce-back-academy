@@ -136,101 +136,6 @@ interface Props {
   premiumItems: PremiumItem[];
 }
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
-
-const MOCK_SUBJECTS: Subject[] = [
-  {
-    id: "mock-phy",
-    name: "Physics",
-    chapters: [
-      { id: "mock-phy-c1", name: "Electrostatics & Capacitance", number: 1 },
-      { id: "mock-phy-c2", name: "Current Electricity", number: 2 },
-      { id: "mock-phy-c3", name: "Magnetic Effects of Current", number: 3 },
-    ],
-    notes: [
-      { id: "mock-phy-n1", title: "Electrostatics – Class Notes", viewUrl: "https://drive.google.com/file/d/123/view", downloadFile: "#", chapterId: "mock-phy-c1" },
-      { id: "mock-phy-n2", title: "Current Electricity – Quick Notes", viewUrl: "https://drive.google.com/file/d/124/view", downloadFile: "#", chapterId: "mock-phy-c2" },
-    ],
-    papers: [
-      { id: "mock-phy-p1", title: "DPP 01 – Coulomb's Law", viewUrl: "#", downloadFile: "#", chapterId: "mock-phy-c1" },
-      { id: "mock-phy-p2", title: "DPP 02 – Electric Potential", viewUrl: "#", downloadFile: "#", chapterId: "mock-phy-c1" },
-    ],
-    videos: [
-      { id: "mock-phy-v1", title: "Coulomb's Law & Electric Forces", youtubeLink: "https://www.youtube.com/watch?v=jNQXAC9IVRw", pdfUrl: "#", chapterId: "mock-phy-c1", lectureNumber: 1 },
-      { id: "mock-phy-v2", title: "Electric Potential & Capacitors", youtubeLink: "https://www.youtube.com/watch?v=jNQXAC9IVRw", pdfUrl: "#", chapterId: "mock-phy-c1", lectureNumber: 2 },
-      { id: "mock-phy-v3", title: "Ohm's Law & Kirchhoff's Principles", youtubeLink: "https://www.youtube.com/watch?v=jNQXAC9IVRw", pdfUrl: "#", chapterId: "mock-phy-c2", lectureNumber: 1 },
-    ],
-    quizzes: [
-      {
-        id: "mock-phy-q1",
-        title: "Electrostatics – Practice Quiz",
-        chapterId: "mock-phy-c1",
-        questions: [
-          { id: "mq1", questionText: "What is the electric field inside a conducting hollow sphere?", imageUrl: null, type: "MCQ", options: "Zero|Infinite|Same as surface|Depends on radius", answer: "Zero", explanation: "Charges reside on the outer surface, so net field inside is zero.", timeLimit: 30 },
-          { id: "mq2", questionText: "How does capacitance change when a dielectric slab is inserted?", imageUrl: null, type: "MCQ", options: "Decreases|Increases by factor K|Remains same|Becomes zero", answer: "Increases by factor K", explanation: "C = K × C₀ where K is the dielectric constant.", timeLimit: 30 },
-        ],
-      },
-    ],
-  },
-  {
-    id: "mock-chem",
-    name: "Chemistry",
-    chapters: [
-      { id: "mock-chem-c1", name: "Chemical Kinetics & Rates", number: 1 },
-      { id: "mock-chem-c2", name: "Coordination Compounds", number: 2 },
-    ],
-    notes: [
-      { id: "mock-chem-n1", title: "Chemical Kinetics – Lecture Notes", viewUrl: "https://drive.google.com/file/d/125/view", downloadFile: "#", chapterId: "mock-chem-c1" },
-    ],
-    papers: [
-      { id: "mock-chem-p1", title: "DPP 01 – First Order Equations", viewUrl: "#", downloadFile: "#", chapterId: "mock-chem-c1" },
-    ],
-    videos: [
-      { id: "mock-chem-v1", title: "Order & Molecularity of Reactions", youtubeLink: "https://www.youtube.com/watch?v=jNQXAC9IVRw", pdfUrl: "#", chapterId: "mock-chem-c1", lectureNumber: 1 },
-    ],
-    quizzes: [
-      {
-        id: "mock-chem-q1",
-        title: "Kinetics – Practice Quiz",
-        chapterId: "mock-chem-c1",
-        questions: [
-          { id: "mc1", questionText: "Unit of rate constant for a first order reaction?", imageUrl: null, type: "MCQ", options: "mol L⁻¹ s⁻¹|L mol⁻¹ s⁻¹|s⁻¹|L² mol⁻² s⁻¹", answer: "s⁻¹", explanation: "For first order: rate = k[A], so k has unit 1/time = s⁻¹.", timeLimit: 30 },
-        ],
-      },
-    ],
-  },
-  {
-    id: "mock-math",
-    name: "Mathematics",
-    chapters: [
-      { id: "mock-math-c1", name: "Limits, Continuity & Differentiability", number: 1 },
-      { id: "mock-math-c2", name: "Matrices & Determinants", number: 2 },
-    ],
-    notes: [
-      { id: "mock-math-n1", title: "Limits – Summary Notes", viewUrl: "https://drive.google.com/file/d/126/view", downloadFile: "#", chapterId: "mock-math-c1" },
-    ],
-    papers: [
-      { id: "mock-math-p1", title: "DPP 01 – L'Hôpital Problems", viewUrl: "#", downloadFile: "#", chapterId: "mock-math-c1" },
-    ],
-    videos: [
-      { id: "mock-math-v1", title: "Limits & Special Cases", youtubeLink: "https://www.youtube.com/watch?v=jNQXAC9IVRw", pdfUrl: "#", chapterId: "mock-math-c1", lectureNumber: 1 },
-    ],
-    quizzes: [
-      {
-        id: "mock-math-q1",
-        title: "Limits – Practice Quiz",
-        chapterId: "mock-math-c1",
-        questions: [
-          { id: "mm1", questionText: "Evaluate: lim(x→0) sin(x)/x", imageUrl: null, type: "MCQ", options: "0|1|Undefined|Infinity", answer: "1", explanation: "This fundamental limit equals 1 by the squeeze theorem.", timeLimit: 30 },
-        ],
-      },
-    ],
-  },
-];
-
-// Premium courses are now fetched live from the database via props.
-// This constant is intentionally removed.
-
 // ─── VideoThumbnail Component ─────────────────────────────────────────────────
 
 const VideoThumbnail = ({ src, alt }: { src: string | null; alt: string }) => {
@@ -270,7 +175,7 @@ function getSubjectStyle(name: string) {
 
 export default function ClassDashboard({ className, displayTitle, subjects: propSubjects, announcements: propAnnouncements, premiumItems: propPremiumItems }: Props) {
   const subjects = useMemo(() => {
-    return (propSubjects && propSubjects.length > 0) ? propSubjects : MOCK_SUBJECTS;
+    return propSubjects || [];
   }, [propSubjects]);
 
   const announcements = useMemo(() => {
@@ -802,31 +707,38 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
             <section className={styles.section}>
               <div className={styles.sectionHeader}>
                 <h3 className={styles.sectionTitle}>Your Subjects</h3>
-                <button className={styles.seeAllBtn} onClick={() => goToTab("study")}>
-                  See All
-                </button>
+                {subjects.length > 0 && (
+                  <button className={styles.seeAllBtn} onClick={() => goToTab("study")}>
+                    See All
+                  </button>
+                )}
               </div>
-              <div className={styles.subjectChips}>
-                {subjects.map(sub => {
-                  const style = getSubjectStyle(sub.name);
-                  return (
-                    <button
-                      key={sub.id}
-                      className={styles.subjectChip}
-                      onClick={() => {
-                        setActiveTab("study");
-                        setSelectedSubjectId(sub.id);
-                        if (sub.chapters.length === 0) {
-                          setSelectedChapterId("general");
-                          setClassroomTab("videos");
-                        }
-                      }}
-                    >
-                      <span>{sub.name}</span>
-                    </button>
-                  );
-                })}
-              </div>
+              {subjects.length === 0 ? (
+                <div style={{ padding: "1.5rem", textAlign: "center", background: "var(--surface)", border: "1px solid var(--surface-border)", borderRadius: "var(--radius-md)" }}>
+                  <p style={{ opacity: 0.6, fontSize: "0.9rem" }}>No subjects or study materials have been added to {displayTitle} yet.</p>
+                </div>
+              ) : (
+                <div className={styles.subjectChips}>
+                  {subjects.map(sub => {
+                    return (
+                      <button
+                        key={sub.id}
+                        className={styles.subjectChip}
+                        onClick={() => {
+                          setActiveTab("study");
+                          setSelectedSubjectId(sub.id);
+                          if (sub.chapters.length === 0) {
+                            setSelectedChapterId("general");
+                            setClassroomTab("videos");
+                          }
+                        }}
+                      >
+                        <span>{sub.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </section>
 
             {/* Featured Premium Course */}
@@ -882,41 +794,50 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
               <>
                 <div className={styles.pageHeading}>
                   <h2>Study</h2>
-                  <p>Pick a subject to start learning</p>
+                  <p>{subjects.length > 0 ? "Pick a subject to start learning" : "No subjects available yet"}</p>
                 </div>
-                <div className={styles.subjectList}>
-                  {subjects.map(sub => {
-                    const style = getSubjectStyle(sub.name);
-                    const total = sub.videos.length + sub.notes.length + sub.papers.length;
-                    return (
-                      <div
-                        key={sub.id}
-                        className={styles.subjectRow}
-                        onClick={() => {
-                          setSelectedSubjectId(sub.id);
-                          if (sub.chapters.length === 0) {
-                            setSelectedChapterId("general");
-                            setClassroomTab("videos");
-                          }
-                        }}
-                      >
-                        <div className={styles.cardTop}>
-                          <div className={styles.iconBox}>
-                            <BookOpen size={18} />
+                {subjects.length === 0 ? (
+                  <div style={{ padding: "3rem 1.5rem", textAlign: "center", background: "var(--surface)", border: "1px solid var(--surface-border)", borderRadius: "var(--radius-lg)", marginTop: "1rem" }}>
+                    <BookOpen size={44} style={{ opacity: 0.3, marginBottom: "1rem" }} />
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.5rem" }}>No Content Uploaded Yet</h3>
+                    <p style={{ opacity: 0.6, fontSize: "0.9rem", maxWidth: "420px", margin: "0 auto" }}>
+                      No study materials or subjects have been added for {displayTitle} yet by the administration. Content will appear here as soon as it is uploaded.
+                    </p>
+                  </div>
+                ) : (
+                  <div className={styles.subjectList}>
+                    {subjects.map(sub => {
+                      const total = sub.videos.length + sub.notes.length + sub.papers.length;
+                      return (
+                        <div
+                          key={sub.id}
+                          className={styles.subjectRow}
+                          onClick={() => {
+                            setSelectedSubjectId(sub.id);
+                            if (sub.chapters.length === 0) {
+                              setSelectedChapterId("general");
+                              setClassroomTab("videos");
+                            }
+                          }}
+                        >
+                          <div className={styles.cardTop}>
+                            <div className={styles.iconBox}>
+                              <BookOpen size={18} />
+                            </div>
+                          </div>
+                          <h3 className={styles.cardTitle}>{sub.name}</h3>
+                          <p className={styles.cardDesc}>
+                            {sub.chapters.length} chapters · {total} resources
+                          </p>
+                          <div className={styles.cardFooter}>
+                            <span className={styles.link}>Start learning</span>
+                            <ChevronRight size={14} className={styles.rowArrow} />
                           </div>
                         </div>
-                        <h3 className={styles.cardTitle}>{sub.name}</h3>
-                        <p className={styles.cardDesc}>
-                          {sub.chapters.length} chapters · {total} resources
-                        </p>
-                        <div className={styles.cardFooter}>
-                          <span className={styles.link}>Start learning</span>
-                          <ChevronRight size={14} className={styles.rowArrow} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
+                )}
               </>
             )}
 
