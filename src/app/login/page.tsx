@@ -156,7 +156,6 @@ export default function LoginPage() {
               shape="rectangular"
               text="continue_with"
               logo_alignment="center"
-              width="400"
             />
           </GoogleOAuthProvider>
         </div>

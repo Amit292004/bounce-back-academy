@@ -169,7 +169,6 @@ export default function RegisterPage() {
               shape="rectangular"
               text="signup_with"
               logo_alignment="center"
-              width="400"
             />
           </GoogleOAuthProvider>
         </div>

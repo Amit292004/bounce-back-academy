@@ -124,7 +124,6 @@ export default function AdminLogin() {
                   onSuccess={handleGoogleSuccess}
                   onError={() => setError('Google Sign In failed')}
                   text="continue_with"
-                  width="100%"
                 />
               </GoogleOAuthProvider>
             </div>
