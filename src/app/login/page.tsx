@@ -151,7 +151,7 @@ export default function LoginPage() {
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => setError('Google Sign In failed')}
-              theme="filled_black"
+              theme="outline"
               size="large"
               shape="rectangular"
               text="continue_with"

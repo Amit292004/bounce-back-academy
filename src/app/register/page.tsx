@@ -164,7 +164,7 @@ export default function RegisterPage() {
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => setError('Google Sign Up failed')}
-              theme="filled_black"
+              theme="outline"
               size="large"
               shape="rectangular"
               text="signup_with"
