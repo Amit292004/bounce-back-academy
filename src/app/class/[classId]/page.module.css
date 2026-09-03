@@ -285,13 +285,13 @@
   font-size: 0.8rem;
   font-weight: 700;
   font-family: 'Inter', sans-serif;
-  color: white;
+  color: var(--primary-foreground);
   background: var(--primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease;
 }
 
@@ -1356,7 +1356,7 @@
   height: 36px;
   border-radius: 10px;
   background: var(--primary);
-  color: white;
+  color: var(--primary-foreground);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1407,7 +1407,7 @@
 .aiMsgUser {
   align-self: flex-end;
   background: var(--primary);
-  color: white;
+  color: var(--primary-foreground);
   border-radius: 12px 12px 4px 12px;
 }
 
@@ -1460,7 +1460,7 @@
   height: 44px;
   border-radius: 10px;
   background: var(--primary);
-  color: white;
+  color: var(--primary-foreground);
   border: none;
   display: flex;
   align-items: center;
@@ -1613,7 +1613,7 @@
 
 .enrollBtn {
   background: var(--primary);
-  color: white;
+  color: var(--primary-foreground);
   border: none;
   border-radius: 8px;
   padding: 0.55rem 1.1rem;
@@ -1698,7 +1698,7 @@
 
 .startQuizBtn {
   background: var(--primary);
-  color: white;
+  color: var(--primary-foreground);
   border: none;
   border-radius: 8px;
   padding: 0.48rem 1rem;
@@ -2382,7 +2382,7 @@
   border-radius: 10px;
   border: none;
   background: var(--primary);
-  color: white;
+  color: var(--primary-foreground);
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
@@ -2559,7 +2559,7 @@
   border-radius: 10px;
   border: none;
   background: var(--primary);
-  color: white;
+  color: var(--primary-foreground);
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
