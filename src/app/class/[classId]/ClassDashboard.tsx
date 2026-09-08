@@ -707,7 +707,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
             <section className={styles.section}>
               <div className={styles.sectionHeader}>
                 <h3 className={styles.sectionTitle}>Your Subjects</h3>
-                {subjects.length > 0 && (
+                {subjects.length > 4 && (
                   <button className={styles.seeAllBtn} onClick={() => goToTab("study")}>
                     See All
                   </button>

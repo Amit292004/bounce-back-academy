@@ -32,6 +32,22 @@ export default function Error({
       <p style={{ opacity: 0.7, maxWidth: '400px' }}>
         An unexpected error occurred. You can try again or go back to the home page.
       </p>
+      {process.env.NODE_ENV !== 'production' && error?.message && (
+        <pre style={{
+          padding: '1rem',
+          background: 'rgba(239, 68, 68, 0.1)',
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          borderRadius: '8px',
+          color: '#ef4444',
+          fontSize: '0.8rem',
+          maxWidth: '600px',
+          textAlign: 'left',
+          whiteSpace: 'pre-wrap',
+          overflowX: 'auto',
+        }}>
+          {error.message}
+        </pre>
+      )}
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
         <button onClick={reset} className="btn-primary">
           Try again

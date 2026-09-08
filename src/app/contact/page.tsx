@@ -28,27 +28,29 @@ export default function ContactPage() {
             <p className={styles.subtitle}>We&apos;d love to hear from you</p>
           </div>
 
-          <div className={styles.profileCard}>
+          <div className={styles.profileCard} itemScope itemType="https://schema.org/Person">
             <div className={styles.profileImageContainer}>
               <div className={styles.profileImageInner}>
                 <Image
                   src="/amit-sharma.jpg"
-                  alt="Amit Sharma"
+                  alt="Amit Sharma - Founder, Bounce Back Academy"
                   width={120}
                   height={120}
                   className={styles.profileImage}
+                  itemProp="image"
+                  priority
                 />
               </div>
             </div>
-            <h2 className={styles.profileName}>Amit Sharma</h2>
-            <p className={styles.profileRole}>Founder, Bounce Back Academy</p>
+            <h2 className={styles.profileName} itemProp="name">Amit Sharma</h2>
+            <p className={styles.profileRole} itemProp="jobTitle">Founder, Bounce Back Academy</p>
 
             <div className={styles.contactDetails}>
-              <a href="tel:7628024274" className={styles.contactPill}>
+              <a href="tel:7628024274" className={styles.contactPill} itemProp="telephone">
                 <FaPhoneAlt className={styles.phoneIcon} />
                 <span>7628024274</span>
               </a>
-              <a href="mailto:bouncebackacademy.edu@gmail.com" className={styles.contactPill}>
+              <a href="mailto:bouncebackacademy.edu@gmail.com" className={styles.contactPill} itemProp="email">
                 <FaEnvelope className={styles.emailIcon} />
                 <span>bouncebackacademy.edu@gmail.com</span>
               </a>
@@ -86,6 +88,37 @@ export default function ContactPage() {
             ))}
           </div>
 
+        </div>
+
+        {/* SECTION 3: FAQ & QUICK INFO FOR SEARCH ENGINES */}
+        <div className={styles.section}>
+          <h3 className={styles.connectTitle}>Frequently Asked Questions</h3>
+          <div className={styles.faqList}>
+            <div className={styles.faqItem}>
+              <h4 className={styles.faqQuestion}>Who is the founder of Bounce Back Academy?</h4>
+              <p className={styles.faqAnswer}>
+                <strong>Amit Sharma</strong> is the Founder and Educator at Bounce Back Academy, delivering specialized NBSE coaching and study material for Classes 8 to 12.
+              </p>
+            </div>
+            <div className={styles.faqItem}>
+              <h4 className={styles.faqQuestion}>What is the contact number of Amit Sharma (Founder)?</h4>
+              <p className={styles.faqAnswer}>
+                You can call or WhatsApp Amit Sharma directly at <a href="tel:7628024274" className={styles.textLink}>+91 7628024274</a> for inquiries and admissions.
+              </p>
+            </div>
+            <div className={styles.faqItem}>
+              <h4 className={styles.faqQuestion}>What is the official email address?</h4>
+              <p className={styles.faqAnswer}>
+                You can email us at <a href="mailto:bouncebackacademy.edu@gmail.com" className={styles.textLink}>bouncebackacademy.edu@gmail.com</a>.
+              </p>
+            </div>
+            <div className={styles.faqItem}>
+              <h4 className={styles.faqQuestion}>What classes and subjects are taught?</h4>
+              <p className={styles.faqAnswer}>
+                Online classes are conducted for <strong>Maths</strong> and <strong>Science</strong> for NBSE Classes 8, 9, 10, 11, and 12, along with exam preparation for JEE, NEET, and CUET.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

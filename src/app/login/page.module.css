@@ -3,18 +3,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-  background: radial-gradient(ellipse at top, rgba(236, 72, 153, 0.12), transparent 60%), var(--background);
+  padding: 2.5rem 1.25rem;
+  background: radial-gradient(ellipse at 50% 12%, rgba(99, 102, 241, 0.12) 0%, rgba(37, 99, 235, 0.05) 45%, transparent 70%), #090a0f;
   position: relative;
   overflow: hidden;
+}
+
+:global(html.light) .container,
+:global(html:not(.dark)) .container {
+  background: radial-gradient(ellipse at 50% 12%, rgba(99, 102, 241, 0.07) 0%, rgba(59, 130, 246, 0.03) 45%, transparent 70%), #f8fafc;
 }
 
 .container::before {
   content: '';
   position: absolute;
-  width: 800px;
-  height: 800px;
-  background: radial-gradient(circle, rgba(236, 72, 153, 0.04) 0%, transparent 60%);
+  width: 650px;
+  height: 650px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 65%);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -22,162 +27,438 @@
   z-index: 0;
 }
 
+/* =========================================================
+   CARD: Glowing White Border & Deep Glass (Matching Banner)
+   ========================================================= */
 .card {
   width: 100%;
-  max-width: 420px;
-  padding: 3rem 2.5rem;
+  max-width: 425px;
+  padding: 2.35rem 2.15rem;
   border-radius: 24px;
-  background: rgba(15, 15, 15, 0.6);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  background: rgba(18, 20, 28, 0.94);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    0 0 24px -2px rgba(255, 255, 255, 0.2),
+    0 0 50px -10px rgba(99, 102, 241, 0.15),
+    0 28px 65px -16px rgba(0, 0, 0, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
   position: relative;
   z-index: 1;
 }
 
+:global(html.light) .card,
 :global(html:not(.dark)) .card {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 23, 42, 0.18);
+  box-shadow: 
+    0 0 0 1px rgba(15, 23, 42, 0.04),
+    0 16px 40px -8px rgba(15, 23, 42, 0.1),
+    0 32px 64px -16px rgba(79, 70, 229, 0.08);
 }
 
+/* =========================================================
+   LOGO & BRANDING HEADER
+   ========================================================= */
 .header {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.75rem;
 }
 
-.header h1 {
-  font-size: clamp(2rem, 6vw, 2.5rem);
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
-  background: linear-gradient(135deg, #ffffff 20%, #ec4899);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  word-break: break-word;
+.logoWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.1rem;
 }
 
-:global(html:not(.dark)) .header h1 {
-  background: linear-gradient(135deg, #111111 20%, #ec4899);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4);
+  text-decoration: none;
 }
 
-.header p {
-  color: var(--foreground);
-  opacity: 0.6;
-  font-size: 0.95rem;
-  font-weight: 500;
+.logoLink:hover {
+  transform: translateY(-2px) scale(1.04);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 12px 28px -4px rgba(99, 102, 241, 0.35);
 }
 
+:global(html.light) .logoLink,
+:global(html:not(.dark)) .logoLink {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+:global(html.light) .logoLink:hover,
+:global(html:not(.dark)) .logoLink:hover {
+  box-shadow: 0 12px 28px -4px rgba(79, 70, 229, 0.2);
+  border-color: rgba(79, 70, 229, 0.3);
+}
+
+.logoImg {
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  object-fit: cover;
+  display: block;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 750;
+  margin: 0 0 0.4rem 0;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  color: #ffffff;
+}
+
+:global(html:not(.dark)) .title {
+  color: #0f172a;
+}
+
+.subtitle {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.45;
+  margin: 0;
+}
+
+:global(html:not(.dark)) .subtitle {
+  color: #64748b;
+}
+
+/* =========================================================
+   FORM & FIELDS
+   ========================================================= */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 0.95rem;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
 .field label {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: var(--foreground);
-  opacity: 0.7;
-  padding-left: 0.25rem;
+  color: #e2e8f0;
+  letter-spacing: -0.01em;
+  padding-left: 0.15rem;
 }
 
-.input {
+:global(html:not(.dark)) .field label {
+  color: #334155;
+}
+
+.inputWrapper {
+  position: relative;
   width: 100%;
-  padding: 0.875rem 1rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  color: var(--foreground);
-  font-size: 0.95rem;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  outline: none;
+  display: flex;
+  align-items: center;
 }
 
-:global(html:not(.dark)) .input {
-  background: rgba(0, 0, 0, 0.02);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.input:focus {
-  border-color: rgba(236, 72, 153, 0.5);
-  background: rgba(236, 72, 153, 0.02);
-  box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1);
-}
-
-.input::placeholder {
-  opacity: 0.3;
-}
-
-.submitBtn {
-  width: 100%;
-  padding: 0.875rem;
-  background: linear-gradient(135deg, #ec4899, #be185d);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
-  margin-top: 0.5rem;
+.inputIcon {
+  position: absolute;
+  left: 0.95rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+  transition: color 0.15s ease;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.inputWrapper:focus-within .inputIcon {
+  color: #4f46e5;
+}
+
+/* =========================================================
+   INPUT BOXES: Ceramic White in Dark Mode
+   ========================================================= */
+.input {
+  width: 100%;
+  height: 46px;
+  padding: 0 1rem;
+  background-color: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  color: #0f172a;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 46px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.inputWithIcon {
+  padding-left: 2.65rem;
+}
+
+.input::placeholder {
+  color: #64748b;
+  opacity: 1;
+  font-weight: 400;
+  font-size: 0.875rem;
+}
+
+.input:hover:not(:focus) {
+  border-color: #94a3b8;
+}
+
+.input:focus {
+  border-color: #4f46e5;
+  background-color: #ffffff;
+  box-shadow: 
+    0 0 0 3.5px rgba(99, 102, 241, 0.2),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Fix Autofill in Dark Mode (Crisp White Background + Dark Text) */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #0f172a !important;
+  caret-color: #0f172a !important;
+  border-color: #4f46e5 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Custom Select Dropdown in Dark Mode */
+select.input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat !important;
+  background-position: calc(100% - 0.95rem) center !important;
+  background-size: 14px 14px !important;
+  padding-right: 2.25rem;
+  cursor: pointer;
+}
+
+select.input option {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+/* Password Toggle Icon */
+.inputHasToggle {
+  padding-right: 2.5rem;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  z-index: 2;
+}
+
+.passwordToggle:hover {
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* =========================================================
+   VICE VERSA: Dark Input Box in Light Mode
+   ========================================================= */
+:global(html.light) .input,
+:global(html:not(.dark)) .input {
+  background-color: #0f172a;
+  border: 1.5px solid #334155;
+  border-radius: 12px;
+  color: #f8fafc;
+  font-size: 0.9rem;
+  height: 46px;
+  line-height: 46px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+:global(html.light) .input::placeholder,
+:global(html:not(.dark)) .input::placeholder {
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+:global(html.light) .input:hover:not(:focus),
+:global(html:not(.dark)) .input:hover:not(:focus) {
+  border-color: #475569;
+}
+
+:global(html.light) .input:focus,
+:global(html:not(.dark)) .input:focus {
+  border-color: #6366f1;
+  background-color: #0f172a;
+  box-shadow: 
+    0 0 0 3.5px rgba(99, 102, 241, 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Fix Autofill in Light Mode (Dark Background + Light Text) */
+:global(html.light) .input:-webkit-autofill,
+:global(html:not(.dark)) .input:-webkit-autofill,
+:global(html.light) .input:-webkit-autofill:hover,
+:global(html:not(.dark)) .input:-webkit-autofill:hover,
+:global(html.light) .input:-webkit-autofill:focus,
+:global(html:not(.dark)) .input:-webkit-autofill:focus,
+:global(html.light) .input:-webkit-autofill:active,
+:global(html:not(.dark)) .input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #0f172a inset !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  caret-color: #f8fafc !important;
+  border-color: #6366f1 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+:global(html.light) select.input,
+:global(html:not(.dark)) select.input {
+  background-color: #0f172a;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat !important;
+  background-position: calc(100% - 0.95rem) center !important;
+  background-size: 14px 14px !important;
+}
+
+:global(html.light) select.input option,
+:global(html:not(.dark)) select.input option {
+  background-color: #0f172a;
+  color: #f8fafc;
+}
+
+:global(html.light) .passwordToggle,
+:global(html:not(.dark)) .passwordToggle {
+  color: #94a3b8;
+}
+
+:global(html.light) .passwordToggle:hover,
+:global(html:not(.dark)) .passwordToggle:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* =========================================================
+   PRIMARY ACTION BUTTON: Electric Indigo-Blue CTA
+   ========================================================= */
+.submitBtn {
+  width: 100%;
+  height: 46px;
+  padding: 0 1.25rem;
+  background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 50%, #2563eb 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 
+    0 4px 16px rgba(79, 70, 229, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.submitBtn svg {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .submitBtn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(236, 72, 153, 0.4);
-  filter: brightness(1.1);
+  transform: translateY(-1.5px);
+  background: linear-gradient(135deg, #4338ca 0%, #2563eb 50%, #1d4ed8 100%);
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.45);
+  filter: brightness(1.03);
+}
+
+.submitBtn:hover:not(:disabled) svg {
+  transform: translateX(3px);
+}
+
+.submitBtn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
 }
 
 .submitBtn:disabled {
-  opacity: 0.7;
+  opacity: 0.65;
   cursor: not-allowed;
   transform: none;
 }
 
+/* =========================================================
+   DIVIDER & GOOGLE BUTTON
+   ========================================================= */
 .divider {
   display: flex;
   align-items: center;
-  margin: 2rem 0;
-  color: var(--foreground);
-  opacity: 0.3;
-  font-size: 0.85rem;
+  margin: 1.25rem 0;
+  color: #64748b;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+:global(html:not(.dark)) .divider {
+  color: #94a3b8;
 }
 
 .divider::before,
 .divider::after {
   content: '';
   flex: 1;
-  border-bottom: 1px solid currentColor;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+:global(html:not(.dark)) .divider::before,
+:global(html:not(.dark)) .divider::after {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .divider span {
-  padding: 0 1rem;
+  padding: 0 0.85rem;
 }
 
 .googleWrapper {
   display: flex;
   justify-content: center;
   width: 100%;
-  transition: transform 0.2s ease;
+  transition: transform 0.15s ease;
 }
 
 .googleWrapper:hover {
@@ -185,38 +466,59 @@
 }
 
 .error {
-  color: #ef4444;
-  font-size: 0.85rem;
-  padding: 0.75rem;
+  color: #f87171;
+  font-size: 0.825rem;
+  padding: 0.6rem 0.85rem;
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: 12px;
+  border-radius: 8px;
   font-weight: 500;
   text-align: center;
 }
 
+:global(html:not(.dark)) .error {
+  color: #dc2626;
+  background: rgba(239, 68, 68, 0.06);
+  border-color: rgba(239, 68, 68, 0.18);
+}
+
 .footer {
   text-align: center;
-  margin-top: 2.5rem;
-  color: var(--foreground);
-  opacity: 0.6;
-  font-size: 0.9rem;
+  margin-top: 1.4rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-weight: 450;
+}
+
+:global(html:not(.dark)) .footer {
+  color: #64748b;
 }
 
 .footer a {
-  color: #ec4899;
+  color: #60a5fa;
   font-weight: 600;
-  opacity: 1;
-  transition: opacity 0.2s ease;
+  margin-left: 0.25rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
 }
 
 .footer a:hover {
-  opacity: 0.8;
+  color: #93c5fd;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+:global(html:not(.dark)) .footer a {
+  color: #2563eb;
+}
+
+:global(html:not(.dark)) .footer a:hover {
+  color: #1d4ed8;
 }
 
 @media (max-width: 480px) {
   .card {
-    padding: 2.5rem 1.5rem;
-    border-radius: 20px;
+    padding: 1.75rem 1.25rem;
+    border-radius: 18px;
   }
 }

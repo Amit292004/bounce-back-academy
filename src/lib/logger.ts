@@ -27,12 +27,28 @@ function format(level: string, msg: unknown, extra?: unknown): string {
 
 export const logger = {
   error(msg: unknown, extra?: unknown) {
-    process.stdout.write(format('ERROR', msg, extra))
+    if (typeof window !== 'undefined' || !process?.stdout?.write) {
+      console.error(formatArg(msg), extra !== undefined ? extra : '');
+    } else {
+      process.stdout.write(format('ERROR', msg, extra));
+    }
   },
   warn(msg: unknown, extra?: unknown) {
-    if (isDev) process.stdout.write(format('WARN ', msg, extra))
+    if (isDev) {
+      if (typeof window !== 'undefined' || !process?.stdout?.write) {
+        console.warn(formatArg(msg), extra !== undefined ? extra : '');
+      } else {
+        process.stdout.write(format('WARN ', msg, extra));
+      }
+    }
   },
   info(msg: unknown, extra?: unknown) {
-    if (isDev) process.stdout.write(format('INFO ', msg, extra))
+    if (isDev) {
+      if (typeof window !== 'undefined' || !process?.stdout?.write) {
+        console.info(formatArg(msg), extra !== undefined ? extra : '');
+      } else {
+        process.stdout.write(format('INFO ', msg, extra));
+      }
+    }
   },
 }

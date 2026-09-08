@@ -72,6 +72,7 @@ export default function RootLayout({
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
+      "@id": "https://bouncebackacademy.vercel.app/#website",
       "name": "Bounce Back Academy",
       "alternateName": ["Bounce Back", "BBA"],
       "url": "https://bouncebackacademy.vercel.app/",
@@ -87,20 +88,15 @@ export default function RootLayout({
     {
       "@context": "https://schema.org",
       "@type": "EducationalOrganization",
+      "@id": "https://bouncebackacademy.vercel.app/#organization",
       "name": "Bounce Back Academy",
+      "alternateName": ["Bounce Back", "BBA"],
       "url": "https://bouncebackacademy.vercel.app/",
       "logo": "https://bouncebackacademy.vercel.app/logo.png",
+      "image": "https://bouncebackacademy.vercel.app/logo.png",
       "description": "Free NBSE study material for Classes 8 to 12, CUET, JEE & NEET. Download question papers, notes, and watch video lectures by Amit Sharma.",
       "founder": {
-        "@type": "Person",
-        "name": "Amit Sharma",
-        "jobTitle": "Founder & Educator",
-        "url": "https://bouncebackacademy.vercel.app/",
-        "sameAs": [
-          "https://www.instagram.com/bouncebackacdemy",
-          "https://www.linkedin.com/in/amit-sharma-142a26359/",
-          "https://t.me/amit292004"
-        ]
+        "@id": "https://bouncebackacademy.vercel.app/#founder"
       },
       "contactPoint": {
         "@type": "ContactPoint",
@@ -110,9 +106,34 @@ export default function RootLayout({
         "availableLanguage": ["English", "Hindi"]
       },
       "sameAs": [
+        "https://wa.me/917628024274",
         "https://www.instagram.com/bouncebackacdemy",
         "https://www.youtube.com/@BounceBackAcademy",
-        "https://www.linkedin.com/in/amit-sharma-142a26359/"
+        "https://www.linkedin.com/in/amit-sharma-142a26359/",
+        "https://t.me/amit292004"
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "@id": "https://bouncebackacademy.vercel.app/#founder",
+      "name": "Amit Sharma",
+      "givenName": "Amit",
+      "familyName": "Sharma",
+      "jobTitle": "Founder & Educator",
+      "image": "https://bouncebackacademy.vercel.app/amit-sharma.jpg",
+      "telephone": "+91-7628024274",
+      "email": "bouncebackacademy.edu@gmail.com",
+      "url": "https://bouncebackacademy.vercel.app/contact",
+      "worksFor": {
+        "@id": "https://bouncebackacademy.vercel.app/#organization"
+      },
+      "sameAs": [
+        "https://wa.me/917628024274",
+        "https://www.instagram.com/bouncebackacdemy",
+        "https://www.youtube.com/@BounceBackAcademy",
+        "https://www.linkedin.com/in/amit-sharma-142a26359/",
+        "https://t.me/amit292004"
       ]
     }
   ]);

@@ -3,13 +3,16 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import Image from 'next/image';
+import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from '@react-oauth/google';
+import { Eye, EyeOff, User, GraduationCap, Mail, Phone, Lock, ArrowRight } from 'lucide-react';
 import styles from '../login/page.module.css';
 import { logger } from '@/lib/logger'
 
 export default function RegisterPage() {
   const router = useRouter();
   const [form, setForm] = useState({ name: '', className: '', email: '', mobile: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
@@ -26,11 +29,13 @@ export default function RegisterPage() {
 
     fetch('/api/admin/courses')
       .then(res => res.json())
-      .then(data => setCourses(data))
+      .then(data => {
+        if (Array.isArray(data)) setCourses(data);
+      })
       .catch(console.error);
   }, [router]);
 
-  const handleGoogleSuccess = async (credentialResponse: any) => {
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     setLoading(true);
     setError('');
     try {
@@ -104,54 +109,119 @@ export default function RegisterPage() {
     <div className={styles.container}>
       <div className={`glass-panel ${styles.card}`}>
         <div className={styles.header}>
-          <h1 className="text-gradient">Join Free</h1>
-          <p>Create your account to download materials</p>
+          <div className={styles.logoWrapper}>
+            <Link href="/" className={styles.logoLink} title="Bounce Back Academy">
+              <Image src="/logo.png" alt="Bounce Back Academy" width={48} height={48} className={styles.logoImg} priority />
+            </Link>
+          </div>
+          <h1 className={styles.title}>Create an account</h1>
+          <p className={styles.subtitle}>Sign up to access courses, past papers, and study materials</p>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.field}>
             <label htmlFor="name">Full Name</label>
-            <input id="name" name="name" type="text" placeholder="Your full name" value={form.name} onChange={handleChange} required className={styles.input} />
+            <div className={styles.inputWrapper}>
+              <span className={styles.inputIcon}><User size={16} /></span>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Your full name"
+                value={form.name}
+                onChange={handleChange}
+                required
+                className={`${styles.input} ${styles.inputWithIcon}`}
+              />
+            </div>
           </div>
 
           <div className={styles.field}>
             <label htmlFor="className">Your Class</label>
-            <select
-              id="className"
-              name="className"
-              value={form.className}
-              onChange={handleChange}
-              required
-              className={styles.input}
-            >
-              <option value="" style={{ background: 'var(--background)', color: 'var(--foreground)' }}>Select class</option>
-              {courses.map(c => (
-                <option key={c.id} value={c.name} style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+            <div className={styles.inputWrapper}>
+              <span className={styles.inputIcon}><GraduationCap size={16} /></span>
+              <select
+                id="className"
+                name="className"
+                value={form.className}
+                onChange={handleChange}
+                required
+                className={`${styles.input} ${styles.inputWithIcon}`}
+              >
+                <option value="">Select class</option>
+                {Array.isArray(courses) && courses.map(c => (
+                  <option key={c.id} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className={styles.field}>
             <label htmlFor="email">Email Address</label>
-            <input id="email" name="email" type="email" placeholder="you@example.com" value={form.email} onChange={handleChange} required className={styles.input} />
+            <div className={styles.inputWrapper}>
+              <span className={styles.inputIcon}><Mail size={16} /></span>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={handleChange}
+                required
+                className={`${styles.input} ${styles.inputWithIcon}`}
+              />
+            </div>
           </div>
 
           <div className={styles.field}>
             <label htmlFor="mobile">Mobile Number</label>
-            <input id="mobile" name="mobile" type="tel" placeholder="10-digit mobile number" value={form.mobile} onChange={handleChange} required className={styles.input} />
+            <div className={styles.inputWrapper}>
+              <span className={styles.inputIcon}><Phone size={16} /></span>
+              <input
+                id="mobile"
+                name="mobile"
+                type="tel"
+                placeholder="10-digit mobile number"
+                value={form.mobile}
+                onChange={handleChange}
+                required
+                className={`${styles.input} ${styles.inputWithIcon}`}
+              />
+            </div>
           </div>
 
           <div className={styles.field}>
             <label htmlFor="password">Password</label>
-            <input id="password" name="password" type="password" placeholder="Min 6 characters" value={form.password} onChange={handleChange} required minLength={6} className={styles.input} />
+            <div className={styles.inputWrapper}>
+              <span className={styles.inputIcon}><Lock size={16} /></span>
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Min 6 characters"
+                value={form.password}
+                onChange={handleChange}
+                required
+                minLength={6}
+                className={`${styles.input} ${styles.inputWithIcon} ${styles.inputHasToggle}`}
+              />
+              <button
+                type="button"
+                className={styles.passwordToggle}
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           {error && <p className={styles.error}>{error}</p>}
 
           <button type="submit" className={styles.submitBtn} disabled={loading}>
-            {loading ? 'Creating account...' : 'Create Account'}
+            {loading ? 'Creating account...' : <>Create Account <ArrowRight size={16} /></>}
           </button>
         </form>
 
@@ -175,7 +245,7 @@ export default function RegisterPage() {
 
         <p className={styles.footer}>
           Already have an account?{' '}
-          <Link href="/login" className="text-gradient" style={{ fontWeight: 600 }}>
+          <Link href="/login" style={{ fontWeight: 600 }}>
             Sign in
           </Link>
         </p>
