@@ -639,13 +639,14 @@
 
 /* ── Subject Chips ── */
 .subjectChips {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 0.5rem;
-  flex-wrap: wrap;
 }
 
 .subjectChip {
-  display: inline-flex;
+  display: flex;
+  justify-content: center;
   align-items: center;
   gap: 0.5rem;
   padding: 0.38rem 0.85rem;
@@ -657,6 +658,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease;
+  text-align: center;
 }
 
 .subjectChip:hover {

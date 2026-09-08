@@ -719,7 +719,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                 </div>
               ) : (
                 <div className={styles.subjectChips}>
-                  {subjects.map(sub => {
+                  {subjects.slice(0, 4).map(sub => {
                     return (
                       <button
                         key={sub.id}
