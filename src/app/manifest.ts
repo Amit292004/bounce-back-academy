@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Free NBSE Study Material for Classes 8 to 12',
     start_url: '/',
     display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: '#171717',
+    background_color: '#0a0a0a',
+    theme_color: '#0a0a0a',
     icons: [
       {
         src: '/logo.png',

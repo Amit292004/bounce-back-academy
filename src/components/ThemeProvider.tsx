@@ -29,8 +29,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
     }
     
     localStorage.setItem('bba-theme', theme);

@@ -1,32 +1,32 @@
 :root {
-  --background: #fafafa;
-  --foreground: #111111;
-  --primary: #171717;
-  --primary-hover: #262626;
-  --primary-foreground: #ffffff;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --primary: #ededed;
+  --primary-hover: #d4d4d4;
+  --primary-foreground: #0a0a0a;
   --secondary: #ec4899;
-  --accent: #171717;
-  --surface: #ffffff;
-  --surface-card: #f5f5f5;
-  --surface-border: rgba(0, 0, 0, 0.15);
-  --surface-highlight: rgba(0, 0, 0, 0.04);
+  --accent: #ededed;
+  --surface: #141414;
+  --surface-card: #1a1a1a;
+  --surface-border: rgba(255, 255, 255, 0.14);
+  --surface-highlight: rgba(255, 255, 255, 0.04);
   --success: #10b981;
   --error: #ef4444;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
   --transition: all 0.2s ease;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-  --shadow-glow: 0 4px 14px rgba(0,0,0,0.1);
-  --shadow-glow-lg: 0 8px 30px rgba(0,0,0,0.12);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-glow: 0 4px 14px rgba(255,255,255,0.1);
+  --shadow-glow-lg: 0 8px 30px rgba(255,255,255,0.12);
   --gradient-primary: var(--primary);
   --gradient-success: linear-gradient(135deg, #10b981, #059669);
   --gradient-amber: linear-gradient(135deg, #f59e0b, #d97706);
   --gradient-rose: linear-gradient(135deg, #ec4899, #be185d);
   --gradient-cyan: linear-gradient(135deg, #06b6d4, #0891b2);
-  --skeleton-base: rgba(0,0,0,0.06);
-  --skeleton-shine: rgba(255,255,255,0.9);
+  --skeleton-base: rgba(255,255,255,0.06);
+  --skeleton-shine: rgba(255,255,255,0.11);
 }
 
 .dark {
@@ -46,17 +46,36 @@
   --skeleton-shine: rgba(255,255,255,0.11);
 }
 
+.light {
+  --background: #fafafa;
+  --foreground: #111111;
+  --primary: #171717;
+  --primary-hover: #262626;
+  --primary-foreground: #ffffff;
+  --accent: #171717;
+  --surface: #ffffff;
+  --surface-card: #f5f5f5;
+  --surface-border: rgba(0, 0, 0, 0.15);
+  --surface-highlight: rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-glow: 0 4px 14px rgba(0,0,0,0.1);
+  --shadow-glow-lg: 0 8px 30px rgba(0,0,0,0.12);
+  --skeleton-base: rgba(0,0,0,0.06);
+  --skeleton-shine: rgba(255,255,255,0.9);
+}
+
 
 html {
   height: 100%;
 }
 
-html.dark {
-  color-scheme: dark;
+html.light {
+  color-scheme: light;
 }
 
-html:not(.dark) {
-  color-scheme: light;
+html:not(.light) {
+  color-scheme: dark;
 }
 
 html,

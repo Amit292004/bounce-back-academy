@@ -183,7 +183,7 @@
 @media (max-width: 600px) {
   .classHeader {
     margin: 0.75rem auto 0.25rem;
-    width: calc(100% - 1rem);
+    width: calc(100% - 2rem);
     padding: 0.3rem 0.5rem;
   }
   .classHeaderLeft {
