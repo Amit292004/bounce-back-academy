@@ -1,10 +1,38 @@
 import { prisma } from "@/lib/prisma";
 import ClassDashboard from "./ClassDashboard";
+import type { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
 
 interface Props {
   params: Promise<{ classId: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { classId: rawClassId } = await params;
+  const classId = decodeURIComponent(rawClassId);
+  const isSpecial = ['CUET', 'JEE', 'NEET'].includes(classId.toUpperCase());
+  const displayName = isSpecial
+    ? classId.toUpperCase()
+    : classId.toLowerCase().startsWith('class')
+      ? classId
+      : `Class ${classId}`;
+
+  return {
+    title: `${displayName} NBSE Study Material, Notes & Question Papers`,
+    description: `Comprehensive free study material for ${displayName} NBSE students. Download question papers, chapter notes, watch video lectures, and practice quizzes.`,
+    alternates: {
+      canonical: `/class/${encodeURIComponent(classId)}`,
+    },
+    openGraph: {
+      title: `${displayName} NBSE Study Material | Bounce Back Academy`,
+      description: `Free notes, question papers, and video lectures for ${displayName}.`,
+      url: `/class/${encodeURIComponent(classId)}`,
+      siteName: 'Bounce Back Academy',
+      locale: 'en_IN',
+      type: 'website',
+    },
+  };
 }
 
 export default async function ClassHub({ params }: Props) {

@@ -21,9 +21,6 @@ export async function generateMetadata(): Promise<Metadata> {
     description: defaultDesc,
     applicationName: 'Bounce Back Academy',
     metadataBase: new URL("https://bouncebackacademy.vercel.app"),
-    alternates: {
-      canonical: "https://bouncebackacademy.vercel.app",
-    },
     openGraph: {
       title: "Bounce Back Academy",
       description: defaultDesc,

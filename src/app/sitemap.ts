@@ -7,12 +7,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = 'https://bouncebackacademy.vercel.app';
   const now = new Date();
 
-  // Fetch subjects and courses to create dynamic category URLs
-  let subjects: { id: string; name: string }[] = [];
+  // Fetch courses (classes) to create clean, dedicated class hub URLs
   let courses: { id: string; name: string }[] = [];
 
   try {
-    subjects = await prisma.subject.findMany({ select: { id: true, name: true } });
     courses = await prisma.course.findMany({ select: { id: true, name: true } });
   } catch (error) {
     logger.error("Error fetching data for sitemap:", error);
@@ -23,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: base,
       lastModified: now,
       changeFrequency: 'weekly',
-      priority: 1,
+      priority: 1.0,
     },
     {
       url: `${base}/notes`,
@@ -41,16 +39,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${base}/videos`,
       lastModified: now,
       changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${base}/lectures`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.8,
+      priority: 0.85,
     },
     {
       url: `${base}/quiz`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
+    {
+      url: `${base}/ask`,
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.8,
@@ -62,13 +60,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${base}/forum`,
+      url: `${base}/announcements`,
       lastModified: now,
       changeFrequency: 'daily',
       priority: 0.7,
     },
     {
-      url: `${base}/announcements`,
+      url: `${base}/forum`,
       lastModified: now,
       changeFrequency: 'daily',
       priority: 0.7,
@@ -86,55 +84,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     },
     {
-      url: `${base}/login`,
+      url: `${base}/privacy`,
       lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.4,
+      changeFrequency: 'yearly',
+      priority: 0.3,
     },
     {
-      url: `${base}/register`,
+      url: `${base}/terms`,
       lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.4,
+      changeFrequency: 'yearly',
+      priority: 0.3,
     },
   ];
 
-  // Dynamically add URLs for each Course (Class) in Notes, Papers, and Videos
+  // Dynamically add clean authoritative URLs for each Class Hub (Class 8, 9, 10, 11, 12, CUET, JEE, NEET)
   courses.forEach((course) => {
-    const courseEncoded = encodeURIComponent(course.name);
     sitemapEntries.push({
-      url: `${base}/notes?class=${courseEncoded}`,
+      url: `${base}/class/${encodeURIComponent(course.name)}`,
       lastModified: now,
       changeFrequency: 'weekly',
-      priority: 0.7,
-    });
-    sitemapEntries.push({
-      url: `${base}/papers?class=${courseEncoded}`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    });
-    sitemapEntries.push({
-      url: `${base}/videos?class=${courseEncoded}`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    });
-  });
-
-  // Dynamically add URLs for each Subject
-  subjects.forEach((subject) => {
-    sitemapEntries.push({
-      url: `${base}/notes?subject=${subject.id}`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.6,
-    });
-    sitemapEntries.push({
-      url: `${base}/papers?subject=${subject.id}`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.6,
+      priority: 0.85,
     });
   });
 

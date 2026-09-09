@@ -5,6 +5,9 @@ import styles from './page.module.css';
 export const metadata: Metadata = {
   title: 'Terms of Use',
   description: 'Terms of Use for Bounce Back Academy. Read the terms and conditions for using our platform.',
+  alternates: {
+    canonical: '/terms',
+  },
 };
 
 export default function TermsOfUsePage() {

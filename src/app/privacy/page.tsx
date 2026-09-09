@@ -5,6 +5,9 @@ import styles from './page.module.css';
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'Privacy Policy for Bounce Back Academy. Read how we protect and manage your data.',
+  alternates: {
+    canonical: '/privacy',
+  },
 };
 
 export default function PrivacyPolicyPage() {

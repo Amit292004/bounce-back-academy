@@ -12,6 +12,13 @@ import { Megaphone } from 'lucide-react';
 import styles from './page.module.css';
 import React from 'react';
 import { logger } from '@/lib/logger'
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: '/',
+  },
+};
 
 export const revalidate = 60;
 
