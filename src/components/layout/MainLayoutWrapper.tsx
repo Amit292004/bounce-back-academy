@@ -15,7 +15,7 @@ export default function MainLayoutWrapper({ children }: { children: React.ReactN
   const isAuthRoute = pathname === '/login' || pathname === '/register';
   
   const hideLayout = isAdminRoute || isAskRoute;
-  const showGlobalBottomNav = !isAdminRoute && !isAuthRoute;
+  const showGlobalBottomNav = !isAdminRoute && !isAuthRoute && !isAskRoute;
 
   useEffect(() => {
     // Generate or get session ID for real-time tracking

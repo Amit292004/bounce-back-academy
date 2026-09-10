@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 260" width="100%" height="100%">
+  <defs>
+    <linearGradient id="lockup-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF385C"/>
+      <stop offset="50%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="text-accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="960" height="260" rx="32" fill="#090A0F"/>
+
+  <!-- Logo Mark on the left (180x180 box) -->
+  <g transform="translate(45, 40)">
+    <!-- Icon Background Squircle -->
+    <rect width="180" height="180" rx="44" fill="#13151F" stroke="#23263B" stroke-width="2"/>
+    
+    <!-- Scaled Kinetic Rebound SaaS Mark -->
+    <g transform="translate(30, 25) scale(0.27)">
+      <path d="M 80 80 L 80 340 C 80 380, 115 410, 160 410 C 195 410, 225 385, 240 355 L 360 110" 
+            fill="none" stroke="url(#lockup-grad)" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 295 90 L 370 95 L 375 170" 
+            fill="none" stroke="#06B6D4" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 80 80 L 205 80 C 255 80, 285 110, 285 155 C 285 200, 255 230, 205 230 L 105 230" 
+            fill="none" stroke="url(#lockup-grad)" stroke-width="34" stroke-linecap="round"/>
+      <path d="M 160 230 L 220 230 C 270 230, 300 260, 300 305 C 300 340, 275 365, 235 365" 
+            fill="none" stroke="#06B6D4" stroke-width="30" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- Typography: Modern Geometric Grotesque SaaS Styling -->
+  <g transform="translate(265, 115)">
+    <!-- Primary Title -->
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Geist', 'Inter', 'Segoe UI', sans-serif" 
+          font-size="54" font-weight="800" fill="#FFFFFF" letter-spacing="-1.5">
+      Bounce<tspan fill="url(#text-accent)">Back</tspan>
+    </text>
+    
+    <!-- Subtitle / Academy with tracking -->
+    <text x="4" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Geist', 'Inter', 'Segoe UI', sans-serif" 
+          font-size="22" font-weight="600" fill="#94A3B8" letter-spacing="8">
+      ACADEMY
+    </text>
+    
+    <!-- SaaS Pill Badge: AI PLATFORM -->
+    <rect x="235" y="24" width="130" height="26" rx="6" fill="#8B5CF6" fill-opacity="0.16" stroke="#8B5CF6" stroke-opacity="0.4" stroke-width="1"/>
+    <text x="300" y="41" font-family="-apple-system, BlinkMacSystemFont, 'Geist', 'Inter', sans-serif" 
+          font-size="11" font-weight="700" fill="#C4B5FD" letter-spacing="1.5" text-anchor="middle">
+      EDTECH SaaS
+    </text>
+  </g>
+</svg>

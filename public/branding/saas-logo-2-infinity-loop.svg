@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="ib-grad1" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="60%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="ib-grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EC4899"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="ib-grad3" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="512" height="512" rx="112" fill="#090A0F"/>
+  
+  <!-- Minimalist SaaS Geometric Mark -->
+  <g transform="translate(256, 256) rotate(-15) translate(-256, -256)">
+    <!-- Base Rebound Arch (Lower Loop) -->
+    <path d="M 170 330 C 170 270, 220 225, 280 225 C 340 225, 390 270, 390 330 C 390 390, 340 435, 280 435 C 220 435, 170 390, 170 330 Z" 
+          fill="none" stroke="url(#ib-grad1)" stroke-width="48" stroke-linecap="round"/>
+
+    <!-- Rising Apex Loop (Upper Loop of 'B') -->
+    <path d="M 210 185 C 210 135, 250 95, 300 95 C 350 95, 390 135, 390 185 C 390 235, 350 275, 300 275 C 250 275, 210 235, 210 185 Z" 
+          fill="none" stroke="url(#ib-grad2)" stroke-width="44" stroke-linecap="round"/>
+
+    <!-- Kinetic Impulse Arrowhead / Rocket Notch -->
+    <polygon points="390,75 425,140 355,140" fill="#06B6D4"/>
+    
+    <!-- Central Spine Connection -->
+    <line x1="170" y1="185" x2="170" y2="340" stroke="url(#ib-grad1)" stroke-width="48" stroke-linecap="round"/>
+  </g>
+</svg>

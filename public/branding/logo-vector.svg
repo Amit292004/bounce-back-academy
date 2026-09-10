@@ -1,0 +1,71 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Background Glow -->
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#0A0A0F" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Main Gradient Coral to Cyan -->
+    <linearGradient id="bounceGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF416C" />
+      <stop offset="45%" stop-color="#8B5CF6" />
+      <stop offset="85%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+
+    <!-- Wing & Secondary Arc Gradient -->
+    <linearGradient id="wingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF5E62" />
+      <stop offset="50%" stop-color="#F43F5E" />
+      <stop offset="100%" stop-color="#8B5CF6" />
+    </linearGradient>
+
+    <!-- Arrow Gradient -->
+    <linearGradient id="arrowGrad" x1="20%" y1="100%" x2="80%" y2="0%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="50%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#67E8F9" />
+    </linearGradient>
+
+    <!-- Drop Shadow / Neon Glow -->
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#8B5CF6" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Dark Canvas Base -->
+  <rect width="500" height="500" rx="100" fill="#0A0A0F" />
+  <circle cx="250" cy="250" r="220" fill="url(#bgGlow)" />
+
+  <!-- The "Bounce" Ground Wave/Spring (Dynamic Rebound Base) -->
+  <path d="M 110 370 C 160 370, 190 395, 235 395 C 275 395, 305 375, 380 375" 
+        stroke="url(#bounceGrad)" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.4" />
+  <ellipse cx="235" cy="395" rx="35" ry="6" fill="#FF416C" opacity="0.3" filter="url(#neonGlow)" />
+
+  <!-- Logo Mark: The Stylized 'B' + Kinetic Rebound Trajectory -->
+  <g filter="url(#softShadow)">
+    <!-- Back Wing / Upper Arc of the 'B' -->
+    <path d="M 180 380 C 145 340, 130 260, 175 190 C 215 125, 310 115, 350 170 C 375 205, 360 250, 310 270" 
+          fill="none" stroke="url(#wingGrad)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Inner Core Loop forming the lower loop of 'B' -->
+    <path d="M 230 265 C 285 265, 335 295, 335 340 C 335 375, 300 395, 250 395 C 200 395, 170 370, 160 340" 
+          fill="none" stroke="url(#bounceGrad)" stroke-width="20" stroke-linecap="round" />
+
+    <!-- The Kinetic Soaring Vector / Arrow Launching from the Rebound Point -->
+    <path d="M 175 375 L 355 135" 
+          stroke="url(#arrowGrad)" stroke-width="24" stroke-linecap="round" filter="url(#neonGlow)" />
+    
+    <!-- Arrowhead pointing up and to the right (Momentum / Breakthrough) -->
+    <polygon points="355,100 385,155 325,145" fill="#38BDF8" filter="url(#neonGlow)" />
+  </g>
+
+  <!-- Modern Academic / Star Accent (Resilience Apex) -->
+  <circle cx="370" cy="115" r="4" fill="#FFFFFF" filter="url(#neonGlow)" />
+  <circle cx="160" cy="180" r="3" fill="#FF416C" filter="url(#neonGlow)" />
+</svg>
