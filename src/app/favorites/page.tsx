@@ -14,6 +14,7 @@ import {
   Trophy
 } from 'lucide-react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import InteractionButtons from '@/components/InteractionButtons';
 import { logger } from '@/lib/logger';
 import styles from './page.module.css';
@@ -107,11 +108,11 @@ export default function FavoritesPage() {
   const hasAnyFavorites = videosCount > 0 || notesCount > 0 || papersCount > 0 || quizzesCount > 0;
 
   const tabsList = [
-    { id: 'all' as const, label: 'All', icon: <Bookmark size={14} /> },
-    { id: 'videos' as const, label: `Videos (${videosCount})`, icon: <VideoIcon size={14} /> },
-    { id: 'notes' as const, label: `Notes (${notesCount})`, icon: <FileText size={14} /> },
-    { id: 'papers' as const, label: `Papers (${papersCount})`, icon: <BookOpen size={14} /> },
-    { id: 'quizzes' as const, label: `Quizzes (${quizzesCount})`, icon: <Trophy size={14} /> },
+    { id: 'all' as const, label: 'All', icon: Bookmark, count: null },
+    { id: 'videos' as const, label: 'Videos', icon: VideoIcon, count: videosCount },
+    { id: 'notes' as const, label: 'Notes', icon: FileText, count: notesCount },
+    { id: 'papers' as const, label: 'Papers', icon: BookOpen, count: papersCount },
+    { id: 'quizzes' as const, label: 'Quizzes', icon: Trophy, count: quizzesCount },
   ];
 
   // Helper to determine if a section should render based on activeTab
@@ -139,17 +140,36 @@ export default function FavoritesPage() {
             </Link>
             <span className={styles.classHeaderTitle}>My Favorites</span>
           </div>
-          <nav className={styles.classHeaderTabs}>
-            {tabsList.map(tab => (
-              <button
-                key={tab.id}
-                className={`${styles.classTabBtn} ${activeTab === tab.id ? styles.classTabBtnActive : ""}`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                {tab.icon}
-                <span>{tab.label}</span>
-              </button>
-            ))}
+          <nav className={styles.classHeaderTabs} aria-label="Filter favorites by type">
+            {tabsList.map(tab => {
+              const isActive = activeTab === tab.id;
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  className={`${styles.classTabBtn} ${isActive ? styles.classTabBtnActive : ""}`}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeFavoriteTabPill"
+                      className={styles.activePillIndicator}
+                      transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                    />
+                  )}
+                  <span className={styles.tabBtnContent}>
+                    <Icon size={14} className={styles.tabIcon} />
+                    <span>{tab.label}</span>
+                    {typeof tab.count === 'number' && tab.count > 0 && (
+                      <span className={`${styles.countBadge} ${isActive ? styles.countBadgeActive : ""}`}>
+                        {tab.count}
+                      </span>
+                    )}
+                  </span>
+                </button>
+              );
+            })}
           </nav>
         </div>
       </div>

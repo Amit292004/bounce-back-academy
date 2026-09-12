@@ -1,6 +1,5 @@
 import { MetadataRoute } from 'next';
 
-// Fix #23: Ensure /admin/* and /api/* are disallowed for crawlers
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
@@ -11,10 +10,13 @@ export default function robots(): MetadataRoute.Robots {
         '/api/',
         '/profile/',
         '/ad/',
+        '/favorites/',
+        '/payment/',
         '/verify/',
         '/verify-email/',
         '/login',
         '/register',
+        '/feedback/',
       ],
     },
     sitemap: 'https://bouncebackacademy.vercel.app/sitemap.xml',
