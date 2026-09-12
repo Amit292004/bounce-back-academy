@@ -27,20 +27,20 @@ interface Subject { id: string; name: string; }
 interface Course { id: string; name: string; }
 interface Chapter { id: string; name: string; number: number; className: string; subjectId: string; }
 
-function VideosContent() {
+function VideosContent({ initialVideos = [] }: { initialVideos?: Video[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [videos, setVideos] = useState<Video[]>(initialVideos);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(initialVideos.length === 0);
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('class') || '');
   const [selectedSubject, setSelectedSubject] = useState(searchParams.get('subject') || '');
   const [selectedChapter, setSelectedChapter] = useState(searchParams.get('chapter') || '');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authReady, setAuthReady] = useState(false);
+  const [authReady, setAuthReady] = useState(initialVideos.length > 0);
 
   const updateURL = (params: Record<string, string>) => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -343,10 +343,10 @@ function VideosContent() {
   );
 }
 
-export default function VideosClient() {
+export default function VideosClient({ initialVideos = [] }: { initialVideos?: Video[] }) {
   return (
     <Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', opacity: 0.6 }}>Loading page...</div>}>
-      <VideosContent />
+      <VideosContent initialVideos={initialVideos} />
     </Suspense>
   );
 }

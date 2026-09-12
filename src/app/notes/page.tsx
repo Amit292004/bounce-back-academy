@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
+import prisma from '@/lib/prisma';
 import NotesClient from './NotesClient';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Free NBSE Notes – Classes 8 to 12 | Bounce Back Academy',
@@ -15,6 +18,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function NotesPage() {
-  return <NotesClient />;
+export default async function NotesPage() {
+  let initialNotes: any[] = [];
+  try {
+    initialNotes = await prisma.note.findMany({
+      include: { subject: true, chapter: true },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+  } catch {
+    // DB unavailable during build — client will fetch on mount
+  }
+  return <NotesClient initialNotes={initialNotes} />;
 }

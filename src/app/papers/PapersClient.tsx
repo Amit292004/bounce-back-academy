@@ -72,17 +72,17 @@ function SkeletonCard() {
   );
 }
 
-function PapersContent() {
+function PapersContent({ initialPapers = [] }: { initialPapers?: Paper[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [papers, setPapers] = useState<Paper[]>([]);
+  const [papers, setPapers] = useState<Paper[]>(initialPapers);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [years, setYears] = useState<Year[]>([]);
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [mode, setMode] = useState<'year-wise' | 'chapter-wise'>('year-wise');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(initialPapers.length === 0);
   const [search, setSearch] = useState('');
 
   const [selectedClass,   setSelectedClass]   = useState(searchParams.get('class')   || '');
@@ -90,7 +90,7 @@ function PapersContent() {
   const [selectedYear,    setSelectedYear]    = useState(searchParams.get('year')    || '');
   const [selectedChapter, setSelectedChapter] = useState(searchParams.get('chapter') || '');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authReady,       setAuthReady]       = useState(false);
+  const [authReady,       setAuthReady]       = useState(initialPapers.length > 0);
 
   const updateURL = (params: Record<string, string>) => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -581,7 +581,7 @@ function PapersContent() {
   );
 }
 
-export default function PapersClient() {
+export default function PapersClient({ initialPapers = [] }: { initialPapers?: Paper[] }) {
   return (
     <Suspense fallback={
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '2.5rem 1.5rem' }}>
@@ -594,7 +594,7 @@ export default function PapersClient() {
         </div>
       </div>
     }>
-      <PapersContent />
+      <PapersContent initialPapers={initialPapers} />
     </Suspense>
   );
 }

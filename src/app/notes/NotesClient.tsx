@@ -67,21 +67,21 @@ function SkeletonCard() {
   );
 }
 
-function NotesContent() {
+function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [notes, setNotes] = useState<Note[]>(initialNotes);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(initialNotes.length === 0);
   const [search, setSearch] = useState('');
   const [selectedClass, setSelectedClass] = useState(searchParams.get('class') || '');
   const [selectedSubject, setSelectedSubject] = useState(searchParams.get('subject') || '');
   const [selectedChapter, setSelectedChapter] = useState(searchParams.get('chapter') || '');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authReady, setAuthReady] = useState(false);
+  const [authReady, setAuthReady] = useState(initialNotes.length > 0);
 
   const updateURL = (params: Record<string, string>) => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -515,7 +515,7 @@ function NotesContent() {
   );
 }
 
-export default function NotesClient() {
+export default function NotesClient({ initialNotes = [] }: { initialNotes?: Note[] }) {
   return (
     <Suspense fallback={
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '2.5rem 1.5rem' }}>
@@ -528,7 +528,7 @@ export default function NotesClient() {
         </div>
       </div>
     }>
-      <NotesContent />
+      <NotesContent initialNotes={initialNotes} />
     </Suspense>
   );
 }

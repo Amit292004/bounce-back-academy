@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
+import prisma from '@/lib/prisma';
 import PapersClient from './PapersClient';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Free NBSE Question Papers – Classes 8–12 | Bounce Back Academy',
@@ -15,6 +18,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PapersPage() {
-  return <PapersClient />;
+export default async function PapersPage() {
+  let initialPapers: any[] = [];
+  try {
+    initialPapers = await prisma.questionPaper.findMany({
+      include: { subject: true, year: true, chapter: true },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+  } catch {
+    // DB unavailable during build — client will fetch on mount
+  }
+  return <PapersClient initialPapers={initialPapers} />;
 }
