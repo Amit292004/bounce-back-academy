@@ -158,10 +158,23 @@ export default function NotesPage() {
             <div style={{ flex: '1 1 250px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Google Drive / PDF Link</label>
               <input name="viewUrl" type="url" placeholder="https://drive.google.com/..." value={form.viewUrl} onChange={handleChange} style={inputStyle} />
+              {form.viewUrl.includes('drive.google.com') && form.viewUrl.includes('usp=drive_link') && (
+                <p style={{ margin: '0.35rem 0 0 0', fontSize: '0.78rem', color: '#f59e0b', lineHeight: 1.4 }}>
+                  ⚠️ Restricted Link: In Google Drive, click Share → change General access to <strong>&ldquo;Anyone with the link&rdquo; (Viewer)</strong> so students can download it.
+                </p>
+              )}
+              {form.viewUrl.includes('drive.google.com') && !form.viewUrl.includes('usp=drive_link') && (
+                <p style={{ margin: '0.35rem 0 0 0', fontSize: '0.75rem', opacity: 0.6, lineHeight: 1.4 }}>
+                  Ensure &ldquo;Anyone with the link&rdquo; (Viewer) is enabled in Google Drive.
+                </p>
+              )}
             </div>
             <div style={{ flex: '1 1 250px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Upload File (PDF or Image)</label>
               <input type="file" accept=".pdf,image/*" onChange={e => setFile(e.target.files?.[0] || null)} style={{ ...inputStyle, padding: '0.45rem 1rem' }} />
+              <p style={{ margin: '0.35rem 0 0 0', fontSize: '0.75rem', opacity: 0.6, lineHeight: 1.4 }}>
+                Recommended: Direct upload guarantees 100% reliable one-click downloads.
+              </p>
             </div>
           </div>
 

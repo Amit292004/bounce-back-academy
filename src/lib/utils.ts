@@ -16,7 +16,7 @@ export function getDownloadLink(url: string): string {
     }
 
     // Handle Google Drive File Links
-    if (url.includes("drive.google.com")) {
+    if (url.includes("drive.google.com") || url.includes("drive.usercontent.google.com")) {
       let fileId = "";
       
       // Pattern: /file/d/FILE_ID/view
@@ -32,7 +32,7 @@ export function getDownloadLink(url: string): string {
       }
       
       if (fileId) {
-        return `https://drive.google.com/uc?export=download&id=${fileId}`;
+        return `https://drive.usercontent.google.com/download?id=${fileId}&export=download`;
       }
     }
     
@@ -76,17 +76,59 @@ export function getViewLink(url: string): string {
 export async function handleDownload(url: string, fileName?: string) {
   if (!url) return;
 
-  // Route everything through our server-side proxy.
-  // The proxy handles CORS, Google Drive virus-warning confirm tokens,
-  // and streams the file as Content-Disposition: attachment → instant one-click download.
+  const safeFileName = fileName
+    ? (fileName.endsWith('.pdf') ? fileName : `${fileName}.pdf`)
+    : 'document.pdf';
+
   const proxyUrl =
     `/api/download?url=${encodeURIComponent(url)}` +
     (fileName ? `&name=${encodeURIComponent(fileName)}` : '');
 
-  const link = document.createElement('a');
-  link.href = proxyUrl;
-  link.download = fileName || 'document.pdf';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  try {
+    const res = await fetch(proxyUrl);
+
+    // If redirected to Google Drive or external view
+    if (res.redirected && res.url) {
+      window.open(res.url, '_blank');
+      return;
+    }
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => null);
+      const errMsg = errData?.error || `Download failed (HTTP ${res.status})`;
+      if (url.includes('drive.google.com')) {
+        window.open(url, '_blank');
+        return;
+      }
+      alert(errMsg);
+      return;
+    }
+
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('text/html')) {
+      if (url.includes('drive.google.com')) {
+        window.open(url, '_blank');
+        return;
+      }
+      alert('Unable to download: Upstream server returned a webpage instead of a document file.');
+      return;
+    }
+
+    const blob = await res.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = safeFileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => window.URL.revokeObjectURL(blobUrl), 10000);
+  } catch (error) {
+    console.error('Download error:', error);
+    if (url.includes('drive.google.com')) {
+      window.open(url, '_blank');
+    } else {
+      window.open(proxyUrl, '_blank');
+    }
+  }
 }
