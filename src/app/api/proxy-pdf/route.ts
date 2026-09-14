@@ -72,12 +72,13 @@ export async function GET(request: NextRequest) {
 }
 
 function streamInline(res: Response): NextResponse {
+  // Use body stream directly for inline viewing (no attachment header)
   const headers = new Headers({
     "Content-Type": "application/pdf",
     "Cache-Control": "private, max-age=3600",
     "Access-Control-Allow-Origin": "*",
   });
-  const contentLength = res.headers.get("content-length");
-  if (contentLength) headers.set("Content-Length", contentLength);
+  // Don't forward upstream content-length — it may be for a compressed/chunked
+  // encoding that doesn't match the decompressed byte count
   return new NextResponse(res.body, { status: 200, headers });
 }

@@ -39,6 +39,7 @@ import {
 } from "lucide-react";
 
 import { getDriveImageUrl } from "@/lib/driveImage";
+import { handleDownload } from "@/lib/utils";
 import ClassSwitcherModal from "@/components/layout/ClassSwitcherModal";
 import { FaCreditCard, FaMobileAlt, FaShieldAlt, FaChevronRight, FaShoppingCart } from "react-icons/fa";
 
@@ -1420,9 +1421,14 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                 <h3 className={styles.modalTitle}>{selectedDoc.title}</h3>
               </div>
               <div style={{ display: "flex", gap: "0.5rem" }}>
-                <a href={selectedDoc.downloadUrl} download className={styles.downloadBtn}>
+                <button
+                  type="button"
+                  onClick={() => handleDownload(selectedDoc.downloadUrl || selectedDoc.viewUrl, `${selectedDoc.title}.pdf`)}
+                  className={styles.downloadBtn}
+                  style={{ border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+                >
                   <Download size={15} /> PDF
-                </a>
+                </button>
                 <button className={styles.modalClose} onClick={() => setSelectedDoc(null)}>
                   <X size={20} />
                 </button>

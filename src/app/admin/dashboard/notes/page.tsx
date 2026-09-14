@@ -36,7 +36,7 @@ export default function NotesPage() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [form, setForm] = useState({ title: '', className: '10', subjectId: '', chapterId: '', viewUrl: '', downloadFile: '' });
+  const [form, setForm] = useState({ title: '', className: '', subjectId: '', chapterId: '', viewUrl: '', downloadFile: '' });
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
@@ -52,7 +52,11 @@ export default function NotesPage() {
     if (notesRes.ok) setNotes(await notesRes.json());
     if (subjectsRes.ok) setSubjects(await subjectsRes.json());
     if (chaptersRes.ok) setChapters(await chaptersRes.json());
-    if (coursesRes.ok) setCourses(await coursesRes.json());
+    if (coursesRes.ok) {
+      const cData = await coursesRes.json();
+      setCourses(cData);
+      setForm(prev => prev.className ? prev : { ...prev, className: cData[0]?.name || 'Class 10' });
+    }
   };
 
   useEffect(() => { fetchAll(); }, []);
@@ -61,7 +65,11 @@ export default function NotesPage() {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const filteredChapters = chapters.filter(ch => ch.className === form.className && ch.subjectId === form.subjectId);
+  const normalizeClass = (c: string) => (c || '').toLowerCase().replace(/^class\s*/i, '').trim();
+
+  const filteredChapters = chapters.filter(ch =>
+    normalizeClass(ch.className) === normalizeClass(form.className) && ch.subjectId === form.subjectId
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,7 +124,9 @@ export default function NotesPage() {
     fetchAll();
   };
 
-  const filteredNotes = filterClass === 'All' ? notes : notes.filter(n => n.className === filterClass);
+  const filteredNotes = filterClass === 'All'
+    ? notes
+    : notes.filter(n => normalizeClass(n.className) === normalizeClass(filterClass));
 
   return (
     <div>
@@ -158,23 +168,10 @@ export default function NotesPage() {
             <div style={{ flex: '1 1 250px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Google Drive / PDF Link</label>
               <input name="viewUrl" type="url" placeholder="https://drive.google.com/..." value={form.viewUrl} onChange={handleChange} style={inputStyle} />
-              {form.viewUrl.includes('drive.google.com') && form.viewUrl.includes('usp=drive_link') && (
-                <p style={{ margin: '0.35rem 0 0 0', fontSize: '0.78rem', color: '#f59e0b', lineHeight: 1.4 }}>
-                  ⚠️ Restricted Link: In Google Drive, click Share → change General access to <strong>&ldquo;Anyone with the link&rdquo; (Viewer)</strong> so students can download it.
-                </p>
-              )}
-              {form.viewUrl.includes('drive.google.com') && !form.viewUrl.includes('usp=drive_link') && (
-                <p style={{ margin: '0.35rem 0 0 0', fontSize: '0.75rem', opacity: 0.6, lineHeight: 1.4 }}>
-                  Ensure &ldquo;Anyone with the link&rdquo; (Viewer) is enabled in Google Drive.
-                </p>
-              )}
             </div>
             <div style={{ flex: '1 1 250px' }}>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.4rem' }}>Upload File (PDF or Image)</label>
               <input type="file" accept=".pdf,image/*" onChange={e => setFile(e.target.files?.[0] || null)} style={{ ...inputStyle, padding: '0.45rem 1rem' }} />
-              <p style={{ margin: '0.35rem 0 0 0', fontSize: '0.75rem', opacity: 0.6, lineHeight: 1.4 }}>
-                Recommended: Direct upload guarantees 100% reliable one-click downloads.
-              </p>
             </div>
           </div>
 
@@ -239,7 +236,11 @@ export default function NotesPage() {
               {filteredNotes.map(note => (
                 <tr key={note.id} style={{ borderBottom: '1px solid var(--surface-border)', transition: 'var(--transition)' }}>
                   <td style={{ padding: '0.85rem 1rem', fontWeight: 500 }}>{note.title}</td>
-                  <td style={{ padding: '0.85rem 1rem' }}>Class {note.className}</td>
+                  <td style={{ padding: '0.85rem 1rem' }}>
+                    {note.className.toLowerCase().startsWith('class') || ['cuet', 'jee', 'neet'].includes(note.className.toLowerCase())
+                      ? note.className
+                      : `Class ${note.className}`}
+                  </td>
                   <td style={{ padding: '0.85rem 1rem', opacity: 0.8 }}>{note.subject?.name || '—'}</td>
                   <td style={{ padding: '0.85rem 1rem', opacity: 0.8 }}>{note.chapter?.name || '—'}</td>
                   <td style={{ padding: '0.85rem 1rem' }}>

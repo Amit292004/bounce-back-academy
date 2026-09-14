@@ -21,7 +21,13 @@ export async function GET(request: Request) {
     }
 
     const where: any = {};
-    if (className) where.className = className;
+    if (className) {
+      const trimmed = className.trim();
+      const numOnly = trimmed.replace(/^Class\s+/i, '');
+      const classPrefixed = trimmed.toLowerCase().startsWith('class') ? trimmed : `Class ${trimmed}`;
+      const candidates = Array.from(new Set([trimmed, numOnly, classPrefixed]));
+      where.className = { in: candidates };
+    }
     if (subjectId) where.subjectId = subjectId;
     if (yearId) where.yearId = yearId;
     if (chapterId) where.chapterId = chapterId;

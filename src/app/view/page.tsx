@@ -3,7 +3,7 @@
 import React, { use, useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import { getDownloadLink, handleDownload } from '@/lib/utils';
+import { handleDownload } from '@/lib/utils';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaDownload, FaArrowLeft, FaFilePdf } from 'react-icons/fa';
@@ -160,21 +160,39 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
 
   const isGoogleDrive = url.includes('drive.google.com');
 
-  let driveViewerUrl = '';
+  // Extract Google Drive file ID from any share URL format
+  let driveEmbedUrl = '';
   if (isGoogleDrive) {
-    const folderMatch = url.match(/\/folders\/([a-zA-Z0-9_-]+)/);
-    if (folderMatch?.[1]) {
-      driveViewerUrl = `https://drive.google.com/embeddedfolderview?id=${folderMatch[1]}#grid`;
-    } else {
-      driveViewerUrl = url.replace(/\/view.*$|\/edit.*$|\/share.*$/, '/preview');
+    const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    const fileId = fileMatch?.[1] || idMatch?.[1] || '';
+
+    if (fileId) {
+      // /preview is the correct embeddable endpoint for publicly shared Drive files
+      driveEmbedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+    } else if (url.includes('/folders/')) {
+      const folderMatch = url.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+      if (folderMatch?.[1]) {
+        driveEmbedUrl = `https://drive.google.com/embeddedfolderview?id=${folderMatch[1]}#grid`;
+      }
+    }
+    // Fallback: strip query params and add /preview
+    if (!driveEmbedUrl) {
+      driveEmbedUrl = url.split('?')[0].replace(/\/(view|edit|share)$/, '') + '/preview';
     }
   }
 
+  // For non-Drive URLs (Vercel Blob, Cloudinary, etc.) route through the CORS proxy
+  // so react-pdf can load the bytes without cross-origin errors.
+  const pdfViewerUrl = !isGoogleDrive ? `/api/proxy-pdf?url=${encodeURIComponent(url)}` : '';
+
   const handleDl = async () => {
     setDownloading(true);
-    await handleDownload(getDownloadLink(url), `${title || 'document'}.pdf`);
+    // Pass raw URL — handleDownload internally converts to download proxy
+    await handleDownload(url, `${title || 'document'}.pdf`);
     setTimeout(() => setDownloading(false), 2000);
   };
+
 
   return (
     <div style={{
@@ -341,7 +359,7 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
       {/* ── Viewer body ── */}
       <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
         {isGoogleDrive ? (
-          // Google Drive: iframe with a styled wrapper
+          // Google Drive: iframe using the /preview endpoint (works for publicly shared files)
           <div style={{ width: '100%', height: '100%', position: 'relative', background: '#0d0d12' }}>
             {/* Subtle glow behind the iframe */}
             <div style={{
@@ -350,14 +368,15 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
               pointerEvents: 'none', zIndex: 0,
             }} />
             <iframe
-              src={driveViewerUrl}
+              src={driveEmbedUrl}
               style={{ width: '100%', height: '100%', border: 'none', position: 'relative', zIndex: 1 }}
               title={title || 'PDF Viewer'}
               allow="autoplay"
             />
           </div>
         ) : (
-          <PdfViewerNative url={url} />
+          // Non-Drive (Vercel Blob etc.) — load via CORS proxy so react-pdf can render it
+          <PdfViewerNative url={pdfViewerUrl} />
         )}
       </div>
 

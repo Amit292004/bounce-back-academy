@@ -156,8 +156,10 @@ function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
     if (authReady) fetchNotes();
   }, [authReady, fetchNotes]);
 
+  const normalizeClass = (c: string) => (c || '').toLowerCase().replace(/^class\s*/i, '').trim();
+
   const handleClassSelect = (cls: string) => {
-    const newVal = cls === selectedClass ? '' : cls;
+    const newVal = normalizeClass(cls) === normalizeClass(selectedClass) ? '' : cls;
     setSelectedClass(newVal);
     setSelectedSubject('');
     setSelectedChapter('');
@@ -165,7 +167,7 @@ function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
   };
 
   const filteredChapters = chapters.filter(ch =>
-    (selectedClass ? ch.className === selectedClass : true) &&
+    (selectedClass ? normalizeClass(ch.className) === normalizeClass(selectedClass) : true) &&
     (selectedSubject ? ch.subjectId === selectedSubject : true)
   );
 
@@ -179,7 +181,7 @@ function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(1.5rem,5vw,2.5rem) clamp(1rem,3vw,1.5rem)' }}>
 
       {/* Page Header */}
-      <div style={{ marginBottom: '2.5rem' }} className="animate-fade-in">
+      <div style={{ marginBottom: '2rem' }} className="animate-fade-in">
         <h1 style={{ fontSize: 'clamp(2rem,7vw,2.8rem)', fontWeight: 900, marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>
           Study <span className="kinetic-text">Notes</span>
         </h1>
@@ -192,7 +194,7 @@ function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
       <div style={{
         display: 'flex',
         gap: '0.75rem',
-        marginBottom: '1.5rem',
+        marginBottom: '1.25rem',
         flexWrap: 'wrap',
       }}>
         <div style={{
@@ -230,84 +232,153 @@ function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
         </div>
       </div>
 
-      {/* ── SaaS Filter Bar ── */}
-      <div className={styles.filterBarWrapper}>
-        <div className={styles.filterBar}>
-
-          {/* Filter icon */}
-          <div className={styles.filterBarIcon}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
-            </svg>
-          </div>
-
-          {/* Class */}
-          <div className={styles.filterBarSegment}>
-            <span className={styles.filterBarLabel}>Class</span>
-            <select
-              value={selectedClass}
-              onChange={e => {
-                const val = e.target.value;
-                setSelectedClass(val);
-                setSelectedSubject('');
-                setSelectedChapter('');
-                updateURL({ class: val, subject: '', chapter: '' });
-              }}
-              className={styles.filterBarSelect}
-            >
-              <option value="">All Classes</option>
-              {courses.map(c => (
-                <option key={c.id} value={c.name}>{c.name}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Subject */}
-          <div className={styles.filterBarSegment}>
-            <span className={styles.filterBarLabel}>Subject</span>
-            <select
-              value={selectedSubject}
-              onChange={e => {
-                const val = e.target.value;
-                setSelectedSubject(val);
-                setSelectedChapter('');
-                updateURL({ subject: val, chapter: '' });
-              }}
-              className={styles.filterBarSelect}
-            >
-              <option value="">All Subjects</option>
-              {subjects.map(s => (
-                <option key={s.id} value={s.id}>{s.name}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Chapter */}
-          <div className={styles.filterBarSegment}>
-            <span className={styles.filterBarLabel}>Chapter</span>
-            <select
-              value={selectedChapter}
-              onChange={e => { setSelectedChapter(e.target.value); updateURL({ chapter: e.target.value }); }}
-              className={styles.filterBarSelect}
-              disabled={!selectedSubject && !selectedClass}
-            >
-              <option value="">All Chapters</option>
-              {filteredChapters.map(ch => (
-                <option key={ch.id} value={ch.id}>Ch {ch.number}: {ch.name}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Clear — only when filters active */}
-          {hasFilters && (
+      {/* Class Chips Navigation */}
+      <div style={{
+        display: 'flex',
+        gap: '0.6rem',
+        overflowX: 'auto',
+        paddingBottom: '0.4rem',
+        marginBottom: '1.25rem',
+        scrollbarWidth: 'none',
+      }}>
+        <button
+          onClick={() => handleClassSelect('')}
+          className="haptic-btn"
+          style={{
+            whiteSpace: 'nowrap',
+            padding: '0.5rem 1.15rem',
+            borderRadius: 999,
+            border: `1.5px solid ${!selectedClass ? 'var(--primary)' : 'var(--surface-border)'}`,
+            background: !selectedClass ? 'var(--primary)' : 'var(--surface)',
+            color: !selectedClass ? 'var(--primary-foreground)' : 'var(--foreground)',
+            cursor: 'pointer',
+            fontWeight: 700,
+            transition: 'all 0.18s ease',
+            fontSize: '0.85rem',
+            boxShadow: !selectedClass ? 'var(--shadow-glow)' : 'none',
+          }}
+        >
+          All Classes
+        </button>
+        {courses.map(course => {
+          const isSelected = normalizeClass(selectedClass) === normalizeClass(course.name);
+          return (
             <button
-              className={styles.clearSegment}
-              onClick={() => { setSelectedClass(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
+              key={course.id}
+              onClick={() => handleClassSelect(course.name)}
+              className="haptic-btn"
+              style={{
+                whiteSpace: 'nowrap',
+                padding: '0.5rem 1.15rem',
+                borderRadius: 999,
+                border: `1.5px solid ${isSelected ? 'var(--primary)' : 'var(--surface-border)'}`,
+                background: isSelected ? 'var(--primary)' : 'var(--surface)',
+                color: isSelected ? 'var(--primary-foreground)' : 'var(--foreground)',
+                cursor: 'pointer',
+                fontWeight: 700,
+                transition: 'all 0.18s ease',
+                fontSize: '0.85rem',
+                boxShadow: isSelected ? 'var(--shadow-glow)' : 'none',
+              }}
             >
-              <FaTimes size={10} /> Clear
+              {course.name}
             </button>
-          )}
+          );
+        })}
+      </div>
+
+      {/* Subject and Chapter Filter Row */}
+      <div style={{
+        display: 'flex',
+        gap: '0.75rem',
+        marginBottom: '1.75rem',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+      }}>
+        <div style={{ flex: '1 1 200px', minWidth: 160 }}>
+          <select
+            value={selectedSubject}
+            onChange={e => {
+              const val = e.target.value;
+              setSelectedSubject(val);
+              setSelectedChapter('');
+              updateURL({ subject: val, chapter: '' });
+            }}
+            style={{
+              width: '100%',
+              padding: '0.65rem 1rem',
+              background: 'var(--surface)',
+              border: '1px solid var(--surface-border)',
+              borderRadius: 'var(--radius-md)',
+              color: 'var(--foreground)',
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              outline: 'none',
+            }}
+          >
+            <option value="">All Subjects</option>
+            {subjects.map(s => (
+              <option key={s.id} value={s.id}>{s.name}</option>
+            ))}
+          </select>
         </div>
+
+        <div style={{ flex: '1 1 220px', minWidth: 180 }}>
+          <select
+            value={selectedChapter}
+            onChange={e => {
+              setSelectedChapter(e.target.value);
+              updateURL({ chapter: e.target.value });
+            }}
+            disabled={filteredChapters.length === 0}
+            style={{
+              width: '100%',
+              padding: '0.65rem 1rem',
+              background: 'var(--surface)',
+              border: '1px solid var(--surface-border)',
+              borderRadius: 'var(--radius-md)',
+              color: 'var(--foreground)',
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              cursor: filteredChapters.length === 0 ? 'not-allowed' : 'pointer',
+              opacity: filteredChapters.length === 0 ? 0.5 : 1,
+              outline: 'none',
+            }}
+          >
+            <option value="">All Chapters</option>
+            {filteredChapters.map(ch => (
+              <option key={ch.id} value={ch.id}>Ch {ch.number}: {ch.name}</option>
+            ))}
+          </select>
+        </div>
+
+        {hasFilters && (
+          <button
+            onClick={() => {
+              setSelectedClass('');
+              setSelectedSubject('');
+              setSelectedChapter('');
+              updateURL({ class: '', subject: '', chapter: '' });
+            }}
+            className="haptic-btn"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              padding: '0.65rem 1rem',
+              background: 'color-mix(in srgb, var(--error, #ef4444) 10%, transparent)',
+              border: '1px solid color-mix(in srgb, var(--error, #ef4444) 30%, transparent)',
+              borderRadius: 'var(--radius-md)',
+              color: 'var(--error, #ef4444)',
+              cursor: 'pointer',
+              fontWeight: 700,
+              fontSize: '0.82rem',
+            }}
+          >
+            <FaTimes size={11} /> Clear Filters
+          </button>
+        )}
       </div>
 
       {/* Results count */}
@@ -376,14 +447,17 @@ function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
                     </h3>
                     <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                       <span className="badge badge-primary">
-                        {note.className.startsWith('Class') || ['CUET','JEE','NEET'].includes(note.className)
-                          ? note.className : `Class ${note.className}`}
+                        {note.className.toLowerCase().startsWith('class') || ['cuet', 'jee', 'neet'].includes(note.className.toLowerCase())
+                          ? note.className
+                          : `Class ${note.className}`}
                       </span>
                       <span className="badge" style={{ background: bg, color }}>
                         {note.subject.name}
                       </span>
                       {note.chapter && (
-                        <span className="badge badge-success">Ch {note.chapter.number}</span>
+                        <span className="badge badge-success">
+                          Ch {note.chapter.number}{note.chapter.name ? `: ${note.chapter.name}` : ''}
+                        </span>
                       )}
                     </div>
                   </div>

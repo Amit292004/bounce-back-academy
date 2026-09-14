@@ -21,11 +21,15 @@ export const metadata: Metadata = {
 export default async function NotesPage() {
   let initialNotes: any[] = [];
   try {
-    initialNotes = await prisma.note.findMany({
+    const raw = await prisma.note.findMany({
       include: { subject: true, chapter: true },
       orderBy: { createdAt: 'desc' },
       take: 50,
     });
+    initialNotes = raw.map((n: any) => ({
+      ...n,
+      createdAt: n.createdAt?.toISOString ? n.createdAt.toISOString() : n.createdAt,
+    }));
   } catch {
     // DB unavailable during build — client will fetch on mount
   }

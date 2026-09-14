@@ -46,6 +46,13 @@ export default async function ClassHub({ params }: Props) {
       ? classId
       : `Class ${classId}`;
 
+  const classCandidates = Array.from(new Set([
+    fallbackClassName,
+    classId,
+    classId.replace(/^Class\s+/i, '').trim(),
+    classId.toLowerCase().startsWith('class') ? classId : `Class ${classId}`,
+  ])).filter(Boolean);
+
   // Run all DB queries in parallel for maximum speed
   const [course, subjectsData, announcements, premiumItems] = await Promise.all([
     // 1. Resolve exact class name from DB
@@ -63,24 +70,24 @@ export default async function ClassHub({ params }: Props) {
     prisma.subject.findMany({
       include: {
         chapters: {
-          where: { className: { equals: fallbackClassName, mode: 'insensitive' } },
+          where: { className: { in: classCandidates, mode: 'insensitive' } },
           orderBy: { number: 'asc' },
         },
         notes: {
-          where: { className: { equals: fallbackClassName, mode: 'insensitive' } },
+          where: { className: { in: classCandidates, mode: 'insensitive' } },
           orderBy: { createdAt: 'desc' },
         },
         papers: {
-          where: { className: { equals: fallbackClassName, mode: 'insensitive' } },
+          where: { className: { in: classCandidates, mode: 'insensitive' } },
           include: { year: true },
           orderBy: { createdAt: 'desc' },
         },
         videos: {
-          where: { category: { equals: fallbackClassName, mode: 'insensitive' } },
+          where: { category: { in: classCandidates, mode: 'insensitive' } },
           orderBy: { lectureNumber: 'asc' },
         },
         quizzes: {
-          where: { className: { equals: fallbackClassName, mode: 'insensitive' } },
+          where: { className: { in: classCandidates, mode: 'insensitive' } },
           include: {
             questions: { orderBy: { id: 'asc' } },
           },
@@ -94,7 +101,7 @@ export default async function ClassHub({ params }: Props) {
       where: {
         isActive: true,
         OR: [
-          { className: { equals: fallbackClassName, mode: 'insensitive' } },
+          { className: { in: classCandidates, mode: 'insensitive' } },
           { className: null },
         ],
       },
@@ -106,7 +113,7 @@ export default async function ClassHub({ params }: Props) {
       where: {
         isActive: true,
         OR: [
-          { className: { equals: fallbackClassName, mode: 'insensitive' } },
+          { className: { in: classCandidates, mode: 'insensitive' } },
           { className: null },
         ],
       },

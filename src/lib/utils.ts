@@ -16,7 +16,7 @@ export function getDownloadLink(url: string): string {
     }
 
     // Handle Google Drive File Links
-    if (url.includes("drive.google.com") || url.includes("drive.usercontent.google.com")) {
+    if (url.includes("drive.google.com")) {
       let fileId = "";
       
       // Pattern: /file/d/FILE_ID/view
@@ -32,7 +32,7 @@ export function getDownloadLink(url: string): string {
       }
       
       if (fileId) {
-        return `https://drive.usercontent.google.com/download?id=${fileId}&export=download`;
+        return `https://drive.google.com/uc?export=download&id=${fileId}`;
       }
     }
     
@@ -73,62 +73,107 @@ export function getViewLink(url: string): string {
   return url;
 }
 
+/**
+ * Sanitizes a filename to ensure it is completely safe for Windows, Mac, Linux, and mobile filesystems.
+ * Strips/replaces reserved characters: \ / : * ? " < > | and control characters.
+ */
+export function sanitizeFileName(name: string, fallback = 'document.pdf'): string {
+  if (!name) return fallback;
+
+  // Replace colons, slashes, backslashes, pipe with hyphens
+  let clean = name
+    .replace(/[:\\/|]/g, ' - ')
+    .replace(/[*?"<>]/g, '')
+    .replace(/[\x00-\x1F\x7F]/g, '') // strip control chars
+    .replace(/\s+/g, ' ') // collapse multiple spaces
+    .trim();
+
+  // Strip trailing periods or spaces (disallowed on Windows)
+  clean = clean.replace(/[. ]+$/, '');
+
+  if (!clean) clean = 'document';
+
+  // Ensure .pdf extension
+  if (!clean.toLowerCase().endsWith('.pdf') && !/\.(jpe?g|png|webp)$/i.test(clean)) {
+    clean += '.pdf';
+  }
+
+  return clean;
+}
+
 export async function handleDownload(url: string, fileName?: string) {
-  if (!url) return;
+  if (!url || url.includes('example.com')) {
+    alert('This study material does not have a downloadable file attached yet.');
+    return;
+  }
 
-  const safeFileName = fileName
-    ? (fileName.endsWith('.pdf') ? fileName : `${fileName}.pdf`)
-    : 'document.pdf';
+  const safeFileName = sanitizeFileName(fileName || 'document.pdf');
 
+  // ── Google Drive ────────────────────────────────────────────────────────────
+  // Server-side proxying of Drive files fails because Google blocks unauthenticated
+  // server requests. Instead we build the direct download URL and let the browser
+  // fetch it using the user's own Google session — works for any publicly shared file.
+  if (url.includes('drive.google.com') || url.includes('drive.usercontent.google.com')) {
+    // Extract file ID from any Drive URL format
+    const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    const idMatch   = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    const fileId    = fileMatch?.[1] || idMatch?.[1] || '';
+
+    const directUrl = fileId
+      ? `https://drive.google.com/uc?export=download&id=${fileId}`
+      : url; // fallback to original if no ID found
+
+    // Use an invisible <a download> — browser handles auth via its Google session
+    const link = document.createElement('a');
+    link.href = directUrl;
+    link.download = safeFileName;
+    link.target = '_blank';           // needed for cross-origin download trigger
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    return;
+  }
+
+  // ── Non-Drive (Vercel Blob, Cloudinary, direct PDFs) ────────────────────────
+  // Route through our server-side proxy to handle CORS, set correct MIME type,
+  // and sanitize the filename.
   const proxyUrl =
     `/api/download?url=${encodeURIComponent(url)}` +
-    (fileName ? `&name=${encodeURIComponent(fileName)}` : '');
+    `&name=${encodeURIComponent(safeFileName)}`;
 
   try {
     const res = await fetch(proxyUrl);
 
-    // If redirected to Google Drive or external view
-    if (res.redirected && res.url) {
-      window.open(res.url, '_blank');
-      return;
-    }
-
     if (!res.ok) {
       const errData = await res.json().catch(() => null);
-      const errMsg = errData?.error || `Download failed (HTTP ${res.status})`;
-      if (url.includes('drive.google.com')) {
-        window.open(url, '_blank');
-        return;
-      }
-      alert(errMsg);
+      alert(errData?.error || `Download failed (HTTP ${res.status})`);
       return;
     }
 
     const contentType = res.headers.get('content-type') || '';
     if (contentType.includes('text/html')) {
-      if (url.includes('drive.google.com')) {
-        window.open(url, '_blank');
-        return;
-      }
-      alert('Unable to download: Upstream server returned a webpage instead of a document file.');
+      alert('Unable to download: the server returned a web page instead of a document.');
       return;
     }
 
-    const blob = await res.blob();
-    const blobUrl = window.URL.createObjectURL(blob);
+    // Create a blob with an explicit PDF MIME so all OS / mobile viewers open it
+    const blobData = await res.blob();
+    const pdfBlob  = new Blob([blobData], {
+      type: contentType.includes('image/') ? contentType : 'application/pdf',
+    });
+    const blobUrl  = window.URL.createObjectURL(pdfBlob);
+
     const link = document.createElement('a');
     link.href = blobUrl;
     link.download = safeFileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    setTimeout(() => window.URL.revokeObjectURL(blobUrl), 10000);
+    setTimeout(() => window.URL.revokeObjectURL(blobUrl), 10_000);
   } catch (error) {
-    console.error('Download error:', error);
-    if (url.includes('drive.google.com')) {
-      window.open(url, '_blank');
-    } else {
-      window.open(proxyUrl, '_blank');
-    }
+    logger.error('Download error:', error);
+    // Last-resort fallback: open the proxy URL directly in a new tab
+    window.open(proxyUrl, '_blank');
   }
 }
