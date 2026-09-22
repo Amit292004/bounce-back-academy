@@ -200,7 +200,7 @@ export default function PremiumStorePage() {
           return;
         }
 
-        const cashfree = new (window as any).Cashfree({
+        const cashfree = (window as any).Cashfree({
           mode: orderData.environment || 'production'
         });
 

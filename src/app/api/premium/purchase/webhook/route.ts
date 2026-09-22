@@ -15,9 +15,14 @@ export async function POST(request: Request) {
     const orderStatus = order.order_status;
     const orderId = order.order_id;
     const userId = order.customer_details?.customer_id;
-    const premiumItemId = order.order_tags?.premiumItemId || body.premiumItemId;
+    
+    // Cashfree sends order_tags at top level of data.order
+    const premiumItemId = 
+      order.order_tags?.premiumItemId ||
+      data.order_tags?.premiumItemId ||
+      body.premiumItemId;
 
-    logger.info(`Cashfree Webhook received for order ${orderId}, status: ${orderStatus}`);
+    logger.info(`Cashfree Webhook received for order ${orderId}, status: ${orderStatus}, premiumItemId: ${premiumItemId}`);
 
     if (orderStatus === 'PAID' && userId && premiumItemId) {
       await prisma.purchase.upsert({
@@ -42,3 +47,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
   }
 }
+

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "@/app/class/[classId]/page.module.css";
+import premiumStyles from "./page.module.css";
 import {
   FileText,
   BookOpen,
@@ -429,7 +430,7 @@ export default function PremiumCourseHubPage() {
           alert("Failed to load Cashfree SDK.");
           return;
         }
-        const cashfree = new (window as any).Cashfree({ mode: orderData.environment || "production" });
+        const cashfree = (window as any).Cashfree({ mode: orderData.environment || "production" });
         cashfree.checkout({ paymentSessionId: orderData.paymentSessionId, redirectTarget: "_self" });
       } else {
         setShowCheckout(true);
@@ -494,9 +495,9 @@ export default function PremiumCourseHubPage() {
     return (
       <div className={styles.appShell}>
         {/* Compact Header Bar */}
-        <div className={styles.classHeader}>
-          <div className={styles.classHeaderInner}>
-            <div className={styles.classHeaderLeft}>
+        <div className={`${styles.classHeader} ${premiumStyles.classHeaderOverride}`}>
+          <div className={`${styles.classHeaderInner} ${premiumStyles.classHeaderInnerOverride}`}>
+            <div className={`${styles.classHeaderLeft} ${premiumStyles.classHeaderLeftOverride}`}>
               <Link href="/premium" className={styles.classBackBtn} title="Back to All Batches">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
               </Link>
@@ -939,7 +940,7 @@ export default function PremiumCourseHubPage() {
                     <h4 style={{ fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em", opacity: 0.7, marginBottom: "0.75rem", display: "flex", alignItems: "center", gap: "0.4rem" }}>
                       <Sparkles size={14} color="var(--primary)" /> What&apos;s Included:
                     </h4>
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.6rem" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: "0.6rem" }}>
                       {item.features.split("|").map((f: string, i: number) => (
                         <div key={i} style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.85rem", fontWeight: 600 }}>
                           <CheckCircle2 size={16} color="#10b981" />
@@ -1099,43 +1100,45 @@ export default function PremiumCourseHubPage() {
   const featuresList = item.features ? item.features.split("|").map((f: string) => f.trim()).filter(Boolean) : [];
 
   return (
-    <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "1.5rem 1rem 5rem" }}>
-      <Link href="/premium" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", color: "var(--primary)", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none", marginBottom: "1.5rem" }}>
+    <div className={premiumStyles.salesContainer}>
+      <Link href="/premium" className={premiumStyles.backCatalogLink}>
         <FaArrowLeft size={12} /> Back to Store
       </Link>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "2rem", alignItems: "start" }}>
-        <div>
-          <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.75rem" }}>
-            <span style={{ padding: "0.2rem 0.6rem", borderRadius: "4px", background: "var(--primary)", color: "white", fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase" }}>{item.type}</span>
-            {item.className && <span style={{ padding: "0.2rem 0.6rem", borderRadius: "4px", background: "var(--surface-highlight)", border: "1px solid var(--surface-border)", fontSize: "0.7rem", fontWeight: 700 }}>{item.className}</span>}
+      <div className={premiumStyles.salesHeroGrid}>
+        <div className={premiumStyles.salesMainContent}>
+          <div className={premiumStyles.productBadgeRow}>
+            <span className={premiumStyles.productTypeTag}>{item.type}</span>
+            {item.className && <span className={premiumStyles.classTag}>{item.className}</span>}
           </div>
 
-          <h1 style={{ fontSize: "2rem", fontWeight: 900, lineHeight: 1.2, margin: "0 0 1rem" }}>{item.title}</h1>
-          <p style={{ fontSize: "1rem", lineHeight: 1.65, opacity: 0.75, marginBottom: "1.75rem" }}>{item.description}</p>
+          <h1 className={premiumStyles.salesTitle}>{item.title}</h1>
+          <p className={premiumStyles.salesDesc}>{item.description}</p>
 
           {featuresList.length > 0 && (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "0.75rem", marginBottom: "2rem" }}>
+            <div className={premiumStyles.highlightsGrid}>
               {featuresList.map((feat: string, idx: number) => (
-                <div key={idx} style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "0.88rem", fontWeight: 600 }}>
-                  <CheckCircle2 size={18} color="#10b981" />
+                <div key={idx} className={premiumStyles.highlightItem}>
+                  <CheckCircle2 size={18} className={premiumStyles.checkIcon} />
                   <span>{feat}</span>
                 </div>
               ))}
             </div>
           )}
 
-          <div style={{ background: "var(--surface)", border: "1px solid var(--surface-border)", borderRadius: "14px", padding: "1.5rem" }}>
-            <h3 style={{ fontSize: "1.05rem", fontWeight: 800, margin: "0 0 1rem" }}>📦 Curriculum Preview ({item.contents?.length || 0} items)</h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+          <div className={premiumStyles.curriculumPreviewSection}>
+            <h3 className={premiumStyles.curriculumPreviewHeading}>📦 Curriculum Preview ({item.contents?.length || 0} items)</h3>
+            <div className={premiumStyles.previewList}>
               {(item.contents || []).map((c: any) => (
-                <div key={c.id} style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "0.85rem 1rem", background: "var(--surface-highlight)", borderRadius: "10px", border: "1px solid var(--surface-border)" }}>
-                  {c.contentType === "VIDEO" ? <VideoIcon color="#ef4444" size={18} /> : <FileText color="#6366f1" size={18} />}
-                  <div style={{ flex: 1 }}>
-                    <strong style={{ fontSize: "0.9rem" }}>{c.title}</strong>
-                    <span style={{ display: "block", fontSize: "0.72rem", opacity: 0.55 }}>{c.contentType === "VIDEO" ? "Video Lecture" : "PDF Document"}</span>
+                <div key={c.id} className={premiumStyles.previewRow}>
+                  <div className={premiumStyles.previewIconWrap}>
+                    {c.contentType === "VIDEO" ? <VideoIcon color="#ef4444" size={18} /> : <FileText color="#6366f1" size={18} />}
                   </div>
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", fontSize: "0.75rem", opacity: 0.5, fontWeight: 600 }}>
+                  <div className={premiumStyles.previewTitleWrap}>
+                    <strong>{c.title}</strong>
+                    <span className={premiumStyles.previewContentType}>{c.contentType === "VIDEO" ? "Video Lecture" : "PDF Document"}</span>
+                  </div>
+                  <div className={premiumStyles.lockBadge}>
                     <Lock size={12} /> Locked
                   </div>
                 </div>
@@ -1144,20 +1147,20 @@ export default function PremiumCourseHubPage() {
           </div>
         </div>
 
-        <div style={{ position: "sticky", top: "90px" }}>
-          <div className="glass-panel" style={{ padding: "1.5rem", borderRadius: "16px", border: "1px solid var(--surface-border)" }}>
+        <div className={premiumStyles.salesSidebar}>
+          <div className={`glass-panel ${premiumStyles.pricingCard}`}>
             {item.imageUrl && (
-              <div style={{ width: "100%", aspectRatio: "16/9", borderRadius: "10px", overflow: "hidden", marginBottom: "1rem" }}>
+              <div className={premiumStyles.cardCoverThumb}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={getDriveImageUrl(item.imageUrl) || ""} alt={item.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <img src={getDriveImageUrl(item.imageUrl) || ""} alt={item.title} className={premiumStyles.coverImage} />
               </div>
             )}
 
-            <div style={{ display: "flex", alignItems: "baseline", gap: "0.65rem" }}>
-              <span style={{ fontSize: "2rem", fontWeight: 900, color: "var(--primary)" }}>₹{item.price}</span>
-              {item.originalPrice && <span style={{ fontSize: "1.1rem", opacity: 0.4, textDecoration: "line-through" }}>₹{item.originalPrice}</span>}
+            <div className={premiumStyles.priceRow}>
+              <span className={premiumStyles.currentPrice}>₹{item.price}</span>
+              {item.originalPrice && <span className={premiumStyles.originalPrice}>₹{item.originalPrice}</span>}
               {item.originalPrice && (
-                <span style={{ padding: "0.2rem 0.5rem", borderRadius: "4px", background: "rgba(16,185,129,0.15)", color: "#10b981", fontSize: "0.75rem", fontWeight: 800 }}>
+                <span className={premiumStyles.discountBadge}>
                   {Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)}% OFF
                 </span>
               )}
@@ -1166,13 +1169,12 @@ export default function PremiumCourseHubPage() {
             <button
               onClick={handleUnlockClick}
               disabled={isPurchasing}
-              className="btn-primary"
-              style={{ width: "100%", padding: "0.95rem", fontSize: "1rem", fontWeight: 800, marginTop: "1.25rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
+              className={`btn-primary ${premiumStyles.unlockBtn}`}
             >
               {isPurchasing ? "Processing Gateway..." : <><FaShoppingCart /> Unlock Access Now</>}
             </button>
 
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem", fontSize: "0.75rem", opacity: 0.6, marginTop: "1rem" }}>
+            <div className={premiumStyles.trustBadgeRow}>
               <FaShieldAlt color="#10b981" />
               <span>Verified 256-bit Secure Checkout</span>
             </div>
@@ -1183,7 +1185,7 @@ export default function PremiumCourseHubPage() {
       {/* Checkout Modal */}
       {showCheckout && (
         <div className={styles.modalOverlay}>
-          <div className="glass-panel" style={{ width: "100%", maxWidth: "480px", padding: "1.75rem", borderRadius: "16px", border: "1px solid var(--surface-border)" }}>
+          <div className={`glass-panel ${premiumStyles.checkoutDialog}`}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1.25rem" }}>
               <div>
                 <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "var(--primary)", textTransform: "uppercase" }}>VIP Academy Checkout</span>

@@ -66,7 +66,7 @@ export async function POST(request: Request) {
           ? 'https://api.cashfree.com/pg'
           : 'https://sandbox.cashfree.com/pg';
 
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://bounce-back-academy-en1o.vercel.app';
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://bouncebackacademy.vercel.app';
         const returnUrl = `${appUrl}/payment/return?order_id={order_id}&premiumItemId=${premiumItemId}`;
 
         // Unique order ID — use timestamp + item id slice for uniqueness
@@ -86,7 +86,11 @@ export async function POST(request: Request) {
             return_url: returnUrl,
             notify_url: `${appUrl}/api/premium/purchase/webhook`
           },
-          order_note: premiumItem.title
+          order_note: premiumItem.title,
+          order_tags: {
+            premiumItemId,
+            userId
+          }
         };
 
         const cfResponse = await fetch(`${cashfreeBaseUrl}/orders`, {

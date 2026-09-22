@@ -1327,47 +1327,389 @@
 }
 
 /* ==========================================================================
-   PRINT STYLESHEET
+   PRINT STYLESHEET — Professional Academic PDF Notes
+   Produces clean, publication-grade study notes when saved as PDF.
    ========================================================================== */
 @media print {
+  /* ── 1. Page setup ───────────────────────────────────────────────────── */
+  @page {
+    size: A4 portrait;
+    margin: 18mm 16mm 20mm 16mm;
+  }
+
+  /* ── 2. Hide ALL interactive / chrome UI ─────────────────────────────── */
   .sidebar,
+  .sidebarOverlay,
   .topBar,
   .inputContainer,
   .followUpSection,
   .cardActionBtn,
-  .sidebarOverlay,
+  .audioPlayerRow,
+  .aiCardHeader,
   .promptGrid,
-  .subjectTabs {
+  .subjectTabs,
+  .welcomeContainer,
+  .errorCard,
+  .thinkingBar,
+  .userRow {
     display: none !important;
   }
 
+  /* ── 3. Root layout reset ────────────────────────────────────────────── */
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    animation: none !important;
+    transition: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
   .page {
+    display: block !important;
     height: auto !important;
     overflow: visible !important;
     background: #ffffff !important;
-    color: #000000 !important;
+    color: #111827 !important;
+    font-family: 'Georgia', 'Times New Roman', serif !important;
+    font-size: 10.5pt !important;
+    line-height: 1.65 !important;
   }
 
-  .main, .chatBody {
+  .page::before {
+    display: none !important;
+  }
+
+  .main {
+    display: block !important;
     height: auto !important;
     overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .chatBody {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  .messageList {
+    max-width: 100% !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+
+  /* ── 4. Document header injected before first response ───────────────── */
+  .messageList::before {
+    content: '';
+    display: block;
+    width: 100%;
+    border-top: 3px solid #1e3a5f;
+    margin-bottom: 0;
+  }
+
+  .aiRow:first-of-type .aiResponseCard::before {
+    content: 'Bounce Back Academy';
+    display: block;
+    font-family: 'Georgia', serif;
+    font-size: 17pt;
+    font-weight: 700;
+    color: #1e3a5f;
+    letter-spacing: -0.02em;
+    padding: 10pt 0 3pt 0;
+    border-bottom: 1px solid #c7d2e0;
+    margin-bottom: 6pt;
+  }
+
+  .aiRow:first-of-type .aiResponseCard::after {
+    content: 'AI-Assisted Study Notes  ·  Bounce Back Academy';
+    display: block;
+    font-size: 7.5pt;
+    color: #64748b;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    margin-top: -4pt;
+    margin-bottom: 12pt;
+    border-bottom: 2px solid #1e3a5f;
+    padding-bottom: 8pt;
+  }
+
+  /* ── 5. Per-message AI card ──────────────────────────────────────────── */
+  .aiRow {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
   }
 
   .aiResponseCard {
-    border: 1px solid #ddd !important;
-    box-shadow: none !important;
+    display: block !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
     page-break-inside: avoid;
-    margin-bottom: 2rem;
+    break-inside: avoid;
+    margin-bottom: 18pt !important;
+    padding-bottom: 14pt !important;
+    border-bottom: 1px dashed #cbd5e1 !important;
+  }
+
+  .aiResponseCard:last-of-type {
+    border-bottom: none !important;
   }
 
   .aiCardBody {
-    color: #000000 !important;
+    display: block !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    color: #111827 !important;
+    font-size: 10.5pt !important;
+    line-height: 1.65 !important;
   }
 
-  .katexBlock {
-    background: transparent !important;
+  /* ── 6. Topic / Subject banner ───────────────────────────────────────── */
+  .topicCard {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #1e3a5f !important;
+    color: #ffffff !important;
     border: none !important;
+    border-radius: 4pt !important;
+    padding: 5pt 10pt !important;
+    margin-bottom: 10pt !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
+
+  .topicCardLeft {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6pt !important;
+    font-family: 'Georgia', serif !important;
+    font-size: 10pt !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+  }
+
+  .topicCardLeft svg { display: none !important; }
+
+  .curriculumBadge {
+    background: rgba(255,255,255,0.18) !important;
+    color: #e2e8f0 !important;
+    border: none !important;
+    font-size: 7pt !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    padding: 2pt 6pt !important;
+    border-radius: 3pt !important;
+    text-transform: uppercase !important;
+  }
+
+  /* ── 7. Core Concept section ─────────────────────────────────────────── */
+  .conceptCard {
+    background: #f0f4ff !important;
+    border: 1pt solid #bfcfef !important;
+    border-left: 4pt solid #2563eb !important;
+    border-radius: 4pt !important;
+    padding: 8pt 11pt !important;
+    margin-bottom: 10pt !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .sectionHeader {
+    font-family: 'Georgia', serif !important;
+    font-size: 8pt !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.07em !important;
+    color: #1d4ed8 !important;
+    margin-bottom: 5pt !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5pt !important;
+  }
+
+  .sectionHeader svg { display: none !important; }
+
+  /* ── 8. Step-by-step derivation ──────────────────────────────────────── */
+  .stepContainer {
+    margin-bottom: 10pt !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    display: block !important;
+    gap: 0 !important;
+  }
+
+  .stepHeader {
+    font-family: 'Georgia', serif !important;
+    font-size: 8pt !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.07em !important;
+    color: #111827 !important;
+    border-bottom: 1pt solid #d1d5db !important;
+    padding-bottom: 4pt !important;
+    margin-bottom: 7pt !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5pt !important;
+  }
+
+  .stepHeader svg { display: none !important; }
+
+  .stepContent {
+    padding-left: 12pt !important;
+    border-left: 2pt solid #93c5fd !important;
+    display: block !important;
+    gap: 0 !important;
+  }
+
+  /* ── 9. Final Answer box ─────────────────────────────────────────────── */
+  .finalAnswerCard {
+    background: #f0fdf4 !important;
+    border: 1pt solid #86efac !important;
+    border-left: 4pt solid #16a34a !important;
+    border-radius: 4pt !important;
+    padding: 8pt 11pt !important;
+    margin-bottom: 10pt !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .finalAnswerHeader {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 5pt !important;
+  }
+
+  .finalAnswerLabel {
+    font-size: 8pt !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.07em !important;
+    color: #15803d !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5pt !important;
+  }
+
+  .finalAnswerLabel svg { display: none !important; }
+
+  .finalAnswerBody {
+    font-size: 11pt !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+  }
+
+  /* ── 10. Key Takeaway / Exam tip box ─────────────────────────────────── */
+  .takeawayCard {
+    background: #fffbeb !important;
+    border: 1pt solid #fcd34d !important;
+    border-left: 4pt solid #d97706 !important;
+    border-radius: 4pt !important;
+    padding: 8pt 11pt !important;
+    margin-bottom: 10pt !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .takeawayHeader {
+    font-size: 8pt !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.07em !important;
+    color: #b45309 !important;
+    margin-bottom: 5pt !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5pt !important;
+  }
+
+  .takeawayHeader svg { display: none !important; }
+
+  /* ── 11. Markdown body typography ────────────────────────────────────── */
+  .markdownBody {
+    font-size: 10.5pt !important;
+    line-height: 1.65 !important;
+    color: #111827 !important;
+  }
+
+  .markdownBody p {
+    margin-bottom: 5pt !important;
+    orphans: 3;
+    widows: 3;
+  }
+
+  .markdownBody strong {
+    color: #111827 !important;
+    font-weight: 700 !important;
+  }
+
+  .markdownBody em { color: #374151 !important; }
+
+  .markdownBody code {
+    font-family: 'Courier New', Courier, monospace !important;
+    font-size: 9pt !important;
+    background: #f3f4f6 !important;
+    border: 0.5pt solid #d1d5db !important;
+    padding: 1pt 4pt !important;
+    border-radius: 3pt !important;
+    color: #1e3a5f !important;
+  }
+
+  /* ── 12. Code blocks ─────────────────────────────────────────────────── */
+  .codeBlockContainer {
+    border: 1pt solid #d1d5db !important;
+    border-radius: 4pt !important;
+    background: #f9fafb !important;
+    margin: 6pt 0 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    overflow: hidden !important;
+  }
+
+  .codeBlockHeader {
+    background: #e5e7eb !important;
+    color: #374151 !important;
+    font-size: 7.5pt !important;
+    font-weight: 700 !important;
+    padding: 3pt 8pt !important;
+    border-bottom: 0.5pt solid #d1d5db !important;
+  }
+
+  .codePre {
+    padding: 7pt 10pt !important;
+    font-family: 'Courier New', Courier, monospace !important;
+    font-size: 8.5pt !important;
+    color: #111827 !important;
+    line-height: 1.5 !important;
+    background: #f9fafb !important;
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
+    margin: 0 !important;
+  }
+
+  /* ── 13. Math / KaTeX ────────────────────────────────────────────────── */
+  .katexBlock {
+    background: #f8faff !important;
+    border: 1pt solid #bfcfef !important;
+    border-radius: 4pt !important;
+    padding: 6pt 10pt !important;
+    margin: 6pt 0 !important;
+    text-align: center !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    overflow: visible !important;
+  }
+
+  .mathExpr { font-style: italic !important; }
 }
 
 /* ==========================================================================

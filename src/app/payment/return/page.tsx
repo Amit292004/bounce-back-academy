@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { FaCheckCircle, FaTimesCircle, FaSpinner } from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import Link from 'next/link';
 
 type Status = 'verifying' | 'success' | 'failed';
 
-export default function PaymentReturnPage() {
+function PaymentReturnContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -17,23 +17,30 @@ export default function PaymentReturnPage() {
   const [status, setStatus] = useState<Status>('verifying');
   const [message, setMessage] = useState('');
   const [savedClass, setSavedClass] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     try {
       const cls = localStorage.getItem('selectedClass');
       if (cls && cls !== 'Not Selected') setSavedClass(cls);
     } catch {}
+
     if (!orderId || !premiumItemId) {
       setStatus('failed');
       setMessage('Invalid payment return. Missing order information.');
       return;
     }
 
-    verifyPayment();
+    // Small delay to let Cashfree finalize the order on their end
+    const timer = setTimeout(() => {
+      verifyPayment(0);
+    }, 2000);
+
+    return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId, premiumItemId]);
 
-  const verifyPayment = async () => {
+  const verifyPayment = async (attempt: number) => {
     try {
       const res = await fetch('/api/premium/purchase/verify', {
         method: 'POST',
@@ -50,8 +57,15 @@ export default function PaymentReturnPage() {
         setStatus('success');
         setMessage(data.message || 'Payment successful! Your content is now unlocked.');
       } else {
-        setStatus('failed');
-        setMessage(data.error || 'Payment verification failed. Please contact support.');
+        // If payment is still processing (ACTIVE/PENDING), retry up to 3 times
+        const isProcessing = data.error?.includes('ACTIVE') || data.error?.includes('PENDING') || data.error?.includes('not completed');
+        if (isProcessing && attempt < 3) {
+          setRetryCount(attempt + 1);
+          setTimeout(() => verifyPayment(attempt + 1), 3000);
+        } else {
+          setStatus('failed');
+          setMessage(data.error || 'Payment verification failed. Please contact support.');
+        }
       }
     } catch {
       setStatus('failed');
@@ -89,7 +103,9 @@ export default function PaymentReturnPage() {
               Verifying Payment
             </h2>
             <p style={{ opacity: 0.6, fontSize: '0.95rem' }}>
-              Please wait while we confirm your payment with Cashfree...
+              {retryCount > 0
+                ? `Checking payment status (attempt ${retryCount + 1}/4)...`
+                : 'Please wait while we confirm your payment with Cashfree...'}
             </p>
           </>
         )}
@@ -190,5 +206,29 @@ export default function PaymentReturnPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PaymentReturnPage() {
+  return (
+    <Suspense fallback={
+      <div style={{
+        minHeight: '80vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{
+          width: '48px',
+          height: '48px',
+          border: '4px solid rgba(99,102,241,0.15)',
+          borderTopColor: 'var(--primary)',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }} />
+      </div>
+    }>
+      <PaymentReturnContent />
+    </Suspense>
   );
 }
