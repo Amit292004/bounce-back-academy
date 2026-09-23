@@ -1356,9 +1356,9 @@
   }
 
   /* ── 3. Root layout reset ────────────────────────────────────────────── */
-  *,
-  *::before,
-  *::after {
+  .page *,
+  .page *::before,
+  .page *::after {
     box-shadow: none !important;
     text-shadow: none !important;
     animation: none !important;
