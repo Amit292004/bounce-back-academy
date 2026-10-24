@@ -37,6 +37,18 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Learning Paths */}
+        <div className={styles.col}>
+          <h4 className={styles.colTitle}>Learning Paths</h4>
+          <ul className={styles.linkList}>
+            <li><Link href="/school" className={styles.footerLink}>School Learning (8–12)</Link></li>
+            <li><Link href="/exams" className={styles.footerLink}>Competitive Exams</Link></li>
+            <li><Link href="/skills" className={styles.footerLink}>Practical Skill Courses</Link></li>
+            <li><Link href="/ai-tutor" className={styles.footerLink}>AI Tutor</Link></li>
+            <li><Link href="/courses" className={styles.footerLink}>Courses &amp; Tracks</Link></li>
+          </ul>
+        </div>
+
         {/* Study Resources */}
         <div className={styles.col}>
           <h4 className={styles.colTitle}>Study Resources</h4>
@@ -44,8 +56,8 @@ export default function Footer() {
             <li><Link href="/papers" className={styles.footerLink}>Question Papers</Link></li>
             <li><Link href="/notes" className={styles.footerLink}>Study Notes</Link></li>
             <li><Link href="/videos" className={styles.footerLink}>Video Lectures</Link></li>
-            <li><Link href="/ask" className={styles.footerLink}>AI Doubt Solver</Link></li>
             <li><Link href="/quiz" className={styles.footerLink}>Quiz &amp; Tests</Link></li>
+            <li><Link href="/library" className={styles.footerLink}>Study Library</Link></li>
           </ul>
         </div>
 
@@ -53,11 +65,11 @@ export default function Footer() {
         <div className={styles.col}>
           <h4 className={styles.colTitle}>Platform</h4>
           <ul className={styles.linkList}>
+            <li><Link href="/dashboard" className={styles.footerLink}>Student Dashboard</Link></li>
             <li><Link href="/premium" className={styles.footerLink}>Premium Store</Link></li>
             <li><Link href="/forum" className={styles.footerLink}>Discussion Forum</Link></li>
             <li><Link href="/announcements" className={styles.footerLink}>Announcements</Link></li>
             <li><Link href="/favorites" className={styles.footerLink}>Saved Favorites</Link></li>
-            <li><Link href="/profile" className={styles.footerLink}>My Profile</Link></li>
           </ul>
         </div>
 

@@ -1,0 +1,636 @@
+/* =========================================================
+   BOUNCE BACK ACADEMY — LUXURY SAAS AUTHENTICATION SYSTEM
+   Editorial Monochrome, Physical Depth & Exquisite Polish
+   ========================================================= */
+
+.splitShell {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  background-color: #f8f9fa;
+  background-image: radial-gradient(circle 800px at 50% -120px, rgba(0, 0, 0, 0.025), transparent 75%);
+  color: #111111;
+  position: relative;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+:global(html.dark) .splitShell,
+:global(html:not(.light)) .splitShell {
+  background-color: #0a0a0c;
+  background-image: radial-gradient(circle 800px at 50% -120px, rgba(255, 255, 255, 0.045), transparent 75%);
+  color: #ffffff;
+}
+
+/* =========================================================
+   LEFT PANEL: EDITORIAL BRAND CANVAS (40% VIEWPORT)
+   Obsidian Black (#000000), Swiss Typography, Editorial Restraint
+   ========================================================= */
+.brandPanel {
+  flex: 0 0 40%;
+  max-width: 40%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: #000000;
+  color: #ffffff;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.brandPanelInner {
+  padding: 3.5rem 3.5rem;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+/* Top Brand Navigation */
+.brandHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.brandLogoRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: #ffffff;
+  transition: opacity 0.15s ease;
+}
+
+.brandLogoRow:hover {
+  opacity: 0.9;
+}
+
+.logoBadge {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.logoImg {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+}
+
+.brandTitle {
+  font-size: 0.875rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.brandSubtitle {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: #71717a;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+.brandBackHome {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #a1a1aa;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.brandBackHome:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Center Editorial Block */
+.editorialBlock {
+  padding: 3rem 0;
+  max-width: 420px;
+}
+
+.editorialTag {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #a1a1aa;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.editorialTagDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+}
+
+.editorialHeadline {
+  font-size: 2.35rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  margin: 0 0 1.25rem 0;
+}
+
+.editorialRule {
+  width: 36px;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.15);
+  margin-bottom: 1.25rem;
+}
+
+.editorialSub {
+  font-size: 0.985rem;
+  line-height: 1.6;
+  color: #a1a1aa;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Bottom Detail */
+.brandFooter {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.775rem;
+  color: #52525b;
+  letter-spacing: 0.02em;
+}
+
+.bullet {
+  color: #27272a;
+}
+
+/* =========================================================
+   RIGHT PANEL: AUTHENTICATION CANVAS (60% VIEWPORT)
+   ========================================================= */
+.formPanel {
+  flex: 0 0 60%;
+  max-width: 60%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: transparent;
+  position: relative;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Desktop Top Utility Bar */
+.desktopTopNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 3rem 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.desktopBreadcrumb {
+  font-size: 0.8125rem;
+  color: #71717a;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+:global(html.dark) .desktopBreadcrumb,
+:global(html:not(.light)) .desktopBreadcrumb {
+  color: #71717a;
+}
+
+.slash {
+  color: #d4d4d8;
+}
+
+:global(html.dark) .slash,
+:global(html:not(.light)) .slash {
+  color: #27272a;
+}
+
+.currentSection {
+  color: #111111;
+  font-weight: 500;
+}
+
+:global(html.dark) .currentSection,
+:global(html:not(.light)) .currentSection {
+  color: #f4f4f5;
+}
+
+/* Centered Form Canvas Area */
+.formCanvas {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem 3rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   ELEVATED LUXURY FORM SURFACE (TONAL SEPARATION)
+   Obsidian Charcoal (#121214) with Hairline Border & Ambient Depth
+   ========================================================= */
+.formSurface {
+  width: 100%;
+  max-width: 430px;
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  padding: 2.5rem 2.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 20px 40px -15px rgba(0, 0, 0, 0.07);
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.formSurfaceWide {
+  max-width: 470px;
+}
+
+:global(html.dark) .formSurface,
+:global(html:not(.light)) .formSurface {
+  background-color: #171717;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.09),
+              0 24px 48px -12px rgba(0, 0, 0, 0.8),
+              0 8px 16px -4px rgba(0, 0, 0, 0.5);
+}
+
+/* Card Top Brand Mark Anchor */
+.cardBrandHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+:global(html.dark) .cardBrandHeader,
+:global(html:not(.light)) .cardBrandHeader {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.cardLogoRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.cardLogoBadge {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+:global(html.dark) .cardLogoBadge,
+:global(html:not(.light)) .cardLogoBadge {
+  background: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.cardLogoImg {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+}
+
+.cardBrandMeta {
+  display: flex;
+  flex-direction: column;
+}
+
+.cardBrandName {
+  font-size: 0.8125rem;
+  font-weight: 650;
+  color: #111111;
+  line-height: 1.2;
+}
+
+:global(html.dark) .cardBrandName,
+:global(html:not(.light)) .cardBrandName {
+  color: #ffffff;
+}
+
+.cardBrandPlatform {
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: #71717a;
+  text-transform: uppercase;
+}
+
+/* Form Heading & Contextual Badge Hierarchy */
+.formHeader {
+  margin-bottom: 1.75rem;
+  text-align: left;
+}
+
+.contextualBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #52525b;
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  margin-bottom: 0.75rem;
+}
+
+:global(html.dark) .contextualBadge,
+:global(html:not(.light)) .contextualBadge {
+  color: #d4d4d8;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.contextualDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #111111;
+  flex-shrink: 0;
+}
+
+:global(html.dark) .contextualDot,
+:global(html:not(.light)) .contextualDot {
+  background-color: #ffffff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+}
+
+.formTitle {
+  font-size: 1.95rem;
+  font-weight: 700;
+  color: #111111;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin: 0 0 0.5rem 0;
+}
+
+:global(html.dark) .formTitle,
+:global(html:not(.light)) .formTitle {
+  color: #ffffff;
+}
+
+.formSubtitle {
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: #52525b;
+  line-height: 1.55;
+  margin: 0;
+}
+
+:global(html.dark) .formSubtitle,
+:global(html:not(.light)) .formSubtitle {
+  color: #9ca3af;
+}
+
+/* Footer underneath Form Surface */
+.canvasFooter {
+  margin-top: 2.25rem;
+  width: 100%;
+  max-width: 430px;
+  text-align: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 1.25rem;
+}
+
+:global(html.dark) .canvasFooter,
+:global(html:not(.light)) .canvasFooter {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.footerLinks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  font-size: 0.775rem;
+  color: #71717a;
+  margin-bottom: 0.4rem;
+}
+
+.footerLink {
+  color: #71717a;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.footerLink:hover {
+  color: #111111;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+:global(html.dark) .footerLink {
+  color: #71717a;
+}
+
+:global(html.dark) .footerLink:hover {
+  color: #f4f4f5;
+}
+
+.footerDot {
+  color: #d4d4d8;
+}
+
+:global(html.dark) .footerDot {
+  color: #27272a;
+}
+
+.footerCopy {
+  font-size: 0.75rem;
+  color: #a1a1aa;
+  margin: 0;
+}
+
+:global(html.dark) .footerCopy {
+  color: #52525b;
+}
+
+/* =========================================================
+   MOBILE HEADER & ADAPTIVE LAYOUT (< 960px)
+   ========================================================= */
+.mobileHeader {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  width: 100%;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+:global(html.dark) .mobileHeader,
+:global(html:not(.light)) .mobileHeader {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.mobileLogoRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  color: #111111;
+}
+
+:global(html.dark) .mobileLogoRow,
+:global(html:not(.light)) .mobileLogoRow {
+  color: #ffffff;
+}
+
+.mobileBrandName {
+  font-size: 0.875rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.mobileActions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.mobileBackLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 34px;
+  padding: 0 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+:global(html.dark) .mobileBackLink,
+:global(html:not(.light)) .mobileBackLink {
+  background: #18181b;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #d4d4d8;
+}
+
+.mobileBackLink:hover {
+  color: #000000;
+  border-color: #d1d5db;
+}
+
+:global(html.dark) .mobileBackLink:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 959px) {
+  .splitShell {
+    flex-direction: column;
+  }
+
+  .brandPanel {
+    display: none;
+  }
+
+  .formPanel {
+    flex: 1 1 100%;
+    max-width: 100%;
+    min-height: 100vh;
+  }
+
+  .desktopTopNav {
+    display: none;
+  }
+
+  .mobileHeader {
+    display: flex;
+  }
+
+  .formCanvas {
+    padding: 1.5rem 1.25rem 2.5rem;
+    justify-content: flex-start;
+  }
+
+  .formSurface,
+  .formSurfaceWide {
+    max-width: 100%;
+    padding: 1.75rem 1.35rem;
+    border-radius: 14px;
+  }
+
+  .formTitle {
+    font-size: 1.75rem;
+  }
+
+  .canvasFooter {
+    max-width: 100%;
+    margin-top: 2rem;
+  }
+}

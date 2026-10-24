@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from '@react-oauth/google';
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
-import styles from './page.module.css';
+import { Eye, EyeOff } from 'lucide-react';
+import AuthLayout from '@/components/auth/AuthLayout';
+import styles from '@/components/auth/Auth.module.css';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,8 +19,8 @@ export default function LoginPage() {
 
   useEffect(() => {
     fetch('/api/student/me')
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data.authenticated) {
           router.replace('/');
         } else {
@@ -77,7 +77,7 @@ export default function LoginPage() {
         if (data.requiresVerification) {
           router.push(`/verify-email?email=${encodeURIComponent(email)}`);
         } else {
-          setError(data.error || 'Login failed');
+          setError(data.error || 'Invalid email or password');
         }
       } else {
         if (data.user?.class && data.user.class !== 'Not Selected') {
@@ -89,7 +89,7 @@ export default function LoginPage() {
         router.refresh();
       }
     } catch {
-      setError('Something went wrong. Please try again.');
+      setError('Something went wrong. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -98,97 +98,128 @@ export default function LoginPage() {
   if (checking) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ opacity: 0.4 }}>Loading...</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', color: '#71717a', fontSize: '0.875rem' }}>
+          <div className={styles.spinner} />
+          <span>Verifying session...</span>
+        </div>
       </div>
     );
   }
 
+  const googleClientId = (process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '').replace(/['"]/g, '');
+
   return (
-    <div className={styles.container}>
-      <div className={`glass-panel ${styles.card}`}>
-        <div className={styles.header}>
-          <div className={styles.logoWrapper}>
-            <Link href="/" className={styles.logoLink} title="Bounce Back Academy">
-              <Image src="/logo.png" alt="Bounce Back Academy" width={48} height={48} className={styles.logoImg} priority />
+    <AuthLayout
+      contextualBadge="STUDENT ACCOUNT"
+      editorialHeadline="Your next chapter starts here."
+      editorialSubheadline="Access study resources, prepare for competitive exams, and develop practical skills with Bounce Back Academy."
+      formTitle="Welcome back."
+      formSubtitle="Sign in to continue learning with Bounce Back Academy."
+      breadcrumbLabel="Sign In"
+      maxWidth="default"
+    >
+      <form onSubmit={handleSubmit} className={styles.form} noValidate={false}>
+        {/* Email Address */}
+        <div className={styles.field}>
+          <label htmlFor="email" className={styles.label}>
+            Email address
+          </label>
+          <input
+            id="email"
+            type="email"
+            placeholder="name@example.com"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className={styles.input}
+          />
+        </div>
+
+        {/* Password */}
+        <div className={styles.field}>
+          <div className={styles.labelRow}>
+            <label htmlFor="password" className={styles.label}>
+              Password
+            </label>
+            <Link href="/forgot-password" className={styles.forgotLink} tabIndex={0}>
+              Forgot password?
             </Link>
           </div>
-          <h1 className={styles.title}>Welcome back</h1>
-          <p className={styles.subtitle}>Enter your details to sign in to your account</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.field}>
-            <label htmlFor="email">Email Address</label>
-            <div className={styles.inputWrapper}>
-              <span className={styles.inputIcon}><Mail size={16} /></span>
-              <input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className={`${styles.input} ${styles.inputWithIcon}`}
-              />
-            </div>
-          </div>
-
-          <div className={styles.field}>
-            <label htmlFor="password">Password</label>
-            <div className={styles.inputWrapper}>
-              <span className={styles.inputIcon}><Lock size={16} /></span>
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className={`${styles.input} ${styles.inputWithIcon} ${styles.inputHasToggle}`}
-              />
-              <button
-                type="button"
-                className={styles.passwordToggle}
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-
-          {error && <p className={styles.error}>{error}</p>}
-
-          <button type="submit" className={styles.submitBtn} disabled={loading}>
-            {loading ? 'Signing in...' : <>Sign In <ArrowRight size={16} /></>}
-          </button>
-        </form>
-
-        <div className={styles.divider}>
-          <span>or</span>
-        </div>
-
-        <div className={styles.googleWrapper}>
-          <GoogleOAuthProvider clientId={(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '').replace(/['"]/g, '')}>
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => setError('Google Sign In failed')}
-              theme="outline"
-              size="large"
-              shape="rectangular"
-              text="continue_with"
-              logo_alignment="center"
+          <div className={styles.inputWrapper}>
+            <input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Enter your password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className={`${styles.input} ${styles.inputHasToggle}`}
             />
-          </GoogleOAuthProvider>
+            <button
+              type="button"
+              className={styles.passwordToggle}
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              tabIndex={0}
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
         </div>
 
-        <p className={styles.footer}>
-          Don&apos;t have an account?{' '}
-          <Link href="/register" style={{ fontWeight: 600 }}>
-            Create one
-          </Link>
-        </p>
+        {/* Error Alert */}
+        {error && (
+          <div className={styles.alertError} role="alert">
+            <span>{error}</span>
+          </div>
+        )}
+
+        {/* Primary Sign In Button */}
+        <button type="submit" className={styles.submitBtn} disabled={loading}>
+          {loading ? (
+            <>
+              <span className={styles.spinner} />
+              <span>Signing in...</span>
+            </>
+          ) : (
+            <span>Sign In</span>
+          )}
+        </button>
+      </form>
+
+      {/* Alternative Social Sign In */}
+      {googleClientId && (
+        <>
+          <div className={styles.divider}>
+            <span>OR</span>
+          </div>
+
+          <div className={styles.googleWrapper}>
+            <GoogleOAuthProvider clientId={googleClientId}>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError('Google Sign In was cancelled or failed.')}
+                theme="outline"
+                size="large"
+                shape="rectangular"
+                text="continue_with"
+                logo_alignment="center"
+                width="380"
+              />
+            </GoogleOAuthProvider>
+          </div>
+        </>
+      )}
+
+      {/* Switch to Register (Intentional Non-Cramped Wrapping) */}
+      <div className={styles.switchAuthRow}>
+        <span className={styles.switchAuthPrompt}>New to Bounce Back Academy?</span>
+        <Link href="/register" className={styles.switchAuthLink}>
+          Create account
+        </Link>
       </div>
-    </div>
+    </AuthLayout>
   );
 }

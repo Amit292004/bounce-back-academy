@@ -1,9 +1,15 @@
 "use client";
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import {
+  ArrowRight,
+  Sparkles,
+} from 'lucide-react';
 import styles from './HeroSection.module.css';
-
 import AnimatedTitle, { ROTATING_TOPICS } from './AnimatedTitle';
+import PromoCarousel from './PromoCarousel';
+import { HeroAdData } from '@/lib/adConfig';
 
 interface Stats {
   users: number;
@@ -15,6 +21,8 @@ interface Stats {
 
 interface HeroSectionProps {
   userClass?: string | null;
+  initialHeroAd?: HeroAdData | null;
+  initialHeroAds?: HeroAdData[];
 }
 
 function AnimatedNumber({ value, isLoading }: { value: number; isLoading: boolean }) {
@@ -26,29 +34,37 @@ function AnimatedNumber({ value, isLoading }: { value: number; isLoading: boolea
     let current = 0;
     const timer = setInterval(() => {
       current += increment;
-      if (current >= value) { setDisplayed(value); clearInterval(timer); }
-      else setDisplayed(Math.floor(current));
+      if (current >= value) {
+        setDisplayed(value);
+        clearInterval(timer);
+      } else {
+        setDisplayed(Math.floor(current));
+      }
     }, 1200 / steps);
     return () => clearInterval(timer);
   }, [value, isLoading]);
+
   if (isLoading) return <span className={styles.skeletonNum} />;
   return <span>{displayed.toLocaleString()}+</span>;
 }
 
-export default function HeroSection({ userClass: initialUserClass }: HeroSectionProps) {
+export default function HeroSection({ userClass: initialUserClass, initialHeroAd, initialHeroAds }: HeroSectionProps) {
   const [stats, setStats] = useState<Stats>({ users: 0, papers: 0, notes: 0, videos: 0, activeNow: 0 });
   const [loading, setLoading] = useState(true);
   const [userClass, setUserClass] = useState<string | null>(initialUserClass || null);
   const [activeTopicIndex, setActiveTopicIndex] = useState(0);
 
   useEffect(() => {
-    fetch('/api/analytics').then(r => r.json())
-      .then(d => { setStats(d); setLoading(false); })
+    fetch('/api/analytics')
+      .then(r => r.json())
+      .then(d => {
+        setStats(d);
+        setLoading(false);
+      })
       .catch(() => setLoading(false));
 
     const syncClass = async () => {
       try {
-        // 1. Check if user is logged in and fetch their profile selected class
         const res = await fetch('/api/student/me');
         if (res.ok) {
           const data = await res.json();
@@ -61,7 +77,6 @@ export default function HeroSection({ userClass: initialUserClass }: HeroSection
         }
       } catch {}
 
-      // 2. Fall back to localStorage if not logged in or profile fetch failed
       const stored = localStorage.getItem('selectedClass');
       if (stored && stored !== 'Not Selected') {
         setUserClass(stored);
@@ -122,42 +137,68 @@ export default function HeroSection({ userClass: initialUserClass }: HeroSection
         }}
       />
 
-      <div className={styles.inner}>
-        {/* Live indicator */}
-        <div className={styles.liveChip}>
-          <span className={styles.liveDot} />
-          <span>{loading ? '—' : stats.activeNow} {stats.activeNow === 1 ? 'student' : 'students'} studying right now</span>
-        </div>
+      <div className={styles.container}>
+        {/* Asymmetric 2-Column Grid on Desktop */}
+        <div className={styles.heroGrid}>
 
-        {/* Headline */}
-        <h1 className={styles.headline}>
-          <span className={styles.headlineLead}>The smartest way to prepare for</span>
-          <span className={styles.headlineSubject}>
-            <AnimatedTitle onIndexChange={setActiveTopicIndex} />
-          </span>
-        </h1>
+          {/* ─── Left Column: Proposition, Headline, Subtitle, CTAs ─── */}
+          <div className={styles.leftCol}>
+            {/* Live student activity indicator */}
+            <div className={styles.liveChip}>
+              <span className={styles.liveDot} aria-hidden="true" />
+              <span className={styles.liveText}>
+                {loading ? '—' : stats.activeNow} {stats.activeNow === 1 ? 'student' : 'students'} studying right now
+              </span>
+            </div>
 
-        <p className={styles.sub}>
-          Free question papers, study notes, video lectures, real-world skills, and AI-powered doubt solving for Classes 8–12, CUET, JEE &amp; NEET.
-        </p>
+            {/* Headline */}
+            <h1 className={styles.headline}>
+              <span className={styles.headlineLead}>The smartest way to prepare for</span>
+              <span className={styles.headlineSubject}>
+                <AnimatedTitle onIndexChange={setActiveTopicIndex} />
+              </span>
+            </h1>
 
-        {/* CTAs */}
-        <div className={styles.ctas}>
-          <Link href={userClass ? `/class/${encodeURIComponent(userClass)}` : '/#classes'} className={styles.ctaPrimary}>
-            {classDisplayName ? `${classDisplayName} Dashboard` : 'Classes Dashboard'}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </Link>
-          <div className={styles.ctaSecondaryGroup}>
-            <Link href={userClass ? `/papers?class=${userClass}` : '/papers'} className={styles.ctaGhost}>Explore Papers</Link>
-            <Link href="/ask" className={styles.ctaGhost}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/></svg>
-              AI Tutor
-              <span className={styles.freeBadge}>FREE</span>
-            </Link>
+            {/* Supporting description */}
+            <p className={styles.sub}>
+              Free question papers, study notes, video lectures, real-world skills, and AI-powered doubt solving for Classes 8–12, CUET, JEE &amp; NEET.
+            </p>
+
+            {/* CTAs */}
+            <div className={styles.ctas}>
+              <Link
+                href={userClass ? `/class/${encodeURIComponent(userClass)}` : '/school'}
+                className={styles.ctaPrimary}
+              >
+                <span>{classDisplayName ? `${classDisplayName} Dashboard` : 'School Learning Hub'}</span>
+                <ArrowRight size={16} strokeWidth={2.5} />
+              </Link>
+
+              <div className={styles.ctaSecondaryGroup}>
+                <Link
+                  href={userClass ? `/papers?class=${encodeURIComponent(userClass)}` : '/papers'}
+                  className={styles.ctaGhost}
+                >
+                  Explore Papers
+                </Link>
+
+                <Link href="/ai-tutor" className={styles.ctaGhost}>
+                  <Sparkles size={14} strokeWidth={2} />
+                  <span>AI Tutor</span>
+                  <span className={styles.freeBadge}>FREE</span>
+                </Link>
+              </div>
+            </div>
           </div>
+
+          {/* ─── Right Column: Advertisement & Promo Carousel ─── */}
+          <div className={styles.rightCol}>
+            <PromoCarousel userClass={userClass} initialAd={initialHeroAd} initialAds={initialHeroAds} />
+          </div>
+
         </div>
 
-        {/* Stats bar */}
+        {/* ─── Numerical Analytics KPI Strip ─── */}
         <div className={styles.statsBar}>
           {[
             { label: 'Students enrolled', value: stats.users },
@@ -166,7 +207,9 @@ export default function HeroSection({ userClass: initialUserClass }: HeroSection
             { label: 'Video lectures', value: stats.videos },
           ].map((s, i) => (
             <div key={s.label} className={styles.statCell}>
-              <span className={styles.statNum}><AnimatedNumber value={s.value} isLoading={loading} /></span>
+              <span className={styles.statNum}>
+                <AnimatedNumber value={s.value} isLoading={loading} />
+              </span>
               <span className={styles.statLabel}>{s.label}</span>
               {i < 3 && <div className={styles.statDivider} />}
             </div>

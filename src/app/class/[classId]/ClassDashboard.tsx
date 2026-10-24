@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import styles from "./page.module.css";
+import PWVideoPlayer from "@/components/video/PWVideoPlayer";
 import {
   FileText,
   BookOpen,
@@ -41,6 +42,7 @@ import {
 import { getDriveImageUrl } from "@/lib/driveImage";
 import { handleDownload } from "@/lib/utils";
 import ClassSwitcherModal from "@/components/layout/ClassSwitcherModal";
+import AddToCartButton from "@/components/cart/AddToCartButton";
 import { FaCreditCard, FaMobileAlt, FaShieldAlt, FaChevronRight, FaShoppingCart } from "react-icons/fa";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -1206,14 +1208,32 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                             <span>View Content</span>
                           </button>
                         ) : (
-                          <button
-                            className={styles.enrollBtn}
-                            onClick={() => handleOpenPremiumItem(item)}
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', border: 'none', cursor: 'pointer' }}
-                          >
-                            <span>Enroll Now</span>
-                            <ChevronRight size={14} />
-                          </button>
+                          <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                            <AddToCartButton
+                              course={{
+                                id: item.id,
+                                title: item.title,
+                                description: item.description,
+                                price: item.price,
+                                originalPrice: item.originalPrice,
+                                type: item.type,
+                                imageUrl: item.imageUrl,
+                                className: item.className,
+                                features: item.features,
+                                alreadyEnrolled: item.unlocked,
+                              }}
+                              variant="compact"
+                            />
+                            <button
+                              className={styles.enrollBtn}
+                              onClick={() => handleOpenPremiumItem(item)}
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', border: 'none', cursor: 'pointer', padding: '0.45rem 0.75rem', fontSize: '0.8rem' }}
+                              title="Instant single purchase"
+                            >
+                              <span>Buy</span>
+                              <ChevronRight size={13} />
+                            </button>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -1313,9 +1333,13 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                 <div className={styles.playerContainer}>
                   <div className={styles.videoEmbed}>
                     {getYoutubeId(selectedVideo.youtubeLink) ? (
-                      <iframe
-                        src={`https://www.youtube.com/embed/${getYoutubeId(selectedVideo.youtubeLink)}?autoplay=1&rel=0&modestbranding=1`}
-                        allow="autoplay; fullscreen; picture-in-picture"
+                      <PWVideoPlayer
+                        youtubeUrl={selectedVideo.youtubeLink}
+                        title={selectedVideo.title}
+                        subtitle={`${currentSubject ? currentSubject.name : "Class Lecture"}${selectedVideo.lectureNumber ? ` · Lecture ${selectedVideo.lectureNumber}` : ""}`}
+                        pdfNotesUrl={selectedVideo.pdfUrl}
+                        autoPlay={true}
+                        onBack={() => setSelectedVideo(null)}
                       />
                     ) : (
                       <div className={styles.videoEmbedError}>

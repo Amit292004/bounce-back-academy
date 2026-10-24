@@ -1,0 +1,611 @@
+/* =========================================================
+   BOUNCE BACK ACADEMY — BLACK & WHITE AUTH DESIGN TOKENS
+   Refined, Luxury SaaS Polish, Tactile Inputs & Flagship CTA
+   ========================================================= */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.formGrid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.95rem;
+}
+
+.gridFull {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 600px) {
+  .formGrid2 {
+    grid-template-columns: 1fr;
+    gap: 1.15rem;
+  }
+}
+
+/* =========================================================
+   FIELDS & LABELS
+   ========================================================= */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.label {
+  font-size: 0.8125rem;
+  font-weight: 550;
+  color: #374151;
+  letter-spacing: -0.01em;
+}
+
+:global(html.dark) .label,
+:global(html:not(.light)) .label {
+  color: #d4d4d8;
+}
+
+.forgotLink {
+  font-size: 0.8125rem;
+  font-weight: 450;
+  color: #71717a;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.forgotLink:hover {
+  color: #111111;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+:global(html.dark) .forgotLink,
+:global(html:not(.light)) .forgotLink {
+  color: #a1a1aa;
+}
+
+:global(html.dark) .forgotLink:hover,
+:global(html:not(.light)) .forgotLink:hover {
+  color: #ffffff;
+}
+
+/* =========================================================
+   TACTILE INPUT SURFACES
+   48px height, 10px radius, inner bevel & glowing focus
+   ========================================================= */
+.inputWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 0 1rem;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  color: #111827;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  outline: none;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+}
+
+.input::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+  font-size: 0.875rem;
+}
+
+.input:hover:not(:focus):not(:disabled) {
+  border-color: #9ca3af;
+}
+
+.input:focus {
+  border-color: #000000;
+  box-shadow: 0 0 0 1px #000000, 0 0 12px rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+}
+
+.input:disabled {
+  opacity: 0.55;
+  background-color: #f9fafb;
+  cursor: not-allowed;
+}
+
+.inputHasToggle {
+  padding-right: 2.85rem;
+}
+
+/* Autofill Fix for Light Mode */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #111827 !important;
+  caret-color: #111827 !important;
+  border-color: #000000 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Dark Theme Inputs: Tactile Surface with Inset Bevel */
+:global(html.dark) .input,
+:global(html:not(.light)) .input {
+  background-color: #18181b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+:global(html.dark) .input::placeholder,
+:global(html:not(.light)) .input::placeholder {
+  color: #71717a;
+}
+
+:global(html.dark) .input:hover:not(:focus):not(:disabled),
+:global(html:not(.light)) .input:hover:not(:focus):not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.22);
+  background-color: #1c1c20;
+}
+
+:global(html.dark) .input:focus,
+:global(html:not(.light)) .input:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 1px #ffffff, 0 0 14px rgba(255, 255, 255, 0.12);
+  background-color: #1c1c20;
+}
+
+:global(html.dark) .input:-webkit-autofill,
+:global(html:not(.light)) .input:-webkit-autofill,
+:global(html.dark) .input:-webkit-autofill:hover,
+:global(html:not(.light)) .input:-webkit-autofill:hover,
+:global(html.dark) .input:-webkit-autofill:focus,
+:global(html:not(.light)) .input:-webkit-autofill:focus,
+:global(html.dark) .input:-webkit-autofill:active,
+:global(html:not(.light)) .input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #18181b inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff !important;
+  border-color: #ffffff !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* =========================================================
+   CUSTOM SELECT DROPDOWN
+   ========================================================= */
+select.input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat !important;
+  background-position: calc(100% - 1rem) center !important;
+  background-size: 14px 14px !important;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+select.input option {
+  background-color: #ffffff;
+  color: #111827;
+  padding: 0.5rem;
+}
+
+:global(html.dark) select.input,
+:global(html:not(.light)) select.input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+:global(html.dark) select.input option,
+:global(html:not(.light)) select.input option {
+  background-color: #18181b;
+  color: #ffffff;
+}
+
+/* =========================================================
+   PASSWORD VISIBILITY TOGGLE (FUNCTIONAL ICON)
+   ========================================================= */
+.passwordToggle {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  color: #71717a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  transition: all 0.15s ease;
+  z-index: 2;
+  outline: none;
+}
+
+.passwordToggle:hover {
+  color: #111111;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.passwordToggle:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 1px;
+}
+
+:global(html.dark) .passwordToggle,
+:global(html:not(.light)) .passwordToggle {
+  color: #a1a1aa;
+}
+
+:global(html.dark) .passwordToggle:hover,
+:global(html:not(.light)) .passwordToggle:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global(html.dark) .passwordToggle:focus-visible,
+:global(html:not(.light)) .passwordToggle:focus-visible {
+  outline: 2px solid #ffffff;
+}
+
+/* =========================================================
+   PRIMARY BUTTON: FLAGSHIP SAAS CTA (HIGH CONTRAST)
+   Tactile Micro-Lift, Crisp Inset Shadow, 48px Height
+   ========================================================= */
+.submitBtn {
+  width: 100%;
+  height: 48px;
+  padding: 0 1.25rem;
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  outline: none;
+  box-sizing: border-box;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.submitBtn:hover:not(:disabled) {
+  background-color: #1f1f1f;
+  border-color: #1f1f1f;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.submitBtn:active:not(:disabled) {
+  background-color: #111111;
+  transform: translateY(0);
+}
+
+.submitBtn:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+:global(html.dark) .submitBtn,
+:global(html:not(.light)) .submitBtn {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 14px rgba(255, 255, 255, 0.14);
+}
+
+:global(html.dark) .submitBtn:hover:not(:disabled),
+:global(html:not(.light)) .submitBtn:hover:not(:disabled) {
+  background-color: #f4f4f5;
+  border-color: #f4f4f5;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(255, 255, 255, 0.24);
+}
+
+:global(html.dark) .submitBtn:active:not(:disabled),
+:global(html:not(.light)) .submitBtn:active:not(:disabled) {
+  background-color: #e4e4e7;
+  transform: translateY(0);
+}
+
+:global(html.dark) .submitBtn:focus-visible,
+:global(html:not(.light)) .submitBtn:focus-visible {
+  outline: 2px solid #ffffff;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+:global(html.dark) .spinner,
+:global(html:not(.light)) .spinner {
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top-color: #000000;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   DIVIDER & GOOGLE SSO WRAPPER
+   ========================================================= */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 1.25rem 0;
+  color: #71717a;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 600;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+:global(html.dark) .divider::before,
+:global(html:not(.light)) .divider::before,
+:global(html.dark) .divider::after,
+:global(html:not(.light)) .divider::after {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.divider span {
+  padding: 0 0.85rem;
+}
+
+:global(html.dark) .divider span,
+:global(html:not(.light)) .divider span {
+  color: #71717a;
+}
+
+/* Google OAuth Full-Width Alignment */
+.googleWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+}
+
+.googleWrapper > div {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.googleWrapper iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  border-radius: 9px !important;
+}
+
+/* =========================================================
+   STATUS ALERTS & VALIDATION
+   ========================================================= */
+.alertError {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 0.95rem;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 9px;
+  color: #991b1b;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  font-weight: 450;
+}
+
+:global(html.dark) .alertError,
+:global(html:not(.light)) .alertError {
+  background: #1c1012;
+  border-color: #450a0a;
+  color: #fca5a5;
+}
+
+.alertSuccess {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 0.95rem;
+  background: #f0fdf4;
+  border: 1px solid #dcfce7;
+  border-radius: 9px;
+  color: #166534;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  font-weight: 450;
+}
+
+:global(html.dark) .alertSuccess,
+:global(html:not(.light)) .alertSuccess {
+  background: #0f1e14;
+  border-color: #14532d;
+  color: #86efac;
+}
+
+.alertWarning {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 0.95rem;
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  border-radius: 9px;
+  color: #92400e;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  font-weight: 450;
+}
+
+:global(html.dark) .alertWarning,
+:global(html:not(.light)) .alertWarning {
+  background: #1c1917;
+  border-color: #44403c;
+  color: #fde68a;
+}
+
+/* =========================================================
+   OTP DIGIT ENTRY GROUP
+   ========================================================= */
+.otpGroup {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 1.15rem 0;
+}
+
+.otpDigit {
+  width: 48px;
+  height: 52px;
+  text-align: center;
+  font-size: 1.35rem;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+.otpDigit:focus {
+  border-color: #000000;
+  box-shadow: 0 0 0 1px #000000, 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+:global(html.dark) .otpDigit,
+:global(html:not(.light)) .otpDigit {
+  background: #18181b;
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+:global(html.dark) .otpDigit:focus,
+:global(html:not(.light)) .otpDigit:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 1px #ffffff, 0 0 14px rgba(255, 255, 255, 0.16);
+}
+
+/* =========================================================
+   ACCOUNT SWITCHING ROW (INTENTIONAL MOBILE WRAPPING)
+   ========================================================= */
+.switchAuthRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.45rem;
+  margin-top: 1.65rem;
+  text-align: center;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.switchAuthPrompt {
+  color: #6b7280;
+}
+
+:global(html.dark) .switchAuthPrompt,
+:global(html:not(.light)) .switchAuthPrompt {
+  color: #a1a1aa;
+}
+
+.switchAuthLink {
+  color: #111111;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+  transition: opacity 0.15s ease;
+}
+
+:global(html.dark) .switchAuthLink,
+:global(html:not(.light)) .switchAuthLink {
+  color: #ffffff;
+}
+
+.switchAuthLink:hover {
+  opacity: 0.8;
+}
+
+/* Backwards compatibility aliases */
+.cardFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.45rem;
+  margin-top: 1.65rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+:global(html.dark) .cardFooter,
+:global(html:not(.light)) .cardFooter {
+  color: #a1a1aa;
+}
+
+.actionLink {
+  color: #111111;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+  transition: opacity 0.15s ease;
+}
+
+:global(html.dark) .actionLink,
+:global(html:not(.light)) .actionLink {
+  color: #ffffff;
+}
+
+.actionLink:hover {
+  opacity: 0.8;
+}

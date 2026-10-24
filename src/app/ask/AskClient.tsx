@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useRef, useEffect, useCallback, useMemo, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
@@ -37,7 +37,8 @@ import {
   Printer,
   Maximize2,
   Minimize2,
-  Zap
+  Zap,
+  Target
 } from 'lucide-react';
 import styles from './ask.module.css';
 
@@ -62,6 +63,7 @@ interface Subject {
 }
 
 const EXAM_TYPES = ['General', 'NBSE', 'CBSE', 'JEE', 'NEET', 'CUET'];
+const CLASS_LEVELS = ['All Classes', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'];
 
 const DIFFICULTY_LEVELS = [
   { id: 'basic', label: 'Foundational', desc: 'Step-by-step conceptual basics' },
@@ -225,14 +227,24 @@ function parseAcademicSections(rawText: string): ParsedSections {
   return sections;
 }
 
-export default function AskClient() {
+function AskClientInner() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const qParam = searchParams.get('q') || searchParams.get('question');
+  const classParam = searchParams.get('class');
+  const examParam = searchParams.get('exam');
+  const subjectParam = searchParams.get('subject');
+  const diffParam = searchParams.get('difficulty');
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [streamingContent, setStreamingContent] = useState('');
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState(qParam || '');
   const [isStreaming, setIsStreaming] = useState(false);
-  const [examType, setExamType] = useState('General');
-  const [subject, setSubject] = useState('');
-  const [difficulty, setDifficulty] = useState('standard');
+  const [selectedClass, setSelectedClass] = useState<string>(classParam || '');
+  const [examType, setExamType] = useState(examParam || 'General');
+  const [subject, setSubject] = useState(subjectParam || '');
+  const [difficulty, setDifficulty] = useState(diffParam || 'standard');
   const [language, setLanguage] = useState('english');
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [speechRate, setSpeechRate] = useState<number>(1.0);
@@ -268,7 +280,6 @@ export default function AskClient() {
   const [isListening, setIsListening] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-  const router = useRouter();
   const chatEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -506,7 +517,7 @@ export default function AskClient() {
           signal: ctrl.signal,
           body: JSON.stringify({
             question: text,
-            examType: examType || undefined,
+            examType: [selectedClass, examType !== 'General' ? examType : ''].filter(Boolean).join(' - ') || 'General',
             subject: subject || undefined,
             difficulty,
             language,
@@ -802,7 +813,28 @@ export default function AskClient() {
           <div className={styles.settingsDrawer}>
             <div className={styles.settingsSection}>
               <label className={styles.settingsLabel}>
-                <GraduationCap size={13} /> Target Exam
+                <GraduationCap size={13} /> Class Level
+              </label>
+              <div className={styles.chipGroup}>
+                {CLASS_LEVELS.map(c => {
+                  const isAll = c === 'All Classes';
+                  const isAct = isAll ? !selectedClass : selectedClass === c;
+                  return (
+                    <button
+                      key={c}
+                      onClick={() => setSelectedClass(isAll ? '' : c)}
+                      className={`${styles.settingChip} ${isAct ? styles.settingChipActive : ''}`}
+                    >
+                      {c}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className={styles.settingsSection}>
+              <label className={styles.settingsLabel}>
+                <Target size={13} /> Target Exam
               </label>
               <div className={styles.chipGroup}>
                 {EXAM_TYPES.map(e => (
@@ -1318,5 +1350,13 @@ export default function AskClient() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function AskClient() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '60vh', padding: '4rem 1rem', textAlign: 'center', opacity: 0.6 }}>Loading AI Tutor...</div>}>
+      <AskClientInner />
+    </Suspense>
   );
 }

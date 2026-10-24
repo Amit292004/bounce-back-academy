@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="100%" height="100%">
+  <defs>
+    <!-- Master Kinetic Gradient -->
+    <linearGradient id="hLightKineticGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E11D48" />
+      <stop offset="30%" stop-color="#EA580C" />
+      <stop offset="60%" stop-color="#7C3AED" />
+      <stop offset="90%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+
+    <!-- Secondary Gradient -->
+    <linearGradient id="hLightSecondaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="50%" stop-color="#7C3AED" />
+      <stop offset="100%" stop-color="#E11D48" />
+    </linearGradient>
+
+    <!-- Arrow Gleam Gradient -->
+    <linearGradient id="hLightArrowGleam" x1="0%" y1="80%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7C3AED" />
+      <stop offset="50%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+
+    <!-- Wordmark Accent Gradient -->
+    <linearGradient id="hLightTextAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7C3AED" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+  </defs>
+
+  <!-- Clean Light Canvas Base -->
+  <rect width="1200" height="320" rx="36" fill="#FFFFFF" />
+  <rect width="1196" height="316" x="2" y="2" rx="34" fill="none" stroke="#E2E8F0" stroke-width="2" />
+
+  <!-- LEFT: LOGO EMBLEM -->
+  <g transform="translate(60, 35)">
+    <!-- Squircle Backdrop for Mark -->
+    <rect width="250" height="250" rx="56" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="2" />
+
+    <!-- Scaled Mark -->
+    <g transform="translate(18, 15) scale(0.42)">
+      <!-- Ground Wave -->
+      <path d="M 120 405 C 180 405, 215 425, 260 425 C 310 425, 345 405, 400 405" 
+            stroke="url(#hLightKineticGrad)" stroke-width="4" stroke-linecap="round" opacity="0.5" />
+
+      <!-- Vertical Stem with Rebound Spring -->
+      <path d="M 172 135 L 172 360 C 172 405, 210 430, 255 430 C 298 430, 328 402, 344 372" 
+            fill="none" stroke="url(#hLightKineticGrad)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round" />
+
+      <!-- Upper Loop of 'B' -->
+      <path d="M 172 135 L 290 135 C 342 135, 376 168, 376 214 C 376 258, 342 288, 292 288 L 198 288" 
+            fill="none" stroke="url(#hLightKineticGrad)" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
+
+      <!-- Lower Loop of 'B' -->
+      <path d="M 238 288 L 306 288 C 358 288, 392 322, 392 366 C 392 404, 364 430, 320 430 C 285 430, 260 412, 248 392" 
+            fill="none" stroke="url(#hLightSecondaryGrad)" stroke-width="28" stroke-linecap="round" />
+
+      <!-- Ascending Arrow -->
+      <path d="M 215 395 L 405 145" 
+            fill="none" stroke="url(#hLightArrowGleam)" stroke-width="32" stroke-linecap="round" />
+      <polygon points="415,108 438,184 374,162" 
+               fill="#0284C7" stroke="#0369A1" stroke-width="3" stroke-linejoin="round" />
+
+      <!-- Spark Nodes -->
+      <circle cx="438" cy="118" r="6" fill="#0284C7" />
+      <circle cx="215" cy="395" r="5" fill="#E11D48" />
+    </g>
+  </g>
+
+  <!-- RIGHT: MODERN BRAND TYPOGRAPHY -->
+  <g transform="translate(360, 142)">
+    
+    <!-- Wordmark Line 1: BOUNCE BACK -->
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Montserrat', 'Segoe UI', Roboto, sans-serif" 
+          font-size="70" font-weight="900" letter-spacing="-1.5" fill="#0F172A">
+      Bounce<tspan fill="url(#hLightTextAccent)">Back</tspan>
+    </text>
+
+    <!-- Wordmark Line 2: ACADEMY -->
+    <text x="4" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Montserrat', 'Segoe UI', Roboto, sans-serif" 
+          font-size="28" font-weight="700" fill="#475569" letter-spacing="12">
+      ACADEMY
+    </text>
+
+    <!-- Decorative Modern Divider Line -->
+    <line x1="340" y1="50" x2="440" y2="50" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round" />
+
+    <!-- Tagline: Bounce Back. Rise Higher. -->
+    <text x="4" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif" 
+          font-size="18" font-weight="600" fill="#64748B" letter-spacing="1">
+      BOUNCE BACK. RISE HIGHER.
+    </text>
+
+    <!-- SaaS / Tech Pill Badge -->
+    <g transform="translate(460, 36)">
+      <rect width="180" height="32" rx="16" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5" />
+      <circle cx="16" cy="16" r="4" fill="#059669" />
+      <text x="30" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" 
+            font-size="12" font-weight="700" fill="#475569" letter-spacing="1.5">
+        ONLINE EDTECH
+      </text>
+    </g>
+  </g>
+</svg>

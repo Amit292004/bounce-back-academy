@@ -1,75 +1,57 @@
+/* =========================================================
+   BOUNCE BACK ACADEMY — LOGIN & REGISTER STYLING MODULE
+   Monochrome, Minimal, Professional
+   ========================================================= */
+
 .container {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2.5rem 1.25rem;
-  background: radial-gradient(ellipse at 50% 12%, rgba(99, 102, 241, 0.12) 0%, rgba(37, 99, 235, 0.05) 45%, transparent 70%), #090a0f;
+  padding: 1.5rem 1.25rem;
+  background-color: #fafafa;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease;
 }
 
-:global(html.light) .container,
-:global(html:not(.dark)) .container {
-  background: radial-gradient(ellipse at 50% 12%, rgba(99, 102, 241, 0.07) 0%, rgba(59, 130, 246, 0.03) 45%, transparent 70%), #f8fafc;
+:global(html.dark) .container,
+:global(html:not(.light)) .container {
+  background-color: #09090b;
 }
 
-.container::before {
-  content: '';
-  position: absolute;
-  width: 650px;
-  height: 650px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 65%);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* =========================================================
-   CARD: Glowing White Border & Deep Glass (Matching Banner)
-   ========================================================= */
 .card {
   width: 100%;
-  max-width: 425px;
-  padding: 2.35rem 2.15rem;
-  border-radius: 24px;
-  background: rgba(18, 20, 28, 0.94);
-  backdrop-filter: blur(28px) saturate(190%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
-  border: 1.5px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 
-    0 0 24px -2px rgba(255, 255, 255, 0.2),
-    0 0 50px -10px rgba(99, 102, 241, 0.15),
-    0 28px 65px -16px rgba(0, 0, 0, 0.95),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  position: relative;
-  z-index: 1;
-}
-
-:global(html.light) .card,
-:global(html:not(.dark)) .card {
+  max-width: 440px;
+  padding: 2.25rem 2.25rem;
+  border-radius: 12px;
   background: #ffffff;
-  border: 1.5px solid rgba(15, 23, 42, 0.18);
-  box-shadow: 
-    0 0 0 1px rgba(15, 23, 42, 0.04),
-    0 16px 40px -8px rgba(15, 23, 42, 0.1),
-    0 32px 64px -16px rgba(79, 70, 229, 0.08);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 8px 24px -4px rgba(0, 0, 0, 0.04);
+  position: relative;
 }
 
-/* =========================================================
-   LOGO & BRANDING HEADER
-   ========================================================= */
+.cardWide {
+  max-width: 480px;
+}
+
+:global(html.dark) .card,
+:global(html:not(.light)) .card {
+  background: #111113;
+  border: 1px solid #27272a;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 8px 24px -4px rgba(0, 0, 0, 0.4);
+}
+
 .header {
   text-align: center;
-  margin-bottom: 1.75rem;
+  margin-bottom: 2rem;
 }
 
 .logoWrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 1.1rem;
+  margin-bottom: 1.25rem;
 }
 
 .logoLink {
@@ -77,91 +59,136 @@
   align-items: center;
   justify-content: center;
   padding: 3px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  transition: all 0.15s ease;
   text-decoration: none;
 }
 
 .logoLink:hover {
-  transform: translateY(-2px) scale(1.04);
-  border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 12px 28px -4px rgba(99, 102, 241, 0.35);
+  border-color: #111827;
+  transform: translateY(-1px);
 }
 
-:global(html.light) .logoLink,
-:global(html:not(.dark)) .logoLink {
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.04);
+:global(html.dark) .logoLink,
+:global(html:not(.light)) .logoLink {
+  background: #18181b;
+  border-color: #27272a;
 }
 
-:global(html.light) .logoLink:hover,
-:global(html:not(.dark)) .logoLink:hover {
-  box-shadow: 0 12px 28px -4px rgba(79, 70, 229, 0.2);
-  border-color: rgba(79, 70, 229, 0.3);
+:global(html.dark) .logoLink:hover,
+:global(html:not(.light)) .logoLink:hover {
+  border-color: #f4f4f5;
 }
 
 .logoImg {
-  width: 48px;
-  height: 48px;
-  border-radius: 13px;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
   object-fit: cover;
   display: block;
 }
 
 .title {
-  font-size: 1.6rem;
-  font-weight: 750;
-  margin: 0 0 0.4rem 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #111827;
   letter-spacing: -0.025em;
   line-height: 1.25;
-  color: #ffffff;
+  margin: 0 0 0.5rem 0;
 }
 
-:global(html:not(.dark)) .title {
-  color: #0f172a;
+:global(html.dark) .title,
+:global(html:not(.light)) .title {
+  color: #f4f4f5;
 }
 
 .subtitle {
-  color: #94a3b8;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 400;
-  line-height: 1.45;
-  margin: 0;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0 auto;
+  max-width: 380px;
 }
 
-:global(html:not(.dark)) .subtitle {
-  color: #64748b;
+:global(html.dark) .subtitle,
+:global(html:not(.light)) .subtitle {
+  color: #a1a1aa;
 }
 
-/* =========================================================
-   FORM & FIELDS
-   ========================================================= */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 0.95rem;
+  gap: 1.15rem;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+.gridFull {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 600px) {
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
-.field label {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #e2e8f0;
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.field label,
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
   letter-spacing: -0.01em;
-  padding-left: 0.15rem;
 }
 
-:global(html:not(.dark)) .field label {
-  color: #334155;
+:global(html.dark) .field label,
+:global(html:not(.light)) .field label,
+:global(html.dark) .label,
+:global(html:not(.light)) .label {
+  color: #e4e4e7;
+}
+
+.forgotLink {
+  font-size: 0.8125rem;
+  font-weight: 450;
+  color: #6b7280;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.forgotLink:hover {
+  color: #111827;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+:global(html.dark) .forgotLink,
+:global(html:not(.light)) .forgotLink {
+  color: #a1a1aa;
+}
+
+:global(html.dark) .forgotLink:hover,
+:global(html:not(.light)) .forgotLink:hover {
+  color: #ffffff;
 }
 
 .inputWrapper {
@@ -171,100 +198,52 @@
   align-items: center;
 }
 
-.inputIcon {
-  position: absolute;
-  left: 0.95rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #94a3b8;
-  pointer-events: none;
-  transition: color 0.15s ease;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.inputWrapper:focus-within .inputIcon {
-  color: #4f46e5;
-}
-
-/* =========================================================
-   INPUT BOXES: Ceramic White in Dark Mode
-   ========================================================= */
 .input {
   width: 100%;
-  height: 46px;
-  padding: 0 1rem;
+  height: 48px;
+  padding: 0 0.95rem;
   background-color: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 12px;
-  color: #0f172a;
-  font-size: 0.9rem;
-  font-weight: 500;
-  line-height: 46px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  color: #111827;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
   outline: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
 }
 
-.inputWithIcon {
-  padding-left: 2.65rem;
+.inputHasToggle {
+  padding-right: 2.75rem;
 }
 
 .input::placeholder {
-  color: #64748b;
-  opacity: 1;
+  color: #9ca3af;
   font-weight: 400;
   font-size: 0.875rem;
 }
 
-.input:hover:not(:focus) {
-  border-color: #94a3b8;
+.input:hover:not(:focus):not(:disabled) {
+  border-color: #d1d5db;
 }
 
 .input:focus {
-  border-color: #4f46e5;
+  border-color: #000000;
+  box-shadow: 0 0 0 1px #000000;
   background-color: #ffffff;
-  box-shadow: 
-    0 0 0 3.5px rgba(99, 102, 241, 0.2),
-    0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-/* Fix Autofill in Dark Mode (Crisp White Background + Dark Text) */
-.input:-webkit-autofill,
-.input:-webkit-autofill:hover,
-.input:-webkit-autofill:focus,
-.input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
-  -webkit-text-fill-color: #0f172a !important;
-  caret-color: #0f172a !important;
-  border-color: #4f46e5 !important;
-  transition: background-color 5000s ease-in-out 0s;
+:global(html.dark) .input,
+:global(html:not(.light)) .input {
+  background-color: #18181b;
+  border: 1px solid #27272a;
+  color: #ffffff;
 }
 
-/* Custom Select Dropdown in Dark Mode */
-select.input {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-color: #ffffff;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat !important;
-  background-position: calc(100% - 0.95rem) center !important;
-  background-size: 14px 14px !important;
-  padding-right: 2.25rem;
-  cursor: pointer;
-}
-
-select.input option {
-  background-color: #ffffff;
-  color: #0f172a;
-}
-
-/* Password Toggle Icon */
-.inputHasToggle {
-  padding-right: 2.5rem;
+:global(html.dark) .input:focus,
+:global(html:not(.light)) .input:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 1px #ffffff;
 }
 
 .passwordToggle {
@@ -276,178 +255,95 @@ select.input option {
   height: 32px;
   background: transparent;
   border: none;
-  color: #64748b;
+  color: #6b7280;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 6px;
   transition: all 0.15s ease;
   z-index: 2;
+  outline: none;
 }
 
 .passwordToggle:hover {
-  color: #0f172a;
-  background: rgba(0, 0, 0, 0.06);
+  color: #111827;
+  background: #f4f4f5;
 }
 
-/* =========================================================
-   VICE VERSA: Dark Input Box in Light Mode
-   ========================================================= */
-:global(html.light) .input,
-:global(html:not(.dark)) .input {
-  background-color: #0f172a;
-  border: 1.5px solid #334155;
-  border-radius: 12px;
-  color: #f8fafc;
-  font-size: 0.9rem;
-  height: 46px;
-  line-height: 46px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+:global(html.dark) .passwordToggle,
+:global(html:not(.light)) .passwordToggle {
+  color: #a1a1aa;
 }
 
-:global(html.light) .input::placeholder,
-:global(html:not(.dark)) .input::placeholder {
-  color: #94a3b8;
-  font-size: 0.875rem;
-}
-
-:global(html.light) .input:hover:not(:focus),
-:global(html:not(.dark)) .input:hover:not(:focus) {
-  border-color: #475569;
-}
-
-:global(html.light) .input:focus,
-:global(html:not(.dark)) .input:focus {
-  border-color: #6366f1;
-  background-color: #0f172a;
-  box-shadow: 
-    0 0 0 3.5px rgba(99, 102, 241, 0.25),
-    0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Fix Autofill in Light Mode (Dark Background + Light Text) */
-:global(html.light) .input:-webkit-autofill,
-:global(html:not(.dark)) .input:-webkit-autofill,
-:global(html.light) .input:-webkit-autofill:hover,
-:global(html:not(.dark)) .input:-webkit-autofill:hover,
-:global(html.light) .input:-webkit-autofill:focus,
-:global(html:not(.dark)) .input:-webkit-autofill:focus,
-:global(html.light) .input:-webkit-autofill:active,
-:global(html:not(.dark)) .input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 1000px #0f172a inset !important;
-  -webkit-text-fill-color: #f8fafc !important;
-  caret-color: #f8fafc !important;
-  border-color: #6366f1 !important;
-  transition: background-color 5000s ease-in-out 0s;
-}
-
-:global(html.light) select.input,
-:global(html:not(.dark)) select.input {
-  background-color: #0f172a;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat !important;
-  background-position: calc(100% - 0.95rem) center !important;
-  background-size: 14px 14px !important;
-}
-
-:global(html.light) select.input option,
-:global(html:not(.dark)) select.input option {
-  background-color: #0f172a;
-  color: #f8fafc;
-}
-
-:global(html.light) .passwordToggle,
-:global(html:not(.dark)) .passwordToggle {
-  color: #94a3b8;
-}
-
-:global(html.light) .passwordToggle:hover,
-:global(html:not(.dark)) .passwordToggle:hover {
+:global(html.dark) .passwordToggle:hover,
+:global(html:not(.light)) .passwordToggle:hover {
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.12);
+  background: #27272a;
 }
 
-/* =========================================================
-   PRIMARY ACTION BUTTON: Electric Indigo-Blue CTA
-   ========================================================= */
 .submitBtn {
   width: 100%;
-  height: 46px;
+  height: 48px;
   padding: 0 1.25rem;
-  background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 50%, #2563eb 100%);
+  background-color: #000000;
   color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 650;
-  letter-spacing: 0.01em;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 
-    0 4px 16px rgba(79, 70, 229, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: background-color 0.15s ease;
   margin-top: 0.35rem;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-}
-
-.submitBtn svg {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
 }
 
 .submitBtn:hover:not(:disabled) {
-  transform: translateY(-1.5px);
-  background: linear-gradient(135deg, #4338ca 0%, #2563eb 50%, #1d4ed8 100%);
-  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.45);
-  filter: brightness(1.03);
+  background-color: #27272a;
+  border-color: #27272a;
 }
 
-.submitBtn:hover:not(:disabled) svg {
-  transform: translateX(3px);
+:global(html.dark) .submitBtn,
+:global(html:not(.light)) .submitBtn {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
 }
 
-.submitBtn:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+:global(html.dark) .submitBtn:hover:not(:disabled),
+:global(html:not(.light)) .submitBtn:hover:not(:disabled) {
+  background-color: #e4e4e7;
+  border-color: #e4e4e7;
 }
 
-.submitBtn:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* =========================================================
-   DIVIDER & GOOGLE BUTTON
-   ========================================================= */
 .divider {
   display: flex;
   align-items: center;
   margin: 1.25rem 0;
-  color: #64748b;
-  font-size: 0.72rem;
+  color: #9ca3af;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-weight: 700;
-}
-
-:global(html:not(.dark)) .divider {
-  color: #94a3b8;
+  font-weight: 600;
 }
 
 .divider::before,
 .divider::after {
   content: '';
   flex: 1;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #e5e7eb;
 }
 
-:global(html:not(.dark)) .divider::before,
-:global(html:not(.dark)) .divider::after {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+:global(html.dark) .divider::before,
+:global(html:not(.light)) .divider::before,
+:global(html.dark) .divider::after,
+:global(html:not(.light)) .divider::after {
+  border-bottom: 1px solid #27272a;
 }
 
 .divider span {
@@ -457,68 +353,53 @@ select.input option {
 .googleWrapper {
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 100%;
-  transition: transform 0.15s ease;
-}
-
-.googleWrapper:hover {
-  transform: translateY(-1px);
+  min-height: 44px;
 }
 
 .error {
-  color: #f87171;
-  font-size: 0.825rem;
-  padding: 0.6rem 0.85rem;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.7rem 0.85rem;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
   border-radius: 8px;
-  font-weight: 500;
-  text-align: center;
+  color: #991b1b;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  font-weight: 450;
 }
 
-:global(html:not(.dark)) .error {
-  color: #dc2626;
-  background: rgba(239, 68, 68, 0.06);
-  border-color: rgba(239, 68, 68, 0.18);
+:global(html.dark) .error,
+:global(html:not(.light)) .error {
+  background: #1c1012;
+  border-color: #450a0a;
+  color: #fca5a5;
 }
 
 .footer {
   text-align: center;
-  margin-top: 1.4rem;
-  color: #94a3b8;
-  font-size: 0.85rem;
-  font-weight: 450;
+  margin-top: 1.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
 }
 
-:global(html:not(.dark)) .footer {
-  color: #64748b;
+:global(html.dark) .footer,
+:global(html:not(.light)) .footer {
+  color: #a1a1aa;
 }
 
 .footer a {
-  color: #60a5fa;
+  color: #111827;
   font-weight: 600;
-  margin-left: 0.25rem;
-  text-decoration: none;
-  transition: all 0.15s ease;
-}
-
-.footer a:hover {
-  color: #93c5fd;
   text-decoration: underline;
   text-underline-offset: 3px;
+  margin-left: 0.25rem;
 }
 
-:global(html:not(.dark)) .footer a {
-  color: #2563eb;
-}
-
-:global(html:not(.dark)) .footer a:hover {
-  color: #1d4ed8;
-}
-
-@media (max-width: 480px) {
-  .card {
-    padding: 1.75rem 1.25rem;
-    border-radius: 18px;
-  }
+:global(html.dark) .footer a,
+:global(html:not(.light)) .footer a {
+  color: #ffffff;
 }

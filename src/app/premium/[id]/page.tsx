@@ -26,6 +26,8 @@ import {
 import { FaArrowLeft, FaShoppingCart, FaShieldAlt, FaCreditCard, FaMobileAlt, FaTimes } from "react-icons/fa";
 import { getDriveImageUrl } from "@/lib/driveImage";
 import { getDownloadLink, handleDownload } from "@/lib/utils";
+import PWVideoPlayer from "@/components/video/PWVideoPlayer";
+import AddToCartButton from "@/components/cart/AddToCartButton";
 import { logger } from "@/lib/logger";
 
 // ─── Interfaces ───────────────────────────────────────────────────────────────
@@ -1032,11 +1034,12 @@ export default function PremiumCourseHubPage() {
               </div>
               <div className={styles.modalBody}>
                 <div className={styles.videoEmbed}>
-                  <iframe
-                    src={getYoutubeEmbedUrl(selectedVideo.youtubeLink)}
+                  <PWVideoPlayer
+                    youtubeUrl={selectedVideo.youtubeLink}
                     title={selectedVideo.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
+                    subtitle="Premium Course Lecture"
+                    autoPlay={true}
+                    onBack={() => setSelectedVideo(null)}
                   />
                 </div>
               </div>
@@ -1166,13 +1169,44 @@ export default function PremiumCourseHubPage() {
               )}
             </div>
 
-            <button
-              onClick={handleUnlockClick}
-              disabled={isPurchasing}
-              className={`btn-primary ${premiumStyles.unlockBtn}`}
-            >
-              {isPurchasing ? "Processing Gateway..." : <><FaShoppingCart /> Unlock Access Now</>}
-            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+              <AddToCartButton
+                course={{
+                  id: item.id,
+                  title: item.title,
+                  description: item.description,
+                  price: item.price,
+                  originalPrice: item.originalPrice,
+                  type: item.type,
+                  imageUrl: item.imageUrl,
+                  className: item.className,
+                  features: item.features,
+                  alreadyEnrolled: item.isUnlocked,
+                }}
+                variant="large"
+              />
+
+              <button
+                onClick={handleUnlockClick}
+                disabled={isPurchasing}
+                className="btn-secondary"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  fontSize: '0.88rem',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.4rem',
+                  borderRadius: 'var(--radius-md)',
+                  cursor: isPurchasing ? 'not-allowed' : 'pointer',
+                  opacity: isPurchasing ? 0.6 : 1,
+                }}
+              >
+                {isPurchasing ? 'Connecting Gateway...' : 'Instant Checkout (Buy Now)'}
+              </button>
+            </div>
 
             <div className={premiumStyles.trustBadgeRow}>
               <FaShieldAlt color="#10b981" />

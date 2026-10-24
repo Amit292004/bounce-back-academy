@@ -21,12 +21,12 @@
 }
 
 .inner {
-  max-width: 1200px;
+  max-width: 1240px;
   margin: 0 auto;
   padding: 3.5rem 1.5rem 2rem;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 3rem;
+  grid-template-columns: 1.8fr 1fr 1fr 1fr 1fr;
+  gap: 2.25rem;
 }
 
 /* Brand */
@@ -42,6 +42,7 @@
   height: 30px;
   object-fit: contain;
   border-radius: 6px;
+  background: #ffffff;
 }
 
 .logoText {
@@ -211,10 +212,17 @@
 }
 
 /* Responsive */
-@media (max-width: 900px) {
+@media (max-width: 1080px) {
+  .inner {
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 960px) {
   .inner {
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    gap: 2.5rem 2rem;
   }
   .brand { grid-column: 1 / -1; }
 }

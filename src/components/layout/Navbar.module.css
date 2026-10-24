@@ -1,26 +1,36 @@
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 200;
-  background: var(--background);
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  background-color: var(--header-bg, #ffffff);
+  border-bottom: 1px solid var(--header-border, var(--surface-border));
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .header.scrolled {
-  border-bottom-color: var(--surface-border);
-  background: var(--background);
+  border-bottom-color: var(--header-border, var(--surface-border));
+  box-shadow: var(--header-shadow, 0 4px 20px rgba(0, 0, 0, 0.08));
+}
+
+.headerSpacer {
+  height: var(--header-height, 70px);
+  width: 100%;
+  flex-shrink: 0;
 }
 
 .inner {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
-  gap: 1.5rem;
+  height: var(--header-height, 70px);
+  gap: 1rem;
   position: relative;
 }
 
@@ -34,10 +44,11 @@
 }
 
 .logoImg {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
   object-fit: contain;
+  background: #ffffff;
 }
 
 .logoText {
@@ -60,8 +71,7 @@
 .desktopNav {
   display: flex;
   align-items: center;
-  gap: 0.15rem;
-  flex: 1;
+  gap: 0.25rem;
   position: relative;
 }
 
@@ -70,28 +80,31 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.45rem 0.75rem;
-  border-radius: 7px;
+  padding: 0.5rem 0.72rem;
+  border-radius: 8px;
   border: none;
   background: transparent;
   color: var(--foreground);
   font-size: 0.88rem;
   font-weight: 500;
   cursor: pointer;
-  opacity: 0.75;
-  transition: opacity 0.15s ease, background 0.15s ease;
+  opacity: 0.85;
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
   letter-spacing: -0.01em;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .navBtn:hover,
 .navBtnActive {
   opacity: 1;
   background: var(--surface-card);
+  color: var(--foreground);
 }
 
 .chevron {
   font-size: 0.65rem;
-  opacity: 0.6;
+  opacity: 0.7;
   transition: transform 0.2s ease;
 }
 
@@ -103,22 +116,25 @@
 .navLink {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.45rem 0.75rem;
-  border-radius: 7px;
+  gap: 0.35rem;
+  padding: 0.5rem 0.72rem;
+  border-radius: 8px;
   font-weight: 500;
   color: var(--foreground);
   font-size: 0.88rem;
-  transition: opacity 0.15s ease, background 0.15s ease;
-  opacity: 0.75;
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+  opacity: 0.85;
   text-decoration: none;
   letter-spacing: -0.01em;
   position: relative;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .navLink:hover {
   opacity: 1;
   background: var(--surface-card);
+  color: var(--foreground);
 }
 
 .navLinkActive {
@@ -126,6 +142,27 @@
   color: var(--primary);
   background: rgba(99,102,241,0.08);
   opacity: 1;
+}
+
+/* AI Tutor special nav button styling */
+.aiTutorLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.aiTutorIcon {
+  color: var(--primary);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  opacity: 0.9;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.aiTutorLink:hover .aiTutorIcon {
+  opacity: 1;
+  transform: scale(1.08);
 }
 
 /* New badge dot */
@@ -242,9 +279,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.45rem 1rem;
+  padding: 0.52rem 1.05rem;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 0.86rem;
   font-weight: 600;
   background: var(--foreground);
   color: var(--background);
@@ -265,16 +302,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.45rem 1rem;
+  padding: 0.52rem 0.95rem;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 0.86rem;
   font-weight: 500;
   background: transparent;
   color: var(--foreground);
   border: 1px solid var(--surface-border);
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   letter-spacing: -0.01em;
   white-space: nowrap;
 }
@@ -285,149 +322,950 @@
   color: var(--foreground);
 }
 
-.userInfo {
+/* ── User Account Menu Dropdown ── */
+.userMenuContainer {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  opacity: 0.75;
-  font-size: 0.84rem;
-  font-weight: 500;
+}
+
+.userTriggerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem 0.35rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-card);
+  color: var(--foreground);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.userTriggerBtn:hover,
+.userTriggerActive {
+  background: var(--surface);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 }
 
 .avatarImg {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
+}
+
+.avatarPlaceholder {
+  font-size: 1.45rem;
+  color: var(--primary);
+  flex-shrink: 0;
 }
 
 .userName {
+  font-size: 0.84rem;
+  font-weight: 600;
   max-width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  letter-spacing: -0.01em;
 }
 
-/* ── Mobile ── */
-.mobileMenuBtn {
-  background: transparent;
+.userChevron {
+  font-size: 0.62rem;
+  opacity: 0.6;
+  transition: transform 0.2s ease;
+}
+
+.userDropdownMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background: var(--surface);
   border: 1px solid var(--surface-border);
-  color: var(--foreground);
-  cursor: pointer;
-  font-size: 1.1rem;
-  padding: 0.45rem;
-  border-radius: 7px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.15s ease;
+  border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.14), 0 3px 10px rgba(0, 0, 0, 0.06);
+  padding: 0.5rem;
+  z-index: 350;
+  animation: userDrop 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top right;
 }
 
-.mobileMenuBtn:hover {
-  background: var(--surface-card);
+@keyframes userDrop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-.mobileMenu {
-  border-top: 1px solid var(--surface-border);
-  background: var(--background);
-  padding: 1rem 1rem 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  max-height: 80vh;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-.mobileSection {
-  padding: 0.5rem 0;
-}
-
-.mobileSectionHead {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.4;
-  padding: 0.5rem 0.75rem;
-  margin-bottom: 0.25rem;
-}
-
-.mobileDivider {
-  height: 1px;
-  background: var(--surface-border);
-  margin: 0.25rem 0;
-}
-
-.mobileLink {
+.userDropdownHeader {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.7rem 0.75rem;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 0.9rem;
-  text-decoration: none;
-  color: var(--foreground);
-  transition: background 0.15s ease;
-  opacity: 0.8;
+  padding: 0.6rem 0.75rem 0.75rem;
 }
 
-.mobileLink:hover {
+.userDropdownAvatarWrap {
+  flex-shrink: 0;
+}
+
+.userDropdownAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userDropdownPlaceholder {
+  font-size: 2.2rem;
+  color: var(--primary);
+}
+
+.userDropdownInfo {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.userDropdownName {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userDropdownEmail {
+  font-size: 0.75rem;
+  color: var(--foreground);
+  opacity: 0.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.userDropdownDivider {
+  height: 1px;
+  background: var(--surface-border);
+  margin: 0.35rem 0;
+}
+
+.userDropdownList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.userDropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 9px;
+  text-decoration: none;
+  color: var(--foreground);
+  transition: background 0.12s ease;
+}
+
+.userDropdownItem:hover {
+  background: var(--surface-card);
+}
+
+.userDropdownItemPrimary {
+  background: rgba(99, 102, 241, 0.06);
+}
+
+.userDropdownItemPrimary:hover {
+  background: rgba(99, 102, 241, 0.12);
+}
+
+.userDropdownIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--background);
+  border: 1px solid var(--surface-border);
+  color: var(--foreground);
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+.userDropdownItemContent {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.userDropdownItemLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--foreground);
+  line-height: 1.2;
+}
+
+.userDropdownItemDesc {
+  font-size: 0.72rem;
+  opacity: 0.55;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+.userDropdownFooter {
+  padding-top: 0.2rem;
+}
+
+.userDropdownLogout {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 9px;
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s ease;
+}
+
+.userDropdownLogout:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* ── Mobile Navigation Drawer Backdrop ── */
+.drawerBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1050;
+  animation: backdropFade 0.2s ease-out forwards;
+}
+
+@keyframes backdropFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── Mobile Navigation Drawer Panel ── */
+.mobileDrawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 360px;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--surface);
+  border-left: 1px solid var(--surface-border);
+  z-index: 1060;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 28px rgba(0, 0, 0, 0.4);
+  transform: translateX(100%);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
+  visibility: hidden;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mobileDrawerOpen {
+  transform: translateX(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* 1. Drawer Header */
+.drawerHeader {
+  height: var(--header-height, 70px);
+  padding: 0 1rem;
+  border-bottom: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  flex-shrink: 0;
+  gap: 0.75rem;
+}
+
+.drawerLogoLink {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+  min-width: 0;
+  flex: 1;
+}
+
+.drawerLogoText {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+
+.drawerHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.drawerActionBtn,
+.drawerCloseBtn {
+  background: transparent;
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  color: var(--foreground);
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.drawerActionBtn:hover,
+.drawerCloseBtn:hover {
+  background: var(--surface-card);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.drawerCloseBtn {
+  color: var(--foreground);
+}
+
+.drawerCartBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 0.6rem;
+  font-weight: 800;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* 2. Drawer Body */
+.drawerBody {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.85rem 0.85rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.drawerSearchBox {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 9px;
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  color: var(--foreground);
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.drawerSearchBox:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.drawerSearchIcon {
+  opacity: 0.55;
+  flex-shrink: 0;
+}
+
+.drawerSearchPlaceholder {
+  font-size: 0.84rem;
+  opacity: 0.65;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawerSearchKbd {
+  font-family: inherit;
+  font-size: 0.65rem;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  background: var(--surface-highlight);
+  border: 1px solid var(--surface-border);
+  opacity: 0.6;
+}
+
+.drawerGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.drawerGroupHeader {
+  padding: 0.4rem 0.65rem 0.25rem;
+}
+
+.drawerGroupLabel {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--foreground);
+  opacity: 0.45;
+}
+
+.drawerNavList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.drawerNavItem {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  color: var(--foreground);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  min-height: 40px;
+}
+
+.drawerNavItem:hover {
+  background: var(--surface-card);
+  color: var(--foreground);
+}
+
+.drawerNavItemActive {
+  background: var(--surface-card);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.drawerNavIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.75;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.drawerNavItemActive .drawerNavIcon {
+  opacity: 1;
+  color: var(--primary);
+}
+
+.drawerNavTitle {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawerExpandableGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.drawerExpandableRow {
+  display: flex;
+  align-items: center;
+}
+
+.drawerNavMainItem {
+  flex: 1;
+}
+
+.drawerSubmenuToggle {
+  background: transparent;
+  border: none;
+  color: var(--foreground);
+  opacity: 0.65;
+  padding: 0.55rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.drawerSubmenuToggle:hover {
+  opacity: 1;
+  background: var(--surface-card);
+}
+
+.drawerChevron {
+  transition: transform 0.2s ease;
+}
+
+.drawerChevronRotated {
+  transform: rotate(180deg);
+}
+
+.drawerSubmenu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-left: 1.25rem;
+  padding-left: 0.6rem;
+  border-left: 1px solid var(--surface-border);
+  margin-top: 0.15rem;
+  margin-bottom: 0.35rem;
+}
+
+.drawerSubItem {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 6px;
+  color: var(--foreground);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  opacity: 0.8;
+  transition: all 0.15s ease;
+}
+
+.drawerSubItem:hover {
   background: var(--surface-card);
   opacity: 1;
 }
 
-.mobileLinkActive {
-  background: rgba(99,102,241,0.08);
+.drawerSubItemActive {
+  background: var(--surface-card);
   color: var(--primary);
+  font-weight: 600;
   opacity: 1;
 }
 
-.mobileLinkIcon {
-  display: flex;
+.drawerSubIcon {
+  display: inline-flex;
   align-items: center;
-  opacity: 0.6;
+  opacity: 0.7;
+}
+
+.drawerDivider {
+  height: 1px;
+  background: var(--surface-border);
+  margin: 0.45rem 0;
+  opacity: 0.75;
+}
+
+.drawerPillBadge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  letter-spacing: 0.02em;
+}
+
+.drawerPillBadgeAccent {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(249, 115, 22, 0.12);
+  color: #f97316;
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  letter-spacing: 0.02em;
+}
+
+.drawerDot {
+  width: 6px;
+  height: 6px;
+  background: #ef4444;
+  border-radius: 50%;
+  margin-left: auto;
   flex-shrink: 0;
 }
 
-.mobileBadge {
-  margin-left: auto;
-  font-size: 0.58rem;
-  font-weight: 700;
-  padding: 0.12rem 0.4rem;
-  border-radius: 4px;
-  background: rgba(249,115,22,0.12);
-  border: 1px solid rgba(249,115,22,0.2);
-  color: #f97316;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+/* 3. Drawer Footer */
+.drawerFooter {
+  padding: 0.75rem 0.85rem calc(0.75rem + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--surface-border);
+  background: var(--surface);
+  flex-shrink: 0;
 }
 
-.mobileAuthRow {
+.drawerAccountCard {
   display: flex;
-  gap: 0.6rem;
-  padding: 0.75rem 0 0;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.drawerAccountHeader {
+  display: flex;
   align-items: center;
+  gap: 0.65rem;
+  padding-bottom: 0.25rem;
+}
+
+.drawerAccountAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  flex-shrink: 0;
+}
+
+.drawerAccountInfo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.drawerAccountName {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawerAccountEmail {
+  font-size: 0.74rem;
+  opacity: 0.55;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawerThemeToggleWrap {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.drawerAccountGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.35rem;
+}
+
+.drawerAccountBtn,
+.drawerLogoutBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.48rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  background: var(--surface-card);
+  color: var(--foreground);
+  border: 1px solid var(--surface-border);
+  transition: all 0.15s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.drawerAccountBtn:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: var(--surface-highlight);
+}
+
+.drawerAccountBtnActive {
+  background: var(--surface-card);
+  color: var(--primary);
+  font-weight: 600;
+  border-color: var(--primary);
+}
+
+.drawerLogoutBtn {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.25);
+  background: transparent;
+}
+
+.drawerLogoutBtn:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.drawerGuestCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.drawerGuestActions {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.drawerGuestLoginBtn,
+.drawerGuestRegisterBtn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.drawerGuestLoginBtn {
+  background: var(--surface-card);
+  color: var(--foreground);
+  border: 1px solid var(--surface-border);
+}
+
+.drawerGuestLoginBtn:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.drawerGuestRegisterBtn {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: 1px solid var(--primary);
+}
+
+.drawerGuestRegisterBtn:hover {
+  opacity: 0.9;
+}
+
+.drawerGuestFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.15rem;
+}
+
+.drawerSupportLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--foreground);
+  opacity: 0.65;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.drawerSupportLink:hover {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .mobileDrawer {
+    max-width: 100%;
+    border-left: none;
+  }
+}
+
+@media (max-width: 1220px) {
+  .inner {
+    padding: 0 0.85rem;
+    gap: 0.6rem;
+  }
+  .logoText {
+    font-size: 0.9rem;
+  }
+  .desktopNav {
+    gap: 0.15rem;
+  }
+  .navBtn,
+  .navLink {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.84rem;
+  }
+  .desktopAuth {
+    gap: 0.4rem;
+  }
+  .authBtn,
+  .authBtnGhost {
+    padding: 0.38rem 0.65rem;
+    font-size: 0.8rem;
+  }
+  .userName {
+    max-width: 80px;
+  }
+}
+
+@media (max-width: 1120px) {
+  .userName {
+    display: none;
+  }
+}
+
+.cartIconBtn {
+  position: relative;
+  background: transparent;
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  color: var(--foreground);
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.cartIconBtn:hover {
+  background: var(--surface-card);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.cartBadge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 0.65rem;
+  font-weight: 800;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+.mobileActions {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.mobileActionBtn,
+.mobileMenuBtn {
+  background: transparent;
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  color: var(--foreground);
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  position: relative;
+  padding: 0;
+}
+
+.mobileActionBtn:hover,
+.mobileMenuBtn:hover {
+  background: var(--surface-card);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.desktopSearchWrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 1;
 }
 
 @media (max-width: 1024px) {
+  .headerSpacer {
+    height: 60px;
+  }
+
+  .inner {
+    height: 60px;
+    padding: 0 1rem;
+    gap: 0.6rem;
+  }
+
+  .drawerHeader {
+    height: 60px;
+  }
+
+  .logoImg {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+  }
+
+  .cartIconBtn,
+  .mobileActionBtn,
+  .mobileMenuBtn {
+    width: 36px;
+    height: 36px;
+  }
+
   .desktopNav,
-  .desktopAuth {
+  .desktopAuth,
+  .desktopSearchWrap {
     display: none;
   }
-  .mobileMenuBtn {
-    display: flex;
-  }
-  .mobileMenu {
-    height: calc(100vh - 60px);
-    height: calc(100dvh - 60px);
-    max-height: none; /* override 80vh */
-  }
-}
 
-@media (max-width: 768px) {
-  .mobileMenu {
-    padding-bottom: calc(1.25rem + 80px + env(safe-area-inset-bottom, 0px));
+  .mobileActions {
+    display: flex;
   }
 }

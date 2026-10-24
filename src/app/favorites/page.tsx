@@ -16,6 +16,7 @@ import {
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import InteractionButtons from '@/components/InteractionButtons';
+import PWVideoPlayer from '@/components/video/PWVideoPlayer';
 import { logger } from '@/lib/logger';
 import styles from './page.module.css';
 
@@ -88,6 +89,55 @@ export default function FavoritesPage() {
     const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?/\s]{11})/);
     return match ? match[1] : null;
   };
+
+  if (!loading && !isAuthenticated) {
+    return (
+      <div className={styles.favoritesShell}>
+        <div style={{
+          maxWidth: 480,
+          margin: '4rem auto',
+          textAlign: 'center',
+          padding: '2.5rem 1.5rem',
+          background: 'var(--surface-card, #141414)',
+          border: '1px solid var(--surface-border, rgba(255,255,255,0.1))',
+          borderRadius: '16px'
+        }}>
+          <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
+            <Bookmark size={26} />
+          </div>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff', marginBottom: '0.5rem' }}>Your Saved Study Library</h2>
+          <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, marginBottom: '1.75rem' }}>
+            Bookmark questions papers, chapter revision notes, and video lectures to access them anytime here.
+          </p>
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+            <Link href="/login?redirect=/favorites" style={{
+              background: '#6366f1',
+              color: '#fff',
+              padding: '0.65rem 1.5rem',
+              borderRadius: '8px',
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              textDecoration: 'none'
+            }}>
+              Sign In to View
+            </Link>
+            <Link href="/library" style={{
+              background: 'transparent',
+              color: '#ededed',
+              border: '1px solid rgba(255,255,255,0.2)',
+              padding: '0.65rem 1.25rem',
+              borderRadius: '8px',
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              textDecoration: 'none'
+            }}>
+              Browse Library
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -404,10 +454,12 @@ export default function FavoritesPage() {
 
             <div className={styles.videoEmbed}>
               {getYoutubeId(selectedVideo.youtubeLink) ? (
-                <iframe
-                  src={`https://www.youtube.com/embed/${getYoutubeId(selectedVideo.youtubeLink)}?autoplay=1&rel=0&modestbranding=1`}
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  allowFullScreen
+                <PWVideoPlayer
+                  youtubeUrl={selectedVideo.youtubeLink}
+                  title={selectedVideo.title}
+                  subtitle="Saved Favorite Lecture"
+                  autoPlay={true}
+                  onBack={() => setSelectedVideo(null)}
                 />
               ) : (
                 <div className={styles.videoEmbedError}>

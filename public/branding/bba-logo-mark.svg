@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Radial Atmosphere -->
+    <radialGradient id="markBgGlow" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.22" />
+      <stop offset="40%" stop-color="#06B6D4" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#07080D" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Master Kinetic Gradient: Coral -> Cyber Violet -> Sky Cyan -->
+    <linearGradient id="kineticGradPrimary" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF3366" />
+      <stop offset="28%" stop-color="#FF5E62" />
+      <stop offset="58%" stop-color="#8B5CF6" />
+      <stop offset="85%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+
+    <!-- Secondary Harmonic Gradient for Lower Loop & Inner Rings -->
+    <linearGradient id="kineticGradSecondary" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="45%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#FF3366" />
+    </linearGradient>
+
+    <!-- Accent Launch Arrow Gradient -->
+    <linearGradient id="arrowGleam" x1="0%" y1="80%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="40%" stop-color="#06B6D4" />
+      <stop offset="90%" stop-color="#E0F2FE" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+
+    <!-- Glassmorphic Highlights -->
+    <linearGradient id="sheenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.5" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Card Edge Border -->
+    <linearGradient id="cardBorderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.5" />
+      <stop offset="50%" stop-color="#222538" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#06B6D4" stop-opacity="0.3" />
+    </linearGradient>
+
+    <!-- Glow & Shadow Filters -->
+    <filter id="coreGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="arrowPulse" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#06B6D4" flood-opacity="0.6" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Container Canvas with Rounded Squircle -->
+  <rect width="512" height="512" rx="112" fill="#090A10" />
+  <rect width="508" height="508" x="2" y="2" rx="110" fill="none" stroke="url(#cardBorderGrad)" stroke-width="2" />
+  
+  <!-- Ambient Atmospheric Glow -->
+  <circle cx="256" cy="240" r="230" fill="url(#markBgGlow)" />
+
+  <!-- Rebound Surface Horizon (Subtle energy baseline) -->
+  <path d="M 120 405 C 180 405, 215 425, 260 425 C 310 425, 345 405, 400 405" 
+        stroke="url(#kineticGradPrimary)" stroke-width="3" stroke-linecap="round" opacity="0.35" />
+  <ellipse cx="260" cy="425" rx="42" ry="5" fill="#FF3366" opacity="0.35" filter="url(#coreGlow)" />
+
+  <!-- MAIN EMBLEM: The Kinetic 'B' + Soaring Rebound Trajectory -->
+  <g transform="translate(0, 0)">
+    
+    <!-- Outer Kinetic Trajectory Ribbons (Ambient Echo) -->
+    <path d="M 168 375 C 130 325, 126 215, 178 152 C 224 96, 318 90, 362 142" 
+          fill="none" stroke="url(#kineticGradPrimary)" stroke-width="12" stroke-linecap="round" opacity="0.25" filter="url(#coreGlow)" />
+
+    <!-- 1. The Strong Vertical Stem with Rebound Spring Loop at the Bottom -->
+    <!-- Starts at top left, dives down, rebounds into an energetic curve -->
+    <path d="M 172 135 L 172 360 C 172 405, 210 430, 255 430 C 298 430, 328 402, 344 372" 
+          fill="none" stroke="url(#kineticGradPrimary)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- 2. The Upper Wing / Loop of the 'B' -->
+    <path d="M 172 135 L 290 135 C 342 135, 376 168, 376 214 C 376 258, 342 288, 292 288 L 198 288" 
+          fill="none" stroke="url(#kineticGradPrimary)" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- 3. The Lower Dynamic Loop of the 'B' (Interlocking with Rebound) -->
+    <path d="M 238 288 L 306 288 C 358 288, 392 322, 392 366 C 392 404, 364 430, 320 430 C 285 430, 260 412, 248 392" 
+          fill="none" stroke="url(#kineticGradSecondary)" stroke-width="28" stroke-linecap="round" />
+
+    <!-- 4. The Ascending Momentum Vector / Rocketing Arrow -->
+    <!-- Launches from the bottom bounce node (x:205, y:395) through the center cutting upwards to top right -->
+    <g filter="url(#arrowPulse)">
+      <!-- Kinetic Vector Beam -->
+      <path d="M 215 395 L 405 145" 
+            fill="none" stroke="url(#arrowGleam)" stroke-width="32" stroke-linecap="round" />
+
+      <!-- Aerodynamic Stealth Arrowhead -->
+      <polygon points="415,108 438,184 374,162" 
+               fill="#38BDF8" stroke="#E0F2FE" stroke-width="3" stroke-linejoin="round" />
+    </g>
+
+    <!-- 5. Energy Spark Nodes / Polaris Star of Excellence -->
+    <!-- Star at the arrowhead apex -->
+    <circle cx="438" cy="118" r="6" fill="#FFFFFF" filter="url(#coreGlow)" />
+    <circle cx="438" cy="118" r="2.5" fill="#38BDF8" />
+
+    <!-- Spark at the Rebound Fulcrum -->
+    <circle cx="215" cy="395" r="5" fill="#FF5E62" filter="url(#coreGlow)" />
+
+    <!-- Orbit Sparkle (Learning Milestones) -->
+    <circle cx="154" cy="188" r="3.5" fill="#38BDF8" opacity="0.8" />
+    <circle cx="395" cy="275" r="3.5" fill="#C084FC" opacity="0.8" />
+  </g>
+</svg>

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Star, GraduationCap, Heart } from 'lucide-react';
+import { Home, GraduationCap, BookOpen, Sparkles, UserCheck } from 'lucide-react';
 import styles from './GlobalBottomNav.module.css';
 import ClassSwitcherModal from './ClassSwitcherModal';
 
@@ -11,7 +11,6 @@ export default function GlobalBottomNav() {
   const pathname = usePathname();
   const router = useRouter();
 
-  // All client-only state initialised to safe defaults (same as SSR)
   const [currentHash, setCurrentHash] = useState('');
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
   const [savedClass, setSavedClass] = useState<string | null>(null);
@@ -20,7 +19,6 @@ export default function GlobalBottomNav() {
   const isClassRoute = pathname?.startsWith('/class/');
   const currentClass = isClassRoute ? decodeURIComponent(pathname.split('/')[2]) : undefined;
 
-  // After mount: read localStorage and hash — never on server
   useEffect(() => {
     setMounted(true);
     setCurrentHash(window.location.hash);
@@ -31,7 +29,6 @@ export default function GlobalBottomNav() {
     }
   }, []);
 
-  // Keep hash in sync when navigating
   useEffect(() => {
     if (!mounted) return;
 
@@ -51,7 +48,6 @@ export default function GlobalBottomNav() {
     };
   }, [pathname, mounted, currentHash]);
 
-  // Re-read localStorage when pathname changes (class switch)
   useEffect(() => {
     if (!mounted) return;
     const saved = localStorage.getItem('selectedClass');
@@ -60,33 +56,37 @@ export default function GlobalBottomNav() {
     }
   }, [pathname, mounted]);
 
-  // Use currentClass (from URL) first — only fall back to savedClass after mount
-  // to avoid SSR/client mismatch
   const targetClass = currentClass || (mounted ? savedClass : null);
 
   const tabs = [
-    { href: '/?noredirect=true', label: 'Home',       icon: <Home size={20} /> },
-    { href: '/#classes',         label: 'Classes',    icon: <GraduationCap size={20} /> },
-    { href: '/premium',          label: 'Premium',    icon: <Star size={20} /> },
-    { href: '/favorites',        label: 'Favourites', icon: <Heart size={20} /> },
+    { href: '/?noredirect=true', label: 'Home',      icon: <Home size={19} /> },
+    { href: '/school',           label: 'School',    icon: <GraduationCap size={19} /> },
+    { href: '/courses',          label: 'Courses',   icon: <BookOpen size={19} /> },
+    { href: '/ai-tutor',         label: 'AI Tutor',  icon: <Sparkles size={19} /> },
+    { href: '/dashboard',        label: 'Dashboard', icon: <UserCheck size={19} /> },
   ];
 
   return (
     <>
-      <nav className={styles.bottomNav}>
-        {tabs.map(tab => {
-          const isClassesTab = tab.href.includes('#classes');
-          const isHomeTab    = tab.href.startsWith('/?noredirect=true');
-          const isPremiumTab = tab.label === 'Premium';
+      <nav className={styles.bottomNav} aria-label="Mobile Bottom Navigation">
+        {tabs.map((tab) => {
+          const isClassesTab = tab.href === '/school' || tab.href.includes('#classes');
+          const isHomeTab = tab.href.startsWith('/?noredirect=true');
+          const isCoursesTab = tab.href === '/courses';
+          const isAiTab = tab.href === '/ai-tutor' || tab.href === '/ask';
+          const isDashboardTab = tab.href === '/dashboard';
 
-          // Compute active state using only pathname + currentHash (safe on both server and client)
           const isActive = isHomeTab
-            ? (pathname === '/' && currentHash !== '#classes')
+            ? pathname === '/' && currentHash !== '#classes'
             : isClassesTab
-              ? ((pathname === '/' && currentHash === '#classes') || isClassRoute)
-              : isPremiumTab
-                ? pathname?.startsWith('/premium')
-                : pathname?.startsWith(tab.href);
+            ? pathname?.startsWith('/school') || isClassRoute
+            : isCoursesTab
+            ? pathname?.startsWith('/courses') || pathname?.startsWith('/exams') || pathname?.startsWith('/skills') || pathname?.startsWith('/premium')
+            : isAiTab
+            ? pathname === '/ask' || pathname === '/ai-tutor'
+            : isDashboardTab
+            ? pathname?.startsWith('/dashboard') || pathname?.startsWith('/profile')
+            : pathname?.startsWith(tab.href);
 
           return (
             <Link
@@ -98,7 +98,7 @@ export default function GlobalBottomNav() {
                   if (targetClass) {
                     router.push(`/class/${encodeURIComponent(targetClass)}`);
                   } else {
-                    setIsSwitcherOpen(true);
+                    router.push('/school');
                   }
                 } else {
                   setCurrentHash('');
@@ -113,11 +113,13 @@ export default function GlobalBottomNav() {
         })}
       </nav>
 
-      <ClassSwitcherModal
-        isOpen={isSwitcherOpen}
-        onClose={() => setIsSwitcherOpen(false)}
-        currentClass={currentClass}
-      />
+      {isSwitcherOpen && (
+        <ClassSwitcherModal
+          isOpen={isSwitcherOpen}
+          currentClass={targetClass || undefined}
+          onClose={() => setIsSwitcherOpen(false)}
+        />
+      )}
     </>
   );
 }

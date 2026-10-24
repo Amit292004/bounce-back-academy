@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test": "node --experimental-strip-types --test tests/curriculum.test.mjs tests/utils.test.mjs tests/quiz_scoring.test.js tests/auth_tokens.test.mjs tests/auth_experience.test.mjs tests/ai_tutor.test.mjs tests/sitemap.test.mjs tests/library.test.mjs tests/navigation_routes.test.mjs tests/cart_checkout.test.mjs tests/faq_system.test.mjs tests/universal_search.test.mjs tests/mobile_navigation.test.mjs tests/hero_redesign.test.mjs tests/admin_advertising.test.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

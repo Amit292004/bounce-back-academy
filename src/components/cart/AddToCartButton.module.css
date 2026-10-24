@@ -1,0 +1,113 @@
+.btnContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.cartBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  font-size: 0.88rem;
+  padding: 0.65rem 1.15rem;
+  flex: 1;
+}
+
+.cartBtn:active {
+  transform: scale(0.98);
+}
+
+/* Primary variant */
+.variantPrimary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.variantPrimary:hover {
+  opacity: 0.92;
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.12);
+}
+
+/* Secondary variant */
+.variantSecondary {
+  background: var(--surface-card);
+  border-color: var(--surface-border);
+  color: var(--foreground);
+}
+
+.variantSecondary:hover {
+  background: var(--surface-highlight);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Compact variant */
+.variantCompact {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.8rem;
+  border-radius: var(--radius-sm);
+}
+
+/* Large variant */
+.variantLarge {
+  padding: 0.85rem 1.6rem;
+  font-size: 0.98rem;
+  font-weight: 800;
+}
+
+/* In Cart State */
+.btnInCart {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: #818cf8;
+}
+
+.btnInCart:hover {
+  background: rgba(99, 102, 241, 0.25);
+  border-color: rgba(99, 102, 241, 0.6);
+}
+
+/* Enrolled State */
+.btnEnrolled {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #10b981;
+}
+
+.btnEnrolled:hover {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: rgba(16, 185, 129, 0.6);
+}
+
+/* View Details secondary link */
+.detailsLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 0.95rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--foreground);
+  opacity: 0.75;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid var(--surface-border);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.detailsLink:hover {
+  opacity: 1;
+  background: var(--surface-highlight);
+  border-color: rgba(255, 255, 255, 0.25);
+}

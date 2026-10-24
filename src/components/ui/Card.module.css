@@ -1,0 +1,30 @@
+.card {
+  background: var(--surface-card, #141414);
+  border: 1px solid var(--surface-border, rgba(255, 255, 255, 0.1));
+  border-radius: var(--radius-md, 12px);
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.padded {
+  padding: 1.5rem;
+}
+
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(99, 102, 241, 0.2);
+}
+
+.elevated {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.flat {
+  background: transparent;
+  border-color: var(--surface-border, rgba(255, 255, 255, 0.08));
+}

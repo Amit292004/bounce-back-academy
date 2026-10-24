@@ -1,0 +1,700 @@
+/* ── Main FAQ Section & Container ── */
+.section {
+  padding: 4.5rem 1.5rem 3.5rem;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.container {
+  width: 100%;
+}
+
+/* ── 1. Heading & Introduction ── */
+.sectionHead {
+  text-align: center;
+  max-width: 660px;
+  margin: 0 auto 1.75rem;
+}
+
+.eyebrow {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary);
+  opacity: 0.85;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-size: clamp(1.95rem, 3.5vw, 2.45rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--foreground);
+  margin-bottom: 0.65rem;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--foreground);
+  opacity: 0.65;
+}
+
+/* ── 2. Search Field ── */
+.searchWrapper {
+  max-width: 640px;
+  margin: 0 auto 1.5rem;
+}
+
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  color: var(--foreground);
+  opacity: 0.45;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.8rem 2.75rem 0.8rem 2.85rem;
+  min-height: 48px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  background: var(--surface);
+  color: var(--foreground);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md, 10px);
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.searchInput::placeholder {
+  color: var(--foreground);
+  opacity: 0.38;
+}
+
+.searchInput:focus {
+  border-color: color-mix(in srgb, var(--foreground) 35%, transparent);
+  background: var(--surface-card);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+
+.clearSearchBtn {
+  position: absolute;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--foreground);
+  opacity: 0.45;
+  cursor: pointer;
+  padding: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+
+.clearSearchBtn:hover {
+  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.clearSearchBtn:focus-visible {
+  outline: 2px solid var(--foreground);
+  opacity: 1;
+}
+
+/* ── 3. Category Filter Chips ── */
+.categoriesContainer {
+  margin-bottom: 1.85rem;
+}
+
+.categoryPills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding-bottom: 0.25rem;
+}
+
+.categoryPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.48rem 1rem;
+  min-height: 38px;
+  border-radius: 9999px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--foreground);
+  opacity: 0.75;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.categoryPill:hover {
+  opacity: 1;
+  background: var(--surface-card);
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
+}
+
+.categoryPillActive {
+  background: var(--foreground);
+  color: var(--background);
+  border-color: var(--foreground);
+  opacity: 1;
+  font-weight: 600;
+}
+
+.categoryPillActive:hover {
+  background: var(--primary-hover, #d4d4d4);
+  border-color: var(--primary-hover, #d4d4d4);
+  color: var(--background);
+}
+
+.categoryPillActive .pillCount {
+  background: color-mix(in srgb, var(--background) 18%, transparent);
+  color: var(--background);
+}
+
+.pillCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35rem;
+  height: 1.25rem;
+  padding: 0 0.35rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.categoryPillEmpty {
+  opacity: 0.35;
+}
+
+/* ── Active Search Feedback ── */
+.searchFeedback {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.35rem;
+  padding: 0.55rem 0.95rem;
+  font-size: 0.875rem;
+  color: var(--foreground);
+  opacity: 0.8;
+  border-left: 2px solid var(--foreground);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0 var(--radius-sm, 6px) var(--radius-sm, 6px) 0;
+}
+
+.searchFeedback strong {
+  font-weight: 600;
+  opacity: 1;
+}
+
+.resetFilterLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: none;
+  color: var(--foreground);
+  opacity: 0.65;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  transition: opacity 0.15s ease;
+}
+
+.resetFilterLink:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* ── 4. Two-Column Category FAQ Grid (8 Equal Dimension Boxes) ── */
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.35rem;
+  width: 100%;
+  align-items: stretch;
+}
+
+.categoryGridSingle {
+  grid-template-columns: 1fr;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* ── Category Box / Card ── */
+.categoryCard {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.categoryCard:hover {
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
+}
+
+.categoryCardHeader {
+  padding: 1rem 1.25rem;
+  min-height: 50px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.categoryTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.categoryIconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground);
+  opacity: 0.8;
+}
+
+.categoryTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.categoryCountBadge {
+  font-size: 0.75rem;
+  color: var(--foreground);
+  opacity: 0.55;
+  font-weight: 500;
+}
+
+/* ── Questions List inside Category Box (Equal Dimension Rows) ── */
+.questionsList {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.questionRow {
+  border-bottom: 1px solid color-mix(in srgb, var(--surface-border) 60%, transparent);
+  transition: background-color 0.18s ease;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.questionRow:last-child {
+  border-bottom: none;
+}
+
+.questionRowOpen {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.questionButton {
+  width: 100%;
+  padding: 14px 18px;
+  min-height: 54px;
+  flex: 1;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--foreground);
+  transition: background-color 0.15s ease;
+}
+
+.questionButton:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.questionButton:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+
+.questionText {
+  font-size: 0.95rem; /* ~15px */
+  font-weight: 550;
+  line-height: 1.45;
+  color: var(--foreground);
+  flex: 1;
+}
+
+.chevronWrapper {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chevron {
+  color: var(--foreground);
+  opacity: 0.45;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  opacity: 0.95;
+  color: var(--foreground);
+}
+
+/* ── Smooth Height Transition with CSS Grid ── */
+.answerGrid {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.answerGridOpen {
+  grid-template-rows: 1fr;
+}
+
+.answerContent {
+  overflow: hidden;
+}
+
+.answerText {
+  padding: 0 18px 16px 18px;
+  font-size: 0.9rem;
+  line-height: 1.62;
+  color: var(--foreground);
+  opacity: 0.75;
+  margin: 0;
+}
+
+/* ── Empty State ── */
+.emptyState {
+  grid-column: 1 / -1;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  background: var(--surface);
+  border: 1px dashed var(--surface-border);
+  border-radius: 14px;
+}
+
+.emptyIconCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.9rem;
+}
+
+.emptyIcon {
+  color: var(--foreground);
+  opacity: 0.5;
+}
+
+.emptyTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.45rem;
+}
+
+.emptyDescription {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--foreground);
+  opacity: 0.6;
+  max-width: 520px;
+  margin: 0 auto 1.35rem;
+}
+
+.emptyDescription strong {
+  color: var(--foreground);
+  opacity: 1;
+}
+
+.emptyActions {
+  display: flex;
+  justify-content: center;
+}
+
+.primaryActionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-md, 10px);
+  background: var(--foreground);
+  color: var(--background);
+  border: 1px solid var(--foreground);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.primaryActionButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.primaryActionButton:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+/* ── 5. Compact Horizontal Support Strip ── */
+.supportStrip {
+  margin-top: 2.25rem;
+  padding: 1.25rem 1.75rem;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.supportLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.supportTextWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.supportPrompt {
+  font-size: 0.95rem;
+  color: var(--foreground);
+  opacity: 0.85;
+}
+
+.supportPrompt strong {
+  color: var(--foreground);
+  opacity: 1;
+  font-weight: 600;
+}
+
+.supportMicroChannels {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-size: 0.825rem;
+}
+
+.microChannelLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--foreground);
+  opacity: 0.65;
+  text-decoration: none;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.microChannelLink:hover {
+  opacity: 1;
+  color: var(--foreground);
+}
+
+.microChannelLink:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+  border-radius: 3px;
+  opacity: 1;
+}
+
+.microDivider {
+  color: var(--foreground);
+  opacity: 0.25;
+}
+
+.supportActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.primarySupportBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.15rem;
+  border-radius: 8px;
+  background: var(--foreground);
+  color: var(--background);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.primarySupportBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.primarySupportBtn:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.secondarySupportBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.15rem;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--surface-border);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.secondarySupportBtn:hover {
+  background: var(--surface-card);
+  border-color: color-mix(in srgb, var(--foreground) 25%, transparent);
+}
+
+.secondarySupportBtn:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+/* ── Responsive Rules ── */
+@media (max-width: 860px) {
+  .section {
+    padding: 3rem 1.25rem 2.25rem;
+  }
+
+  .sectionHead {
+    margin-bottom: 1.35rem;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .categoryGrid {
+    grid-template-columns: 1fr;
+    gap: 1.15rem;
+  }
+
+  .categoryPills {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .categoryPills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .supportStrip {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.15rem;
+    padding: 1.25rem;
+  }
+
+  .supportLeft {
+    align-items: flex-start;
+  }
+
+  .supportMicroChannels {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+  }
+
+  .microDivider {
+    display: none;
+  }
+
+  .supportActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .primarySupportBtn,
+  .secondarySupportBtn {
+    justify-content: center;
+  }
+}
+
+/* ── Reduced Motion Preference ── */
+@media (prefers-reduced-motion: reduce) {
+  .answerGrid,
+  .chevron,
+  .categoryCard,
+  .categoryPill,
+  .searchInput,
+  .primaryActionButton,
+  .primarySupportBtn,
+  .secondarySupportBtn {
+    transition: none !important;
+  }
+}

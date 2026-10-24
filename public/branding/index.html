@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bounce Back Academy — Official Brand & Logo Identity System</title>
+  <link rel="icon" type="image/svg+xml" href="bba-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #07080D;
+      --card-bg: #0F111A;
+      --card-border: #1E2235;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --coral: #FF3366;
+      --violet: #8B5CF6;
+      --cyan: #06B6D4;
+      --sky: #38BDF8;
+      --gold: #F59E0B;
+      --gradient-brand: linear-gradient(135deg, #FF3366 0%, #8B5CF6 50%, #06B6D4 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background gradient spheres */
+    .bg-sphere-1 {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(7, 8, 13, 0) 70%);
+      top: -100px;
+      left: -100px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bg-sphere-2 {
+      position: fixed;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, rgba(7, 8, 13, 0) 70%);
+      bottom: -150px;
+      right: -100px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px 100px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header Section */
+    .header {
+      text-align: center;
+      margin-bottom: 64px;
+      padding-top: 24px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      background: rgba(139, 92, 246, 0.12);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #C4B5FD;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 20px;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      background: #10B981;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #10B981;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .gradient-text {
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 32px;
+    }
+
+    /* Section Navigation */
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .nav-btn {
+      padding: 10px 20px;
+      border-radius: 12px;
+      background: #131622;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      color: #FFF;
+      background: #1C2033;
+      border-color: var(--violet);
+      transform: translateY(-2px);
+    }
+
+    /* Section Styling */
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      font-size: 1rem;
+    }
+
+    /* Logo Grid Showcase */
+    .logo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 32px;
+      margin-bottom: 64px;
+    }
+
+    .logo-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .logo-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(139, 92, 246, 0.5);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 25px rgba(139, 92, 246, 0.15);
+    }
+
+    .card-preview {
+      min-height: 280px;
+      padding: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: #090A10;
+      background-image: 
+        radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .card-preview.light-preview {
+      background: #F8FAFC;
+      background-image: 
+        radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .card-preview img, .card-preview object {
+      max-width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+    }
+
+    .card-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .card-info {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #CBD5E1;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #8B5CF6, #6366F1);
+      color: #FFF;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.05);
+      color: #E2E8F0;
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #475569;
+    }
+
+    /* Wide Cards for Horizontal Lockups */
+    .wide-card {
+      grid-column: 1 / -1;
+    }
+
+    .wide-card .card-preview {
+      min-height: 240px;
+      padding: 40px;
+    }
+
+    .wide-card .card-preview img {
+      max-height: 160px;
+      max-width: 90%;
+    }
+
+    /* Realistic Mockups Showcase */
+    .mockup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+      margin-bottom: 64px;
+    }
+
+    .mockup-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      overflow: hidden;
+      padding: 24px;
+    }
+
+    .mockup-item h4 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .mockup-item p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    /* Mockup: Smartphone App Grid */
+    .phone-mockup {
+      width: 100%;
+      height: 200px;
+      background: #1E2235;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .app-icon-display {
+      width: 76px;
+      height: 76px;
+      border-radius: 18px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s ease;
+    }
+
+    .app-icon-display:hover {
+      transform: scale(1.1);
+    }
+
+    /* Mockup: Navbar Header */
+    .nav-mockup {
+      background: #090A10;
+      border: 1px solid #1F2438;
+      border-radius: 12px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo-slot {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-logo-slot img {
+      width: 34px;
+      height: 34px;
+    }
+
+    .nav-brand-title {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-fake-links {
+      display: flex;
+      gap: 16px;
+      font-size: 0.82rem;
+      color: #94A3B8;
+    }
+
+    /* Mockup: Student Certificate */
+    .cert-mockup {
+      background: linear-gradient(135deg, #0A0D18 0%, #111827 100%);
+      border: 2px solid #334155;
+      border-radius: 14px;
+      padding: 24px;
+      position: relative;
+      text-align: center;
+      box-shadow: inset 0 0 20px rgba(139, 92, 246, 0.1);
+    }
+
+    .cert-seal {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 12px;
+    }
+
+    /* Color Palette */
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 64px;
+    }
+
+    .swatch-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .swatch-color {
+      height: 100px;
+      width: 100%;
+    }
+
+    .swatch-details {
+      padding: 16px;
+    }
+
+    .swatch-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .swatch-hex {
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .swatch-usage {
+      font-size: 0.75rem;
+      color: #64748B;
+      margin-top: 6px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding-top: 48px;
+      border-top: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--sky);
+      text-decoration: none;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10B981;
+      color: #FFF;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-sphere-1"></div>
+  <div class="bg-sphere-2"></div>
+
+  <div class="container">
+    
+    <!-- Hero Header -->
+    <header class="header">
+      <div class="badge">
+        <span class="badge-dot"></span> Official Brand Identity & Logo Kit
+      </div>
+      <h1>Bounce<span class="gradient-text">Back</span> Academy</h1>
+      <p class="subtitle">
+        High-performance professional logos, marks, vectors, app icons, and branding assets engineered for resilient learners, high-impact EdTech, and digital mastery.
+      </p>
+
+      <div class="nav-tabs">
+        <a href="#svg-vectors" class="nav-btn active">📐 Scalable Vectors (SVG)</a>
+        <a href="#3d-renders" class="nav-btn">✨ Photorealistic 3D Renders</a>
+        <a href="#mockups" class="nav-btn">📱 Live UI & Mockups</a>
+        <a href="#colors" class="nav-btn">🎨 Brand Color Matrix</a>
+      </div>
+    </header>
+
+    <!-- SECTION 1: SVG VECTORS -->
+    <section id="svg-vectors">
+      <h2 class="section-title">📐 Vector Logo Marks & Lockups</h2>
+      <p class="section-desc">Infinite-resolution SVG vector files optimized for web, mobile apps, ultra-wide monitors, print collateral, and merchandise.</p>
+
+      <div class="logo-grid">
+
+        <!-- 1. Primary Horizontal Dark Lockup -->
+        <div class="logo-card wide-card">
+          <div class="card-preview">
+            <img src="bba-logo-horizontal-dark.svg" alt="Bounce Back Academy Horizontal Logo Dark">
+          </div>
+          <div class="card-body">
+            <div class="card-title">Primary Horizontal Lockup (Dark Mode)</div>
+            <p class="card-info">Engineered for website headers, navigation bars, email headers, marketing hero presentations, and dark-mode software interfaces.</p>
+            <div class="card-tags">
+              <span class="tag">SVG Vector</span>
+              <span class="tag">1200 x 320 px</span>
+              <span class="tag">Responsive</span>
+              <span class="tag">Dark Mode</span>
+            </div>
+            <div class="card-actions">
+              <a href="bba-logo-horizontal-dark.svg" download class="btn btn-primary">⬇️ Download SVG</a>
+              <button onclick="copyToClipboard('bba-logo-horizontal-dark.svg')" class="btn btn-outline">📋 Copy Path</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Primary Horizontal Light Lockup -->
+        <div class="logo-card wide-card">
+          <div class="card-preview light-preview">
+            <img src="bba-logo-horizontal-light.svg" alt="Bounce Back Academy Horizontal Logo Light">
+          </div>
+          <div class="card-body">
+            <div class="card-title">Primary Horizontal Lockup (Light Mode & Print)</div>
+            <p class="card-info">Designed specifically for white background applications: official stationery, PDF study guides, question papers, certificates, and invoices.</p>
+            <div class="card-tags">
+              <span class="tag">SVG Vector</span>
+              <span class="tag">1200 x 320 px</span>
+              <span class="tag">Light Mode</span>
+              <span class="tag">Print Ready</span>
+            </div>
+            <div class="card-actions">
+              <a href="bba-logo-horizontal-light.svg" download class="btn btn-primary">⬇️ Download SVG</a>
+              <button onclick="copyToClipboard('bba-logo-horizontal-light.svg')" class="btn btn-outline">📋 Copy Path</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Kinetic B Logo Mark (Container) -->
+        <div class="logo-card">
+          <div class="card-preview">
+            <img src="bba-logo-mark.svg" alt="Bounce Back Academy Kinetic Mark" style="max-height: 180px;">
+          </div>
+          <div class="card-body">
+            <div class="card-title">The Kinetic Ascent 'B' Mark</div>
+            <p class="card-info">The standalone emblem combining the resilient 'B' monogram with an elastic launch pad and a supersonic rocket arrow soaring up to the top right.</p>
+            <div class="card-tags">
+              <span class="tag">SVG Vector</span>
+              <span class="tag">512 x 512 px</span>
+              <span class="tag">Social Avatar</span>
+            </div>
+            <div class="card-actions">
+              <a href="bba-logo-mark.svg" download class="btn btn-primary">⬇️ Download SVG</a>
+              <a href="bba-logo-mark-transparent.svg" download class="btn btn-outline">⬇️ Transparent</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Stacked / Vertical Lockup -->
+        <div class="logo-card">
+          <div class="card-preview">
+            <img src="bba-logo-vertical-dark.svg" alt="Bounce Back Academy Vertical Logo" style="max-height: 200px;">
+          </div>
+          <div class="card-body">
+            <div class="card-title">Vertical Stacked Lockup</div>
+            <p class="card-info">Ideal for splash screens, mobile onboarding, student ID cards, hoodies, conference banners, and social story covers.</p>
+            <div class="card-tags">
+              <span class="tag">SVG Vector</span>
+              <span class="tag">600 x 700 px</span>
+              <span class="tag">Centered Lockup</span>
+            </div>
+            <div class="card-actions">
+              <a href="bba-logo-vertical-dark.svg" download class="btn btn-primary">⬇️ Download SVG</a>
+              <button onclick="copyToClipboard('bba-logo-vertical-dark.svg')" class="btn btn-outline">📋 Copy Path</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Mobile App Icon (512x512) -->
+        <div class="logo-card">
+          <div class="card-preview">
+            <img src="bba-app-icon.svg" alt="Bounce Back Academy App Icon" style="max-height: 160px; border-radius: 36px; box-shadow: 0 16px 32px rgba(0,0,0,0.5);">
+          </div>
+          <div class="card-body">
+            <div class="card-title">iOS & Android App Icon</div>
+            <p class="card-info">Apple iOS squircle with precision corner radius (rx=112), dual-tone rim light, and ambient neon glow. Ready for Google Play & App Store submissions.</p>
+            <div class="card-tags">
+              <span class="tag">SVG Vector</span>
+              <span class="tag">512 x 512 px</span>
+              <span class="tag">App Store Ready</span>
+            </div>
+            <div class="card-actions">
+              <a href="bba-app-icon.svg" download class="btn btn-primary">⬇️ Download SVG</a>
+              <a href="bba-favicon.svg" download class="btn btn-outline">⬇️ Favicon</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 2: 3D PHOTOREALISTIC RENDERS -->
+    <section id="3d-renders">
+      <h2 class="section-title">✨ Photorealistic 3D Renders & Badges</h2>
+      <p class="section-desc">Ultra-high-definition cinematic renders generated with Octane-level frosted glassmorphism, volumetric rim lighting, and neon dispersion.</p>
+
+      <div class="logo-grid">
+        <!-- Render 1 -->
+        <div class="logo-card">
+          <div class="card-preview" style="padding: 0; background: #000;">
+            <img src="bba-3d-glowing-emblem.jpg" alt="Bounce Back Academy 3D Glowing Emblem" style="width: 100%; height: 100%; max-height: 340px; object-fit: cover;">
+          </div>
+          <div class="card-body">
+            <div class="card-title">3D Frosted Glassmorphism Emblem</div>
+            <p class="card-info">3D emblem featuring an energetic upward-curving infinity arrow bouncing off a reflective ground, glowing with electric coral, cyber violet, and cyan neon edges.</p>
+            <div class="card-tags">
+              <span class="tag">Ultra HD Render</span>
+              <span class="tag">1:1 Square</span>
+              <span class="tag">Octane 3D Glass</span>
+            </div>
+            <div class="card-actions">
+              <a href="bba-3d-glowing-emblem.jpg" download class="btn btn-primary">⬇️ Download JPG</a>
+              <button onclick="copyToClipboard('bba-3d-glowing-emblem.jpg')" class="btn btn-outline">📋 Copy Path</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Render 2 -->
+        <div class="logo-card">
+          <div class="card-preview" style="padding: 0; background: #000;">
+            <img src="bba-tech-insignia-badge.jpg" alt="Bounce Back Academy Tech Insignia Badge" style="width: 100%; height: 100%; max-height: 340px; object-fit: cover;">
+          </div>
+          <div class="card-body">
+            <div class="card-title">Luxury Tech Insignia Badge</div>
+            <p class="card-info">Circular heraldic crest featuring the BBA monogram intertwined with an ascending phoenix-wing trajectory and sleek dark academic framing.</p>
+            <div class="card-tags">
+              <span class="tag">Ultra HD Render</span>
+              <span class="tag">Insignia Crest</span>
+              <span class="tag">Behance Trending</span>
+            </div>
+            <div class="card-actions">
+              <a href="bba-tech-insignia-badge.jpg" download class="btn btn-primary">⬇️ Download JPG</a>
+              <button onclick="copyToClipboard('bba-tech-insignia-badge.jpg')" class="btn btn-outline">📋 Copy Path</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: LIVE MOCKUPS -->
+    <section id="mockups">
+      <h2 class="section-title">📱 Live Brand Application Mockups</h2>
+      <p class="section-desc">Experience how the new logo identity translates across real-world digital and physical surfaces.</p>
+
+      <div class="mockup-grid">
+        
+        <!-- Mockup 1: Mobile App Screen -->
+        <div class="mockup-item">
+          <h4>📱 Mobile App Icon (Home Screen)</h4>
+          <p>Displays seamless contrast and immediate recognition on modern smartphones.</p>
+          <div class="phone-mockup">
+            <img src="bba-app-icon.svg" alt="App Icon" class="app-icon-display">
+          </div>
+        </div>
+
+        <!-- Mockup 2: Header Navigation -->
+        <div class="mockup-item">
+          <h4>💻 Website Header Navbar</h4>
+          <p>Crisp rendering at compact 32px height in dark navigation bars.</p>
+          <div class="nav-mockup">
+            <div class="nav-logo-slot">
+              <img src="bba-app-icon.svg" alt="Icon">
+              <span class="nav-brand-title">Bounce<span style="color:#38BDF8">Back</span></span>
+            </div>
+            <div class="nav-fake-links">
+              <span>Courses</span>
+              <span>Notes</span>
+              <span>AI Tutor</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mockup 3: Certificate / Honor Seal -->
+        <div class="mockup-item">
+          <h4>🎓 Certificate of Achievement Seal</h4>
+          <p>Official endorsement badge for student milestones and course completion.</p>
+          <div class="cert-mockup">
+            <img src="bba-logo-mark-transparent.svg" alt="Seal" class="cert-seal">
+            <div style="font-size:0.75rem; letter-spacing: 2px; color: #94A3B8; text-transform:uppercase;">Certificate of Excellence</div>
+            <div style="font-size:1.1rem; font-weight:800; color:#FFF; margin: 4px 0;">Bounce Back Academy</div>
+            <div style="font-size:0.75rem; color:#64748B;">Awarded for Academic Resilience & Breakthrough</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 4: COLOR MATRIX -->
+    <section id="colors">
+      <h2 class="section-title">🎨 Brand Color Matrix</h2>
+      <p class="section-desc">The official chromatic palette of Bounce Back Academy, calibrated for high-energy motivation and deep tech contrast.</p>
+
+      <div class="palette-grid">
+        
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #FF3366;"></div>
+          <div class="swatch-details">
+            <div class="swatch-name">Electric Coral</div>
+            <div class="swatch-hex">#FF3366</div>
+            <div class="swatch-usage">Resilience, Energy, Drive</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #8B5CF6;"></div>
+          <div class="swatch-details">
+            <div class="swatch-name">Cyber Violet</div>
+            <div class="swatch-hex">#8B5CF6</div>
+            <div class="swatch-usage">AI Intelligence, JEE/NEET</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #06B6D4;"></div>
+          <div class="swatch-details">
+            <div class="swatch-name">Sky Cyan</div>
+            <div class="swatch-hex">#06B6D4</div>
+            <div class="swatch-usage">Clarity, CUET, Trust</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #38BDF8;"></div>
+          <div class="swatch-details">
+            <div class="swatch-name">Electric Blue</div>
+            <div class="swatch-hex">#38BDF8</div>
+            <div class="swatch-usage">Vector Arrow, Apex Gleam</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: #090A10; border-bottom: 1px solid #1E2235;"></div>
+          <div class="swatch-details">
+            <div class="swatch-name">Obsidian Void</div>
+            <div class="swatch-hex">#090A10</div>
+            <div class="swatch-usage">Luxury Contrast Canvas</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>© 2026 Bounce Back Academy — All Brand Rights Reserved.</p>
+      <p style="margin-top: 8px; font-size: 0.85rem;">Engineered for high performance, accessibility, and modern EdTech scalability.</p>
+    </footer>
+
+  </div>
+
+  <div id="toast" class="toast">Path copied to clipboard!</div>
+
+  <script>
+    function copyToClipboard(filename) {
+      const fullPath = window.location.origin + '/branding/' + filename;
+      navigator.clipboard.writeText(fullPath).then(() => {
+        showToast('Link copied: ' + filename);
+      }).catch(() => {
+        navigator.clipboard.writeText('/branding/' + filename);
+        showToast('Path copied: /branding/' + filename);
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>

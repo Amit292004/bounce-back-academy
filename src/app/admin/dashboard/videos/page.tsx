@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { FaTrash, FaPlus, FaYoutube } from 'react-icons/fa';
+import { FaTrash, FaPlus, FaYoutube, FaPlay, FaTimes } from 'react-icons/fa';
+import PWVideoPlayer from '@/components/video/PWVideoPlayer';
 
 interface Subject {
   id: string;
@@ -47,6 +48,7 @@ export default function VideosPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [filterCat, setFilterCat] = useState('All');
+  const [previewVideo, setPreviewVideo] = useState<Video | null>(null);
 
   const fetchVideos = async () => {
     const res = await fetch('/api/admin/videos');
@@ -338,16 +340,30 @@ export default function VideosPage() {
             const videoId = getYoutubeId(video.youtubeLink);
             return (
               <div key={video.id} className="glass-panel" style={{ overflow: 'hidden' }}>
-                {videoId && (
-                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, background: '#000' }}>
-                    <iframe
+                {videoId ? (
+                  <div 
+                    onClick={() => setPreviewVideo(video)}
+                    style={{ position: 'relative', paddingBottom: '56.25%', height: 0, background: '#000', cursor: 'pointer', overflow: 'hidden' }}
+                    title="Click to preview in PW Video Player"
+                  >
+                    <img
+                      src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
+                      alt={video.title}
                       loading="lazy"
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                      src={`https://www.youtube.com/embed/${videoId}`}
-                      title={video.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                     />
+                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}>
+                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'linear-gradient(135deg, #6366f1, #a855f7)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', boxShadow: '0 0 15px rgba(99,102,241,0.7)' }}>
+                        <FaPlay style={{ marginLeft: 3, fontSize: '0.85rem' }} />
+                      </div>
+                    </div>
+                    <span style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(99,102,241,0.9)', color: '#fff', fontSize: '0.65rem', fontWeight: 700, padding: '2px 6px', borderRadius: 4 }}>
+                      PW Player
+                    </span>
+                  </div>
+                ) : (
+                  <div style={{ height: 160, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <FaYoutube style={{ fontSize: '2.5rem', color: '#ff0000' }} />
                   </div>
                 )}
                 <div style={{ padding: '1rem' }}>
@@ -380,6 +396,43 @@ export default function VideosPage() {
               </div>
             );
           })}
+        </div>
+      )}
+      {/* Admin PW Video Player Preview Modal */}
+      {previewVideo && (
+        <div 
+          style={{ position: 'fixed', inset: 0, background: 'rgba(5,7,15,0.88)', backdropFilter: 'blur(10px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}
+          onClick={() => setPreviewVideo(null)}
+        >
+          <div 
+            style={{ width: '100%', maxWidth: '1000px', background: '#0f1422', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 25px 60px rgba(0,0,0,0.8)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)', background: 'rgba(15,23,42,0.6)' }}>
+              <div>
+                <span style={{ fontSize: '0.72rem', color: '#818cf8', fontWeight: 700, textTransform: 'uppercase' }}>
+                  {previewVideo.category} {previewVideo.subject ? `· ${previewVideo.subject.name}` : ''} {previewVideo.lectureNumber ? `· Lec ${previewVideo.lectureNumber}` : ''}
+                </span>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fff', marginTop: 2 }}>{previewVideo.title}</h3>
+              </div>
+              <button 
+                onClick={() => setPreviewVideo(null)}
+                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff', width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+              >
+                <FaTimes size={14} />
+              </button>
+            </div>
+            <div style={{ width: '100%', background: '#000' }}>
+              <PWVideoPlayer
+                youtubeUrl={previewVideo.youtubeLink}
+                title={previewVideo.title}
+                subtitle={`${previewVideo.category}${previewVideo.subject ? ` · ${previewVideo.subject.name}` : ''}`}
+                pdfNotesUrl={previewVideo.pdfUrl}
+                autoPlay={true}
+                onBack={() => setPreviewVideo(null)}
+              />
+            </div>
+          </div>
         </div>
       )}
     </div>

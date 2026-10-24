@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 700" width="100%" height="100%">
+  <defs>
+    <!-- Master Kinetic Gradient -->
+    <linearGradient id="vKineticGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF3366" />
+      <stop offset="28%" stop-color="#FF5E62" />
+      <stop offset="58%" stop-color="#8B5CF6" />
+      <stop offset="85%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+
+    <linearGradient id="vSecondaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="50%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#FF3366" />
+    </linearGradient>
+
+    <linearGradient id="vArrowGleam" x1="0%" y1="80%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="40%" stop-color="#06B6D4" />
+      <stop offset="90%" stop-color="#E0F2FE" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+
+    <linearGradient id="vTextAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C084FC" />
+      <stop offset="50%" stop-color="#818CF8" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+
+    <filter id="vGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="600" height="700" rx="48" fill="#090A10" />
+  <rect width="596" height="696" x="2" y="2" rx="46" fill="none" stroke="#1F2338" stroke-width="2" />
+
+  <!-- Ambient Glow -->
+  <circle cx="300" cy="240" r="180" fill="#8B5CF6" fill-opacity="0.1" filter="url(#vGlow)" />
+
+  <!-- MARK EMBLEM (Centered at top) -->
+  <g transform="translate(130, 60) scale(0.66)">
+    <!-- Ground Wave -->
+    <path d="M 120 405 C 180 405, 215 425, 260 425 C 310 425, 345 405, 400 405" 
+          stroke="url(#vKineticGrad)" stroke-width="4" stroke-linecap="round" opacity="0.4" />
+
+    <!-- Vertical Stem with Rebound Spring -->
+    <path d="M 172 135 L 172 360 C 172 405, 210 430, 255 430 C 298 430, 328 402, 344 372" 
+          fill="none" stroke="url(#vKineticGrad)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Upper Loop of 'B' -->
+    <path d="M 172 135 L 290 135 C 342 135, 376 168, 376 214 C 376 258, 342 288, 292 288 L 198 288" 
+          fill="none" stroke="url(#vKineticGrad)" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Lower Loop of 'B' -->
+    <path d="M 238 288 L 306 288 C 358 288, 392 322, 392 366 C 392 404, 364 430, 320 430 C 285 430, 260 412, 248 392" 
+          fill="none" stroke="url(#vSecondaryGrad)" stroke-width="28" stroke-linecap="round" />
+
+    <!-- Ascending Arrow -->
+    <path d="M 215 395 L 405 145" 
+          fill="none" stroke="url(#vArrowGleam)" stroke-width="32" stroke-linecap="round" />
+    <polygon points="415,108 438,184 374,162" 
+             fill="#38BDF8" stroke="#E0F2FE" stroke-width="3" stroke-linejoin="round" />
+
+    <!-- Spark Nodes -->
+    <circle cx="438" cy="118" r="6" fill="#FFFFFF" />
+    <circle cx="215" cy="395" r="5" fill="#FF5E62" />
+  </g>
+
+  <!-- TYPOGRAPHY (Centered) -->
+  <!-- Wordmark Line 1: BOUNCE BACK -->
+  <text x="300" y="475" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Montserrat', 'Segoe UI', Roboto, sans-serif" 
+        font-size="46" font-weight="900" letter-spacing="-1" fill="#FFFFFF">
+    Bounce<tspan fill="url(#vTextAccent)">Back</tspan>
+  </text>
+
+  <!-- Wordmark Line 2: ACADEMY -->
+  <text x="300" y="525" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Montserrat', 'Segoe UI', Roboto, sans-serif" 
+        font-size="20" font-weight="700" fill="#94A3B8" letter-spacing="10">
+    ACADEMY
+  </text>
+
+  <!-- Divider Line -->
+  <line x1="240" y1="560" x2="360" y2="560" stroke="#334155" stroke-width="2" stroke-linecap="round" />
+
+  <!-- Tagline -->
+  <text x="300" y="605" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif" 
+        font-size="14" font-weight="600" fill="#64748B" letter-spacing="3">
+    BOUNCE BACK. RISE HIGHER.
+  </text>
+
+  <!-- Accent Pill Badge -->
+  <g transform="translate(230, 630)">
+    <rect width="140" height="28" rx="14" fill="#8B5CF6" fill-opacity="0.16" stroke="#8B5CF6" stroke-opacity="0.4" stroke-width="1.2" />
+    <text x="70" y="18" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" 
+          font-size="10" font-weight="700" fill="#C4B5FD" letter-spacing="1.5">
+      PREMIUM EDTECH
+    </text>
+  </g>
+</svg>

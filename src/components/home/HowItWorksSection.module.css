@@ -1,0 +1,142 @@
+.section {
+  padding: 5rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sectionHead {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 3rem;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+  opacity: 0.9;
+  margin-bottom: 0.75rem;
+}
+
+.title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--foreground);
+  margin-bottom: 0.75rem;
+  line-height: 1.15;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--foreground);
+  opacity: 0.5;
+}
+
+/* 4-column connected bento grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--surface-border);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem 1.5rem;
+  background: var(--surface);
+  color: var(--foreground);
+  transition: background 0.2s ease;
+  position: relative;
+}
+
+.card:hover {
+  background: var(--surface-card);
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.iconBox {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  border: 1px solid var(--surface-border);
+  background: var(--background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground);
+  opacity: 0.8;
+  transition: opacity 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.card:hover .iconBox {
+  opacity: 1;
+  border-color: color-mix(in srgb, var(--foreground) 30%, transparent);
+  color: var(--primary);
+}
+
+.stepNumber {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--foreground);
+  opacity: 0.35;
+  font-variant-numeric: tabular-nums;
+  padding: 0.18rem 0.5rem;
+  border-radius: 5px;
+  background: var(--surface-highlight);
+  border: 1px solid var(--surface-border);
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.card:hover .stepNumber {
+  opacity: 0.8;
+  color: var(--primary);
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
+  line-height: 1.3;
+}
+
+.cardDesc {
+  font-size: 0.83rem;
+  line-height: 1.6;
+  color: var(--foreground);
+  opacity: 0.5;
+  flex: 1;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .section {
+    padding: 3.5rem 1rem;
+  }
+}

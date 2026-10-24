@@ -50,6 +50,13 @@
   letter-spacing: -0.01em;
 }
 
+/* Hide when mobile navigation drawer is open */
+:global(body.mobile-drawer-open) .bottomNav {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 /* Hide on desktop viewports */
 @media (min-width: 769px) {
   .bottomNav {

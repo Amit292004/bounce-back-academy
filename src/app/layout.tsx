@@ -58,6 +58,9 @@ export const viewport = {
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 import PWARegistration from "@/components/PWARegistration";
+import { CartProvider } from "@/context/CartContext";
+import CartDrawer from "@/components/cart/CartDrawer";
+import CartToast from "@/components/cart/CartToast";
 
 
 export default function RootLayout({
@@ -155,8 +158,12 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: jsonLd }}
         />
         <ThemeProvider>
-          <PWARegistration />
-          <MainLayoutWrapper>{children}</MainLayoutWrapper>
+          <CartProvider>
+            <PWARegistration />
+            <MainLayoutWrapper>{children}</MainLayoutWrapper>
+            <CartDrawer />
+            <CartToast />
+          </CartProvider>
         </ThemeProvider>
       </body>
     </html>

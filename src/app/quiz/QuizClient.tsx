@@ -260,7 +260,31 @@ export default function StudentQuizPage() {
       // Calculate XP
       const calculatedXp = score * 50;
       setEarnedXp(calculatedXp);
-      
+
+      // Persist quiz performance in localStorage for dashboard tracking
+      try {
+        if (typeof window !== 'undefined' && selectedQuiz) {
+          const attempt = {
+            id: selectedQuiz.id + '_' + Date.now(),
+            quizId: selectedQuiz.id,
+            title: selectedQuiz.title,
+            className: selectedQuiz.className,
+            subject: selectedQuiz.subject?.name || 'General',
+            score,
+            total: selectedQuiz.questions.length,
+            percentage: Math.round((score / selectedQuiz.questions.length) * 100),
+            xp: calculatedXp,
+            completedAt: new Date().toISOString(),
+          };
+          const rawHistory = localStorage.getItem('bba_quiz_history');
+          const history = rawHistory ? JSON.parse(rawHistory) : [];
+          const updated = [attempt, ...history.filter((h: any) => h.quizId !== attempt.quizId)].slice(0, 15);
+          localStorage.setItem('bba_quiz_history', JSON.stringify(updated));
+        }
+      } catch (err) {
+        logger.error('Failed to save quiz attempt history:', err);
+      }
+
       setQuizState('summary');
     }
   };
@@ -680,6 +704,9 @@ export default function StudentQuizPage() {
             <button onClick={() => setQuizState('dashboard')} className={styles.dashboardBtn}>
               Return to Arena
             </button>
+            <a href="/dashboard" className={styles.dashboardBtn} style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+              View Dashboard
+            </a>
           </div>
         </div>
       )}

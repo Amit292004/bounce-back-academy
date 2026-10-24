@@ -9,7 +9,8 @@ import {
 } from 'react-icons/fa';
 import styles from './page.module.css';
 import { getDriveImageUrl } from '@/lib/driveImage';
-import { logger } from '@/lib/logger'
+import { logger } from '@/lib/logger';
+import AddToCartButton from '@/components/cart/AddToCartButton';
 
 interface PremiumItem {
   id: string;
@@ -447,28 +448,40 @@ export default function PremiumStorePage() {
               </div>
 
               {/* Pricing and Action row */}
-              <div className={styles.pricingRow}>
-                <div className={styles.priceCol}>
-                  <span className={styles.priceLabel}>Access Plan</span>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <span className={styles.priceVal}>₹{item.price}</span>
-                    {item.originalPrice && (
-                      <span className={styles.priceOriginal}>₹{item.originalPrice}</span>
-                    )}
+              <div className={styles.pricingRow} style={{ flexDirection: 'column', alignItems: 'stretch', gap: '0.85rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div className={styles.priceCol}>
+                    <span className={styles.priceLabel}>Access Plan</span>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <span className={styles.priceVal}>₹{item.price}</span>
+                      {item.originalPrice && item.originalPrice > item.price && (
+                        <span className={styles.priceOriginal}>₹{item.originalPrice}</span>
+                      )}
+                    </div>
                   </div>
+                  {item.unlocked && (
+                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                      <FaCheckCircle size={12} /> ENROLLED
+                    </span>
+                  )}
                 </div>
 
-                {item.unlocked ? (
-                  <Link href={`/premium/${item.id}`} className={`${styles.actionBtn} ${styles.btnUnlocked}`}>
-                    <FaCheckCircle size={13} />
-                    <span>View Content</span>
-                  </Link>
-                ) : (
-                  <Link href={`/premium/${item.id}`} className={`${styles.actionBtn} ${styles.btnLocked}`}>
-                    <FaEye size={13} />
-                    <span>View Package</span>
-                  </Link>
-                )}
+                <AddToCartButton
+                  course={{
+                    id: item.id,
+                    title: item.title,
+                    description: item.description,
+                    price: item.price,
+                    originalPrice: item.originalPrice,
+                    type: item.type,
+                    imageUrl: item.imageUrl,
+                    className: item.className,
+                    features: item.features,
+                    alreadyEnrolled: item.unlocked,
+                  }}
+                  showViewDetails={true}
+                  variant="compact"
+                />
               </div>
             </div>
           );

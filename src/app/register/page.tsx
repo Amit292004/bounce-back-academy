@@ -3,36 +3,44 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from '@react-oauth/google';
-import { Eye, EyeOff, User, GraduationCap, Mail, Phone, Lock, ArrowRight } from 'lucide-react';
-import styles from '../login/page.module.css';
-import { logger } from '@/lib/logger'
+import { Eye, EyeOff } from 'lucide-react';
+import AuthLayout from '@/components/auth/AuthLayout';
+import styles from '@/components/auth/Auth.module.css';
+import { logger } from '@/lib/logger';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ name: '', className: '', email: '', mobile: '', password: '' });
+  const [form, setForm] = useState({
+    name: '',
+    className: '',
+    email: '',
+    mobile: '',
+    password: '',
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
-  const [courses, setCourses] = useState<{id: string, name: string}[]>([]);
+  const [courses, setCourses] = useState<{ id: string; name: string }[]>([]);
 
   useEffect(() => {
     fetch('/api/student/me')
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data.authenticated) router.replace('/');
         else setChecking(false);
       })
       .catch(() => setChecking(false));
 
     fetch('/api/admin/courses')
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (Array.isArray(data)) setCourses(data);
       })
-      .catch(console.error);
+      .catch((err) => {
+        logger.error('Failed to load courses for registration:', err);
+      });
   }, [router]);
 
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
@@ -63,12 +71,34 @@ export default function RegisterPage() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (!form.name.trim()) {
+      setError('Full name is required');
+      return;
+    }
+    if (!form.className) {
+      setError('Please select your class or course');
+      return;
+    }
+    if (!form.email.trim()) {
+      setError('Valid email address is required');
+      return;
+    }
+    if (!form.mobile.trim()) {
+      setError('Mobile number is required');
+      return;
+    }
+    if (form.password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await fetch('/api/student/register', {
@@ -82,8 +112,7 @@ export default function RegisterPage() {
         if (data.details) logger.error('Registration details:', data.details);
       } else {
         if (data.requiresVerification) {
-          // Pass devOtp in URL for local testing when email isn't configured
-          const params = new URLSearchParams({ email: form.email });
+          const params = new URLSearchParams({ email: form.email.trim().toLowerCase() });
           if (data.devOtp) params.set('devOtp', data.devOtp);
           router.push(`/verify-email?${params.toString()}`);
         } else {
@@ -91,7 +120,7 @@ export default function RegisterPage() {
         }
       }
     } catch {
-      setError('Something went wrong. Please try again.');
+      setError('Something went wrong. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -100,156 +129,211 @@ export default function RegisterPage() {
   if (checking) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ opacity: 0.4 }}>Loading...</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', color: '#71717a', fontSize: '0.875rem' }}>
+          <div className={styles.spinner} />
+          <span>Verifying session...</span>
+        </div>
       </div>
     );
   }
 
+  const googleClientId = (process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '').replace(/['"]/g, '');
+
   return (
-    <div className={styles.container}>
-      <div className={`glass-panel ${styles.card}`}>
-        <div className={styles.header}>
-          <div className={styles.logoWrapper}>
-            <Link href="/" className={styles.logoLink} title="Bounce Back Academy">
-              <Image src="/logo.png" alt="Bounce Back Academy" width={48} height={48} className={styles.logoImg} priority />
-            </Link>
-          </div>
-          <h1 className={styles.title}>Create an account</h1>
-          <p className={styles.subtitle}>Sign up to access courses, past papers, and study materials</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className={styles.form}>
+    <AuthLayout
+      contextualBadge="STUDENT REGISTRATION"
+      editorialHeadline="Build your next chapter."
+      editorialSubheadline="Learn at your own pace with the resources and courses available on Bounce Back Academy."
+      formTitle="Create your account."
+      formSubtitle="Join Bounce Back Academy to access study resources, exam preparation, and practical learning opportunities."
+      breadcrumbLabel="Create Account"
+      maxWidth="wide"
+    >
+      <form onSubmit={handleSubmit} className={styles.form} noValidate={false}>
+        {/* Responsive 2-Column Section for Name and Class */}
+        <div className={styles.formGrid2}>
+          {/* Full Name */}
           <div className={styles.field}>
-            <label htmlFor="name">Full Name</label>
-            <div className={styles.inputWrapper}>
-              <span className={styles.inputIcon}><User size={16} /></span>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                placeholder="Your full name"
-                value={form.name}
-                onChange={handleChange}
-                required
-                className={`${styles.input} ${styles.inputWithIcon}`}
-              />
-            </div>
+            <label htmlFor="name" className={styles.label}>
+              Full name
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Your name"
+              autoComplete="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              maxLength={100}
+              className={styles.input}
+            />
           </div>
 
+          {/* Class Selection */}
           <div className={styles.field}>
-            <label htmlFor="className">Your Class</label>
-            <div className={styles.inputWrapper}>
-              <span className={styles.inputIcon}><GraduationCap size={16} /></span>
-              <select
-                id="className"
-                name="className"
-                value={form.className}
-                onChange={handleChange}
-                required
-                className={`${styles.input} ${styles.inputWithIcon}`}
-              >
-                <option value="">Select class</option>
-                {Array.isArray(courses) && courses.map(c => (
+            <label htmlFor="className" className={styles.label}>
+              Class / Course
+            </label>
+            <select
+              id="className"
+              name="className"
+              value={form.className}
+              onChange={handleChange}
+              required
+              className={styles.input}
+            >
+              <option value="">Select your class</option>
+              {Array.isArray(courses) && courses.length > 0 ? (
+                courses.map((c) => (
                   <option key={c.id} value={c.name}>
                     {c.name}
                   </option>
-                ))}
-              </select>
-            </div>
+                ))
+              ) : (
+                <>
+                  <option value="Class 8">Class 8</option>
+                  <option value="Class 9">Class 9</option>
+                  <option value="Class 10">Class 10</option>
+                  <option value="Class 11 Science">Class 11 Science</option>
+                  <option value="Class 11 Arts">Class 11 Arts</option>
+                  <option value="Class 11 Commerce">Class 11 Commerce</option>
+                  <option value="Class 12 Science">Class 12 Science</option>
+                  <option value="Class 12 Arts">Class 12 Arts</option>
+                  <option value="Class 12 Commerce">Class 12 Commerce</option>
+                  <option value="JEE & NEET">JEE &amp; NEET</option>
+                  <option value="CUET">CUET</option>
+                  <option value="Other">Other</option>
+                </>
+              )}
+            </select>
           </div>
-
-          <div className={styles.field}>
-            <label htmlFor="email">Email Address</label>
-            <div className={styles.inputWrapper}>
-              <span className={styles.inputIcon}><Mail size={16} /></span>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="you@example.com"
-                value={form.email}
-                onChange={handleChange}
-                required
-                className={`${styles.input} ${styles.inputWithIcon}`}
-              />
-            </div>
-          </div>
-
-          <div className={styles.field}>
-            <label htmlFor="mobile">Mobile Number</label>
-            <div className={styles.inputWrapper}>
-              <span className={styles.inputIcon}><Phone size={16} /></span>
-              <input
-                id="mobile"
-                name="mobile"
-                type="tel"
-                placeholder="10-digit mobile number"
-                value={form.mobile}
-                onChange={handleChange}
-                required
-                className={`${styles.input} ${styles.inputWithIcon}`}
-              />
-            </div>
-          </div>
-
-          <div className={styles.field}>
-            <label htmlFor="password">Password</label>
-            <div className={styles.inputWrapper}>
-              <span className={styles.inputIcon}><Lock size={16} /></span>
-              <input
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Min 6 characters"
-                value={form.password}
-                onChange={handleChange}
-                required
-                minLength={6}
-                className={`${styles.input} ${styles.inputWithIcon} ${styles.inputHasToggle}`}
-              />
-              <button
-                type="button"
-                className={styles.passwordToggle}
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-
-          {error && <p className={styles.error}>{error}</p>}
-
-          <button type="submit" className={styles.submitBtn} disabled={loading}>
-            {loading ? 'Creating account...' : <>Create Account <ArrowRight size={16} /></>}
-          </button>
-        </form>
-
-        <div className={styles.divider}>
-          <span>or</span>
         </div>
 
-        <div className={styles.googleWrapper}>
-          <GoogleOAuthProvider clientId={(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '').replace(/['"]/g, '')}>
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => setError('Google Sign Up failed')}
-              theme="outline"
-              size="large"
-              shape="rectangular"
-              text="signup_with"
-              logo_alignment="center"
+        {/* Responsive 2-Column Section for Email and Mobile */}
+        <div className={styles.formGrid2}>
+          {/* Email Address */}
+          <div className={styles.field}>
+            <label htmlFor="email" className={styles.label}>
+              Email address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="name@example.com"
+              autoComplete="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+              maxLength={254}
+              className={styles.input}
             />
-          </GoogleOAuthProvider>
+          </div>
+
+          {/* Mobile Number */}
+          <div className={styles.field}>
+            <label htmlFor="mobile" className={styles.label}>
+              Mobile number
+            </label>
+            <input
+              id="mobile"
+              name="mobile"
+              type="tel"
+              placeholder="10-digit number"
+              autoComplete="tel"
+              value={form.mobile}
+              onChange={handleChange}
+              required
+              maxLength={20}
+              className={styles.input}
+            />
+          </div>
         </div>
 
-        <p className={styles.footer}>
-          Already have an account?{' '}
-          <Link href="/login" style={{ fontWeight: 600 }}>
-            Sign in
-          </Link>
-        </p>
+        {/* Password */}
+        <div className={styles.field}>
+          <label htmlFor="password" className={styles.label}>
+            Password
+          </label>
+          <div className={styles.inputWrapper}>
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="At least 6 characters"
+              autoComplete="new-password"
+              value={form.password}
+              onChange={handleChange}
+              required
+              minLength={6}
+              maxLength={128}
+              className={`${styles.input} ${styles.inputHasToggle}`}
+            />
+            <button
+              type="button"
+              className={styles.passwordToggle}
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              tabIndex={0}
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Error Alert */}
+        {error && (
+          <div className={styles.alertError} role="alert">
+            <span>{error}</span>
+          </div>
+        )}
+
+        {/* Create Account Primary Button */}
+        <button type="submit" className={styles.submitBtn} disabled={loading}>
+          {loading ? (
+            <>
+              <span className={styles.spinner} />
+              <span>Creating account...</span>
+            </>
+          ) : (
+            <span>Create Account</span>
+          )}
+        </button>
+      </form>
+
+      {/* Alternative Social Sign In */}
+      {googleClientId && (
+        <>
+          <div className={styles.divider}>
+            <span>OR</span>
+          </div>
+
+          <div className={styles.googleWrapper}>
+            <GoogleOAuthProvider clientId={googleClientId}>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError('Google Sign Up was cancelled or failed.')}
+                theme="outline"
+                size="large"
+                shape="rectangular"
+                text="signup_with"
+                logo_alignment="center"
+                width="380"
+              />
+            </GoogleOAuthProvider>
+          </div>
+        </>
+      )}
+
+      {/* Switch to Sign In */}
+      <div className={styles.switchAuthRow}>
+        <span className={styles.switchAuthPrompt}>Already have an account?</span>
+        <Link href="/login" className={styles.switchAuthLink}>
+          Sign in
+        </Link>
       </div>
-    </div>
+    </AuthLayout>
   );
 }

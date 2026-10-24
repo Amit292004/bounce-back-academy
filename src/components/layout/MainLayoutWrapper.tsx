@@ -12,9 +12,14 @@ export default function MainLayoutWrapper({ children }: { children: React.ReactN
   const isAdminRoute = pathname?.startsWith('/admin');
   const isAskRoute = pathname === '/ask';
   const isClassRoute = pathname?.startsWith('/class');
-  const isAuthRoute = pathname === '/login' || pathname === '/register';
+  const isAuthRoute =
+    pathname === '/login' ||
+    pathname === '/register' ||
+    pathname === '/verify-email' ||
+    pathname === '/forgot-password' ||
+    pathname === '/reset-password';
   
-  const hideLayout = isAdminRoute || isAskRoute;
+  const hideLayout = isAdminRoute || isAskRoute || isAuthRoute;
   const showGlobalBottomNav = !isAdminRoute && !isAuthRoute && !isAskRoute;
 
   useEffect(() => {
@@ -52,7 +57,7 @@ export default function MainLayoutWrapper({ children }: { children: React.ReactN
         {children}
       </main>
       {!hideLayout && <Footer />}
-      {!isAdminRoute && <SignupReminder />}
+      {!isAdminRoute && !isAuthRoute && <SignupReminder />}
       {showGlobalBottomNav && <GlobalBottomNav />}
     </>
   );

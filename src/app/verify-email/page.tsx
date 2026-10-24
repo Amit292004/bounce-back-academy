@@ -1,19 +1,27 @@
 "use client";
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FaEnvelopeOpenText, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
+import Link from 'next/link';
+import AuthLayout from '@/components/auth/AuthLayout';
+import styles from '@/components/auth/Auth.module.css';
 
 function VerifyEmailForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get('email');
   const devOtp = searchParams.get('devOtp');
-  
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+
+  const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [infoMessage, setInfoMessage] = useState('');
+  const [currentDevOtp, setCurrentDevOtp] = useState<string | null>(devOtp);
+
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     if (!email) {
@@ -21,35 +29,59 @@ function VerifyEmailForm() {
     }
   }, [email, router]);
 
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => {
+      setResendCooldown((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
+
   const handleChange = (value: string, index: number) => {
-    if (value.length > 1) value = value[0];
+    if (value.length > 1) {
+      handlePaste(value);
+      return;
+    }
+
     if (!/^\d*$/.test(value)) return;
 
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // Auto-focus next input
     if (value && index < 5) {
-      const nextInput = document.getElementById(`otp-${index + 1}`);
-      nextInput?.focus();
+      inputRefs.current[index + 1]?.focus();
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+  const handlePaste = (pastedText: string) => {
+    const digits = pastedText.replace(/\D/g, '').slice(0, 6).split('');
+    if (digits.length === 0) return;
+
+    const newOtp = [...otp];
+    digits.forEach((d, i) => {
+      if (i < 6) newOtp[i] = d;
+    });
+    setOtp(newOtp);
+
+    const nextIndex = Math.min(digits.length, 5);
+    inputRefs.current[nextIndex]?.focus();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      const prevInput = document.getElementById(`otp-${index - 1}`);
-      prevInput?.focus();
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    const otpString = otp.join('');
+    const otpString = otp.join('').trim();
     if (otpString.length < 6) return;
 
     setLoading(true);
     setError('');
+    setInfoMessage('');
 
     try {
       const res = await fetch('/api/student/verify-email', {
@@ -62,112 +94,193 @@ function VerifyEmailForm() {
 
       if (res.ok) {
         setSuccess(true);
-        setTimeout(() => router.push('/profile'), 2000);
+        window.dispatchEvent(new Event('profileUpdated'));
+        setTimeout(() => router.push('/profile'), 1800);
       } else {
-        setError(data.error || 'Verification failed');
+        setError(data.error || 'Verification failed. Please check your code.');
       }
-    } catch (err) {
-      setError('Something went wrong. Please try again.');
+    } catch {
+      setError('Something went wrong. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Auto-submit when all 6 digits are entered
   useEffect(() => {
     if (otp.join('').length === 6) {
       handleSubmit();
     }
   }, [otp]);
 
+  const handleResend = async () => {
+    if (resendCooldown > 0 || resending || !email) return;
+
+    setResending(true);
+    setError('');
+    setInfoMessage('');
+
+    try {
+      const res = await fetch('/api/student/resend-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to resend code');
+      } else {
+        setInfoMessage('A fresh verification code has been dispatched.');
+        setResendCooldown(30);
+        if (data.devOtp) setCurrentDevOtp(data.devOtp);
+      }
+    } catch {
+      setError('Unable to resend code. Please try again.');
+    } finally {
+      setResending(false);
+    }
+  };
+
   if (success) {
     return (
-      <div style={{ textAlign: 'center', padding: '2rem' }}>
-        <FaCheckCircle style={{ fontSize: '4rem', color: 'var(--success)', marginBottom: '1.5rem' }} />
-        <h1 style={{ marginBottom: '1rem' }}>Email Verified!</h1>
-        <p style={{ opacity: 0.7 }}>Redirecting you to your profile...</p>
+      <div style={{ textAlign: 'left', padding: '0.5rem 0' }}>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 650, marginBottom: '0.5rem', color: 'inherit' }}>
+          Email Verified Successfully
+        </h3>
+        <p style={{ color: '#71717a', fontSize: '0.9375rem', lineHeight: 1.5 }}>
+          Your account is confirmed. Redirecting to your student dashboard...
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="glass-panel" style={{ maxWidth: '450px', margin: '4rem auto', padding: '2.5rem' }}>
-      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <div style={{ width: '64px', height: '64px', background: 'rgba(99,102,241,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-          <FaEnvelopeOpenText style={{ fontSize: '1.5rem', color: 'var(--primary)' }} />
-        </div>
-        <h1 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '0.5rem' }}>Verify your email</h1>
-        <p style={{ fontSize: '0.9rem', opacity: 0.7 }}>We've sent a 6-digit code to <br/><strong>{email}</strong></p>
-        
-        {devOtp && (
-          <div style={{ marginTop: '1rem', padding: '0.75rem 1rem', background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.4)', borderRadius: '8px', fontSize: '0.85rem', color: '#f59e0b' }}>
-            <strong>⚠️ Dev Mode:</strong> Email not configured.<br/>
-            Your OTP is: <strong style={{ fontSize: '1.1rem', letterSpacing: '3px' }}>{devOtp}</strong>
+    <form onSubmit={handleSubmit} className={styles.form}>
+      {/* Dev Mode Notification */}
+      {currentDevOtp && (
+        <div className={styles.alertWarning}>
+          <div>
+            <strong>Dev Mode:</strong> OTP for testing is <strong>{currentDevOtp}</strong>
           </div>
-        )}
+        </div>
+      )}
+
+      {/* Info Notice */}
+      {infoMessage && (
+        <div className={styles.alertSuccess}>
+          <span>{infoMessage}</span>
+        </div>
+      )}
+
+      {/* Error Notice */}
+      {error && (
+        <div className={styles.alertError} role="alert">
+          <span>{error}</span>
+        </div>
+      )}
+
+      {/* 6-Digit OTP */}
+      <div
+        className={styles.otpGroup}
+        onPaste={(e) => {
+          e.preventDefault();
+          handlePaste(e.clipboardData.getData('text'));
+        }}
+      >
+        {otp.map((digit, index) => (
+          <input
+            key={index}
+            ref={(el) => {
+              inputRefs.current[index] = el;
+            }}
+            id={`otp-${index}`}
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={1}
+            value={digit}
+            onChange={(e) => handleChange(e.target.value, index)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
+            autoFocus={index === 0}
+            aria-label={`Digit ${index + 1}`}
+            className={styles.otpDigit}
+          />
+        ))}
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', marginBottom: '2rem' }}>
-          {otp.map((digit, index) => (
-            <input
-              key={index}
-              id={`otp-${index}`}
-              type="text"
-              inputMode="numeric"
-              maxLength={1}
-              value={digit}
-              onChange={(e) => handleChange(e.target.value, index)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              autoFocus={index === 0}
-              style={{
-                width: '45px',
-                height: '55px',
-                textAlign: 'center',
-                fontSize: '1.5rem',
-                fontWeight: 700,
-                border: '2px solid var(--surface-border)',
-                borderRadius: '8px',
-                background: 'rgba(255,255,255,0.05)',
-                color: 'var(--foreground)',
-                outline: 'none',
-                transition: 'var(--transition)',
-                borderColor: digit ? 'var(--primary)' : 'var(--surface-border)',
-                boxShadow: digit ? '0 0 10px rgba(99,102,241,0.2)' : 'none'
-              }}
-            />
-          ))}
-        </div>
-
-        {error && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--error)', background: 'rgba(239,68,68,0.1)', padding: '0.75rem', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.85rem' }}>
-            <FaExclamationCircle /> {error}
-          </div>
+      {/* Submit Button */}
+      <button
+        type="submit"
+        disabled={loading || otp.join('').length < 6}
+        className={styles.submitBtn}
+      >
+        {loading ? (
+          <>
+            <span className={styles.spinner} />
+            <span>Verifying code...</span>
+          </>
+        ) : (
+          <span>Verify Email</span>
         )}
+      </button>
 
+      {/* Resend Action */}
+      <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.8125rem' }}>
+        <span style={{ color: '#71717a' }}>Didn&apos;t receive the code? </span>
         <button
-          type="submit"
-          disabled={loading || otp.join('').length < 6}
-          className="btn-primary"
-          style={{ width: '100%', padding: '0.85rem', fontWeight: 600 }}
+          type="button"
+          onClick={handleResend}
+          disabled={resendCooldown > 0 || resending}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: resendCooldown > 0 ? '#9ca3af' : 'inherit',
+            cursor: resendCooldown > 0 ? 'not-allowed' : 'pointer',
+            fontWeight: 600,
+            textDecoration: 'underline',
+          }}
         >
-          {loading ? 'Verifying...' : 'Verify Email'}
+          {resending ? 'Sending...' : resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend code'}
         </button>
+      </div>
 
-        <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.85rem', opacity: 0.6 }}>
-          Didn't receive the code? <button type="button" onClick={() => window.location.reload()} style={{ color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Resend</button>
-        </p>
-      </form>
-    </div>
+      <div className={styles.switchAuthRow}>
+        <Link href="/register" className={styles.switchAuthLink}>
+          Back to registration
+        </Link>
+      </div>
+    </form>
   );
 }
 
 export default function VerifyEmailPage() {
   return (
-    <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
-      <Suspense fallback={<div>Loading...</div>}>
-        <VerifyEmailForm />
-      </Suspense>
-    </div>
+    <Suspense
+      fallback={
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ color: '#71717a' }}>Loading...</div>
+        </div>
+      }
+    >
+      <VerifyEmailWrapper />
+    </Suspense>
+  );
+}
+
+function VerifyEmailWrapper() {
+  const searchParams = useSearchParams();
+  const email = searchParams.get('email') || 'your email';
+
+  return (
+    <AuthLayout
+      contextualBadge="EMAIL VERIFICATION"
+      editorialHeadline="Verify your account."
+      editorialSubheadline="Secure your access to study resources, lectures, and practice materials."
+      formTitle="Verify your email."
+      formSubtitle={`Enter the 6-digit confirmation code sent to ${email}`}
+      breadcrumbLabel="Verify Email"
+      maxWidth="default"
+    >
+      <VerifyEmailForm />
+    </AuthLayout>
   );
 }

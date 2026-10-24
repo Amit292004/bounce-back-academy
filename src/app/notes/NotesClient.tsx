@@ -181,13 +181,43 @@ function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(1.5rem,5vw,2.5rem) clamp(1rem,3vw,1.5rem)' }}>
 
       {/* Page Header */}
-      <div style={{ marginBottom: '2rem' }} className="animate-fade-in">
+      <div style={{ marginBottom: '1.75rem' }} className="animate-fade-in">
         <h1 style={{ fontSize: 'clamp(2rem,7vw,2.8rem)', fontWeight: 900, marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>
           Study <span className="kinetic-text">Notes</span>
         </h1>
         <p style={{ opacity: 0.65, fontSize: '1rem', lineHeight: 1.65 }}>
           Comprehensive notes for all levels. View free — download after login.
         </p>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '1rem',
+          flexWrap: 'wrap',
+          background: 'rgba(99, 102, 241, 0.08)',
+          border: '1px solid rgba(99, 102, 241, 0.2)',
+          borderRadius: '12px',
+          padding: '0.75rem 1.25rem',
+          marginTop: '1.25rem',
+        }}>
+          <div style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.85)' }}>
+            Looking for question papers, video lectures, and quizzes as well?
+          </div>
+          <Link
+            href="/library"
+            style={{
+              fontSize: '0.825rem',
+              fontWeight: 700,
+              color: '#818cf8',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            Open Universal Study Library &rarr;
+          </Link>
+        </div>
       </div>
 
       {/* Search Bar */}

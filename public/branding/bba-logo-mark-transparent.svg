@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Master Kinetic Gradient: Coral -> Cyber Violet -> Sky Cyan -->
+    <linearGradient id="tKineticGradPrimary" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF3366" />
+      <stop offset="28%" stop-color="#FF5E62" />
+      <stop offset="58%" stop-color="#8B5CF6" />
+      <stop offset="85%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+
+    <!-- Secondary Harmonic Gradient -->
+    <linearGradient id="tKineticGradSecondary" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="45%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#FF3366" />
+    </linearGradient>
+
+    <!-- Arrow Gleam Gradient -->
+    <linearGradient id="tArrowGleam" x1="0%" y1="80%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="40%" stop-color="#06B6D4" />
+      <stop offset="90%" stop-color="#E0F2FE" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+
+    <!-- Glow & Shadow Filters -->
+    <filter id="tCoreGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="tArrowPulse" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feDropShadow dx="0" dy="5" stdDeviation="10" flood-color="#06B6D4" flood-opacity="0.5" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Rebound Ground Wave (Subtle bounce springboard) -->
+  <path d="M 120 405 C 180 405, 215 425, 260 425 C 310 425, 345 405, 400 405" 
+        stroke="url(#tKineticGradPrimary)" stroke-width="3.5" stroke-linecap="round" opacity="0.4" />
+  <ellipse cx="260" cy="425" rx="38" ry="4" fill="#FF3366" opacity="0.4" filter="url(#tCoreGlow)" />
+
+  <!-- Kinetic Mark -->
+  <g>
+    <!-- Outer Momentum Echo Ribbon -->
+    <path d="M 168 375 C 130 325, 126 215, 178 152 C 224 96, 318 90, 362 142" 
+          fill="none" stroke="url(#tKineticGradPrimary)" stroke-width="12" stroke-linecap="round" opacity="0.3" filter="url(#tCoreGlow)" />
+
+    <!-- Vertical Stem with Rebound Spring Loop at the Bottom -->
+    <path d="M 172 135 L 172 360 C 172 405, 210 430, 255 430 C 298 430, 328 402, 344 372" 
+          fill="none" stroke="url(#tKineticGradPrimary)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Upper Wing / Loop of the 'B' -->
+    <path d="M 172 135 L 290 135 C 342 135, 376 168, 376 214 C 376 258, 342 288, 292 288 L 198 288" 
+          fill="none" stroke="url(#tKineticGradPrimary)" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Lower Dynamic Loop of the 'B' -->
+    <path d="M 238 288 L 306 288 C 358 288, 392 322, 392 366 C 392 404, 364 430, 320 430 C 285 430, 260 412, 248 392" 
+          fill="none" stroke="url(#tKineticGradSecondary)" stroke-width="28" stroke-linecap="round" />
+
+    <!-- Ascending Momentum Arrow -->
+    <g filter="url(#tArrowPulse)">
+      <path d="M 215 395 L 405 145" 
+            fill="none" stroke="url(#tArrowGleam)" stroke-width="32" stroke-linecap="round" />
+      <polygon points="415,108 438,184 374,162" 
+               fill="#38BDF8" stroke="#E0F2FE" stroke-width="3" stroke-linejoin="round" />
+    </g>
+
+    <!-- Star of Excellence -->
+    <circle cx="438" cy="118" r="6" fill="#FFFFFF" filter="url(#tCoreGlow)" />
+    <circle cx="438" cy="118" r="2.5" fill="#38BDF8" />
+    <circle cx="215" cy="395" r="5" fill="#FF5E62" />
+  </g>
+</svg>
