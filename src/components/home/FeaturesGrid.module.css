@@ -1,12 +1,13 @@
 .section {
-  padding: 6rem 1.5rem;
+  padding: 5rem 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .header {
-  max-width: 540px;
-  margin-bottom: 3.5rem;
+  max-width: 620px;
+  margin-bottom: 2.75rem;
 }
 
 .eyebrow {
@@ -20,25 +21,25 @@
 }
 
 .title {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-size: clamp(1.75rem, 4vw, 2.35rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--foreground);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.65rem;
   line-height: 1.15;
 }
 
 .sub {
-  font-size: 1rem;
-  line-height: 1.7;
+  font-size: 0.95rem;
+  line-height: 1.65;
   color: var(--foreground);
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
-/* 4-column grid */
+/* 3-column grid for 6 items */
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1px;
   border: 1px solid var(--surface-border);
   border-radius: 16px;
@@ -49,7 +50,6 @@
 .card {
   display: flex;
   flex-direction: column;
-  gap: 0;
   padding: 1.75rem 1.5rem;
   background: var(--surface);
   text-decoration: none;
@@ -72,6 +72,11 @@
   color: var(--primary);
 }
 
+.card:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
 .cardTop {
   display: flex;
   align-items: flex-start;
@@ -90,13 +95,13 @@
   justify-content: center;
   color: var(--foreground);
   opacity: 0.8;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   flex-shrink: 0;
 }
 
 .card:hover .iconBox {
   opacity: 1;
-  border-color: rgba(99,102,241,0.35);
+  border-color: color-mix(in srgb, var(--foreground) 30%, transparent);
   color: var(--primary);
 }
 
@@ -107,13 +112,13 @@
   text-transform: uppercase;
   padding: 0.18rem 0.5rem;
   border-radius: 5px;
-  background: rgba(249,115,22,0.1);
-  border: 1px solid rgba(249,115,22,0.2);
+  background: rgba(249, 115, 22, 0.1);
+  border: 1px solid rgba(249, 115, 22, 0.2);
   color: #f97316;
 }
 
 .cardTitle {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: -0.01em;
   margin-bottom: 0.5rem;
@@ -141,27 +146,29 @@
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--foreground);
-  opacity: 0.4;
+  opacity: 0.45;
   transition: all 0.2s ease;
   letter-spacing: -0.01em;
 }
 
 .arrow {
-  opacity: 0.3;
+  opacity: 0.35;
   transition: transform 0.2s ease, opacity 0.2s ease;
   color: var(--primary);
 }
 
 /* Responsive breakpoints */
-@media (max-width: 1024px) {
-  .grid { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-@media (max-width: 768px) {
-  .grid { grid-template-columns: repeat(2, 1fr); }
-  .section { padding: 4rem 1rem; }
-}
-
-@media (max-width: 480px) {
-  .grid { grid-template-columns: 1fr; }
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .section {
+    padding: 3.5rem 1rem;
+  }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import prisma from '@/lib/prisma';
-import ExamsClient, { ExamResource } from './ExamsClient';
+import ExamsClient, { ExamResource, ExamPremiumItem } from './ExamsClient';
 
 export const revalidate = 60;
 
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default async function ExamsPage() {
   const examKeywords = ['JEE', 'NEET', 'CUET'];
 
-  const [notesData, papersData, videosData] = await Promise.all([
+  const [notesData, papersData, videosData, premiumData] = await Promise.all([
     prisma.note.findMany({
       where: {
         OR: examKeywords.map((k) => ({
@@ -47,6 +47,10 @@ export default async function ExamsPage() {
       include: { subject: true, chapter: true },
       orderBy: { lectureNumber: 'asc' },
       take: 50,
+    }),
+    prisma.premiumItem.findMany({
+      where: { isActive: true },
+      orderBy: { createdAt: 'desc' },
     }),
   ]);
 
@@ -80,11 +84,24 @@ export default async function ExamsPage() {
     youtubeLink: v.youtubeLink,
   }));
 
+  const premiumItems: ExamPremiumItem[] = premiumData.map((p) => ({
+    id: p.id,
+    title: p.title,
+    description: p.description,
+    type: p.type,
+    price: p.price,
+    originalPrice: p.originalPrice,
+    imageUrl: p.imageUrl,
+    features: p.features,
+    className: p.className,
+  }));
+
   return (
     <ExamsClient
       allNotes={allNotes}
       allPapers={allPapers}
       allVideos={allVideos}
+      premiumItems={premiumItems}
     />
   );
 }

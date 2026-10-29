@@ -115,13 +115,31 @@ const EXAMS_DATA: ExamConfig[] = [
   },
 ];
 
+export interface ExamPremiumItem {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  price: number;
+  originalPrice: number | null;
+  imageUrl: string | null;
+  features: string | null;
+  className: string | null;
+}
+
 interface ExamsClientProps {
   allNotes: ExamResource[];
   allPapers: ExamResource[];
   allVideos: ExamResource[];
+  premiumItems?: ExamPremiumItem[];
 }
 
-function ExamsClientInner({ allNotes, allPapers, allVideos }: ExamsClientProps) {
+function ExamsClientInner({
+  allNotes,
+  allPapers,
+  allVideos,
+  premiumItems = [],
+}: ExamsClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -139,6 +157,15 @@ function ExamsClientInner({ allNotes, allPapers, allVideos }: ExamsClientProps) 
 
   const [selectedExam, setSelectedExam] = useState<ExamConfig>(initialExam);
   const [activeTab, setActiveTab] = useState<'all' | 'papers' | 'notes' | 'videos'>('all');
+
+  const matchingPremiumCount = useMemo(() => {
+    if (!premiumItems || premiumItems.length === 0) return 0;
+    return premiumItems.filter((p) => {
+      if (!p.className) return false;
+      const lower = p.className.toLowerCase();
+      return selectedExam.dbAliases.some((alias) => lower.includes(alias.toLowerCase()));
+    }).length;
+  }, [premiumItems, selectedExam]);
 
   const handleSelectExam = (exam: ExamConfig) => {
     setSelectedExam(exam);
@@ -266,6 +293,16 @@ function ExamsClientInner({ allNotes, allPapers, allVideos }: ExamsClientProps) 
               <span>Open {selectedExam.dbCourseName} Hub</span>
               <ArrowRight size={14} />
             </Button>
+            {matchingPremiumCount > 0 && (
+              <Button
+                href={`/class/${encodeURIComponent(selectedExam.dbCourseName)}?tab=premium`}
+                variant="outline"
+                size="sm"
+              >
+                <Sparkles size={14} color="#f59e0b" />
+                <span>Study Packages ({matchingPremiumCount})</span>
+              </Button>
+            )}
           </div>
         </div>
 

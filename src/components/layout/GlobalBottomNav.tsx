@@ -60,7 +60,7 @@ export default function GlobalBottomNav() {
 
   const tabs = [
     { href: '/?noredirect=true', label: 'Home',      icon: <Home size={19} /> },
-    { href: '/school',           label: 'School',    icon: <GraduationCap size={19} /> },
+    { href: '/school',           label: 'Classes',   icon: <GraduationCap size={19} /> },
     { href: '/courses',          label: 'Courses',   icon: <BookOpen size={19} /> },
     { href: '/ai-tutor',         label: 'AI Tutor',  icon: <Sparkles size={19} /> },
     { href: '/dashboard',        label: 'Dashboard', icon: <UserCheck size={19} /> },

@@ -42,6 +42,18 @@ export interface SchoolResource {
   pdfUrl?: string | null;
 }
 
+export interface SchoolPremiumItem {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  price: number;
+  originalPrice: number | null;
+  imageUrl: string | null;
+  features: string | null;
+  className: string | null;
+}
+
 export interface SubjectItem {
   id: string;
   name: string;
@@ -53,9 +65,18 @@ interface SchoolClientProps {
   allNotes: SchoolResource[];
   allPapers: SchoolResource[];
   allVideos: SchoolResource[];
+  premiumItems?: SchoolPremiumItem[];
 }
 
 const SCHOOL_CLASSES = ['Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'];
+
+// Helper to match class variants (e.g. "Class 10", "10", "10th")
+function classMatches(itemClass: string, targetClass: string): boolean {
+  if (!itemClass || !targetClass) return false;
+  const rawTarget = targetClass.toLowerCase().replace(/^class\s*/i, '').trim();
+  const rawItem = itemClass.toLowerCase().replace(/^class\s*/i, '').replace(/th$/, '').trim();
+  return rawTarget === rawItem || itemClass.toLowerCase() === targetClass.toLowerCase();
+}
 
 function SchoolClientInner({
   initialClasses,
@@ -63,6 +84,7 @@ function SchoolClientInner({
   allNotes,
   allPapers,
   allVideos,
+  premiumItems = [],
 }: SchoolClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -82,6 +104,13 @@ function SchoolClientInner({
   const [searchQuery, setSearchQuery] = useState('');
   const [activeVideo, setActiveVideo] = useState<SchoolResource | null>(null);
 
+  const matchingPremiumCount = useMemo(() => {
+    if (!premiumItems || premiumItems.length === 0) return 0;
+    return premiumItems.filter(
+      (p) => !p.className || classMatches(p.className, selectedClass)
+    ).length;
+  }, [premiumItems, selectedClass]);
+
   const handleClassSelect = (cls: string) => {
     setSelectedClass(cls);
     const sp = new URLSearchParams(searchParams.toString());
@@ -98,13 +127,6 @@ function SchoolClientInner({
       sp.delete('subject');
     }
     router.replace(`/school?${sp.toString()}`, { scroll: false });
-  };
-
-  // Helper to match class variants (e.g. "Class 10", "10", "10th")
-  const classMatches = (itemClass: string, targetClass: string) => {
-    const rawTarget = targetClass.toLowerCase().replace(/^class\s*/i, '').trim();
-    const rawItem = itemClass.toLowerCase().replace(/^class\s*/i, '').replace(/th$/, '').trim();
-    return rawTarget === rawItem || itemClass.toLowerCase() === targetClass.toLowerCase();
   };
 
   const filteredResources = useMemo(() => {
@@ -217,6 +239,12 @@ function SchoolClientInner({
             <span>Open {selectedClass} Hub</span>
             <ArrowRight size={14} />
           </Button>
+          {matchingPremiumCount > 0 && (
+            <Button href={`/class/${encodeURIComponent(selectedClass)}?tab=premium`} variant="outline" size="sm">
+              <Sparkles size={14} color="#f59e0b" />
+              <span>Study Packages ({matchingPremiumCount})</span>
+            </Button>
+          )}
           <Button href={`/ask?class=${encodeURIComponent(selectedClass)}`} variant="secondary" size="sm">
             <Sparkles size={14} />
             <span>Ask AI Doubt</span>

@@ -17,33 +17,33 @@ import {
   X,
   AlertCircle,
   Sparkles,
-  Flame,
   Trophy,
   Download,
-  BookOpen as BookIcon,
-  LogOut,
   ChevronLeft,
-  Home,
-  LayoutGrid,
-  Bell,
   Star,
   Heart,
   PlaySquare,
-
   CheckCheck,
-  Zap,
-  Users,
-  Clock,
-  TrendingUp,
-  Lock,
-  ChevronDown,
+  Layers,
+  GraduationCap,
+  Bell,
 } from "lucide-react";
 
-import { getDriveImageUrl } from "@/lib/driveImage";
 import { handleDownload } from "@/lib/utils";
 import ClassSwitcherModal from "@/components/layout/ClassSwitcherModal";
 import AddToCartButton from "@/components/cart/AddToCartButton";
-import { FaCreditCard, FaMobileAlt, FaShieldAlt, FaChevronRight, FaShoppingCart } from "react-icons/fa";
+import { FaCreditCard, FaMobileAlt, FaShieldAlt, FaChevronRight } from "react-icons/fa";
+import {
+  LearningWorkspaceHeader,
+  WorkspaceTab,
+  SubjectCard,
+  PremiumResourceCard,
+  PremiumItemData,
+  NoticeCard,
+  AnnouncementItem,
+} from "@/components/shared";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Button } from "@/components/ui/Button";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -107,36 +107,12 @@ interface Subject {
   quizzes: Quiz[];
 }
 
-interface Announcement {
-  id: string;
-  message: string | null;
-  imageUrl: string | null;
-  type: string; // "BANNER" | "SECTION"
-  isActive: boolean;
-  priority: number;
-  createdAt: Date;
-}
-
-interface PremiumItem {
-  id: string;
-  title: string;
-  description: string;
-  type: string; // "NOTE" | "PYQ" | "COURSE" | "LECTURE"
-  price: number;
-  originalPrice: number | null;
-  imageUrl: string | null;
-  features: string | null; // pipe-separated e.g. "Live Classes|Mentor Support"
-  resourceId: string | null;
-  isActive: boolean;
-  createdAt: Date;
-}
-
 interface Props {
   className: string;
   displayTitle: string;
   subjects: Subject[];
-  announcements: Announcement[];
-  premiumItems: PremiumItem[];
+  announcements: AnnouncementItem[];
+  premiumItems: PremiumItemData[];
 }
 
 // ─── VideoThumbnail Component ─────────────────────────────────────────────────
@@ -151,6 +127,7 @@ const VideoThumbnail = ({ src, alt }: { src: string | null; alt: string }) => {
     );
   }
   return (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={src}
       alt={alt}
@@ -160,44 +137,27 @@ const VideoThumbnail = ({ src, alt }: { src: string | null; alt: string }) => {
   );
 };
 
-// ─── Subject Color Map ────────────────────────────────────────────────────────
-
-const SUBJECT_COLORS: Record<string, { bg: string; color: string; icon: string }> = {
-  Physics:     { bg: "rgba(99,102,241,0.1)",  color: "#6366f1", icon: "⚛️" },
-  Chemistry:   { bg: "rgba(16,185,129,0.1)",  color: "#10b981", icon: "🧪" },
-  Mathematics: { bg: "rgba(245,158,11,0.1)",  color: "#f59e0b", icon: "📐" },
-  Biology:     { bg: "rgba(236,72,153,0.1)",  color: "#ec4899", icon: "🧬" },
-  English:     { bg: "rgba(6,182,212,0.1)",   color: "#06b6d4", icon: "📝" },
-};
-
-function getSubjectStyle(name: string) {
-  return SUBJECT_COLORS[name] || { bg: "rgba(99,102,241,0.1)", color: "#6366f1", icon: "📚" };
-}
-
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export default function ClassDashboard({ className, displayTitle, subjects: propSubjects, announcements: propAnnouncements, premiumItems: propPremiumItems }: Props) {
-  const subjects = useMemo(() => {
-    return propSubjects || [];
-  }, [propSubjects]);
-
-  const announcements = useMemo(() => {
-    return propAnnouncements || [];
-  }, [propAnnouncements]);
-
-  const premiumItems = useMemo(() => {
-    return propPremiumItems || [];
-  }, [propPremiumItems]);
+export default function ClassDashboard({
+  className,
+  displayTitle,
+  subjects: propSubjects,
+  announcements: propAnnouncements,
+  premiumItems: propPremiumItems,
+}: Props) {
+  const subjects = useMemo(() => propSubjects || [], [propSubjects]);
+  const announcements = useMemo(() => propAnnouncements || [], [propAnnouncements]);
 
   // Main navigation tabs
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState<"home" | "study" | "premium" | "notices">("home");
+  const [activeTab, setActiveTab] = useState<WorkspaceTab>("home");
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
 
   useEffect(() => {
     const tabParam = searchParams?.get("tab");
     if (tabParam === "premium" || tabParam === "study" || tabParam === "notices" || tabParam === "home") {
-      setActiveTab(tabParam as any);
+      setActiveTab(tabParam as WorkspaceTab);
     }
   }, [searchParams]);
 
@@ -206,16 +166,10 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
   const [classroomTab, setClassroomTab] = useState<"videos" | "notes" | "practice" | "quiz">("videos");
 
-  // Modals
-  const [selectedVideo, setSelectedVideo] = useState<VideoType | null>(null);
-  const [selectedDoc, setSelectedDoc] = useState<{ title: string; viewUrl: string; downloadUrl: string } | null>(null);
-  const [activeQuiz, setActiveQuiz] = useState<Quiz | null>(null);
-
-  // Premium Package & Checkout States
-  const [livePremiumItems, setLivePremiumItems] = useState<any[]>([]);
+  // Premium filtering & states
+  const [premiumFilter, setPremiumFilter] = useState<"all" | "NOTE" | "PYQ" | "COURSE">("all");
+  const [livePremiumItems, setLivePremiumItems] = useState<PremiumItemData[]>([]);
   const [selectedPackageDetail, setSelectedPackageDetail] = useState<any | null>(null);
-  const [loadingPackageDetail, setLoadingPackageDetail] = useState(false);
-
   const [checkoutItem, setCheckoutItem] = useState<any | null>(null);
   const [payTab, setPayTab] = useState<'card' | 'upi'>('card');
   const [checkoutStep, setCheckoutStep] = useState<'details' | 'processing' | 'success'>('details');
@@ -225,6 +179,20 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
   const [cardCvv, setCardCvv] = useState('');
   const [upiId, setUpiId] = useState('');
   const [isPurchasing, setIsPurchasing] = useState(false);
+
+  // Modals
+  const [selectedVideo, setSelectedVideo] = useState<VideoType | null>(null);
+  const [selectedDoc, setSelectedDoc] = useState<{ title: string; viewUrl: string; downloadUrl: string } | null>(null);
+  const [activeQuiz, setActiveQuiz] = useState<Quiz | null>(null);
+
+  // Progress
+  const [completedItems, setCompletedItems] = useState<Record<string, boolean>>({});
+
+  // Favorites
+  const [favoritedIds, setFavoritedIds] = useState<Set<string>>(new Set());
+
+  // Recent Video
+  const [recentVideo, setRecentVideo] = useState<{ video: VideoType; subjectId: string; subjectName: string; } | null>(null);
 
   const fetchLivePremium = async () => {
     try {
@@ -240,14 +208,62 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
     fetchLivePremium();
   }, []);
 
-  const displayPremiumItems = useMemo(() => {
-    const source = livePremiumItems.length > 0 ? livePremiumItems : propPremiumItems;
-    return source.filter((item: any) => {
-      if (!item.className) return true;
-      const norm = (name: string) => name.toLowerCase().replace('class', '').trim();
-      return norm(item.className) === norm(className);
+  // Deduplicate and structure premium items
+  const { curriculumItems, skillRecommendations } = useMemo(() => {
+    const source = livePremiumItems.length > 0 ? livePremiumItems : (propPremiumItems as PremiumItemData[]);
+    
+    // Deduplicate by normalized title to prevent identical courses showing up repeatedly
+    const seenTitles = new Set<string>();
+    const uniqueItems: PremiumItemData[] = [];
+
+    for (const item of source) {
+      const normTitle = (item.title || "").trim().toLowerCase();
+      if (!seenTitles.has(normTitle)) {
+        seenTitles.add(normTitle);
+        uniqueItems.push(item);
+      }
+    }
+
+    const norm = (name: string) => name.toLowerCase().replace('class', '').trim();
+    const currentNorm = norm(className);
+
+    // Primary: specifically targeted to this class
+    const curr = uniqueItems.filter((item) => {
+      if (!item.className) return false;
+      return norm(item.className) === currentNorm;
     });
+
+    // Secondary / Skill recommendations: global / skill courses without a specific class constraint
+    const skills = uniqueItems.filter((item) => {
+      if (!item.className) return true;
+      const lower = item.className.toLowerCase();
+      return lower.includes('skill') || lower.includes('practical') || lower.includes('ai');
+    });
+
+    return { curriculumItems: curr, skillRecommendations: skills };
   }, [livePremiumItems, propPremiumItems, className]);
+
+  // Combined filtered items based on active category
+  const filteredCurriculumItems = useMemo(() => {
+    if (premiumFilter === "all") return curriculumItems;
+    if (premiumFilter === "COURSE") {
+      return curriculumItems.filter(i => i.type === "COURSE" || i.type === "LECTURE");
+    }
+    return curriculumItems.filter(i => i.type === premiumFilter);
+  }, [curriculumItems, premiumFilter]);
+
+  const filteredSkillItems = useMemo(() => {
+    if (premiumFilter === "all") return skillRecommendations;
+    if (premiumFilter === "COURSE") {
+      return skillRecommendations.filter(i => i.type === "COURSE" || i.type === "LECTURE");
+    }
+    return skillRecommendations.filter(i => i.type === premiumFilter);
+  }, [skillRecommendations, premiumFilter]);
+
+  // Overall display premium items for badges and counts
+  const displayPremiumItems = useMemo(() => {
+    return [...curriculumItems, ...skillRecommendations];
+  }, [curriculumItems, skillRecommendations]);
 
   const loadCashfreeScript = (): Promise<boolean> => {
     return new Promise(resolve => {
@@ -344,15 +360,6 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
     }, 3700);
   };
 
-  // Progress
-  const [completedItems, setCompletedItems] = useState<Record<string, boolean>>({});
-
-  // Favorites
-  const [favoritedIds, setFavoritedIds] = useState<Set<string>>(new Set());
-
-  // Recent Video
-  const [recentVideo, setRecentVideo] = useState<{ video: VideoType; subjectId: string; subjectName: string; } | null>(null);
-
   useEffect(() => {
     try {
       const stored = localStorage.getItem(`recentVideo_${className}`);
@@ -433,14 +440,12 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
     }
   };
 
-  // Quiz
+  // Quiz state
   const [questionIndex, setQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [quizScore, setQuizScore] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
   const [quizHistory, setQuizHistory] = useState<Array<{ question: string; selected: string; correct: string; isCorrect: boolean }>>([]);
-
-
 
   useEffect(() => {
     try {
@@ -448,7 +453,6 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
       if (saved) setCompletedItems(JSON.parse(saved));
     } catch {}
 
-    // Save selected class to cookie and localStorage for automatic homepage and hero syncing
     if (className) {
       document.cookie = `selected_class=${encodeURIComponent(className)}; path=/; max-age=31536000; SameSite=Lax`;
       localStorage.setItem('selectedClass', className);
@@ -475,9 +479,10 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
   };
 
   const activeSubject = useMemo(() => subjects.find(s => s.id === selectedSubjectId) || null, [selectedSubjectId, subjects]);
+  
   const activeChapter = useMemo(() => {
     if (selectedChapterId === "general") {
-      return { id: "general", name: "General Resources", number: 0 };
+      return { id: "general", name: "Curriculum Resources", number: 0 };
     }
     return activeSubject?.chapters.find(c => c.id === selectedChapterId) || null;
   }, [selectedChapterId, activeSubject]);
@@ -510,8 +515,6 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
     };
   }, [activeSubject, selectedChapterId]);
 
-
-
   const stats = useMemo(() => {
     let videos = 0, notes = 0, papers = 0, quizzes = 0, completed = 0;
     subjects.forEach(s => {
@@ -525,6 +528,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
     const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
     return { videos, notes, papers, quizzes, completed, total, progress };
   }, [subjects, completedItems]);
+
   const startQuiz = (quiz: Quiz) => {
     setActiveQuiz(quiz);
     setQuestionIndex(0);
@@ -553,18 +557,33 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
     }
   };
 
-  // ─── Nav tabs config ──────────────────────────────────────────────────────
-  const NAV_TABS = [
-    { id: "home",    label: "Overview", icon: <LayoutGrid size={20} /> },
-    { id: "study",   label: "Study",    icon: <BookOpen size={20} /> },
-    { id: "premium", label: "Premium",  icon: <Star size={20} /> },
-    { id: "notices", label: "Notices",  icon: <Bell size={20} /> },
-  ];
-
-  const goToTab = (tab: typeof activeTab) => {
+  const goToTab = (tab: WorkspaceTab) => {
     setActiveTab(tab);
     setSelectedSubjectId(null);
     setSelectedChapterId(null);
+  };
+
+  // Handler for clicking on a stat card to jump straight to that resource type in Study
+  const handleStatClick = (type: "videos" | "notes" | "practice" | "quiz") => {
+    setActiveTab("study");
+    setClassroomTab(type);
+    if (subjects.length === 1) {
+      setSelectedSubjectId(subjects[0].id);
+      if (subjects[0].chapters.length === 0) {
+        setSelectedChapterId("general");
+      }
+    }
+  };
+
+  const handleOpenSubject = (sub: Subject) => {
+    setActiveTab("study");
+    setSelectedSubjectId(sub.id);
+    if (sub.chapters.length === 0) {
+      setSelectedChapterId("general");
+      setClassroomTab("videos");
+    } else {
+      setSelectedChapterId(null);
+    }
   };
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -573,212 +592,211 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
   return (
     <div className={styles.appShell}>
 
-      {/* Class switcher banner — highly visible on mobile at the very top */}
-      <div className={styles.classSelectorBanner}>
-        <div className={styles.classSelectorInfo}>
-          <span className={styles.classSelectorLabel}>Active Course / Level</span>
-          <h3 className={styles.classSelectorName}>{displayTitle}</h3>
-        </div>
-        <button 
-          className={styles.classSelectorBtn}
-          onClick={() => setIsSwitcherOpen(true)}
-        >
-          Change Class
-        </button>
-      </div>
+      {/* ── UNIFIED SAAS WORKSPACE HEADER: Eliminates the duplicate banners ── */}
+      <LearningWorkspaceHeader
+        className={className}
+        displayTitle={displayTitle}
+        activeTab={activeTab}
+        onTabChange={goToTab}
+        onOpenClassSwitcher={() => setIsSwitcherOpen(true)}
+        counts={{
+          study: subjects.reduce((acc, s) => acc + s.chapters.length, 0) || subjects.length,
+          premium: displayPremiumItems.length,
+          notices: announcements.length,
+        }}
+      />
 
-      {/* ── COMPACT CLASS HEADER: back link + class name + tabs in one row ── */}
-      <div className={styles.classHeader}>
-        <div className={styles.classHeaderInner}>
-          <div className={styles.classHeaderLeft}>
-            <Link href="/" className={styles.classBackBtn} title="Back to home">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            </Link>
-            <button 
-              className={styles.classSwitcherBtn} 
-              onClick={() => setIsSwitcherOpen(true)}
-              title="Switch Course"
-            >
-              <span>{displayTitle}</span>
-              <ChevronDown size={14} className={styles.switcherChevron} />
-            </button>
-          </div>
-          <nav className={styles.classHeaderTabs}>
-            {NAV_TABS.map(tab => (
-              <button
-                key={tab.id}
-                className={`${styles.classTabBtn} ${activeTab === tab.id ? styles.classTabBtnActive : ""}`}
-                onClick={() => goToTab(tab.id as any)}
-              >
-                {tab.icon}
-                <span>{tab.label}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
-
-      {/* ── MAIN CONTENT ── */}
+      {/* ── MAIN CONTENT AREA ── */}
       <main className={styles.appMain}>
 
         {/* ══════════════════════════════
-            HOME TAB
+            OVERVIEW TAB
         ══════════════════════════════ */}
         {activeTab === "home" && (
-          <div className={styles.tabContent}>
+          <div className={`${styles.tabContent} ${styles.overviewTabContent}`}>
 
-            {/* Quick Stats */}
-            <div className={styles.statsRow}>
-
-              <div className={styles.statCard}>
-                <div className={styles.statIcon}>
-                  <VideoIcon size={18} />
-                </div>
-                <div className={styles.statInfo}>
-                  <strong>{stats.videos}</strong>
-                  <span>Videos</span>
-                </div>
-              </div>
-              <div className={styles.statCard}>
-                <div className={styles.statIcon}>
-                  <FileText size={18} />
-                </div>
-                <div className={styles.statInfo}>
-                  <strong>{stats.notes}</strong>
-                  <span>Notes</span>
-                </div>
-              </div>
-              <div className={styles.statCard}>
-                <div className={styles.statIcon}>
-                  <BookOpen size={18} />
-                </div>
-                <div className={styles.statInfo}>
-                  <strong>{stats.papers}</strong>
-                  <span>Practice</span>
-                </div>
-              </div>
-              <div className={styles.statCard}>
-                <div className={styles.statIcon}>
-                  <Trophy size={18} />
-                </div>
-                <div className={styles.statInfo}>
-                  <strong>{stats.quizzes}</strong>
-                  <span>Quizzes</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Continue Learning */}
-            {(() => {
-              const video = recentVideo?.video || subjects[0]?.videos[0];
-              const subjectName = recentVideo?.subjectName || subjects[0]?.name;
-              const subjectId = recentVideo?.subjectId || subjects[0]?.id;
-              
-              if (!video) return null;
-              
-              const ytId = getYoutubeId(video.youtubeLink);
-              const thumb = ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : null;
-              return (
-                <section className={styles.section}>
-                  <h3 className={styles.sectionTitle}>Continue Learning</h3>
-                  <div
-                    className={styles.continueCard}
-                    onClick={() => {
-                      setActiveTab("study");
-                      setSelectedSubjectId(subjectId);
-                      setSelectedChapterId(video.chapterId || null);
-                      setClassroomTab("videos");
-                    }}
-                  >
-                    <div className={styles.continueThumb}>
-                      <VideoThumbnail src={thumb} alt={video.title} />
-                      <div className={styles.videoPlayOverlay} style={{ opacity: 1, background: "rgba(0, 0, 0, 0.2)" }}>
-                        <Play size={14} fill="white" color="white" />
-                      </div>
-                    </div>
-                    <div className={styles.continueInfo}>
-                      <span className={styles.continueMeta}>{subjectName} · Lecture {video.lectureNumber || 1}</span>
-                      <p className={styles.continueTitle}>{video.title}</p>
-                    </div>
-                    <ChevronRight size={18} className={styles.continueArrow} />
+            {/* Quick Stats Grid — Navigable to Study Resources */}
+            <section aria-label="Curriculum resources summary">
+              <div className={styles.statsRow}>
+                <div
+                  className={`${styles.statCard} ${styles.statCardNavigable}`}
+                  onClick={() => handleStatClick("videos")}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && handleStatClick("videos")}
+                  aria-label={`${stats.videos} Video Lectures. Click to open video lessons.`}
+                >
+                  <div className={styles.statIcon} style={{ color: '#06b6d4' }}>
+                    <VideoIcon size={26} />
                   </div>
-                </section>
-              );
-            })()}
+                  <div className={styles.statInfo}>
+                    <strong>{stats.videos}</strong>
+                    <span>Videos</span>
+                  </div>
+                </div>
 
-            {/* Subjects Quick Access */}
-            <section className={styles.section}>
+                <div
+                  className={`${styles.statCard} ${styles.statCardNavigable}`}
+                  onClick={() => handleStatClick("notes")}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && handleStatClick("notes")}
+                  aria-label={`${stats.notes} Chapter Notes. Click to open study notes.`}
+                >
+                  <div className={styles.statIcon} style={{ color: '#6366f1' }}>
+                    <FileText size={26} />
+                  </div>
+                  <div className={styles.statInfo}>
+                    <strong>{stats.notes}</strong>
+                    <span>Notes</span>
+                  </div>
+                </div>
+
+                <div
+                  className={`${styles.statCard} ${styles.statCardNavigable}`}
+                  onClick={() => handleStatClick("practice")}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && handleStatClick("practice")}
+                  aria-label={`${stats.papers} Board & Practice Papers. Click to open practice papers.`}
+                >
+                  <div className={styles.statIcon} style={{ color: '#f59e0b' }}>
+                    <BookOpen size={26} />
+                  </div>
+                  <div className={styles.statInfo}>
+                    <strong>{stats.papers}</strong>
+                    <span>Practice Papers</span>
+                  </div>
+                </div>
+
+                <div
+                  className={`${styles.statCard} ${styles.statCardNavigable}`}
+                  onClick={() => handleStatClick("quiz")}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && handleStatClick("quiz")}
+                  aria-label={`${stats.quizzes} Practice Quizzes. Click to test knowledge.`}
+                >
+                  <div className={styles.statIcon} style={{ color: '#ec4899' }}>
+                    <Trophy size={26} />
+                  </div>
+                  <div className={styles.statInfo}>
+                    <strong>{stats.quizzes}</strong>
+                    <span>Quizzes</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Continue Learning — Only shown if actual progress exists */}
+            {recentVideo && (
+              <section className={styles.section} aria-label="Resume previous study session">
+                <div className={styles.sectionHeader}>
+                  <h3 className={styles.sectionTitle}>Continue Learning</h3>
+                </div>
+                <div
+                  className={styles.continueCard}
+                  onClick={() => {
+                    setActiveTab("study");
+                    setSelectedSubjectId(recentVideo.subjectId);
+                    setSelectedChapterId(recentVideo.video.chapterId || "general");
+                    setClassroomTab("videos");
+                    setSelectedVideo(recentVideo.video);
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setSelectedVideo(recentVideo.video)}
+                >
+                  <div className={styles.continueThumb}>
+                    <VideoThumbnail
+                      src={
+                        getYoutubeId(recentVideo.video.youtubeLink)
+                          ? `https://img.youtube.com/vi/${getYoutubeId(recentVideo.video.youtubeLink)}/mqdefault.jpg`
+                          : null
+                      }
+                      alt={recentVideo.video.title}
+                    />
+                    <div className={styles.videoPlayOverlay} style={{ opacity: 1, background: "rgba(0, 0, 0, 0.25)" }}>
+                      <Play size={20} fill="white" color="white" />
+                    </div>
+                  </div>
+                  <div className={styles.continueInfo}>
+                    <span className={styles.continueMeta}>
+                      {recentVideo.subjectName} · Lecture {recentVideo.video.lectureNumber || 1}
+                    </span>
+                    <p className={styles.continueTitle}>{recentVideo.video.title}</p>
+                  </div>
+                  <ChevronRight size={22} className={styles.continueArrow} />
+                </div>
+              </section>
+            )}
+
+            {/* Your Subjects — Clean Discovery Grid */}
+            <section className={styles.section} aria-label="Available subjects in class">
               <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>Your Subjects</h3>
-                {subjects.length > 4 && (
+                <div>
+                  <h3 className={styles.sectionTitle}>Your Subjects</h3>
+                  <p style={{ fontSize: '0.875rem', opacity: 0.7, margin: '0.2rem 0 0' }}>
+                    {subjects.length === 1
+                      ? `1 active subject in ${displayTitle}`
+                      : `${subjects.length} active subjects available`}
+                  </p>
+                </div>
+                {subjects.length > 3 && (
                   <button className={styles.seeAllBtn} onClick={() => goToTab("study")}>
-                    See All
+                    See All Subjects
                   </button>
                 )}
               </div>
+
               {subjects.length === 0 ? (
-                <div style={{ padding: "1.5rem", textAlign: "center", background: "var(--surface)", border: "1px solid var(--surface-border)", borderRadius: "var(--radius-md)" }}>
-                  <p style={{ opacity: 0.6, fontSize: "0.9rem" }}>No subjects or study materials have been added to {displayTitle} yet.</p>
-                </div>
+                <EmptyState
+                  icon={<BookOpen size={32} />}
+                  title="No Subjects Published Yet"
+                  description={`Content and notes for ${displayTitle} are currently being prepared. Check back shortly or browse other classes.`}
+                  action={
+                    <Button variant="outline" size="sm" onClick={() => setIsSwitcherOpen(true)}>
+                      Switch Class
+                    </Button>
+                  }
+                />
               ) : (
-                <div className={styles.subjectChips}>
-                  {subjects.slice(0, 4).map(sub => {
-                    return (
-                      <button
-                        key={sub.id}
-                        className={styles.subjectChip}
-                        onClick={() => {
-                          setActiveTab("study");
-                          setSelectedSubjectId(sub.id);
-                          if (sub.chapters.length === 0) {
-                            setSelectedChapterId("general");
-                            setClassroomTab("videos");
-                          }
-                        }}
-                      >
-                        <span>{sub.name}</span>
-                      </button>
-                    );
-                  })}
+                <div className={styles.subjectGrid}>
+                  {subjects.map(sub => (
+                    <SubjectCard
+                      key={sub.id}
+                      id={sub.id}
+                      name={sub.name}
+                      chaptersCount={sub.chapters.length}
+                      notesCount={sub.notes.length}
+                      videosCount={sub.videos.length}
+                      papersCount={sub.papers.length}
+                      quizzesCount={sub.quizzes.length}
+                      onClick={() => handleOpenSubject(sub)}
+                    />
+                  ))}
                 </div>
               )}
             </section>
 
-            {/* Featured Premium Course */}
-            {displayPremiumItems.length > 0 && (
-              <section className={styles.section}>
+            {/* Featured Premium Resource / Recommended Study Package */}
+            {curriculumItems.length > 0 && (
+              <section className={styles.section} aria-label="Featured premium course">
                 <div className={styles.sectionHeader}>
-                  <h3 className={styles.sectionTitle}>Upgrade Your Prep</h3>
+                  <h3 className={styles.sectionTitle}>Recommended for {displayTitle}</h3>
                   <button className={styles.seeAllBtn} onClick={() => goToTab("premium")}>
-                    See All
+                    View All in Store
                   </button>
                 </div>
-                <div
-                  className={styles.featuredCourseCard}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleOpenPremiumItem(displayPremiumItems[0])}
-                >
-                  <div className={styles.featuredCourseBadge}>
-                    {displayPremiumItems[0].type}
-                  </div>
-                  {displayPremiumItems[0].imageUrl && (
-                    <div className={styles.featuredCourseImage}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={getDriveImageUrl(displayPremiumItems[0].imageUrl) || ""} alt={displayPremiumItems[0].title} className={styles.featuredCourseImg} />
-                    </div>
-                  )}
-                  <h4 className={styles.featuredCourseTitle}>{displayPremiumItems[0].title}</h4>
-                  <p className={styles.featuredCourseSub}>{displayPremiumItems[0].description}</p>
-                  <div className={styles.featuredCourseFooter}>
-                    <div className={styles.featuredPrice}>
-                      <strong>₹{displayPremiumItems[0].price}</strong>
-                      {displayPremiumItems[0].originalPrice && <span>₹{displayPremiumItems[0].originalPrice}</span>}
-                    </div>
-                    <div className={styles.featuredLink}>
-                      <span>{displayPremiumItems[0].unlocked ? 'View Content' : 'Explore Prep'}</span>
-                      <ChevronRight size={14} className={styles.featuredArrow} />
-                    </div>
-                  </div>
+                <div className={styles.premiumGrid}>
+                  {curriculumItems.slice(0, 3).map(item => (
+                    <PremiumResourceCard
+                      key={item.id}
+                      item={item}
+                      onOpen={handleOpenPremiumItem}
+                      onInstantBuy={handleOpenPremiumItem}
+                    />
+                  ))}
                 </div>
               </section>
             )}
@@ -796,131 +814,330 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
             {!selectedSubjectId && (
               <>
                 <div className={styles.pageHeading}>
-                  <h2>Study</h2>
-                  <p>{subjects.length > 0 ? "Pick a subject to start learning" : "No subjects available yet"}</p>
+                  <h2>Curriculum & Subjects</h2>
+                  <p>
+                    {subjects.length > 0
+                      ? `Select a subject to explore chapter notes, board papers, and video lectures.`
+                      : `No study materials uploaded for ${displayTitle} yet.`}
+                  </p>
                 </div>
+
                 {subjects.length === 0 ? (
-                  <div style={{ padding: "3rem 1.5rem", textAlign: "center", background: "var(--surface)", border: "1px solid var(--surface-border)", borderRadius: "var(--radius-lg)", marginTop: "1rem" }}>
-                    <BookOpen size={44} style={{ opacity: 0.3, marginBottom: "1rem" }} />
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.5rem" }}>No Content Uploaded Yet</h3>
-                    <p style={{ opacity: 0.6, fontSize: "0.9rem", maxWidth: "420px", margin: "0 auto" }}>
-                      No study materials or subjects have been added for {displayTitle} yet by the administration. Content will appear here as soon as it is uploaded.
-                    </p>
-                  </div>
+                  <EmptyState
+                    icon={<BookOpen size={36} />}
+                    title="No Curriculum Uploaded Yet"
+                    description={`No syllabus resources or subjects have been configured for ${displayTitle} yet. You can check back soon or switch to another class.`}
+                    compact={true}
+                    action={
+                      <Button variant="primary" onClick={() => setIsSwitcherOpen(true)}>
+                        <GraduationCap size={16} /> Switch Class
+                      </Button>
+                    }
+                  />
                 ) : (
-                  <div className={styles.subjectList}>
-                    {subjects.map(sub => {
-                      const total = sub.videos.length + sub.notes.length + sub.papers.length;
-                      return (
-                        <div
-                          key={sub.id}
-                          className={styles.subjectRow}
-                          onClick={() => {
-                            setSelectedSubjectId(sub.id);
-                            if (sub.chapters.length === 0) {
-                              setSelectedChapterId("general");
-                              setClassroomTab("videos");
-                            }
-                          }}
-                        >
-                          <div className={styles.cardTop}>
-                            <div className={styles.iconBox}>
-                              <BookOpen size={18} />
-                            </div>
-                          </div>
-                          <h3 className={styles.cardTitle}>{sub.name}</h3>
-                          <p className={styles.cardDesc}>
-                            {sub.chapters.length} chapters · {total} resources
-                          </p>
-                          <div className={styles.cardFooter}>
-                            <span className={styles.link}>Start learning</span>
-                            <ChevronRight size={14} className={styles.rowArrow} />
-                          </div>
-                        </div>
-                      );
-                    })}
+                  <div className={styles.subjectGrid}>
+                    {subjects.map(sub => (
+                      <SubjectCard
+                        key={sub.id}
+                        id={sub.id}
+                        name={sub.name}
+                        chaptersCount={sub.chapters.length}
+                        notesCount={sub.notes.length}
+                        videosCount={sub.videos.length}
+                        papersCount={sub.papers.length}
+                        quizzesCount={sub.quizzes.length}
+                        onClick={() => handleOpenSubject(sub)}
+                      />
+                    ))}
                   </div>
                 )}
               </>
             )}
 
-            {/* LEVEL 2: Chapter list */}
+            {/* LEVEL 2: Chapter list (or direct content if 0 chapters) */}
             {selectedSubjectId && !selectedChapterId && activeSubject && (
               <>
                 <div className={styles.breadcrumb}>
                   <button className={styles.breadcrumbBack} onClick={() => setSelectedSubjectId(null)}>
-                    <ChevronLeft size={16} /> Back
+                    <ChevronLeft size={16} /> All Subjects
                   </button>
                   <span>{activeSubject.name}</span>
                 </div>
+
                 <div className={styles.pageHeading}>
                   <h2>{activeSubject.name}</h2>
-                  <p>Select a chapter below</p>
+                  <p>
+                    {activeSubject.chapters.length > 0
+                      ? "Select a chapter below to access specific lectures and notes"
+                      : "Core curriculum notes, practice sheets, and video lectures"}
+                  </p>
                 </div>
-                <div className={styles.chapterList}>
-                  {/* General / Unassigned Resources virtual chapter */}
-                  {(() => {
-                    const counts = getUnassignedCounts(activeSubject);
-                    if (counts.total === 0) return null;
-                    return (
-                      <div
-                        className={styles.chapterRow}
-                        onClick={() => {
-                          setSelectedChapterId("general");
-                          setClassroomTab("videos");
-                        }}
-                      >
-                        <div className={styles.chapterNum} style={{ background: "rgba(156,163,175,0.1)", color: "#9ca3af" }}>
-                          #
-                        </div>
-                        <div className={styles.chapterInfo}>
-                          <h4>General / Additional Resources</h4>
-                          <div className={styles.chapterMeta}>
-                            {counts.vids > 0 && <span><VideoIcon size={12} /> {counts.vids}</span>}
-                            {counts.nts > 0 && <span><FileText size={12} /> {counts.nts}</span>}
-                            {counts.dps > 0 && <span><BookOpen size={12} /> {counts.dps}</span>}
-                            {counts.qzs > 0 && <span><Trophy size={12} /> {counts.qzs}</span>}
-                          </div>
-                        </div>
-                        <ChevronRight size={18} className={styles.rowArrow} />
-                      </div>
-                    );
-                  })()}
 
-                  {activeSubject.chapters.map(chap => {
-                    const style = getSubjectStyle(activeSubject.name);
-                    const vids = activeSubject.videos.filter(v => v.chapterId === chap.id).length;
-                    const nts  = activeSubject.notes.filter(n => n.chapterId === chap.id).length;
-                    const dps  = activeSubject.papers.filter(p => p.chapterId === chap.id).length;
-                    return (
-                      <div
-                        key={chap.id}
-                        className={styles.chapterRow}
-                        onClick={() => {
-                          setSelectedChapterId(chap.id);
-                          setClassroomTab("videos");
-                        }}
-                      >
-                        <div className={styles.chapterNum} style={{ background: style.bg, color: style.color }}>
-                          {chap.number}
-                        </div>
-                        <div className={styles.chapterInfo}>
-                          <h4>{chap.name}</h4>
-                          <div className={styles.chapterMeta}>
-                            {vids > 0 && <span><VideoIcon size={12} /> {vids}</span>}
-                            {nts > 0 && <span><FileText size={12} /> {nts}</span>}
-                            {dps > 0 && <span><BookOpen size={12} /> {dps}</span>}
+                {/* If the subject has chapters, display chapters + general resources */}
+                {activeSubject.chapters.length > 0 ? (
+                  <div className={styles.chapterList}>
+                    {/* General / Unassigned Resources virtual chapter */}
+                    {(() => {
+                      const counts = getUnassignedCounts(activeSubject);
+                      if (counts.total === 0) return null;
+                      return (
+                        <div
+                          className={styles.chapterRow}
+                          onClick={() => {
+                            setSelectedChapterId("general");
+                            setClassroomTab("videos");
+                          }}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setSelectedChapterId("general")}
+                        >
+                          <div className={styles.chapterNum} style={{ background: "rgba(156,163,175,0.1)", color: "#9ca3af" }}>
+                            #
                           </div>
+                          <div className={styles.chapterInfo}>
+                            <h4>General / Curriculum Resources</h4>
+                            <div className={styles.chapterMeta}>
+                              {counts.vids > 0 && <span><VideoIcon size={12} /> {counts.vids}</span>}
+                              {counts.nts > 0 && <span><FileText size={12} /> {counts.nts}</span>}
+                              {counts.dps > 0 && <span><BookOpen size={12} /> {counts.dps}</span>}
+                              {counts.qzs > 0 && <span><Trophy size={12} /> {counts.qzs}</span>}
+                            </div>
+                          </div>
+                          <ChevronRight size={18} className={styles.rowArrow} />
                         </div>
-                        <ChevronRight size={18} className={styles.rowArrow} />
+                      );
+                    })()}
+
+                    {activeSubject.chapters.map(chap => {
+                      const vids = activeSubject.videos.filter(v => v.chapterId === chap.id).length;
+                      const nts  = activeSubject.notes.filter(n => n.chapterId === chap.id).length;
+                      const dps  = activeSubject.papers.filter(p => p.chapterId === chap.id).length;
+                      return (
+                        <div
+                          key={chap.id}
+                          className={styles.chapterRow}
+                          onClick={() => {
+                            setSelectedChapterId(chap.id);
+                            setClassroomTab("videos");
+                          }}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setSelectedChapterId(chap.id)}
+                        >
+                          <div className={styles.chapterNum} style={{ background: "rgba(99,102,241,0.12)", color: "#6366f1" }}>
+                            {chap.number}
+                          </div>
+                          <div className={styles.chapterInfo}>
+                            <h4>{chap.name}</h4>
+                            <div className={styles.chapterMeta}>
+                              {vids > 0 && <span><VideoIcon size={12} /> {vids}</span>}
+                              {nts > 0 && <span><FileText size={12} /> {nts}</span>}
+                              {dps > 0 && <span><BookOpen size={12} /> {dps}</span>}
+                            </div>
+                          </div>
+                          <ChevronRight size={18} className={styles.rowArrow} />
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  /* Subject with 0 chapters (e.g. Class 8 Math): seamlessly display content without awkward empty panel */
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div className={styles.subTabs}>
+                      {[
+                        { id: "videos",   label: "Videos",   icon: <VideoIcon size={15} />, count: activeSubject.videos.length },
+                        { id: "notes",    label: "Notes",    icon: <FileText size={15} />, count: activeSubject.notes.length },
+                        { id: "practice", label: "Practice", icon: <BookOpen size={15} />, count: activeSubject.papers.length },
+                        { id: "quiz",     label: "Quiz",     icon: <Trophy size={15} />, count: activeSubject.quizzes.length },
+                      ].map(tab => (
+                        <button
+                          key={tab.id}
+                          className={`${styles.subTab} ${classroomTab === tab.id ? styles.subTabActive : ""}`}
+                          onClick={() => setClassroomTab(tab.id as any)}
+                        >
+                          {tab.icon}
+                          <span>{tab.label}</span>
+                          {tab.count > 0 && <span style={{ opacity: 0.6, fontSize: '0.75rem' }}>({tab.count})</span>}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* VIDEOS */}
+                    {classroomTab === "videos" && (
+                      <div className={styles.contentList}>
+                        {activeSubject.videos.length === 0 ? (
+                          <EmptyState
+                            icon={<VideoIcon size={28} />}
+                            title="No Video Lessons Yet"
+                            description={`Lectures for ${activeSubject.name} will appear here once published.`}
+                            compact={true}
+                          />
+                        ) : activeSubject.videos.map(video => {
+                          const ytId = getYoutubeId(video.youtubeLink);
+                          const thumb = ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : null;
+                          const done = !!completedItems[video.id];
+                          return (
+                            <div
+                              key={video.id}
+                              className={`${styles.videoCard} ${done ? styles.videoCardDone : ""}`}
+                              onClick={() => handleVideoClick(video)}
+                            >
+                              <div className={styles.videoThumb}>
+                                <VideoThumbnail src={thumb} alt={video.title} />
+                                <div className={styles.videoPlayOverlay}><Play size={16} fill="white" color="white" /></div>
+                              </div>
+                              <div className={styles.videoInfo}>
+                                <span className={styles.videoLabel}>Lecture {video.lectureNumber || 1}</span>
+                                <h4 className={styles.videoTitle}>{video.title}</h4>
+                              </div>
+                              <button
+                                className={`${styles.favBtn} ${favoritedIds.has(video.id) ? styles.favBtnActive : ""}`}
+                                onClick={(e) => toggleFavorite(video.id, 'VIDEO', e)}
+                                title={favoritedIds.has(video.id) ? "Remove from Favorites" : "Add to Favorites"}
+                              >
+                                <Heart size={20} fill={favoritedIds.has(video.id) ? "#ef4444" : "none"} color={favoritedIds.has(video.id) ? "#ef4444" : "currentColor"} />
+                              </button>
+                              <button
+                                className={`${styles.checkBtn} ${done ? styles.checkBtnDone : ""}`}
+                                onClick={(e) => toggleComplete(video.id, e)}
+                              >
+                                <CheckCircle2 size={20} />
+                              </button>
+                            </div>
+                          );
+                        })}
                       </div>
-                    );
-                  })}
-                </div>
+                    )}
+
+                    {/* NOTES */}
+                    {classroomTab === "notes" && (
+                      <div className={styles.contentList}>
+                        {activeSubject.notes.length === 0 ? (
+                          <EmptyState
+                            icon={<FileText size={28} />}
+                            title="No Notes Published Yet"
+                            description={`Chapter notes and revision guides for ${activeSubject.name} will be uploaded soon.`}
+                            compact={true}
+                          />
+                        ) : activeSubject.notes.map(note => {
+                          const done = !!completedItems[note.id];
+                          return (
+                            <div
+                              key={note.id}
+                              className={`${styles.docCard} ${done ? styles.docCardDone : ""}`}
+                              onClick={() => setSelectedDoc({ title: note.title, viewUrl: note.viewUrl, downloadUrl: note.downloadFile })}
+                            >
+                              <div className={styles.docIcon} style={{ background: "rgba(99,102,241,0.1)", color: "#6366f1" }}>
+                                <FileText size={18} />
+                              </div>
+                              <div className={styles.docInfo}>
+                                <h4>{note.title}</h4>
+                                <span>Study Notes · PDF</span>
+                              </div>
+                              <button
+                                className={`${styles.favBtn} ${favoritedIds.has(note.id) ? styles.favBtnActive : ""}`}
+                                onClick={(e) => toggleFavorite(note.id, 'NOTE', e)}
+                                title={favoritedIds.has(note.id) ? "Remove from Favorites" : "Add to Favorites"}
+                              >
+                                <Heart size={20} fill={favoritedIds.has(note.id) ? "#ef4444" : "none"} color={favoritedIds.has(note.id) ? "#ef4444" : "currentColor"} />
+                              </button>
+                              <button
+                                className={`${styles.checkBtn} ${done ? styles.checkBtnDone : ""}`}
+                                onClick={(e) => toggleComplete(note.id, e)}
+                              >
+                                <CheckCircle2 size={20} />
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* PRACTICE */}
+                    {classroomTab === "practice" && (
+                      <div className={styles.contentList}>
+                        {activeSubject.papers.length === 0 ? (
+                          <EmptyState
+                            icon={<BookOpen size={28} />}
+                            title="No Practice Papers Yet"
+                            description={`Question papers and DPP worksheets for ${activeSubject.name} will appear here.`}
+                            compact={true}
+                          />
+                        ) : activeSubject.papers.map(dpp => {
+                          const done = !!completedItems[dpp.id];
+                          return (
+                            <div
+                              key={dpp.id}
+                              className={`${styles.docCard} ${done ? styles.docCardDone : ""}`}
+                              onClick={() => setSelectedDoc({ title: dpp.title, viewUrl: dpp.viewUrl, downloadUrl: dpp.downloadFile })}
+                            >
+                              <div className={styles.docIcon} style={{ background: "rgba(245,158,11,0.1)", color: "#f59e0b" }}>
+                                <BookOpen size={18} />
+                              </div>
+                              <div className={styles.docInfo}>
+                                <h4>{dpp.title}</h4>
+                                <span>Practice Sheet · DPP</span>
+                              </div>
+                              <button
+                                className={`${styles.favBtn} ${favoritedIds.has(dpp.id) ? styles.favBtnActive : ""}`}
+                                onClick={(e) => toggleFavorite(dpp.id, 'PAPER', e)}
+                                title={favoritedIds.has(dpp.id) ? "Remove from Favorites" : "Add to Favorites"}
+                              >
+                                <Heart size={20} fill={favoritedIds.has(dpp.id) ? "#ef4444" : "none"} color={favoritedIds.has(dpp.id) ? "#ef4444" : "currentColor"} />
+                              </button>
+                              <button
+                                className={`${styles.checkBtn} ${done ? styles.checkBtnDone : ""}`}
+                                onClick={(e) => toggleComplete(dpp.id, e)}
+                              >
+                                <CheckCircle2 size={20} />
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* QUIZ */}
+                    {classroomTab === "quiz" && (
+                      <div className={styles.contentList}>
+                        {activeSubject.quizzes.length === 0 ? (
+                          <EmptyState
+                            icon={<Trophy size={28} />}
+                            title="No Quizzes Available"
+                            description={`Topic quizzes for ${activeSubject.name} are coming soon.`}
+                            compact={true}
+                          />
+                        ) : activeSubject.quizzes.map(quiz => (
+                          <div key={quiz.id} className={styles.quizRow}>
+                            <div className={styles.quizIcon}>
+                              <Trophy size={18} />
+                            </div>
+                            <div className={styles.quizInfo}>
+                              <h4>{quiz.title}</h4>
+                              <span>{quiz.questions.length} question{quiz.questions.length !== 1 ? "s" : ""}</span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              <button
+                                className={`${styles.favBtn} ${favoritedIds.has(quiz.id) ? styles.favBtnActive : ""}`}
+                                onClick={(e) => toggleFavorite(quiz.id, 'QUIZ', e)}
+                                title={favoritedIds.has(quiz.id) ? "Remove from Favorites" : "Add to Favorites"}
+                              >
+                                <Heart size={16} fill={favoritedIds.has(quiz.id) ? "#ef4444" : "none"} color={favoritedIds.has(quiz.id) ? "#ef4444" : "currentColor"} />
+                              </button>
+                              <button className={styles.startQuizBtn} onClick={() => startQuiz(quiz)}>
+                                Start Quiz
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </>
             )}
 
-            {/* LEVEL 3: Chapter content */}
+            {/* LEVEL 3: Chapter content (when chapter selected) */}
             {selectedSubjectId && selectedChapterId && activeSubject && activeChapter && (
               <>
                 <div className={styles.breadcrumb}>
@@ -967,10 +1184,12 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                 {classroomTab === "videos" && (
                   <div className={styles.contentList}>
                     {chapterContent.videos.length === 0 ? (
-                      <div className={styles.emptyState}>
-                        <VideoIcon size={36} opacity={0.3} />
-                        <p>No videos yet</p>
-                      </div>
+                      <EmptyState
+                        icon={<VideoIcon size={28} />}
+                        title="No Videos in this Chapter"
+                        description="Video lectures for this specific chapter will appear here."
+                        compact={true}
+                      />
                     ) : chapterContent.videos.map(video => {
                       const ytId = getYoutubeId(video.youtubeLink);
                       const thumb = ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : null;
@@ -999,7 +1218,6 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                           <button
                             className={`${styles.checkBtn} ${done ? styles.checkBtnDone : ""}`}
                             onClick={(e) => toggleComplete(video.id, e)}
-                            title={done ? "Mark incomplete" : "Mark complete"}
                           >
                             <CheckCircle2 size={20} />
                           </button>
@@ -1013,10 +1231,12 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                 {classroomTab === "notes" && (
                   <div className={styles.contentList}>
                     {chapterContent.notes.length === 0 ? (
-                      <div className={styles.emptyState}>
-                        <FileText size={36} opacity={0.3} />
-                        <p>No notes yet</p>
-                      </div>
+                      <EmptyState
+                        icon={<FileText size={28} />}
+                        title="No Notes in this Chapter"
+                        description="Written notes and PDF study material will appear here."
+                        compact={true}
+                      />
                     ) : chapterContent.notes.map(note => {
                       const done = !!completedItems[note.id];
                       return (
@@ -1025,12 +1245,12 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                           className={`${styles.docCard} ${done ? styles.docCardDone : ""}`}
                           onClick={() => setSelectedDoc({ title: note.title, viewUrl: note.viewUrl, downloadUrl: note.downloadFile })}
                         >
-                          <div className={styles.docIcon} style={{ background: "rgba(16,185,129,0.1)", color: "#10b981" }}>
+                          <div className={styles.docIcon} style={{ background: "rgba(99,102,241,0.1)", color: "#6366f1" }}>
                             <FileText size={18} />
                           </div>
                           <div className={styles.docInfo}>
                             <h4>{note.title}</h4>
-                            <span>Study Notes · PDF</span>
+                            <span>Study Note · PDF</span>
                           </div>
                           <button
                             className={`${styles.favBtn} ${favoritedIds.has(note.id) ? styles.favBtnActive : ""}`}
@@ -1055,10 +1275,12 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                 {classroomTab === "practice" && (
                   <div className={styles.contentList}>
                     {chapterContent.dpps.length === 0 ? (
-                      <div className={styles.emptyState}>
-                        <BookOpen size={36} opacity={0.3} />
-                        <p>No practice sheets yet</p>
-                      </div>
+                      <EmptyState
+                        icon={<BookOpen size={28} />}
+                        title="No Practice Sheets Yet"
+                        description="DPP questions and assignment sheets will appear here."
+                        compact={true}
+                      />
                     ) : chapterContent.dpps.map(dpp => {
                       const done = !!completedItems[dpp.id];
                       return (
@@ -1097,10 +1319,12 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                 {classroomTab === "quiz" && (
                   <div className={styles.contentList}>
                     {chapterContent.quizzes.length === 0 ? (
-                      <div className={styles.emptyState}>
-                        <Trophy size={36} opacity={0.3} />
-                        <p>No quizzes yet for this chapter</p>
-                      </div>
+                      <EmptyState
+                        icon={<Trophy size={28} />}
+                        title="No Quizzes Yet"
+                        description="Interactive chapter tests will be added here."
+                        compact={true}
+                      />
                     ) : chapterContent.quizzes.map(quiz => (
                       <div key={quiz.id} className={styles.quizRow}>
                         <div className={styles.quizIcon}>
@@ -1115,12 +1339,11 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                             className={`${styles.favBtn} ${favoritedIds.has(quiz.id) ? styles.favBtnActive : ""}`}
                             onClick={(e) => toggleFavorite(quiz.id, 'QUIZ', e)}
                             title={favoritedIds.has(quiz.id) ? "Remove from Favorites" : "Add to Favorites"}
-                            style={{ padding: '0.4rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                           >
                             <Heart size={16} fill={favoritedIds.has(quiz.id) ? "#ef4444" : "none"} color={favoritedIds.has(quiz.id) ? "#ef4444" : "currentColor"} />
                           </button>
                           <button className={styles.startQuizBtn} onClick={() => startQuiz(quiz)}>
-                            Start
+                            Start Quiz
                           </button>
                         </div>
                       </div>
@@ -1129,6 +1352,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                 )}
               </>
             )}
+
           </div>
         )}
 
@@ -1138,113 +1362,131 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
         {activeTab === "premium" && (
           <div className={styles.tabContent}>
             <div className={styles.pageHeading}>
-              <h2>Premium Courses</h2>
-              <p>Unlock premium study materials, solved papers, and video lectures</p>
+              <h2>Premium Study Material</h2>
+              <p>Verified board notes, solved question papers, and full video courses</p>
             </div>
 
-            {/* Value props */}
-            <div className={styles.valueProps}>
-              {[
-                { icon: <FileText size={18} />, label: "Detailed Notes", color: "#10b981" },
-                { icon: <Award size={18} />, label: "Solved Board PYQs", color: "#f59e0b" },
-                { icon: <Sparkles size={18} />, label: "High-Yield Lectures", color: "#6366f1" },
-              ].map((v, i) => (
-                <div key={i} className={styles.valueProp} style={{ background: `${v.color}14`, color: v.color }}>
-                  {v.icon}
-                  <span>{v.label}</span>
-                </div>
-              ))}
+            {/* Category Filter Pills */}
+            <div className={styles.premiumFilterBar} role="tablist" aria-label="Premium resource categories">
+              <button
+                type="button"
+                className={`${styles.premiumFilterPill} ${premiumFilter === 'all' ? styles.premiumFilterPillActive : ''}`}
+                onClick={() => setPremiumFilter('all')}
+                role="tab"
+                aria-selected={premiumFilter === 'all'}
+              >
+                All Resources
+              </button>
+              <button
+                type="button"
+                className={`${styles.premiumFilterPill} ${premiumFilter === 'NOTE' ? styles.premiumFilterPillActive : ''}`}
+                onClick={() => setPremiumFilter('NOTE')}
+                role="tab"
+                aria-selected={premiumFilter === 'NOTE'}
+              >
+                <FileText size={14} />
+                Detailed Notes
+              </button>
+              <button
+                type="button"
+                className={`${styles.premiumFilterPill} ${premiumFilter === 'PYQ' ? styles.premiumFilterPillActive : ''}`}
+                onClick={() => setPremiumFilter('PYQ')}
+                role="tab"
+                aria-selected={premiumFilter === 'PYQ'}
+              >
+                <Award size={14} />
+                Solved Board PYQs
+              </button>
+              <button
+                type="button"
+                className={`${styles.premiumFilterPill} ${premiumFilter === 'COURSE' ? styles.premiumFilterPillActive : ''}`}
+                onClick={() => setPremiumFilter('COURSE')}
+                role="tab"
+                aria-selected={premiumFilter === 'COURSE'}
+              >
+                <Sparkles size={14} />
+                Video Courses
+              </button>
             </div>
 
-            {/* Course cards — fetched live from DB */}
-            {displayPremiumItems.length === 0 ? (
-              <div className={styles.emptyState}>
-                <Star size={36} opacity={0.3} />
-                <p>No premium courses available yet</p>
+            {/* Primary Section: Curriculum Premium Packages for this class */}
+            {filteredCurriculumItems.length > 0 ? (
+              <div className={styles.premiumGrid}>
+                {filteredCurriculumItems.map(item => (
+                  <PremiumResourceCard
+                    key={item.id}
+                    item={item}
+                    onOpen={handleOpenPremiumItem}
+                    onInstantBuy={handleOpenPremiumItem}
+                  />
+                ))}
               </div>
+            ) : curriculumItems.length === 0 ? (
+              <EmptyState
+                icon={<Star size={30} />}
+                title={`No Premium Packages for ${displayTitle} Yet`}
+                description={`Premium packages for ${displayTitle} are currently being prepared. In the meantime, explore the available free curriculum materials or practical skill courses below.`}
+                compact={true}
+                action={
+                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <Button variant="primary" size="sm" onClick={() => goToTab("study")}>
+                      <BookOpen size={15} /> Explore Free Study Material
+                    </Button>
+                    {skillRecommendations.length > 0 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const el = document.getElementById('skill-recommendations');
+                          if (el) el.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                      >
+                        <Sparkles size={15} /> View Skill Courses
+                      </Button>
+                    )}
+                  </div>
+                }
+              />
             ) : (
-              <div className={styles.courseList}>
-                {displayPremiumItems.map((item: any) => {
-                  const isUnlocked = !!item.unlocked;
-                  const features = item.features ? item.features.split("|").filter(Boolean) : [];
-                  return (
-                    <div key={item.id} className={`${styles.courseCard} ${isUnlocked ? styles.courseCardEnrolled : ""}`}>
-                      {item.imageUrl && (
-                        <img
-                          src={getDriveImageUrl(item.imageUrl) || ""}
-                          alt={item.title}
-                          style={{ width: "100%", height: "140px", objectFit: "cover", borderRadius: "8px", marginBottom: "0.75rem" }}
-                        />
-                      )}
-                      <div className={styles.courseBadge}>
-                        {item.type}
-                      </div>
-                      <h4 className={styles.courseTitle}>{item.title}</h4>
-                      <p className={styles.courseSub}>{item.description}</p>
+              <EmptyState
+                icon={<Star size={30} />}
+                title="No Matching Resources"
+                description={`No resources found matching the selected category. Try selecting 'All Resources'.`}
+                compact={true}
+                action={
+                  <Button variant="outline" size="sm" onClick={() => setPremiumFilter('all')}>
+                    View All Resources
+                  </Button>
+                }
+              />
+            )}
 
-                      {features.length > 0 && (
-                        <div className={styles.courseFeatures}>
-                          {features.map((f: string, i: number) => (
-                            <div key={i} className={styles.courseFeature}>
-                              <CheckCheck size={14} color="#10b981" />
-                              <span>{f}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+            {/* Secondary Section: Cross-Category Skill Recommendations (Cleanly Labeled) */}
+            {filteredSkillItems.length > 0 && (
+              <div className={styles.crossCategoryWrapper} id="skill-recommendations">
+                <div className={styles.crossCategoryHeader}>
+                  <h3 className={styles.crossCategoryTitle}>
+                    <Sparkles size={18} color="#f59e0b" /> Recommended Skill & AI Courses
+                  </h3>
+                  <p className={styles.crossCategorySub}>
+                    Complement your school curriculum with practical mastery in artificial intelligence, programming, and productivity tools.
+                  </p>
+                </div>
 
-                      <div className={styles.courseFooter}>
-                        <div className={styles.coursePrice}>
-                          <strong>₹{item.price}</strong>
-                          {item.originalPrice && <span>₹{item.originalPrice}</span>}
-                        </div>
-                        {isUnlocked ? (
-                          <button
-                            className={styles.enrolledBtn}
-                            onClick={() => handleOpenPremiumItem(item)}
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', border: 'none', cursor: 'pointer' }}
-                          >
-                            <BookOpenCheck size={14} />
-                            <span>View Content</span>
-                          </button>
-                        ) : (
-                          <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                            <AddToCartButton
-                              course={{
-                                id: item.id,
-                                title: item.title,
-                                description: item.description,
-                                price: item.price,
-                                originalPrice: item.originalPrice,
-                                type: item.type,
-                                imageUrl: item.imageUrl,
-                                className: item.className,
-                                features: item.features,
-                                alreadyEnrolled: item.unlocked,
-                              }}
-                              variant="compact"
-                            />
-                            <button
-                              className={styles.enrollBtn}
-                              onClick={() => handleOpenPremiumItem(item)}
-                              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', border: 'none', cursor: 'pointer', padding: '0.45rem 0.75rem', fontSize: '0.8rem' }}
-                              title="Instant single purchase"
-                            >
-                              <span>Buy</span>
-                              <ChevronRight size={13} />
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+                <div className={styles.premiumGrid}>
+                  {filteredSkillItems.map(item => (
+                    <PremiumResourceCard
+                      key={item.id}
+                      item={item}
+                      onOpen={handleOpenPremiumItem}
+                      onInstantBuy={handleOpenPremiumItem}
+                    />
+                  ))}
+                </div>
               </div>
             )}
           </div>
         )}
-
-
 
         {/* ══════════════════════════════
             NOTICES TAB
@@ -1252,53 +1494,28 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
         {activeTab === "notices" && (
           <div className={styles.tabContent}>
             <div className={styles.pageHeading}>
-              <h2>Notices</h2>
-              <p>Updates from your teachers</p>
+              <h2>Notices & Announcements</h2>
+              <p>Official curriculum updates, exam schedules, and teacher notes for {displayTitle}</p>
             </div>
-            <div className={styles.noticeList}>
-              {announcements.length === 0 ? (
-                <div className={styles.emptyState}>
-                  <Bell size={36} opacity={0.3} />
-                  <p>No notices posted yet</p>
-                </div>
-              ) : announcements.map(notice => {
-                const isBanner = notice.type === "BANNER";
-                const tagStyle = isBanner
-                  ? { background: "rgba(245,158,11,0.1)", color: "#f59e0b" }
-                  : { background: "rgba(99,102,241,0.1)", color: "#6366f1" };
-                const tagLabel = isBanner ? "Important" : "Notice";
-                const timeAgo = (() => {
-                  const diff = Date.now() - new Date(notice.createdAt).getTime();
-                  const mins = Math.floor(diff / 60000);
-                  const hrs = Math.floor(mins / 60);
-                  const days = Math.floor(hrs / 24);
-                  if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
-                  if (hrs > 0) return `${hrs} hour${hrs > 1 ? 's' : ''} ago`;
-                  return `${mins} minute${mins !== 1 ? 's' : ''} ago`;
-                })();
-                return (
-                  <div key={notice.id} className={styles.noticeCard}>
-                    <div className={styles.noticeTag} style={tagStyle}>
-                      {tagLabel}
-                    </div>
-                    {notice.imageUrl && (
-                      <img
-                        src={getDriveImageUrl(notice.imageUrl) || ""}
-                        alt="notice"
-                        style={{ width: "100%", borderRadius: "8px", marginBottom: "0.75rem", objectFit: "cover", maxHeight: "180px" }}
-                      />
-                    )}
-                    {notice.message && <p>{notice.message}</p>}
-                    <span className={styles.noticeTime}>{timeAgo}</span>
-                  </div>
-                );
-              })}
-            </div>
+
+            {announcements.length === 0 ? (
+              <EmptyState
+                icon={<Bell size={30} />}
+                title="No Active Notices"
+                description={`There are currently no new announcements or routine updates for ${displayTitle}. New updates will appear here automatically.`}
+                compact={true}
+              />
+            ) : (
+              <div className={styles.noticeFeed}>
+                {announcements.map(notice => (
+                  <NoticeCard key={notice.id} notice={notice} />
+                ))}
+              </div>
+            )}
           </div>
         )}
 
       </main>
-
 
       {/* ══════════════════════════════
           MODAL: VIDEO PLAYER
@@ -1326,7 +1543,9 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                   </span>
                   <h3 className={styles.modalTitle}>{selectedVideo.title}</h3>
                 </div>
-                <button className={styles.modalClose} onClick={() => setSelectedVideo(null)}><X size={18} /></button>
+                <button className={styles.modalClose} onClick={() => setSelectedVideo(null)} aria-label="Close video player">
+                  <X size={18} />
+                </button>
               </div>
 
               <div className={styles.premiumPlayerGrid}>
@@ -1356,6 +1575,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                     <button 
                       className={`${styles.actionBtn} ${favorited ? styles.actionBtnFavActive : ""}`}
                       onClick={(e) => toggleFavorite(selectedVideo.id, 'VIDEO', e)}
+                      type="button"
                     >
                       <Heart size={16} fill={favorited ? "#ef4444" : "none"} color={favorited ? "#ef4444" : "currentColor"} />
                       <span>{favorited ? "Favorited" : "Favorite"}</span>
@@ -1364,6 +1584,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                     <button 
                       className={`${styles.actionBtn} ${completed ? styles.actionBtnDoneActive : ""}`}
                       onClick={(e) => toggleComplete(selectedVideo.id, e)}
+                      type="button"
                     >
                       <CheckCircle2 size={16} color={completed ? "#10b981" : "currentColor"} />
                       <span>{completed ? "Completed" : "Mark Completed"}</span>
@@ -1377,6 +1598,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                           viewUrl: selectedVideo.pdfUrl || "",
                           downloadUrl: selectedVideo.pdfUrl || ""
                         })}
+                        type="button"
                       >
                         <FileText size={16} />
                         <span>Lecture Notes</span>
@@ -1403,6 +1625,8 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                             key={v.id} 
                             className={`${styles.playlistItem} ${isCurrent ? styles.playlistItemActive : ""} ${isDone ? styles.playlistItemDone : ""}`}
                             onClick={() => setSelectedVideo(v)}
+                            role="button"
+                            tabIndex={0}
                           >
                             <div className={styles.playlistThumbContainer}>
                               {thumb ? (
@@ -1441,7 +1665,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
           <div className={styles.docModal} onClick={e => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <div>
-                <span className={styles.modalEyebrow}>Document</span>
+                <span className={styles.modalEyebrow}>Document Viewer</span>
                 <h3 className={styles.modalTitle}>{selectedDoc.title}</h3>
               </div>
               <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -1453,7 +1677,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
                 >
                   <Download size={15} /> PDF
                 </button>
-                <button className={styles.modalClose} onClick={() => setSelectedDoc(null)}>
+                <button className={styles.modalClose} onClick={() => setSelectedDoc(null)} aria-label="Close document">
                   <X size={20} />
                 </button>
               </div>
@@ -1464,8 +1688,6 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
           </div>
         </div>
       )}
-
-
 
       {/* ══════════════════════════════
           MODAL: PACKAGE RESOURCES (UNLOCKED)
@@ -1578,7 +1800,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
           <div className={styles.quizModal} onClick={e => e.stopPropagation()} style={{ maxWidth: '520px', width: '90%' }}>
             <div className={styles.modalHeader}>
               <div>
-                <span className={styles.modalEyebrow} style={{ color: "#f59e0b" }}>VIP CHECKOUT</span>
+                <span className={styles.modalEyebrow} style={{ color: "#f59e0b" }}>SECURE CHECKOUT</span>
                 <h3 className={styles.modalTitle}>{checkoutItem.title}</h3>
               </div>
               <button className={styles.modalClose} onClick={() => setCheckoutItem(null)}>
@@ -1691,7 +1913,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
           <div className={styles.quizModal} onClick={e => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <div>
-                <span className={styles.modalEyebrow} style={{ color: "#ec4899" }}>Quiz</span>
+                <span className={styles.modalEyebrow} style={{ color: "#ec4899" }}>Practice Quiz</span>
                 <h3 className={styles.modalTitle}>{activeQuiz.title}</h3>
               </div>
               <button className={styles.modalClose} onClick={() => setActiveQuiz(null)}>
@@ -1775,6 +1997,7 @@ export default function ClassDashboard({ className, displayTitle, subjects: prop
         </div>
       )}
 
+      {/* Class Switcher Modal */}
       <ClassSwitcherModal 
         isOpen={isSwitcherOpen} 
         onClose={() => setIsSwitcherOpen(false)} 

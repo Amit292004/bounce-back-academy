@@ -11,7 +11,7 @@ export function normalizeClassName(input: string): string {
   if (!input || typeof input !== 'string') return input;
   
   // Remove common suffixes and clean up
-  let cleaned = input.trim()
+  const cleaned = input.trim()
     .replace(/[\-_]/g, ' ')           // Replace dashes/underscores with spaces
     .replace(/\s+/g, ' ')             // Collapse multiple spaces
     .replace(/th$/i, '')              // Remove trailing 'th'

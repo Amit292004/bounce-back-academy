@@ -4,42 +4,74 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 3.5rem 1.5rem;
-  border: 1px dashed var(--surface-border, rgba(255, 255, 255, 0.12));
-  border-radius: var(--radius-md, 12px);
-  background: rgba(255, 255, 255, 0.015);
-  margin: 1.5rem 0;
+  padding: 3rem 1.5rem;
+  border: 1px dashed var(--surface-border, rgba(156, 163, 175, 0.3));
+  border-radius: var(--radius-lg, 14px);
+  background: var(--surface);
+  margin: 1.25rem 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.compact {
+  padding: 1.75rem 1.25rem;
+  margin: 0.75rem auto;
+  max-width: 580px;
+  background: var(--surface-card);
 }
 
 .iconCircle {
-  width: 56px;
-  height: 56px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   background: rgba(99, 102, 241, 0.1);
-  color: #818cf8;
+  color: var(--primary, #6366f1);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
+  flex-shrink: 0;
+}
+
+.compactIcon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 0.75rem;
 }
 
 .title {
-  font-size: 1.125rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: var(--foreground, #ededed);
-  margin-bottom: 0.5rem;
+  color: var(--foreground);
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+}
+
+.compactTitle {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
 }
 
 .description {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
-  max-width: 380px;
+  color: var(--foreground);
+  opacity: 0.7;
+  max-width: 440px;
   line-height: 1.55;
   margin-bottom: 1.25rem;
+}
+
+.compactDescription {
+  font-size: 0.825rem;
+  max-width: 420px;
+  margin-bottom: 1rem;
+  line-height: 1.5;
 }
 
 .actions {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.75rem;
+  flex-wrap: wrap;
 }

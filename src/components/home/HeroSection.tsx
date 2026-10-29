@@ -191,29 +191,29 @@ export default function HeroSection({ userClass: initialUserClass, initialHeroAd
             </div>
           </div>
 
+          {/* ─── Numerical Analytics KPI Strip ─── */}
+          <div className={styles.statsBar}>
+            {[
+              { label: 'Students enrolled', value: stats.users },
+              { label: 'Past papers', value: stats.papers },
+              { label: 'Study notes', value: stats.notes },
+              { label: 'Video lectures', value: stats.videos },
+            ].map((s, i) => (
+              <div key={s.label} className={styles.statCell}>
+                <span className={styles.statNum}>
+                  <AnimatedNumber value={s.value} isLoading={loading} />
+                </span>
+                <span className={styles.statLabel}>{s.label}</span>
+                {i < 3 && <div className={styles.statDivider} />}
+              </div>
+            ))}
+          </div>
+
           {/* ─── Right Column: Advertisement & Promo Carousel ─── */}
           <div className={styles.rightCol}>
             <PromoCarousel userClass={userClass} initialAd={initialHeroAd} initialAds={initialHeroAds} />
           </div>
 
-        </div>
-
-        {/* ─── Numerical Analytics KPI Strip ─── */}
-        <div className={styles.statsBar}>
-          {[
-            { label: 'Students enrolled', value: stats.users },
-            { label: 'Past papers', value: stats.papers },
-            { label: 'Study notes', value: stats.notes },
-            { label: 'Video lectures', value: stats.videos },
-          ].map((s, i) => (
-            <div key={s.label} className={styles.statCell}>
-              <span className={styles.statNum}>
-                <AnimatedNumber value={s.value} isLoading={loading} />
-              </span>
-              <span className={styles.statLabel}>{s.label}</span>
-              {i < 3 && <div className={styles.statDivider} />}
-            </div>
-          ))}
         </div>
       </div>
     </section>

@@ -7,6 +7,7 @@ export interface EmptyStateProps {
   description?: string;
   action?: React.ReactNode;
   className?: string;
+  compact?: boolean;
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
@@ -15,12 +16,13 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   description,
   action,
   className = '',
+  compact = false,
 }) => {
   return (
-    <div className={`${styles.wrapper} ${className}`}>
-      {icon && <div className={styles.iconCircle}>{icon}</div>}
-      <h3 className={styles.title}>{title}</h3>
-      {description && <p className={styles.description}>{description}</p>}
+    <div className={`${styles.wrapper} ${compact ? styles.compact : ''} ${className}`}>
+      {icon && <div className={`${styles.iconCircle} ${compact ? styles.compactIcon : ''}`}>{icon}</div>}
+      <h3 className={`${styles.title} ${compact ? styles.compactTitle : ''}`}>{title}</h3>
+      {description && <p className={`${styles.description} ${compact ? styles.compactDescription : ''}`}>{description}</p>}
       {action && <div className={styles.actions}>{action}</div>}
     </div>
   );

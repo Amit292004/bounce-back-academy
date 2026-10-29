@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import prisma from '@/lib/prisma';
-import SchoolClient, { SchoolResource, SubjectItem } from './SchoolClient';
+import SchoolClient, { SchoolResource, SubjectItem, SchoolPremiumItem } from './SchoolClient';
 
 export const revalidate = 60;
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default async function SchoolPage() {
-  const [coursesData, subjectsData, notesData, papersData, videosData] = await Promise.all([
+  const [coursesData, subjectsData, notesData, papersData, videosData, premiumData] = await Promise.all([
     prisma.course.findMany({
       where: {
         name: {
@@ -42,6 +42,10 @@ export default async function SchoolPage() {
       include: { subject: true, chapter: true },
       orderBy: { lectureNumber: 'asc' },
       take: 100,
+    }),
+    prisma.premiumItem.findMany({
+      where: { isActive: true },
+      orderBy: { createdAt: 'desc' },
     }),
   ]);
 
@@ -85,6 +89,18 @@ export default async function SchoolPage() {
     pdfUrl: v.pdfUrl,
   }));
 
+  const premiumItems: SchoolPremiumItem[] = premiumData.map((p) => ({
+    id: p.id,
+    title: p.title,
+    description: p.description,
+    type: p.type,
+    price: p.price,
+    originalPrice: p.originalPrice,
+    imageUrl: p.imageUrl,
+    features: p.features,
+    className: p.className,
+  }));
+
   return (
     <SchoolClient
       initialClasses={initialClasses}
@@ -92,6 +108,7 @@ export default async function SchoolPage() {
       allNotes={allNotes}
       allPapers={allPapers}
       allVideos={allVideos}
+      premiumItems={premiumItems}
     />
   );
 }
