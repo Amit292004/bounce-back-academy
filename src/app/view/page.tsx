@@ -219,14 +219,14 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
         style={{
           display: 'flex', alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 1.25rem',
+          padding: '0 0.85rem',
           height: 60, flexShrink: 0,
           background: 'color-mix(in srgb, var(--surface) 95%, transparent)',
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
           borderBottom: '1px solid var(--surface-border)',
           boxShadow: 'var(--shadow-sm)',
-          gap: '1rem', zIndex: 50,
+          gap: '0.5rem', zIndex: 50,
         }}
       >
         {/* Left: back + title */}
@@ -292,18 +292,20 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
           <Link
             href="/login"
             style={{
-              display: 'flex', alignItems: 'center', gap: '0.5rem',
-              padding: '0.5rem 1.1rem',
+              display: 'flex', alignItems: 'center', gap: '0.4rem',
+              padding: '0.45rem 0.85rem',
               borderRadius: 10,
               border: 'none',
               background: 'var(--primary)',
               color: 'var(--primary-foreground)',
-              fontSize: '0.85rem', fontWeight: 700,
+              fontSize: '0.8rem', fontWeight: 700,
               cursor: 'pointer',
               textDecoration: 'none',
               transition: 'all 0.2s ease',
               boxShadow: '0 4px 16px rgba(99,102,241,0.3)',
               letterSpacing: '-0.01em',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
             }}
           >
             <FaDownload size={12} /> Login to Download
@@ -315,19 +317,21 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
             disabled={downloading}
             aria-label="Download PDF"
             style={{
-              display: 'flex', alignItems: 'center', gap: '0.5rem',
-              padding: '0.5rem 1.1rem',
+              display: 'flex', alignItems: 'center', gap: '0.4rem',
+              padding: '0.45rem 0.85rem',
               borderRadius: 10,
               border: 'none',
               background: downloading
                 ? 'var(--primary-hover)'
                 : 'var(--primary)',
               color: 'var(--primary-foreground)',
-              fontSize: '0.85rem', fontWeight: 700,
+              fontSize: '0.8rem', fontWeight: 700,
               cursor: downloading ? 'default' : 'pointer',
               transition: 'all 0.2s ease',
               boxShadow: downloading ? 'none' : '0 4px 16px rgba(99,102,241,0.3)',
               letterSpacing: '-0.01em',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
             }}
           >
             <AnimatePresence mode="wait">

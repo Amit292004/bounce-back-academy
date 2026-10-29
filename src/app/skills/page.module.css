@@ -111,7 +111,7 @@
 
 .coursesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
   gap: 1.5rem;
 }
 
@@ -226,4 +226,32 @@
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.7);
   max-width: 650px;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 1.25rem 0.85rem 3rem;
+  }
+
+  .coursesGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .courseCard {
+    padding: 1.25rem 1rem;
+  }
+
+  .trackBanner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem 1rem;
+    gap: 1rem;
+  }
+
+  .trackBanner a,
+  .trackBanner button {
+    width: 100%;
+    justify-content: center;
+  }
 }

@@ -158,7 +158,7 @@
 
 .examDetailsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
   gap: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 1.25rem;
@@ -187,7 +187,7 @@
 /* Quick Tools Row */
 .toolsRow {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
 }
@@ -255,7 +255,7 @@
 
 .resourceGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
   gap: 1.25rem;
 }
 
@@ -273,4 +273,54 @@
   transform: translateY(-2px);
   border-color: rgba(239, 68, 68, 0.35);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 1.25rem 0.85rem 3rem;
+  }
+
+  .showcaseCard {
+    padding: 1.25rem 1rem;
+  }
+
+  .showcaseHead {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .showcaseActions {
+    width: 100%;
+  }
+
+  .showcaseActions a,
+  .showcaseActions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .examDetailsGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .toolsRow {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .resourceGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .resourceCard {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .examDetailsGrid {
+    grid-template-columns: 1fr;
+  }
 }

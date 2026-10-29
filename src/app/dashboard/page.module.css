@@ -175,3 +175,50 @@
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.5;
 }
+
+@media (max-width: 600px) {
+  .welcomeCard {
+    padding: 1.25rem;
+    gap: 1rem;
+  }
+  .quickActions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .quickActions > * {
+    width: 100%;
+    text-align: center;
+  }
+  .statsRow {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+    margin-bottom: 1.75rem;
+  }
+  .statCard {
+    padding: 0.85rem 0.65rem;
+    gap: 0.65rem;
+  }
+  .statIcon {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .statValue {
+    font-size: 1.15rem;
+  }
+  .cardGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .statsRow {
+    grid-template-columns: 1fr;
+  }
+  .aiInputRow {
+    flex-direction: column;
+  }
+}
+

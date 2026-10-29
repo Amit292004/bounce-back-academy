@@ -142,6 +142,10 @@ test('Hero Redesign: Scope & Integrity Checks', async (t) => {
     assert.ok(css.includes('@media (max-width: 1024px)'), 'Includes tablet responsive rules');
     assert.ok(css.includes('@media (max-width: 768px)'), 'Includes mobile responsive rules');
     assert.ok(css.includes('grid-template-columns: 1fr 1fr'), 'Mobile KPI strip has clean 2x2 column layout');
+    // Mobile ordering: statsBar precedes promo carousel on mobile view
+    assert.ok(css.includes('display: contents'), 'Hero grid unwraps on mobile to enable responsive reordering');
+    assert.ok(css.includes('order: 2'), 'Stats bar is ordered before promo carousel on mobile');
+    assert.ok(css.includes('order: 3'), 'Promo carousel is ordered after stats bar on mobile');
   });
 
   await t.test('Top banner and sections below hero remain intact in page.tsx', () => {

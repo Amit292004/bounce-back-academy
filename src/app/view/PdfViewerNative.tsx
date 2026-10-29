@@ -106,7 +106,7 @@ export default function PdfViewerNative({ url }: PdfViewerNativeProps) {
     const measure = () => {
       if (containerRef.current) {
         const w = containerRef.current.clientWidth;
-        setPageWidth(Math.max(280, Math.min(w - 64, 840)));
+        setPageWidth(Math.max(260, Math.min(w - 24, 840)));
       }
     };
     measure();
@@ -248,7 +248,7 @@ export default function PdfViewerNative({ url }: PdfViewerNativeProps) {
           transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: 0.15 }}
           style={{
             position: 'fixed',
-            bottom: '1.5rem',
+            bottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))',
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 30,
@@ -260,7 +260,8 @@ export default function PdfViewerNative({ url }: PdfViewerNativeProps) {
             WebkitBackdropFilter: 'blur(28px)',
             border: '1px solid color-mix(in srgb, var(--primary) 20%, transparent)',
             borderRadius: 16,
-            padding: '6px 10px',
+            padding: '4px 8px',
+            maxWidth: 'calc(100vw - 20px)',
             boxShadow: 'var(--shadow-md), 0 0 30px color-mix(in srgb, var(--primary) 10%, transparent)',
           }}
         >

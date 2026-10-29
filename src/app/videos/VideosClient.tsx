@@ -308,7 +308,7 @@ function VideosContent({ initialVideos = [] }: { initialVideos?: Video[] }) {
           <p>No videos available yet. Check back soon!</p>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}>
           {videos.map((video, idx) => {
             const videoId = getYoutubeId(video.youtubeLink);
             const thumbUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;

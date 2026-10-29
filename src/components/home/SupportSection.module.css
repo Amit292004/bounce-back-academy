@@ -24,7 +24,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: 2rem;
 }
 
@@ -83,14 +83,19 @@
 
 @media (max-width: 768px) {
   .container {
-    padding: 4rem 1rem;
+    padding: 3rem 1rem;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
   .card {
+    padding: 1.5rem;
     flex-direction: column;
     text-align: center;
     align-items: center;
   }
   .title {
-    font-size: 2rem;
+    font-size: 1.85rem;
   }
 }

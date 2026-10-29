@@ -420,7 +420,7 @@ function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
 
       {/* Notes Grid */}
       {loading ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.2rem' }}>
           {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
         </div>
       ) : filteredNotes.length === 0 ? (
@@ -445,7 +445,7 @@ function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
           </button>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.2rem' }}>
           {filteredNotes.map((note, idx) => {
             const { color, bg } = getSubjectColor(note.subject.name);
             return (
@@ -625,7 +625,7 @@ export default function NotesClient({ initialNotes = [] }: { initialNotes?: Note
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '2.5rem 1.5rem' }}>
         <div className="skeleton" style={{ width: 280, height: 48, marginBottom: '0.75rem' }} />
         <div className="skeleton skeleton-text" style={{ width: 360, marginBottom: '2rem' }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.2rem' }}>
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="skeleton" style={{ height: 200, borderRadius: 'var(--radius-md)' }} />
           ))}

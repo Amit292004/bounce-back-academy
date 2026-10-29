@@ -401,7 +401,7 @@ function PapersContent({ initialPapers = [] }: { initialPapers?: Paper[] }) {
 
       {/* Papers Grid */}
       {loading ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.2rem' }}>
           {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
         </div>
       ) : filteredPapers.length === 0 ? (
@@ -426,7 +426,7 @@ function PapersContent({ initialPapers = [] }: { initialPapers?: Paper[] }) {
           </button>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.2rem' }}>
           {filteredPapers.map((paper, idx) => {
             const { color, bg } = getSubjectColor(paper.subject.name);
             const displayClass = paper.className.startsWith('Class') || ['CUET','JEE','NEET'].includes(paper.className)
@@ -617,7 +617,7 @@ export default function PapersClient({ initialPapers = [] }: { initialPapers?: P
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '2.5rem 1.5rem' }}>
         <div className="skeleton" style={{ width: 300, height: 48, marginBottom: '0.75rem' }} />
         <div className="skeleton skeleton-text" style={{ width: 400, marginBottom: '2rem' }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.2rem' }}>
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="skeleton" style={{ height: 210, borderRadius: 'var(--radius-md)' }} />
           ))}

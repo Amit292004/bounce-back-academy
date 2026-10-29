@@ -1729,9 +1729,27 @@
     max-width: 88%;
   }
   .inputContainer {
-    padding: 0.5rem 0.75rem 0.9rem;
+    padding: 0.5rem 0.75rem calc(0.9rem + env(safe-area-inset-bottom, 0px));
   }
   .statusIndicator {
     display: none;
   }
 }
+
+@media (max-width: 480px) {
+  .inputBottomBar {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .inputPillsRow {
+    width: 100%;
+    order: 2;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+  }
+  .inputActions {
+    margin-left: auto;
+  }
+}
+

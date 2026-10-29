@@ -297,7 +297,7 @@
 
 .footer {
   border-top: 1px solid var(--surface-border);
-  padding: 1.25rem 1.5rem;
+  padding: 1.25rem 1.5rem calc(1.25rem + env(safe-area-inset-bottom, 0px));
   background: var(--header-bg);
   display: flex;
   flex-direction: column;
@@ -385,3 +385,19 @@
   opacity: 0.6;
   color: var(--foreground);
 }
+
+@media (max-width: 480px) {
+  .drawer {
+    max-width: 100%;
+  }
+  .header {
+    padding: 1rem 1.25rem;
+  }
+  .body {
+    padding: 1rem 1.25rem;
+  }
+  .footer {
+    padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+

@@ -115,7 +115,7 @@
 
 .resourceGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
   gap: 1.25rem;
 }
 
@@ -190,3 +190,35 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
 }
+
+@media (max-width: 640px) {
+  .resourceGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .controlsBar {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .filterRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .modalBackdrop {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .cardActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .cardActions button,
+  .cardActions a {
+    width: 100%;
+    justify-content: center;
+  }
+}
+

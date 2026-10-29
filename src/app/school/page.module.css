@@ -227,7 +227,7 @@
 /* Resource Grid */
 .resourceGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
   gap: 1.25rem;
 }
 
@@ -312,4 +312,61 @@
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 1.25rem 0.85rem 3rem;
+  }
+
+  .classGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+  }
+
+  .classCard {
+    padding: 1rem 0.85rem;
+  }
+
+  .className {
+    font-size: 1.05rem;
+  }
+
+  .classBanner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .classBannerLeft {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .classBannerActions {
+    width: 100%;
+  }
+
+  .classBannerActions a,
+  .classBannerActions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .resourceGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .resourceCard {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .classGrid {
+    grid-template-columns: 1fr;
+  }
 }

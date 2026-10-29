@@ -31,6 +31,12 @@
   --header-border: rgba(255, 255, 255, 0.12);
   --header-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   --header-height: 60px;
+  --brand-orange: #f97316;
+  --brand-orange-hover: #ea580c;
+  --brand-orange-light: rgba(249, 115, 22, 0.12);
+  --brand-orange-border: rgba(249, 115, 22, 0.28);
+  --bottom-nav-height: 56px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .dark {
@@ -52,6 +58,12 @@
   --header-border: rgba(255, 255, 255, 0.12);
   --header-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   --header-height: 60px;
+  --brand-orange: #f97316;
+  --brand-orange-hover: #ea580c;
+  --brand-orange-light: rgba(249, 115, 22, 0.12);
+  --brand-orange-border: rgba(249, 115, 22, 0.28);
+  --bottom-nav-height: 56px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .light {
@@ -75,6 +87,12 @@
   --header-border: rgba(0, 0, 0, 0.12);
   --header-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   --header-height: 60px;
+  --brand-orange: #f97316;
+  --brand-orange-hover: #ea580c;
+  --brand-orange-light: rgba(249, 115, 22, 0.12);
+  --brand-orange-border: rgba(249, 115, 22, 0.28);
+  --bottom-nav-height: 56px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 @media (min-width: 1025px) {
@@ -507,6 +525,6 @@ select {
 
 @media (max-width: 768px) {
   .global-mobile-padded {
-    padding-bottom: calc(56px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 12px) !important;
   }
 }

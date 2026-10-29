@@ -15,9 +15,38 @@ export default function GlobalBottomNav() {
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
   const [savedClass, setSavedClass] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
   const isClassRoute = pathname?.startsWith('/class/');
   const currentClass = isClassRoute ? decodeURIComponent(pathname.split('/')[2]) : undefined;
+
+  useEffect(() => {
+    const handleFocusIn = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable) &&
+        !['checkbox', 'radio', 'button', 'submit', 'color', 'file'].includes(
+          (target as HTMLInputElement).type || ''
+        )
+      ) {
+        setIsKeyboardOpen(true);
+      }
+    };
+
+    const handleFocusOut = () => {
+      setIsKeyboardOpen(false);
+    };
+
+    window.addEventListener('focusin', handleFocusIn);
+    window.addEventListener('focusout', handleFocusOut);
+    return () => {
+      window.removeEventListener('focusin', handleFocusIn);
+      window.removeEventListener('focusout', handleFocusOut);
+    };
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -68,7 +97,10 @@ export default function GlobalBottomNav() {
 
   return (
     <>
-      <nav className={styles.bottomNav} aria-label="Mobile Bottom Navigation">
+      <nav
+        className={`${styles.bottomNav} ${isKeyboardOpen ? styles.bottomNavHidden : ''}`}
+        aria-label="Mobile Bottom Navigation"
+      >
         {tabs.map((tab) => {
           const isClassesTab = tab.href === '/school' || tab.href.includes('#classes');
           const isHomeTab = tab.href.startsWith('/?noredirect=true');

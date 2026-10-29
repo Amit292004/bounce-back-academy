@@ -16,6 +16,7 @@
 
 .navTab {
   flex: 1;
+  min-height: 44px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,6 +29,14 @@
   text-decoration: none;
   opacity: 0.65;
   transition: opacity 0.15s ease, color 0.15s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bottomNavHidden {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 .navTab svg {

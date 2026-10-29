@@ -127,99 +127,95 @@ export default function HeroSection({ userClass: initialUserClass, initialHeroAd
     : null;
 
   return (
-    <div className={styles.heroWrapper}>
-      <section className={styles.hero}>
-        <div className={styles.noise} />
-        <div
-          className={styles.beam}
-          style={{
-            background: `radial-gradient(ellipse 60% 60% at 50% 0%, ${activeTopic.beamGlow} 0%, transparent 80%)`,
-            transition: 'background 0.8s ease-in-out',
-          }}
-        />
+    <section className={styles.hero}>
+      <div className={styles.noise} />
+      <div
+        className={styles.beam}
+        style={{
+          background: `radial-gradient(ellipse 60% 60% at 50% 0%, ${activeTopic.beamGlow} 0%, transparent 80%)`,
+          transition: 'background 0.8s ease-in-out',
+        }}
+      />
 
-        <div className={styles.container}>
-          {/* Asymmetric 2-Column Grid signature preserved / Dynamic adaptable stack */}
-          <div className={styles.heroGrid}>
+      <div className={styles.container}>
+        {/* Asymmetric 2-Column Grid on Desktop */}
+        <div className={styles.heroGrid}>
 
-            {/* ─── Hero Content Area: Proposition, Headline, Subtitle, CTAs, Stats ─── */}
-            <div className={styles.leftCol}>
-              {/* Live student activity indicator */}
-              <div className={styles.liveChip}>
-                <span className={styles.liveDot} aria-hidden="true" />
-                <span className={styles.liveText}>
-                  {loading ? '—' : stats.activeNow} {stats.activeNow === 1 ? 'student' : 'students'} studying right now
-                </span>
-              </div>
-
-              {/* Headline */}
-              <h1 className={styles.headline}>
-                <span className={styles.headlineLead}>The smartest way to prepare for</span>
-                <span className={styles.headlineSubject}>
-                  <AnimatedTitle onIndexChange={setActiveTopicIndex} />
-                </span>
-              </h1>
-
-              {/* Supporting description */}
-              <p className={styles.sub}>
-                Free question papers, study notes, video lectures, real-world skills, and AI-powered doubt solving for Classes 8–12, CUET, JEE &amp; NEET.
-              </p>
-
-              {/* CTAs */}
-              <div className={styles.ctas}>
-                <Link
-                  href={userClass ? `/class/${encodeURIComponent(userClass)}` : '/school'}
-                  className={styles.ctaPrimary}
-                >
-                  <span>{classDisplayName ? `${classDisplayName} Dashboard` : 'School Learning Hub'}</span>
-                  <ArrowRight size={16} strokeWidth={2.5} />
-                </Link>
-
-                <div className={styles.ctaSecondaryGroup}>
-                  <Link
-                    href={userClass ? `/papers?class=${encodeURIComponent(userClass)}` : '/papers'}
-                    className={styles.ctaGhost}
-                  >
-                    Explore Papers
-                  </Link>
-
-                  <Link href="/ai-tutor" className={styles.ctaGhost}>
-                    <Sparkles size={14} strokeWidth={2} />
-                    <span>AI Tutor</span>
-                    <span className={styles.freeBadge}>FREE</span>
-                  </Link>
-                </div>
-              </div>
-
-              {/* ─── Numerical Analytics KPI Strip ─── */}
-              <div className={styles.statsBar}>
-                {[
-                  { label: 'Students enrolled', value: stats.users },
-                  { label: 'Past papers', value: stats.papers },
-                  { label: 'Study notes', value: stats.notes },
-                  { label: 'Video lectures', value: stats.videos },
-                ].map((s, i) => (
-                  <div key={s.label} className={styles.statCell}>
-                    <span className={styles.statNum}>
-                      <AnimatedNumber value={s.value} isLoading={loading} />
-                    </span>
-                    <span className={styles.statLabel}>{s.label}</span>
-                    {i < 3 && <div className={styles.statDivider} />}
-                  </div>
-                ))}
-              </div>
+          {/* ─── Left Column: Proposition, Headline, Subtitle, CTAs ─── */}
+          <div className={styles.leftCol}>
+            {/* Live student activity indicator */}
+            <div className={styles.liveChip}>
+              <span className={styles.liveDot} aria-hidden="true" />
+              <span className={styles.liveText}>
+                {loading ? '—' : stats.activeNow} {stats.activeNow === 1 ? 'student' : 'students'} studying right now
+              </span>
             </div>
 
-          </div>
-        </div>
-      </section>
+            {/* Headline */}
+            <h1 className={styles.headline}>
+              <span className={styles.headlineLead}>The smartest way to prepare for</span>
+              <span className={styles.headlineSubject}>
+                <AnimatedTitle onIndexChange={setActiveTopicIndex} />
+              </span>
+            </h1>
 
-      {/* ─── Featured Promo Carousel (Positioned cleanly on scroll below viewport hero) ─── */}
-      <div className={styles.rightCol}>
-        <div className={styles.promoWrap}>
-          <PromoCarousel userClass={userClass} initialAd={initialHeroAd} initialAds={initialHeroAds} />
+            {/* Supporting description */}
+            <p className={styles.sub}>
+              Free question papers, study notes, video lectures, real-world skills, and AI-powered doubt solving for Classes 8–12, CUET, JEE &amp; NEET.
+            </p>
+
+            {/* CTAs */}
+            <div className={styles.ctas}>
+              <Link
+                href={userClass ? `/class/${encodeURIComponent(userClass)}` : '/school'}
+                className={styles.ctaPrimary}
+              >
+                <span>{classDisplayName ? `${classDisplayName} Dashboard` : 'School Learning Hub'}</span>
+                <ArrowRight size={16} strokeWidth={2.5} />
+              </Link>
+
+              <div className={styles.ctaSecondaryGroup}>
+                <Link
+                  href={userClass ? `/papers?class=${encodeURIComponent(userClass)}` : '/papers'}
+                  className={styles.ctaGhost}
+                >
+                  Explore Papers
+                </Link>
+
+                <Link href="/ai-tutor" className={styles.ctaGhost}>
+                  <Sparkles size={14} strokeWidth={2} />
+                  <span>AI Tutor</span>
+                  <span className={styles.freeBadge}>FREE</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── Right Column: Advertisement & Promo Carousel ─── */}
+          <div className={styles.rightCol}>
+            <PromoCarousel userClass={userClass} initialAd={initialHeroAd} initialAds={initialHeroAds} />
+          </div>
+
+        </div>
+
+        {/* ─── Numerical Analytics KPI Strip ─── */}
+        <div className={styles.statsBar}>
+          {[
+            { label: 'Students enrolled', value: stats.users },
+            { label: 'Past papers', value: stats.papers },
+            { label: 'Study notes', value: stats.notes },
+            { label: 'Video lectures', value: stats.videos },
+          ].map((s, i) => (
+            <div key={s.label} className={styles.statCell}>
+              <span className={styles.statNum}>
+                <AnimatedNumber value={s.value} isLoading={loading} />
+              </span>
+              <span className={styles.statLabel}>{s.label}</span>
+              {i < 3 && <div className={styles.statDivider} />}
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Inter } from "next/font/google";
 import MainLayoutWrapper from "@/components/layout/MainLayoutWrapper";
@@ -49,11 +49,14 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const viewport = {
-  themeColor: "#0a0a0a",
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  viewportFit: "cover",
 };
 
 import { ThemeProvider } from "@/components/ThemeProvider";
