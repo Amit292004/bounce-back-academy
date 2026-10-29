@@ -49,12 +49,12 @@ async function run() {
     await send('DOM.enable');
 
     const iphoneModels = [
-      { name: 'iPhone_SE_1st_gen', width: 320, height: 568, safeBottom: 0 },
-      { name: 'iPhone_SE_2nd_3rd_gen', width: 375, height: 667, safeBottom: 0 },
-      { name: 'iPhone_12_13_mini', width: 375, height: 812, safeBottom: 34 },
-      { name: 'iPhone_12_13_14', width: 390, height: 844, safeBottom: 34 },
-      { name: 'iPhone_14_15_Pro', width: 393, height: 852, safeBottom: 34 },
-      { name: 'iPhone_15_16_Pro_Max', width: 430, height: 932, safeBottom: 34 },
+      { name: 'iPhone_SE_1st_gen', width: 320, height: 568 },
+      { name: 'iPhone_SE_2nd_3rd_gen', width: 375, height: 667 },
+      { name: 'iPhone_12_13_mini', width: 375, height: 812 },
+      { name: 'iPhone_12_13_14', width: 390, height: 844 },
+      { name: 'iPhone_14_15_Pro', width: 393, height: 852 },
+      { name: 'iPhone_15_16_Pro_Max', width: 430, height: 932 },
     ];
 
     for (const phone of iphoneModels) {
@@ -65,13 +65,17 @@ async function run() {
         mobile: true
       });
 
-      // Emulate iPhone user agent
-      await send('Network.setUserAgentOverride', {
-        userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1'
-      });
-
       await send('Page.navigate', { url: 'http://localhost:3000' });
-      await new Promise(r => setTimeout(r, 1500));
+
+      for (let i = 0; i < 40; i++) {
+        await new Promise(r => setTimeout(r, 250));
+        const check = await send('Runtime.evaluate', {
+          expression: 'Boolean(document.querySelector("section") && document.querySelector("[class*=\\"statsBar\\"]"))',
+          returnByValue: true
+        });
+        if (check?.result?.result?.value) break;
+      }
+      await new Promise(r => setTimeout(r, 600));
 
       const res = await send('Runtime.evaluate', {
         expression: `(() => {
