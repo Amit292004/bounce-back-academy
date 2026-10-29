@@ -138,8 +138,8 @@ export default function HeroSection({ userClass: initialUserClass, initialHeroAd
       />
 
       <div className={styles.container}>
-        {/* Asymmetric 2-Column Grid on Desktop */}
-        <div className={styles.heroGrid}>
+        {/* Main Hero Card (Above-the-fold on mobile, contents on desktop) */}
+        <div className={styles.mainHeroCard}>
 
           {/* ─── Left Column: Proposition, Headline, Subtitle, CTAs ─── */}
           <div className={styles.leftCol}>
@@ -191,29 +191,29 @@ export default function HeroSection({ userClass: initialUserClass, initialHeroAd
             </div>
           </div>
 
-          {/* ─── Right Column: Advertisement & Promo Carousel ─── */}
-          <div className={styles.rightCol}>
-            <PromoCarousel userClass={userClass} initialAd={initialHeroAd} initialAds={initialHeroAds} />
+          {/* ─── Numerical Analytics KPI Strip ─── */}
+          <div className={styles.statsBar}>
+            {[
+              { label: 'Students enrolled', value: stats.users },
+              { label: 'Past papers', value: stats.papers },
+              { label: 'Study notes', value: stats.notes },
+              { label: 'Video lectures', value: stats.videos },
+            ].map((s, i) => (
+              <div key={s.label} className={styles.statCell}>
+                <span className={styles.statNum}>
+                  <AnimatedNumber value={s.value} isLoading={loading} />
+                </span>
+                <span className={styles.statLabel}>{s.label}</span>
+                {i < 3 && <div className={styles.statDivider} />}
+              </div>
+            ))}
           </div>
 
         </div>
 
-        {/* ─── Numerical Analytics KPI Strip ─── */}
-        <div className={styles.statsBar}>
-          {[
-            { label: 'Students enrolled', value: stats.users },
-            { label: 'Past papers', value: stats.papers },
-            { label: 'Study notes', value: stats.notes },
-            { label: 'Video lectures', value: stats.videos },
-          ].map((s, i) => (
-            <div key={s.label} className={styles.statCell}>
-              <span className={styles.statNum}>
-                <AnimatedNumber value={s.value} isLoading={loading} />
-              </span>
-              <span className={styles.statLabel}>{s.label}</span>
-              {i < 3 && <div className={styles.statDivider} />}
-            </div>
-          ))}
+        {/* ─── Right Column: Advertisement & Promo Carousel ─── */}
+        <div className={styles.rightCol}>
+          <PromoCarousel userClass={userClass} initialAd={initialHeroAd} initialAds={initialHeroAds} />
         </div>
       </div>
     </section>
