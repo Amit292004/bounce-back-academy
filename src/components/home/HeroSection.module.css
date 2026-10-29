@@ -208,6 +208,9 @@
   transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   letter-spacing: -0.01em;
   box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
 }
 
 .ctaPrimary:hover {
@@ -233,6 +236,9 @@
   transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   letter-spacing: -0.01em;
   box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
 }
 
 .ctaGhost:hover {
@@ -362,7 +368,7 @@
 @media (max-width: 768px) {
   .hero {
     min-height: auto;
-    padding: 0.5rem 1rem 1rem;
+    padding: 0.5rem max(1rem, env(safe-area-inset-right, 0px)) 1rem max(1rem, env(safe-area-inset-left, 0px));
     overflow-x: clip;
     display: flex;
     flex-direction: column;
@@ -504,7 +510,7 @@
 
 @media (max-width: 768px) and (max-height: 680px) {
   .hero {
-    padding: 0.25rem 0.75rem 0.5rem;
+    padding: 0.25rem max(0.75rem, env(safe-area-inset-right, 0px)) 0.5rem max(0.75rem, env(safe-area-inset-left, 0px));
   }
 
   .leftCol {

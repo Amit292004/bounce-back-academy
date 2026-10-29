@@ -48,6 +48,21 @@ async function run() {
     await send('Page.enable');
     await send('DOM.enable');
 
+    // Warm-up initial load
+    await send('Page.navigate', { url: 'http://localhost:3000' });
+    for (let i = 0; i < 40; i++) {
+      await new Promise(r => setTimeout(r, 250));
+      const check = await send('Runtime.evaluate', {
+        expression: 'Boolean(document.querySelector("section") && document.querySelector("[class*=\\"statsBar\\"]"))',
+        returnByValue: true
+      });
+      if (check?.result?.result?.value) {
+        console.log('Warmup ready after', (i + 1) * 250, 'ms');
+        break;
+      }
+    }
+    await new Promise(r => setTimeout(r, 1000));
+
     const iphoneModels = [
       { name: 'iPhone_SE_1st_gen', width: 320, height: 568 },
       { name: 'iPhone_SE_2nd_3rd_gen', width: 375, height: 667 },
@@ -65,16 +80,6 @@ async function run() {
         mobile: true
       });
 
-      await send('Page.navigate', { url: 'http://localhost:3000' });
-
-      for (let i = 0; i < 40; i++) {
-        await new Promise(r => setTimeout(r, 250));
-        const check = await send('Runtime.evaluate', {
-          expression: 'Boolean(document.querySelector("section") && document.querySelector("[class*=\\"statsBar\\"]"))',
-          returnByValue: true
-        });
-        if (check?.result?.result?.value) break;
-      }
       await new Promise(r => setTimeout(r, 600));
 
       const res = await send('Runtime.evaluate', {

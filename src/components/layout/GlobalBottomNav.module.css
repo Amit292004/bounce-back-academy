@@ -6,7 +6,7 @@
   display: flex;
   background: var(--surface);
   border-top: 1px solid var(--surface-border);
-  padding: 0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));
+  padding: 0.5rem max(0.5rem, env(safe-area-inset-right, 0px)) calc(0.5rem + env(safe-area-inset-bottom, 0px)) max(0.5rem, env(safe-area-inset-left, 0px));
   z-index: 100;
   /* subtle glassmorphism blur */
   backdrop-filter: blur(12px);
