@@ -26,9 +26,9 @@
   --ai-text-main: #0f172a;
   --ai-text-secondary: #334155;
   --ai-text-muted: #64748b;
-  --ai-accent: #2563eb;
-  --ai-accent-subtle: rgba(37, 99, 235, 0.08);
-  --ai-accent-hover: #1d4ed8;
+  --ai-accent: #f97316;
+  --ai-accent-subtle: rgba(249, 115, 22, 0.1);
+  --ai-accent-hover: #ea580c;
   --ai-code-bg: #0f172a;
   --ai-code-text: #f8fafc;
   --ai-success-bg: rgba(16, 185, 129, 0.06);
@@ -51,9 +51,9 @@
   --ai-text-main: #f8fafc;
   --ai-text-secondary: #cbd5e1;
   --ai-text-muted: #94a3b8;
-  --ai-accent: #6366f1;
-  --ai-accent-subtle: rgba(99, 102, 241, 0.12);
-  --ai-accent-hover: #4f46e5;
+  --ai-accent: #f97316;
+  --ai-accent-subtle: rgba(249, 115, 22, 0.14);
+  --ai-accent-hover: #ea580c;
   --ai-code-bg: #09090d;
   --ai-code-text: #e2e8f0;
   --ai-success-bg: rgba(16, 185, 129, 0.08);
@@ -529,8 +529,8 @@
   gap: 0.4rem;
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
-  border: 1px solid var(--ai-border);
-  background: var(--ai-card-subtle);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  background: var(--ai-accent-subtle);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -603,8 +603,8 @@
   width: 26px;
   height: 26px;
   border-radius: 6px;
-  background: var(--ai-card-subtle);
-  border: 1px solid var(--ai-border);
+  background: var(--ai-accent-subtle);
+  border: 1px solid rgba(249, 115, 22, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1512,9 +1512,9 @@
 
   /* ── 7. Core Concept section ─────────────────────────────────────────── */
   .conceptCard {
-    background: #f0f4ff !important;
-    border: 1pt solid #bfcfef !important;
-    border-left: 4pt solid #2563eb !important;
+    background: #fff7ed !important;
+    border: 1pt solid #fed7aa !important;
+    border-left: 4pt solid #f97316 !important;
     border-radius: 4pt !important;
     padding: 8pt 11pt !important;
     margin-bottom: 10pt !important;
@@ -1528,7 +1528,7 @@
     font-weight: 700 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.07em !important;
-    color: #1d4ed8 !important;
+    color: #ea580c !important;
     margin-bottom: 5pt !important;
     display: flex !important;
     align-items: center !important;
@@ -1565,7 +1565,7 @@
 
   .stepContent {
     padding-left: 12pt !important;
-    border-left: 2pt solid #93c5fd !important;
+    border-left: 2pt solid #fdba74 !important;
     display: block !important;
     gap: 0 !important;
   }
@@ -1698,8 +1698,8 @@
 
   /* ── 13. Math / KaTeX ────────────────────────────────────────────────── */
   .katexBlock {
-    background: #f8faff !important;
-    border: 1pt solid #bfcfef !important;
+    background: #fff7ed !important;
+    border: 1pt solid #fed7aa !important;
     border-radius: 4pt !important;
     padding: 6pt 10pt !important;
     margin: 6pt 0 !important;
