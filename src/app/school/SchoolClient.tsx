@@ -15,6 +15,7 @@ import {
   Play,
   X,
   Sparkles,
+  Bot,
   ArrowRight,
   HelpCircle,
   Layers,
@@ -246,7 +247,7 @@ function SchoolClientInner({
             </Button>
           )}
           <Button href={`/ask?class=${encodeURIComponent(selectedClass)}`} variant="secondary" size="sm">
-            <Sparkles size={14} />
+            <Bot size={14} />
             <span>Ask AI Doubt</span>
           </Button>
         </div>
@@ -313,7 +314,7 @@ function SchoolClientInner({
                 </Button>
               )}
               <Button href={`/ask?class=${encodeURIComponent(selectedClass)}`} variant="primary" size="sm">
-                <Sparkles size={14} />
+                <Bot size={14} />
                 <span>Ask Bounce Back AI</span>
               </Button>
               <Button href={`/class/${encodeURIComponent(selectedClass)}`} variant="secondary" size="sm">

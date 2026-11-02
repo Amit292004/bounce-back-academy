@@ -7,6 +7,7 @@ import styles from './page.module.css';
 import {
   Code2,
   Sparkles,
+  Bot,
   CheckCircle2,
   ArrowRight,
   Zap,
@@ -228,7 +229,8 @@ function SkillsClientInner({ dbItems }: SkillsClientProps) {
           action={
             selectedCategory === 'all' ? (
               <Button variant="primary" size="sm" href="/ai-tutor">
-                Explore with AI Tutor
+                <Bot size={14} style={{ marginRight: '6px' }} />
+                <span>Explore with AI Tutor</span>
               </Button>
             ) : (
               <Button variant="primary" size="sm" onClick={() => handleSelectCategory('all')}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import styles from './LearningPathsSection.module.css';
-import { GraduationCap, BookOpen, Sparkles, Code2 } from 'lucide-react';
+import { GraduationCap, BookOpen, Bot, Code2 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 
 export default function LearningPathsSection() {
@@ -28,7 +28,7 @@ export default function LearningPathsSection() {
       href: '/ai-tutor',
       actionLabel: 'Launch Free AI Tutor',
       badge: 'Free',
-      icon: <Sparkles size={20} strokeWidth={1.75} />,
+      icon: <Bot size={20} strokeWidth={1.75} />,
       badges: ['Step-by-Step', 'LaTeX Math', 'Hinglish & English'],
     },
     {

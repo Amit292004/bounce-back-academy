@@ -9,7 +9,7 @@ import {
   BookOpen,
   FileText,
   Video as VideoIcon,
-  Sparkles,
+  Bot,
   Heart,
   ArrowRight,
   Send,
@@ -207,7 +207,7 @@ export default function DashboardClient() {
           {/* Ask AI Doubt Box */}
           <div className={styles.aiBox}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', fontWeight: 700, fontSize: '0.95rem' }}>
-              <Sparkles size={18} />
+              <Bot size={18} />
               <span>Bounce Back AI Doubt Solver</span>
               <Badge variant="success" size="sm">Free</Badge>
             </div>

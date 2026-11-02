@@ -7,6 +7,7 @@ import styles from './page.module.css';
 import {
   BookOpen,
   Sparkles,
+  Bot,
   Trophy,
   FileText,
   Video as VideoIcon,
@@ -274,7 +275,7 @@ function ExamsClientInner({
               variant="primary"
               size="sm"
             >
-              <Sparkles size={14} />
+              <Bot size={14} />
               <span>Ask {selectedExam.shortName} Doubt</span>
             </Button>
             <Button
@@ -332,7 +333,7 @@ function ExamsClientInner({
             className={styles.toolIcon}
             style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399' }}
           >
-            <Sparkles size={20} />
+            <Bot size={20} />
           </div>
           <div className={styles.toolContent}>
             <div className={styles.toolTitle}>
@@ -420,7 +421,7 @@ function ExamsClientInner({
                   variant="primary"
                   size="sm"
                 >
-                  <Sparkles size={14} />
+                  <Bot size={14} />
                   <span>Launch AI Doubt Solver</span>
                 </Button>
                 <Button

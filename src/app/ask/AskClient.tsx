@@ -7,6 +7,7 @@ import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import {
   Sparkles,
+  Bot,
   Send,
   Square,
   Mic,
@@ -764,6 +765,9 @@ function AskClientInner() {
             </Link>
 
             <div className={styles.brandGroup}>
+              <div className={styles.brandBotBadge} aria-hidden="true">
+                <Bot size={16} />
+              </div>
               <h1 className={styles.brandTitle}>Bounce Back AI</h1>
               <span className={styles.statusIndicator}>
                 <span className={styles.liveDot} />
@@ -915,7 +919,7 @@ function AskClientInner() {
                ========================================================== */
             <div className={styles.welcomeContainer}>
               <div className={styles.welcomeBadge}>
-                <Sparkles size={12} />
+                <Bot size={13} />
                 <span>Academic Problem Solver</span>
               </div>
 
@@ -979,7 +983,7 @@ function AskClientInner() {
                       {/* Card Header */}
                       <div className={styles.aiCardHeader}>
                         <div className={styles.aiCardHeaderLeft}>
-                          <Sparkles size={13} color="var(--ai-accent)" />
+                          <Bot size={14} color="var(--ai-accent)" />
                           <span>Academic Solution</span>
                         </div>
                         <div className={styles.aiCardHeaderRight}>
@@ -1224,7 +1228,7 @@ function AskClientInner() {
                   <div className={styles.aiResponseCard}>
                     <div className={styles.aiCardHeader}>
                       <div className={styles.aiCardHeaderLeft}>
-                        <Sparkles size={13} color="var(--ai-accent)" />
+                        <Bot size={14} color="var(--ai-accent)" />
                         <span>Formulating Solution...</span>
                       </div>
                     </div>

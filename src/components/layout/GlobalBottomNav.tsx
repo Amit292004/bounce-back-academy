@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, GraduationCap, BookOpen, Sparkles, UserCheck } from 'lucide-react';
+import { Home, GraduationCap, BookOpen, Bot, UserCheck } from 'lucide-react';
 import styles from './GlobalBottomNav.module.css';
 import ClassSwitcherModal from './ClassSwitcherModal';
 
@@ -91,7 +91,7 @@ export default function GlobalBottomNav() {
     { href: '/?noredirect=true', label: 'Home',      icon: <Home size={19} /> },
     { href: '/school',           label: 'Classes',   icon: <GraduationCap size={19} /> },
     { href: '/courses',          label: 'Courses',   icon: <BookOpen size={19} /> },
-    { href: '/ai-tutor',         label: 'AI Tutor',  icon: <Sparkles size={19} /> },
+    { href: '/ai-tutor',         label: 'AI Tutor',  icon: <Bot size={19} /> },
     { href: '/dashboard',        label: 'Dashboard', icon: <UserCheck size={19} /> },
   ];
 

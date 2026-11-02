@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
-import { FaBars, FaTimes, FaUserCircle, FaRobot, FaChevronDown } from 'react-icons/fa';
+import { FaBars, FaTimes, FaUserCircle, FaChevronDown } from 'react-icons/fa';
 import {
   ShoppingCart,
   Compass,
@@ -347,7 +347,7 @@ export default function Navbar() {
             href="/ai-tutor"
             className={`${styles.navLink} ${styles.aiTutorLink} ${isActive('/ask') || isActive('/ai-tutor') ? styles.navLinkActive : ''}`}
           >
-            <FaRobot className={styles.aiTutorIcon} aria-hidden="true" />
+            <Bot size={16} className={styles.aiTutorIcon} aria-hidden="true" />
             <span>AI Tutor</span>
           </Link>
           <Link href="/announcements" className={`${styles.navLink} ${isActive('/announcements') ? styles.navLinkActive : ''}`}>

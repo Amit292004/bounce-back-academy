@@ -14,7 +14,7 @@ import {
   Settings,
   Lock,
   List,
-  Sparkles,
+  Bot,
   ArrowLeft,
   X,
   Check,
@@ -674,7 +674,7 @@ export default function PWVideoPlayer({
               onClick={handleAskDoubtClick}
               title="Ask AI Doubt about this timestamp"
             >
-              <Sparkles size={14} />
+              <Bot size={14} />
               <span>Ask Doubt</span>
             </button>
 

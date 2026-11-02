@@ -7,7 +7,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ArrowRight,
-  Sparkles,
+  Bot,
   FileText,
   BookOpen,
   Award,
@@ -58,7 +58,7 @@ const DEFAULT_SLIDES: PromoSlide[] = [
     meta: 'Interactive AI Tool',
     accentColor: '#818cf8',
     bgGlow: 'rgba(129, 140, 248, 0.18)',
-    icon: Sparkles,
+    icon: Bot,
   },
   {
     id: 'study-notes-pack',

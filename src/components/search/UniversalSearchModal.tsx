@@ -12,7 +12,7 @@ import {
   HelpCircle,
   GraduationCap,
   Target,
-  Sparkles,
+  Bot,
   Compass,
   ShoppingCart,
   Clock,
@@ -281,7 +281,7 @@ export default function UniversalSearchModal({
       case 'exam':
         return <Target size={18} />;
       case 'tool':
-        return <Sparkles size={18} />;
+        return <Bot size={18} />;
       case 'page':
       case 'faq':
       default:
@@ -627,7 +627,7 @@ export default function UniversalSearchModal({
               >
                 <div className={styles.aiTutorCardText}>
                   <div className={styles.aiTutorCardTitle}>
-                    <Sparkles size={15} />
+                    <Bot size={15} />
                     <span>Ask Bounce Back AI Tutor</span>
                   </div>
                   <div className={styles.aiTutorCardDesc}>

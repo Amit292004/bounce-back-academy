@@ -385,6 +385,19 @@
   gap: 0.6rem;
 }
 
+.brandBotBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--ai-accent-subtle);
+  color: var(--ai-accent);
+  flex-shrink: 0;
+  border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
 .brandTitle {
   font-size: 0.92rem;
   font-weight: 700;

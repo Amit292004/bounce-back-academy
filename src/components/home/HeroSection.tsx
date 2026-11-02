@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
-  Sparkles,
+  Bot,
 } from 'lucide-react';
 import styles from './HeroSection.module.css';
 import AnimatedTitle, { ROTATING_TOPICS } from './AnimatedTitle';
@@ -183,7 +183,7 @@ export default function HeroSection({ userClass: initialUserClass, initialHeroAd
                 </Link>
 
                 <Link href="/ai-tutor" className={styles.ctaGhost}>
-                  <Sparkles size={14} strokeWidth={2} />
+                  <Bot size={14} strokeWidth={2} />
                   <span>AI Tutor</span>
                   <span className={styles.freeBadge}>FREE</span>
                 </Link>

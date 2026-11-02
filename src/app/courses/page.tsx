@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import prisma from '@/lib/prisma';
 import styles from './page.module.css';
-import { BookOpen, GraduationCap, Sparkles, Code2, ArrowRight, CheckCircle2, Star } from 'lucide-react';
+import { BookOpen, GraduationCap, Sparkles, Bot, Code2, ArrowRight, CheckCircle2, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import AddToCartButton from '@/components/cart/AddToCartButton';
@@ -104,7 +104,7 @@ export default async function CoursesPage() {
         {/* Area 3: Bounce Back AI */}
         <div className={styles.areaCard}>
           <div className={styles.areaIconWrap} style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399' }}>
-            <Sparkles size={24} />
+            <Bot size={24} />
           </div>
           <h2 className={styles.areaTitle}>Bounce Back AI</h2>
           <p className={styles.areaDesc}>

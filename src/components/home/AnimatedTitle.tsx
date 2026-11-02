@@ -64,7 +64,7 @@ export default function AnimatedTitle({ onIndexChange }: AnimatedTitleProps) {
 
   return (
     <span className={styles.animTitleWrapper} aria-live="polite">
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
           key={current.id}
           className={styles.dynamicAccent}

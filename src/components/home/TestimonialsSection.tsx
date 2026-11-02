@@ -81,8 +81,8 @@ export default function TestimonialsSection() {
   return (
     <section className={styles.section}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '3rem' }}>
-        <div className={styles.head} style={{ margin: 0 }}>
+      <div className={styles.headerRow}>
+        <div className={styles.head}>
           <p className={styles.eyebrow}>Student Reviews</p>
           <h2 className={styles.title}>What students say</h2>
           <p className={styles.sub}>
@@ -91,14 +91,7 @@ export default function TestimonialsSection() {
         </div>
         <button
           onClick={() => { setShowForm(true); setSubmitted(false); setError(''); }}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: '0.45rem',
-            padding: '0.55rem 1.1rem', borderRadius: '8px',
-            background: 'var(--primary)', color: 'var(--primary-foreground)',
-            fontWeight: 700, fontSize: '0.82rem', border: 'none',
-            cursor: 'pointer', boxShadow: 'var(--shadow-glow)',
-            transition: 'var(--transition)', whiteSpace: 'nowrap',
-          }}
+          className={styles.writeReviewBtn}
         >
           <svg 
             width="14" 

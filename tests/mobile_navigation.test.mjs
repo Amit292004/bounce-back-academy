@@ -102,4 +102,14 @@ describe('SaaS Mobile Navigation Architecture & Drawer Verification Suite', () =
     assert.ok(navbarCss.includes('.desktopNav'), 'desktopNav CSS preserved');
     assert.ok(navbarCss.includes('.desktopAuth'), 'desktopAuth CSS preserved');
   });
+
+  test('brand logo typography is consistent between homepage navbar and mobile drawer', () => {
+    // Both logoText and drawerLogoText must share the same font size definition across breakpoints
+    assert.ok(navbarCss.includes('.logoText'), 'logoText selector exists');
+    assert.ok(navbarCss.includes('.drawerLogoText'), 'drawerLogoText selector exists');
+    assert.ok(
+      navbarCss.includes('.logoText,\n  .drawerLogoText') || navbarCss.includes('.logoText, .drawerLogoText'),
+      'Both logoText and drawerLogoText must share responsive font size definitions'
+    );
+  });
 });

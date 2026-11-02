@@ -11,17 +11,17 @@
 }
 
 .eyebrow {
+  display: inline-block;
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--primary);
-  opacity: 0.9;
+  color: var(--brand-orange);
   margin-bottom: 0.75rem;
 }
 
 .title {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-size: clamp(1.75rem, 3.5vw, 2.35rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--foreground);
@@ -33,7 +33,7 @@
   font-size: 0.95rem;
   line-height: 1.65;
   color: var(--foreground);
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
 /* 4-column connected bento grid */
@@ -50,16 +50,21 @@
 .card {
   display: flex;
   flex-direction: column;
-  padding: 1.75rem 1.5rem;
+  padding: 1.85rem 1.6rem;
   background: var(--surface);
   text-decoration: none;
   color: var(--foreground);
-  transition: background 0.2s ease;
+  transition: background-color 0.15s ease;
   position: relative;
 }
 
 .card:hover {
   background: var(--surface-card);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: -2px;
 }
 
 .cardTop {
@@ -138,14 +143,14 @@
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--foreground);
-  opacity: 0.4;
-  transition: all 0.2s ease;
+  opacity: 0.45;
+  transition: opacity 0.15s ease, color 0.15s ease;
   letter-spacing: -0.01em;
 }
 
 .arrow {
-  opacity: 0.3;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  opacity: 0.35;
+  transition: transform 0.15s ease, opacity 0.15s ease, color 0.15s ease;
   color: var(--primary);
 }
 

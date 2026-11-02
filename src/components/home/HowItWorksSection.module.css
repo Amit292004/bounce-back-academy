@@ -11,17 +11,17 @@
 }
 
 .eyebrow {
+  display: inline-block;
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--primary);
-  opacity: 0.9;
+  color: var(--brand-orange);
   margin-bottom: 0.75rem;
 }
 
 .title {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-size: clamp(1.75rem, 3.5vw, 2.35rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--foreground);
@@ -33,7 +33,7 @@
   font-size: 0.95rem;
   line-height: 1.65;
   color: var(--foreground);
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
 /* 4-column connected bento grid */
@@ -50,10 +50,10 @@
 .card {
   display: flex;
   flex-direction: column;
-  padding: 1.75rem 1.5rem;
+  padding: 1.85rem 1.6rem;
   background: var(--surface);
   color: var(--foreground);
-  transition: background 0.2s ease;
+  transition: background-color 0.15s ease;
   position: relative;
 }
 
