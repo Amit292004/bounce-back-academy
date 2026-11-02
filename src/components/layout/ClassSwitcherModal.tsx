@@ -19,14 +19,15 @@ interface ClassSwitcherModalProps {
 }
 
 const COURSE_COLORS: Record<string, string> = {
-  '8':   '#6366f1',
-  '9':   '#8b5cf6',
-  '10':  '#0ea5e9',
-  '11':  '#f59e0b',
-  '12':  '#10b981',
-  'cuet':'#06b6d4',
-  'jee': '#f97316',
-  'neet':'#ef4444',
+  '8':     '#6366f1',
+  '9':     '#8b5cf6',
+  '10':    '#0ea5e9',
+  '11':    '#f59e0b',
+  '12':    '#10b981',
+  'cuet':  '#06b6d4',
+  'jee':   '#f97316',
+  'neet':  '#ef4444',
+  'skill': '#10b981',
 };
 
 function getCourseColor(name: string): string {
@@ -45,6 +46,7 @@ const FALLBACK_COURSES: Course[] = [
   { id: 'fb6', name: 'CUET', imageUrl: null, caption: null },
   { id: 'fb7', name: 'JEE', imageUrl: null, caption: null },
   { id: 'fb8', name: 'NEET', imageUrl: null, caption: null },
+  { id: 'fb9', name: 'Skills', imageUrl: null, caption: null },
 ];
 
 export default function ClassSwitcherModal({ isOpen, onClose, currentClass }: ClassSwitcherModalProps) {

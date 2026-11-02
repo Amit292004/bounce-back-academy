@@ -152,7 +152,6 @@ test('Hero Redesign: Scope & Integrity Checks', async (t) => {
     const page = fs.readFileSync(PAGE_TSX_PATH, 'utf8');
     assert.ok(page.includes('{bannerMessage && ('), 'Top banner message preserved');
     assert.ok(page.includes('<HeroSection userClass={userClass}'), 'HeroSection is rendered with userClass prop');
-    assert.ok(page.includes('<LearningPathsSection />'), 'LearningPathsSection preserved below hero');
     assert.ok(page.includes('<FeaturesGrid />'), 'FeaturesGrid preserved');
     assert.ok(page.includes('<TestimonialsSection />'), 'TestimonialsSection preserved');
     assert.ok(page.includes('<FaqSection />'), 'FaqSection preserved');

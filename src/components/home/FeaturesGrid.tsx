@@ -12,6 +12,42 @@ interface ToolItem {
 
 const tools: ToolItem[] = [
   {
+    title: 'Question Papers',
+    desc: 'NBSE past papers from 2016 onwards — year-wise and chapter-wise, with instant PDF preview.',
+    href: '/papers',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="16" y1="13" x2="8" y2="13" />
+        <line x1="16" y1="17" x2="8" y2="17" />
+        <polyline points="10 9 9 9 8 9" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Study Notes',
+    desc: 'Structured, comprehensive notes for every subject and chapter — free to read, download after login.',
+    href: '/notes',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Video Lectures',
+    desc: 'Curated lectures by expert educators, organized by class and subject for focused learning.',
+    href: '/videos',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <polygon points="23 7 16 12 23 17 23 7" />
+        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+      </svg>
+    ),
+  },
+  {
     title: 'AI Doubt Solver',
     desc: 'Ask any question from your NBSE, JEE or NEET syllabus and get step-by-step mathematical solutions and explanations instantly.',
     href: '/ai-tutor',
@@ -77,7 +113,9 @@ export default function FeaturesGrid() {
   return (
     <section className={styles.section} id="platform-tools" aria-labelledby="tools-heading">
       <div className={styles.header}>
-        <p className={styles.eyebrow}>Platform Utilities</p>
+        <p className={styles.eyebrow}>
+          <span className={styles.eyebrowNum}>02 //</span> Platform Utilities
+        </p>
         <h2 className={styles.title} id="tools-heading">Your Learning Toolkit</h2>
         <p className={styles.sub}>
           Specialized tools and interactive features designed to support your daily preparation beyond standard textbooks.

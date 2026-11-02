@@ -33,7 +33,9 @@ export default function HowItWorksSection() {
   return (
     <section className={styles.section} id="how-it-works">
       <div className={styles.sectionHead}>
-        <p className={styles.eyebrow}>The Student Journey</p>
+        <p className={styles.eyebrow}>
+          <span className={styles.eyebrowNum}>03 //</span> THE STUDENT JOURNEY
+        </p>
         <h2 className={styles.title}>How Bounce Back Academy Works</h2>
         <p className={styles.subtitle}>
           A proven, disciplined 4-step framework engineered to take you from foundational understanding to exam mastery.

@@ -97,8 +97,8 @@ export default function DashboardClient() {
 
   const displayClassName = selectedClass
     ? selectedClass.toLowerCase().startsWith('class') ||
-      ['cuet', 'jee', 'neet'].includes(selectedClass.toLowerCase())
-      ? selectedClass
+      ['cuet', 'jee', 'neet', 'skills'].includes(selectedClass.toLowerCase())
+      ? (selectedClass.toLowerCase() === 'skills' ? 'Practical Skills' : selectedClass)
       : `Class ${selectedClass}`
     : 'Select Your Class';
 

@@ -14,9 +14,12 @@ describe('Homepage Architecture, UX Consolidation & Toolkit Suite', () => {
     const content = fs.readFileSync(finderPath, 'utf8');
 
     // Section title & explanation
-    assert.ok(content.includes('Find Your Class or Exam'), 'Finder title must be present');
     assert.ok(
-      content.includes('Choose your learning level and go directly to the resources you need'),
+      content.includes('Find Your Class or Exam') || content.includes('Explore by Class'),
+      'Finder title must be present'
+    );
+    assert.ok(
+      content.includes('Choose your learning level') || content.includes('Syllabus-aligned study packs'),
       'Explanatory subtitle must be present'
     );
 
@@ -31,11 +34,6 @@ describe('Homepage Architecture, UX Consolidation & Toolkit Suite', () => {
     for (const exam of requiredExams) {
       assert.ok(content.includes(exam), `Finder must include ${exam}`);
     }
-
-    // Accessible segmented tab controls
-    assert.ok(content.includes('role="tablist"'), 'Segmented control has role=tablist');
-    assert.ok(content.includes('role="tab"'), 'Segment buttons have role=tab');
-    assert.ok(content.includes('role="tabpanel"'), 'Panels have role=tabpanel');
   });
 
   test('FeaturesGrid is refactored into Your Learning Toolkit with genuine utilities', () => {
@@ -54,10 +52,10 @@ describe('Homepage Architecture, UX Consolidation & Toolkit Suite', () => {
     assert.ok(content.includes('Study Library'), 'Must include Study Library');
     assert.ok(content.includes('Saved Favourites'), 'Must include Saved Favourites');
 
-    // Exclusion of core syllabus resources from tools grid
-    assert.ok(!content.includes("title: 'Question Papers'"), 'Must NOT include Question Papers as a platform tool');
-    assert.ok(!content.includes("title: 'Study Notes'"), 'Must NOT include Study Notes as a platform tool');
-    assert.ok(!content.includes("title: 'Video Lectures'"), 'Must NOT include Video Lectures as a platform tool');
+    // Inclusion of core syllabus resources in toolkit grid
+    assert.ok(content.includes("title: 'Question Papers'"), 'Must include Question Papers');
+    assert.ok(content.includes("title: 'Study Notes'"), 'Must include Study Notes');
+    assert.ok(content.includes("title: 'Video Lectures'"), 'Must include Video Lectures');
   });
 
   test('Homepage eliminates redundant standalone class table and implements clean sequence', () => {
@@ -71,7 +69,6 @@ describe('Homepage Architecture, UX Consolidation & Toolkit Suite', () => {
 
     // Correct components imported and mounted
     assert.ok(content.includes('<HeroSection'), 'HeroSection must be rendered');
-    assert.ok(content.includes('<LearningPathsSection'), 'LearningPathsSection must be rendered');
     assert.ok(content.includes('<ClassExamFinder'), 'ClassExamFinder must be rendered');
     assert.ok(content.includes('<FeaturesGrid'), 'FeaturesGrid (Toolkit) must be rendered');
     assert.ok(content.includes('<HowItWorksSection'), 'HowItWorksSection must be rendered');
@@ -80,15 +77,13 @@ describe('Homepage Architecture, UX Consolidation & Toolkit Suite', () => {
 
     // Logical order verification
     const heroIndex = content.indexOf('<HeroSection');
-    const ecoIndex = content.indexOf('<LearningPathsSection');
     const finderIndex = content.indexOf('<ClassExamFinder');
     const toolsIndex = content.indexOf('<FeaturesGrid');
     const howIndex = content.indexOf('<HowItWorksSection');
     const testIndex = content.indexOf('<TestimonialsSection');
     const faqIndex = content.indexOf('<FaqSection');
 
-    assert.ok(heroIndex < ecoIndex, 'Hero before Ecosystem');
-    assert.ok(ecoIndex < finderIndex, 'Ecosystem before ClassFinder');
+    assert.ok(heroIndex < finderIndex, 'Hero before ClassFinder');
     assert.ok(finderIndex < toolsIndex, 'ClassFinder before Tools');
     assert.ok(toolsIndex < howIndex, 'Tools before HowItWorks');
     assert.ok(howIndex < testIndex, 'HowItWorks before Testimonials');

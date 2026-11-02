@@ -1,252 +1,254 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import styles from './ClassExamFinder.module.css';
 import { trackClassExamSelect } from '@/lib/analytics';
-import { ArrowRight, GraduationCap, Award } from 'lucide-react';
 
-interface SchoolClassItem {
+export interface CurriculumTrackItem {
   id: string;
-  name: string;
-  displayName: string;
-  caption: string;
-  accent: string;
+  category: 'school' | 'exams' | 'skills';
+  title: string;
+  badge: string;
+  desc: string;
   href: string;
-  tags: string[];
+  actionLabel: string;
+  analyticsType: 'school_class' | 'competitive_exam' | 'practical_skills';
+  icon: React.ReactNode;
 }
 
-interface ExamItem {
-  id: string;
-  name: string;
-  fullName: string;
-  caption: string;
-  accent: string;
-  href: string;
-  tags: string[];
-}
-
-const SCHOOL_CLASSES: SchoolClassItem[] = [
+export const CURRICULUM_TRACKS: CurriculumTrackItem[] = [
   {
     id: 'class-8',
-    name: 'Class 8',
-    displayName: 'Class 8',
-    caption: 'NBSE Middle Stage foundation notes, model papers & revision.',
-    accent: '#6366f1',
+    category: 'school',
+    title: 'Class 8',
+    badge: 'NBSE',
+    desc: 'NBSE Middle Stage foundation notes, chapter summaries, textbook solutions, and previous model question papers.',
     href: '/class/Class%208',
-    tags: ['Papers', 'Notes', 'Videos'],
+    actionLabel: 'Launch Class 8',
+    analyticsType: 'school_class',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      </svg>
+    ),
   },
   {
     id: 'class-9',
-    name: 'Class 9',
-    displayName: 'Class 9',
-    caption: 'Secondary Phase 1 curriculum: Science, Maths & Social Sciences.',
-    accent: '#8b5cf6',
+    category: 'school',
+    title: 'Class 9',
+    badge: 'NBSE',
+    desc: 'Secondary Phase 1 curriculum: Science, Mathematics, English, and Social Sciences with revision guides and practice sheets.',
     href: '/class/Class%209',
-    tags: ['Papers', 'Notes', 'Videos'],
+    actionLabel: 'Launch Class 9',
+    analyticsType: 'school_class',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/>
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+      </svg>
+    ),
   },
   {
     id: 'class-10',
-    name: 'Class 10',
-    displayName: 'Class 10',
-    caption: 'NBSE Board Exam hub: 2016–2024 PYQs, solutions & chapter notes.',
-    accent: '#0ea5e9',
+    category: 'school',
+    title: 'Class 10',
+    badge: 'HSLC Board',
+    desc: 'NBSE HSLC Board examination hub: 2016–2024 past board papers, model answer keys, chapter summaries, and high-yield question banks.',
     href: '/class/Class%2010',
-    tags: ['Board PYQs', 'Solutions', 'Videos'],
+    actionLabel: 'Launch Class 10',
+    analyticsType: 'school_class',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="8" r="6"/>
+        <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+      </svg>
+    ),
   },
   {
     id: 'class-11',
-    name: 'Class 11',
-    displayName: 'Class 11',
-    caption: 'Higher Secondary: Science, Commerce & Arts core subject notes.',
-    accent: '#f59e0b',
+    category: 'school',
+    title: 'Class 11',
+    badge: 'HSSLC',
+    desc: 'Higher Secondary foundation: Science (Physics, Chemistry, Maths, Biology), Commerce, and Arts core notes and syllabus breakdowns.',
     href: '/class/Class%2011',
-    tags: ['Science', 'Commerce', 'Arts'],
+    actionLabel: 'Launch Class 11',
+    analyticsType: 'school_class',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M10 2v7.31"/>
+        <path d="M14 9.3V2"/>
+        <path d="M8.5 2h7"/>
+        <path d="M14 9.3a6.5 6.5 0 1 1-4 0"/>
+        <path d="M5.52 16h12.96"/>
+      </svg>
+    ),
   },
   {
     id: 'class-12',
-    name: 'Class 12',
-    displayName: 'Class 12',
-    caption: 'HSSLC Board examinations: chapterwise study packs & video series.',
-    accent: '#10b981',
+    category: 'school',
+    title: 'Class 12',
+    badge: 'HSSLC Board',
+    desc: 'Complete NBSE Class 12 board preparation: previous year question papers, step-by-step model solutions, formula booklets, and video lectures.',
     href: '/class/Class%2012',
-    tags: ['HSSLC Papers', 'Notes', 'Videos'],
+    actionLabel: 'Launch Class 12',
+    analyticsType: 'school_class',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+      </svg>
+    ),
   },
-];
-
-const EXAMS: ExamItem[] = [
   {
     id: 'jee',
-    name: 'JEE Main & Advanced',
-    fullName: 'Engineering Entrance',
-    caption: 'NTA & IIT curriculum problem sets, formula sheets & chapter mock tests.',
-    accent: '#f97316',
-    href: '/exams?exam=jee-main',
-    tags: ['Physics', 'Chemistry', 'Maths'],
-  },
-  {
-    id: 'neet',
-    name: 'NEET UG',
-    fullName: 'Medical Entrance',
-    caption: 'Comprehensive NCERT line-by-line revision, Biology PYQs & chemistry problem sets.',
-    accent: '#ef4444',
-    href: '/exams?exam=neet-ug',
-    tags: ['Biology', 'Physics', 'Chemistry'],
+    category: 'exams',
+    title: 'JEE Main & Advanced',
+    badge: 'Engineering',
+    desc: 'NTA & IIT curriculum problem sets, formula reference sheets, high-difficulty numericals, and full-length CBT mock tests.',
+    href: '/class/JEE',
+    actionLabel: 'Launch JEE Prep',
+    analyticsType: 'competitive_exam',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/>
+        <circle cx="12" cy="12" r="6"/>
+        <circle cx="12" cy="12" r="2"/>
+      </svg>
+    ),
   },
   {
     id: 'cuet',
-    name: 'CUET UG',
-    fullName: 'Central Universities Entrance',
-    caption: 'Domain subject tests, general aptitude prep & past standardized questions.',
-    accent: '#06b6d4',
-    href: '/exams?exam=cuet',
-    tags: ['Domain Subjects', 'General Test', 'PYQs'],
+    category: 'exams',
+    title: 'CUET UG',
+    badge: 'Entrance',
+    desc: 'Central Universities Entrance Test portal: Domain subjects, general aptitude prep, language section exercises, and past NTA papers.',
+    href: '/class/CUET',
+    actionLabel: 'Launch CUET Prep',
+    analyticsType: 'competitive_exam',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <line x1="3" y1="21" x2="21" y2="21"/>
+        <line x1="6" y1="21" x2="6" y2="10"/>
+        <line x1="18" y1="21" x2="18" y2="10"/>
+        <line x1="12" y1="21" x2="12" y2="10"/>
+        <path d="M2 10l10-7 10 7"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'neet',
+    category: 'exams',
+    title: 'NEET UG',
+    badge: 'Medical',
+    desc: 'Comprehensive NCERT line-by-line revision guides, high-yield Biology diagrams, chemistry roadmaps, and timed physics tests.',
+    href: '/class/NEET',
+    actionLabel: 'Launch NEET Prep',
+    analyticsType: 'competitive_exam',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'skills',
+    category: 'skills',
+    title: 'Practical Skills',
+    badge: 'Career & Tech',
+    desc: 'Practical career competencies, AI tools, and programming fundamentals with hands-on projects and guides.',
+    href: '/class/Skills',
+    actionLabel: 'Launch Practical Skills',
+    analyticsType: 'practical_skills',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <polyline points="16 18 22 12 16 6"/>
+        <polyline points="8 6 2 12 8 18"/>
+      </svg>
+    ),
   },
 ];
 
 export default function ClassExamFinder() {
-  const [activeTab, setActiveTab] = useState<'school' | 'exams'>('school');
-
   return (
     <section className={styles.section} id="class-finder" aria-labelledby="finder-heading">
-      {/* ── Section Header ── */}
-      <div className={styles.sectionHead}>
-        <p className={styles.eyebrow}>CURRICULUM DIRECTORY</p>
+      <div className={styles.header}>
+        <p className={styles.eyebrow}>
+          <span className={styles.eyebrowNum}>01 //</span> CURRICULUM DIRECTORY
+        </p>
         <h2 className={styles.title} id="finder-heading">
-          Find Your Class or Exam
+          Explore by Class &amp; Exam
         </h2>
-        <p className={styles.subtitle}>
-          Choose your learning level and go directly to the resources you need.
+        <p className={styles.sub}>
+          Syllabus-aligned study packs, past question papers, and video series curated for Nagaland students.
         </p>
       </div>
 
-      {/* ── Segmented Control / Tabs ── */}
-      <div className={styles.tabsWrapper}>
-        <div className={styles.segmentedControl} role="tablist" aria-label="Curriculum category switcher">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === 'school'}
-            aria-controls="school-panel"
-            id="tab-school"
-            className={`${styles.segmentBtn} ${activeTab === 'school' ? styles.segmentBtnActive : ''}`}
-            onClick={() => setActiveTab('school')}
-          >
-            <GraduationCap size={16} aria-hidden="true" />
-            <span>NBSE School Classes</span>
-            <span className={styles.segmentBadge}>8–12</span>
-          </button>
+      {/* 3x3 Bento Grid */}
+      <div className={styles.grid}>
+        {CURRICULUM_TRACKS.map((item) => {
+          const targetClassName =
+            item.category === 'school'
+              ? item.title
+              : item.id === 'jee'
+                ? 'JEE'
+                : item.id === 'cuet'
+                  ? 'CUET'
+                  : item.id === 'neet'
+                    ? 'NEET'
+                    : 'Skills';
 
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === 'exams'}
-            aria-controls="exams-panel"
-            id="tab-exams"
-            className={`${styles.segmentBtn} ${activeTab === 'exams' ? styles.segmentBtnActive : ''}`}
-            onClick={() => setActiveTab('exams')}
-          >
-            <Award size={16} aria-hidden="true" />
-            <span>Competitive Exams</span>
-            <span className={styles.segmentBadge}>JEE • NEET • CUET</span>
-          </button>
-        </div>
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={styles.card}
+              onClick={() => {
+                try {
+                  localStorage.setItem('selectedClass', targetClassName);
+                  document.cookie = `selected_class=${encodeURIComponent(targetClassName)}; path=/; max-age=31536000; SameSite=Lax`;
+                  window.dispatchEvent(new CustomEvent('classChanged', { detail: targetClassName }));
+                  window.dispatchEvent(new Event('profileUpdated'));
+                } catch {}
+
+                trackClassExamSelect({
+                  name: item.title,
+                  type: item.analyticsType,
+                  destination: item.href,
+                });
+              }}
+              aria-label={`Open ${item.title} hub`}
+            >
+              <div className={styles.cardTop}>
+                <div className={styles.iconBox}>{item.icon}</div>
+                {item.badge && <span className={styles.badge}>{item.badge}</span>}
+              </div>
+
+              <h3 className={styles.cardTitle}>{item.title}</h3>
+              <p className={styles.cardDesc}>{item.desc}</p>
+
+              <div className={styles.cardFooter}>
+                <span className={styles.link}>{item.actionLabel}</span>
+                <svg
+                  className={styles.arrow}
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+          );
+        })}
       </div>
-
-      {/* ── Content Panes ── */}
-      {activeTab === 'school' && (
-        <div
-          id="school-panel"
-          role="tabpanel"
-          aria-labelledby="tab-school"
-          className={`${styles.grid} ${styles.gridSchool}`}
-        >
-          {SCHOOL_CLASSES.map((item) => (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={styles.card}
-              onClick={() =>
-                trackClassExamSelect({
-                  name: item.displayName,
-                  type: 'school_class',
-                  destination: item.href,
-                })
-              }
-              aria-label={`Open ${item.displayName} study hub`}
-            >
-              <div className={styles.accentStrip} style={{ background: item.accent }} />
-
-              <div className={styles.cardTop}>
-                <span className={styles.classBadge}>NBSE Board</span>
-              </div>
-
-              <h3 className={styles.cardTitle}>{item.displayName}</h3>
-              <p className={styles.cardCaption}>{item.caption}</p>
-
-              <div className={styles.tagsRow}>
-                {item.tags.map((tag) => (
-                  <span key={tag} className={styles.tag}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <div className={styles.cardFooter}>
-                <span className={styles.actionLabel}>View Syllabus &amp; Notes</span>
-                <ArrowRight size={14} className={styles.arrowIcon} aria-hidden="true" />
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {activeTab === 'exams' && (
-        <div
-          id="exams-panel"
-          role="tabpanel"
-          aria-labelledby="tab-exams"
-          className={`${styles.grid} ${styles.gridExams}`}
-        >
-          {EXAMS.map((item) => (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={styles.card}
-              onClick={() =>
-                trackClassExamSelect({
-                  name: item.name,
-                  type: 'competitive_exam',
-                  destination: item.href,
-                })
-              }
-              aria-label={`Open ${item.name} preparation portal`}
-            >
-              <div className={styles.accentStrip} style={{ background: item.accent }} />
-
-              <div className={styles.cardTop}>
-                <span className={styles.classBadge}>{item.fullName}</span>
-              </div>
-
-              <h3 className={styles.cardTitle}>{item.name}</h3>
-              <p className={styles.cardCaption}>{item.caption}</p>
-
-              <div className={styles.tagsRow}>
-                {item.tags.map((tag) => (
-                  <span key={tag} className={styles.tag}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <div className={styles.cardFooter}>
-                <span className={styles.actionLabel}>Explore Preparation</span>
-                <ArrowRight size={14} className={styles.arrowIcon} aria-hidden="true" />
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
     </section>
   );
 }

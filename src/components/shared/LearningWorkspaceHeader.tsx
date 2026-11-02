@@ -41,11 +41,28 @@ export default function LearningWorkspaceHeader({
   backLabel = 'Back to School Learning',
   counts,
 }: LearningWorkspaceHeaderProps) {
-  const isSpecialExam = ['CUET', 'JEE', 'NEET'].includes(className.toUpperCase());
-  const categoryBadge = isSpecialExam ? 'Competitive Prep' : 'NBSE Curriculum';
-  const subtitle = isSpecialExam
-    ? 'Comprehensive syllabus notes, mock test papers, and high-yield video lectures'
-    : `Official syllabus notes, solved board papers, and video lessons for ${displayTitle}`;
+  const upper = className.toUpperCase();
+  const isSkills = ['SKILLS', 'PRACTICAL SKILLS', 'PRACTICAL-SKILLS'].includes(upper);
+  const isSpecialExam = ['CUET', 'JEE', 'NEET'].includes(upper);
+
+  const categoryBadge = isSkills
+    ? 'Career & Tech'
+    : isSpecialExam
+      ? 'Competitive Prep'
+      : className.includes('10')
+        ? 'HSLC Board'
+        : className.includes('12')
+          ? 'HSSLC Board'
+          : 'NBSE Curriculum';
+
+  const subtitle = isSkills
+    ? 'Practical career competencies, AI tools, and programming fundamentals'
+    : isSpecialExam
+      ? 'Comprehensive syllabus notes, mock test papers, and high-yield video lectures'
+      : `Official syllabus notes, solved board papers, and video lessons for ${displayTitle}`;
+
+  const resolvedBackHref = isSkills ? '/#class-finder' : isSpecialExam ? '/exams' : backHref;
+  const resolvedBackLabel = isSkills ? 'Back to Curriculum Directory' : isSpecialExam ? 'Back to Competitive Exams' : backLabel;
 
   const tabs: Array<{ id: WorkspaceTab; label: string; icon: React.ReactNode; count?: number }> = [
     { id: 'home', label: 'Overview', icon: <LayoutGrid size={18} /> },
@@ -61,10 +78,10 @@ export default function LearningWorkspaceHeader({
         <div className={styles.topRow}>
           <div className={styles.identityArea}>
             <Link
-              href={isSpecialExam ? '/exams' : backHref}
+              href={resolvedBackHref}
               className={styles.backBtn}
-              title={isSpecialExam ? 'Back to Competitive Exams' : backLabel}
-              aria-label={isSpecialExam ? 'Back to Competitive Exams' : backLabel}
+              title={resolvedBackLabel}
+              aria-label={resolvedBackLabel}
             >
               <ChevronLeft size={20} />
             </Link>

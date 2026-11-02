@@ -121,8 +121,8 @@ export default function HeroSection({ userClass: initialUserClass, initialHeroAd
   const activeTopic = ROTATING_TOPICS[activeTopicIndex % ROTATING_TOPICS.length] || ROTATING_TOPICS[0];
 
   const classDisplayName = userClass
-    ? (userClass.toLowerCase().startsWith('class') || ['cuet', 'jee', 'neet'].includes(userClass.toLowerCase())
-        ? userClass
+    ? (userClass.toLowerCase().startsWith('class') || ['cuet', 'jee', 'neet', 'skills'].includes(userClass.toLowerCase())
+        ? (userClass.toLowerCase() === 'skills' ? 'Practical Skills' : userClass)
         : `Class ${userClass}`)
     : null;
 
@@ -210,6 +210,9 @@ export default function HeroSection({ userClass: initialUserClass, initialHeroAd
           </div>
 
         </div>
+
+        {/* ─── Mobile Divider between Hero Card and Promo Carousel ─── */}
+        <div className={styles.mobileDivider} />
 
         {/* ─── Right Column: Advertisement & Promo Carousel ─── */}
         <div className={styles.rightCol}>

@@ -6,7 +6,7 @@ import path from 'node:path';
 describe('Navigation Pathways & Section Coverage Suite', () => {
   const routesDir = path.resolve('src/app');
 
-  test('all 4 core pathways have dedicated app router directories and page files', () => {
+  test('core learning routes and aliases exist and redirect safely', () => {
     const requiredPages = [
       'school/page.tsx',
       'exams/page.tsx',
@@ -23,9 +23,7 @@ describe('Navigation Pathways & Section Coverage Suite', () => {
         `Required route page missing: src/app/${pageRelPath}`
       );
     }
-  });
 
-  test('redirect alias routes exist and prevent 404 on direct access', () => {
     const redirectPages = [
       'class/page.tsx',
       'school-learning/page.tsx',
@@ -47,49 +45,41 @@ describe('Navigation Pathways & Section Coverage Suite', () => {
     }
   });
 
-  test('LearningPathsSection points every card to its dedicated section', () => {
-    const componentPath = path.resolve('src/components/home/LearningPathsSection.tsx');
-    const content = fs.readFileSync(componentPath, 'utf8');
-
-    assert.ok(content.includes("href: '/school'"), 'School learning card should link to /school');
-    assert.ok(content.includes("href: '/exams'"), 'Exam prep card should link to /exams');
-    assert.ok(
-      content.includes("href: '/ai-tutor'") || content.includes("href: '/ask'"),
-      'AI tutor card should link to /ai-tutor or /ask'
-    );
-    assert.ok(content.includes("href: '/skills'"), 'Practical skills card should link to /skills');
-    assert.ok(!content.includes("href: '/#classes'"), 'Card should not link to /#classes placeholder');
-  });
-
-  test('Courses page areas point to their dedicated section destinations', () => {
+  test('Courses page points to class hubs', () => {
     const coursesPagePath = path.resolve('src/app/courses/page.tsx');
     const content = fs.readFileSync(coursesPagePath, 'utf8');
 
-    assert.ok(content.includes('href="/school"'), 'School learning area should link to /school');
-    assert.ok(content.includes('href="/exams"'), 'Exam prep area should link to /exams');
-    assert.ok(content.includes('href="/skills"'), 'Skill development area should link to /skills');
-    assert.ok(
-      content.includes('href="/ai-tutor"') || content.includes('href="/ask"'),
-      'AI tutor area should link to /ai-tutor or /ask'
-    );
+    assert.ok(content.includes('/class/'), 'Courses page should link to class hubs');
   });
 
-  test('Navbar resources menu includes direct links to school, exams, and skills', () => {
+  test('Navbar resources menu includes core academic resources and excludes removed pathway cards', () => {
     const navbarPath = path.resolve('src/components/layout/Navbar.tsx');
     const content = fs.readFileSync(navbarPath, 'utf8');
 
-    assert.ok(content.includes("href: '/school'"), 'Navbar should include /school');
-    assert.ok(content.includes("href: '/exams'"), 'Navbar should include /exams');
-    assert.ok(content.includes("href: '/skills'"), 'Navbar should include /skills');
+    assert.ok(content.includes("href: '/papers'"), 'Navbar should include /papers');
+    assert.ok(content.includes("href: '/notes'"), 'Navbar should include /notes');
+    assert.ok(content.includes("href: '/videos'"), 'Navbar should include /videos');
+    assert.ok(content.includes("href: '/library'"), 'Navbar should include /library');
+
+    // Excluded sections from resources
+    assert.ok(!content.includes("label: 'School Learning (8–12)'"), 'Navbar must not include School Learning in resources');
+    assert.ok(!content.includes("label: 'Competitive Exams'"), 'Navbar must not include Competitive Exams in resources');
+    assert.ok(!content.includes("label: 'Practical Skill Courses'"), 'Navbar must not include Practical Skill Courses in resources');
   });
 
-  test('Footer includes direct navigation to all 4 pathways', () => {
+  test('Footer includes direct navigation to study resources and platform links', () => {
     const footerPath = path.resolve('src/components/layout/Footer.tsx');
     const content = fs.readFileSync(footerPath, 'utf8');
 
-    assert.ok(content.includes('href="/school"'), 'Footer should include /school');
-    assert.ok(content.includes('href="/exams"'), 'Footer should include /exams');
-    assert.ok(content.includes('href="/skills"'), 'Footer should include /skills');
+    assert.ok(content.includes('href="/papers"'), 'Footer should include /papers');
+    assert.ok(content.includes('href="/notes"'), 'Footer should include /notes');
+    assert.ok(content.includes('href="/videos"'), 'Footer should include /videos');
     assert.ok(content.includes('href="/ai-tutor"'), 'Footer should include /ai-tutor');
+    assert.ok(content.includes('href="/library"'), 'Footer should include /library');
+
+    // Excluded from footer
+    assert.ok(!content.includes('School Learning (8–12)'), 'Footer must not include School Learning');
+    assert.ok(!content.includes('Competitive Exams'), 'Footer must not include Competitive Exams');
+    assert.ok(!content.includes('Practical Skill Courses'), 'Footer must not include Practical Skill Courses');
   });
 });

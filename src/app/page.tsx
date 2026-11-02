@@ -5,7 +5,6 @@ import { verifyToken } from '@/lib/auth';
 import HeroSection from '@/components/home/HeroSection';
 import FeaturesGrid from '@/components/home/FeaturesGrid';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
-import LearningPathsSection from '@/components/home/LearningPathsSection';
 import ClassExamFinder from '@/components/home/ClassExamFinder';
 import HowItWorksSection from '@/components/home/HowItWorksSection';
 import FaqSection from '@/components/home/FaqSection';
@@ -84,46 +83,42 @@ export default async function Home() {
       {/* ── Separator ── */}
       <div className={styles.sep} />
 
-      {/* ── 2. Four Connected Learning Areas ── */}
-      <LearningPathsSection />
-
-      {/* ── Separator ── */}
-      <div className={styles.sep} />
-
-      {/* ── 3. Compact Class & Exam Finder ── */}
+      {/* ── 2. Compact Class & Exam Finder ── */}
       <ClassExamFinder />
 
       {/* ── Separator ── */}
       <div className={styles.sep} />
 
-      {/* ── 4. Key Platform Utilities (Your Learning Toolkit) ── */}
+      {/* ── 3. Key Platform Utilities (Your Learning Toolkit) ── */}
       <FeaturesGrid />
 
       {/* ── Separator ── */}
       <div className={styles.sep} />
 
-      {/* ── 5. How It Works ── */}
+      {/* ── 4. How It Works ── */}
       <HowItWorksSection />
 
       {/* ── Separator ── */}
       <div className={styles.sep} />
 
-      {/* ── 6. Verified Student Testimonials ── */}
+      {/* ── 5. Verified Student Testimonials ── */}
       <TestimonialsSection />
 
       {/* ── Separator ── */}
       <div className={styles.sep} />
 
-      {/* ── 7. Educational FAQs ── */}
+      {/* ── 6. Educational FAQs ── */}
       <FaqSection />
 
       {/* ── Separator ── */}
       <div className={styles.sep} />
 
-      {/* ── 8. Community & Social ── */}
+      {/* ── 7. Community & Social ── */}
       <section className={styles.connectSection} aria-labelledby="community-heading">
         <div className={styles.sectionHead}>
-          <p className={styles.eyebrow}>Community &amp; Reach</p>
+          <p className={styles.eyebrow}>
+            <span className={styles.eyebrowNum}>06 //</span> COMMUNITY &amp; REACH
+          </p>
           <h2 className={styles.sectionTitle} id="community-heading">Connect with Bounce Back Academy</h2>
         </div>
 

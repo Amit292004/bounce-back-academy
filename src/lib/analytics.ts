@@ -13,7 +13,7 @@ export interface LearningPathEvent {
 
 export interface ClassExamSelectEvent {
   name: string;
-  type: 'school_class' | 'competitive_exam';
+  type: 'school_class' | 'competitive_exam' | 'practical_skills';
   destination: string;
 }
 

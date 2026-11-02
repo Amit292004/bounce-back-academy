@@ -3,17 +3,16 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import prisma from '@/lib/prisma';
 import styles from './page.module.css';
-import { BookOpen, GraduationCap, Sparkles, Bot, Code2, ArrowRight, CheckCircle2, Star } from 'lucide-react';
+import { Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
 import AddToCartButton from '@/components/cart/AddToCartButton';
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'Learning Pathways & Courses | Bounce Back Academy',
+  title: 'Courses & Learning Modules | Bounce Back Academy',
   description:
-    'Structured educational learning paths for NBSE Classes 8–12, competitive exams (JEE, NEET, CUET), AI Tutor, and practical skill development.',
+    'Explore comprehensive syllabus-aligned courses, past papers, notes, and video modules for Classes 8–12, JEE, and NEET.',
   alternates: {
     canonical: '/courses',
   },
@@ -29,122 +28,52 @@ export default async function CoursesPage() {
     }),
   ]);
 
-  const schoolCourses = courses.filter((c) =>
-    ['class 8', 'class 9', 'class 10', 'class 11', 'class 12'].includes(c.name.toLowerCase())
-  );
-  const examCourses = courses.filter((c) =>
-    ['jee', 'neet', 'cuet'].includes(c.name.toLowerCase())
-  );
-
   return (
     <div className={styles.container}>
       {/* Page Header */}
       <div className={styles.header}>
         <div className={styles.eyebrow}>
           <Sparkles size={14} />
-          <span>Complete Educational Ecosystem</span>
+          <span>Curated Learning Programs</span>
         </div>
-        <h1 className={styles.title}>Learning Pathways &amp; Courses</h1>
+        <h1 className={styles.title}>Courses &amp; Learning Modules</h1>
         <p className={styles.subtitle}>
-          Explore structured curriculum paths for school examinations, national competitive entrance tests,
-          instant AI academic guidance, and hands-on career skills.
+          Explore structured curriculum paths, chapter notes, and in-depth video modules curated for academic success.
         </p>
       </div>
 
-      {/* 4 Connected Learning Areas */}
-      <div className={styles.categoryGrid}>
-        {/* Area 1: School Learning */}
-        <div className={styles.areaCard}>
-          <div className={styles.areaIconWrap} style={{ background: 'rgba(99, 102, 241, 0.15)', color: '#818cf8' }}>
-            <GraduationCap size={24} />
+      {/* Curriculum Class Hubs */}
+      {courses.length > 0 && (
+        <section style={{ marginBottom: '3rem' }}>
+          <div className={styles.sectionHeader}>
+            <div>
+              <h2 className={styles.sectionTitle}>Curriculum Hubs</h2>
+              <p style={{ color: 'var(--foreground)', opacity: 0.6, fontSize: '0.9rem', marginTop: '4px' }}>
+                Select your class or examination to access dedicated notes, past papers, and video lectures.
+              </p>
+            </div>
           </div>
-          <h2 className={styles.areaTitle}>School Learning</h2>
-          <p className={styles.areaDesc}>
-            Aligned with NBSE syllabus for Classes 8 through 12. Complete coverage of Mathematics, Science, Social Sciences, English, and more.
-          </p>
-          <div className={styles.areaBadges}>
-            {schoolCourses.map((c) => (
-              <Badge key={c.id} variant="primary" size="sm">
-                {c.name}
-              </Badge>
+          <div className={styles.categoryGrid}>
+            {courses.map((course) => (
+              <div key={course.id} className={styles.areaCard}>
+                <h3 className={styles.areaTitle}>{course.name}</h3>
+                <p className={styles.areaDesc}>
+                  Comprehensive syllabus coverage, chapter notes, and verified past question papers.
+                </p>
+                <div className={styles.areaFooter}>
+                  <Link
+                    href={`/class/${encodeURIComponent(course.name)}`}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}
+                  >
+                    <span>Open {course.name} Hub</span>
+                    <ArrowRight size={15} />
+                  </Link>
+                </div>
+              </div>
             ))}
           </div>
-          <div className={styles.areaFooter}>
-            <Link href="/school" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#818cf8', textDecoration: 'none' }}>
-              <span>Explore School Learning</span>
-              <ArrowRight size={15} />
-            </Link>
-          </div>
-        </div>
-
-        {/* Area 2: Competitive Entrance */}
-        <div className={styles.areaCard}>
-          <div className={styles.areaIconWrap} style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#f87171' }}>
-            <BookOpen size={24} />
-          </div>
-          <h2 className={styles.areaTitle}>Competitive Exam Prep</h2>
-          <p className={styles.areaDesc}>
-            Focused preparation for JEE Main &amp; Advanced, NEET UG, and CUET with chapter-wise problem banks, mock tests, and previous year papers.
-          </p>
-          <div className={styles.areaBadges}>
-            {examCourses.map((c) => (
-              <Badge key={c.id} variant="danger" size="sm">
-                {c.name}
-              </Badge>
-            ))}
-          </div>
-          <div className={styles.areaFooter}>
-            <Link href="/exams" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#f87171', textDecoration: 'none' }}>
-              <span>Explore Exam Paths</span>
-              <ArrowRight size={15} />
-            </Link>
-          </div>
-        </div>
-
-        {/* Area 3: Bounce Back AI */}
-        <div className={styles.areaCard}>
-          <div className={styles.areaIconWrap} style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399' }}>
-            <Bot size={24} />
-          </div>
-          <h2 className={styles.areaTitle}>Bounce Back AI</h2>
-          <p className={styles.areaDesc}>
-            24/7 academic tutor powered by modern AI. Get rigorous step-by-step mathematical derivations, conceptual breakdowns, and instant doubt clarity.
-          </p>
-          <div className={styles.areaBadges}>
-            <Badge variant="success" size="sm">Free for Students</Badge>
-            <Badge variant="default" size="sm">Multi-Language</Badge>
-            <Badge variant="purple" size="sm">Step-by-Step</Badge>
-          </div>
-          <div className={styles.areaFooter}>
-            <Link href="/ai-tutor" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#34d399', textDecoration: 'none' }}>
-              <span>Launch AI Tutor</span>
-              <ArrowRight size={15} />
-            </Link>
-          </div>
-        </div>
-
-        {/* Area 4: Skill Development */}
-        <div className={styles.areaCard}>
-          <div className={styles.areaIconWrap} style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24' }}>
-            <Code2 size={24} />
-          </div>
-          <h2 className={styles.areaTitle}>Skill Development</h2>
-          <p className={styles.areaDesc}>
-            Practical career skills beyond textbooks: Artificial Intelligence tools, modern web engineering, programming foundations, and digital literacy.
-          </p>
-          <div className={styles.areaBadges}>
-            <Badge variant="warning" size="sm">AI Tools</Badge>
-            <Badge variant="cyan" size="sm">Coding</Badge>
-            <Badge variant="default" size="sm">Self-Paced</Badge>
-          </div>
-          <div className={styles.areaFooter}>
-            <Link href="/skills" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#fbbf24', textDecoration: 'none' }}>
-              <span>Explore Practical Skills</span>
-              <ArrowRight size={15} />
-            </Link>
-          </div>
-        </div>
-      </div>
+        </section>
+      )}
 
       {/* Featured Courses / Bundles Section */}
       {premiumItems.length > 0 && (
@@ -152,11 +81,11 @@ export default async function CoursesPage() {
           <div className={styles.sectionHeader}>
             <div>
               <h2 className={styles.sectionTitle}>Featured Courses &amp; Modules</h2>
-              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', marginTop: '4px' }}>
+              <p style={{ color: 'var(--foreground)', opacity: 0.6, fontSize: '0.9rem', marginTop: '4px' }}>
                 In-depth masterclasses and curated syllabus packages with lifetime access.
               </p>
             </div>
-            <Link href="/premium" style={{ color: '#818cf8', fontSize: '0.9rem', fontWeight: 600, textDecoration: 'none' }}>
+            <Link href="/premium" style={{ color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600, textDecoration: 'none' }}>
               View All Courses &rarr;
             </Link>
           </div>

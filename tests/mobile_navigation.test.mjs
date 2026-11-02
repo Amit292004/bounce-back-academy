@@ -31,9 +31,6 @@ describe('SaaS Mobile Navigation Architecture & Drawer Verification Suite', () =
   test('LEARNING group organizes core learning routes cleanly', () => {
     assert.ok(navbarContent.includes('LEARNING'), 'Must have LEARNING group label');
     assert.ok(navbarContent.includes('href="/courses"'), 'Must link to /courses');
-    assert.ok(navbarContent.includes('href="/school"'), 'Must link to /school');
-    assert.ok(navbarContent.includes('href="/exams"'), 'Must link to /exams');
-    assert.ok(navbarContent.includes('href="/skills"'), 'Must link to /skills');
     assert.ok(navbarContent.includes('href="/library"'), 'Must link to /library');
   });
 

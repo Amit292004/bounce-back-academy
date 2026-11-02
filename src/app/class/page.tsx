@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
-export default function ClassIndexRedirect() {
-  redirect('/school');
+export default function ClassRedirect() {
+  redirect('/#class-finder');
 }

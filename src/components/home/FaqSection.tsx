@@ -117,7 +117,9 @@ export default function FaqSection() {
       <div className={styles.container}>
         {/* ── 1. Heading & Introduction ── */}
         <div className={styles.sectionHead}>
-          <p className={styles.eyebrow}>HELP CENTER</p>
+          <p className={styles.eyebrow}>
+            <span className={styles.eyebrowNum}>05 //</span> FAQS &amp; HELP
+          </p>
           <h2 className={styles.title} id="faq-main-heading">
             Frequently Asked Questions
           </h2>

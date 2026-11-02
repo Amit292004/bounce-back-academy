@@ -57,35 +57,32 @@ interface NavItem {
 
 const resources: NavItem[] = [
   {
-    label: 'School Learning (8–12)',
-    href: '/school',
-    desc: 'NBSE curriculum notes, papers & videos',
-    badge: 'NBSE',
+    label: 'Question Papers',
+    href: '/papers',
+    desc: 'Past papers from 2016 onwards',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
       </svg>
     ),
   },
   {
-    label: 'Competitive Exams',
-    href: '/exams',
-    desc: 'JEE Main, Advanced, NEET UG & CUET',
-    badge: 'Prep',
+    label: 'Study Notes',
+    href: '/notes',
+    desc: 'Structured notes for every chapter',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
       </svg>
     ),
   },
   {
-    label: 'Practical Skill Courses',
-    href: '/skills',
-    desc: 'AI tools, web development & coding',
-    badge: 'Skills',
+    label: 'Video Lectures',
+    href: '/videos',
+    desc: 'Expert video lessons by subject',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+        <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
       </svg>
     ),
   },
@@ -652,33 +649,6 @@ export default function Navbar() {
               >
                 <span className={styles.drawerNavIcon}><Compass size={18} /></span>
                 <span className={styles.drawerNavTitle}>Courses</span>
-              </Link>
-
-              <Link
-                href="/school"
-                onClick={() => setMenuOpen(false)}
-                className={`${styles.drawerNavItem} ${isActive('/school') ? styles.drawerNavItemActive : ''}`}
-              >
-                <span className={styles.drawerNavIcon}><GraduationCap size={18} /></span>
-                <span className={styles.drawerNavTitle}>School Learning</span>
-              </Link>
-
-              <Link
-                href="/exams"
-                onClick={() => setMenuOpen(false)}
-                className={`${styles.drawerNavItem} ${isActive('/exams') ? styles.drawerNavItemActive : ''}`}
-              >
-                <span className={styles.drawerNavIcon}><Target size={18} /></span>
-                <span className={styles.drawerNavTitle}>Competitive Exams</span>
-              </Link>
-
-              <Link
-                href="/skills"
-                onClick={() => setMenuOpen(false)}
-                className={`${styles.drawerNavItem} ${isActive('/skills') ? styles.drawerNavItemActive : ''}`}
-              >
-                <span className={styles.drawerNavIcon}><Code size={18} /></span>
-                <span className={styles.drawerNavTitle}>Practical Skills</span>
               </Link>
 
               {/* Study Library & Contextual Resources */}
