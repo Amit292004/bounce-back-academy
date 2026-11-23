@@ -113,9 +113,7 @@ export default function FeaturesGrid() {
   return (
     <section className={styles.section} id="platform-tools" aria-labelledby="tools-heading">
       <div className={styles.header}>
-        <p className={styles.eyebrow}>
-          <span className={styles.eyebrowNum}>02 //</span> Platform Utilities
-        </p>
+        <p className={styles.eyebrow}>Platform Utilities</p>
         <h2 className={styles.title} id="tools-heading">Your Learning Toolkit</h2>
         <p className={styles.sub}>
           Specialized tools and interactive features designed to support your daily preparation beyond standard textbooks.
@@ -132,7 +130,7 @@ export default function FeaturesGrid() {
             <h3 className={styles.cardTitle}>{f.title}</h3>
             <p className={styles.cardDesc}>{f.desc}</p>
             <div className={styles.cardFooter}>
-              <span className={styles.link}>Launch Tool</span>
+              <span className={styles.link}>Open Tool</span>
               <svg className={styles.arrow} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>

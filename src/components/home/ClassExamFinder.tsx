@@ -25,7 +25,7 @@ export const CURRICULUM_TRACKS: CurriculumTrackItem[] = [
     badge: 'NBSE',
     desc: 'NBSE Middle Stage foundation notes, chapter summaries, textbook solutions, and previous model question papers.',
     href: '/class/Class%208',
-    actionLabel: 'Launch Class 8',
+    actionLabel: 'Explore Class 8',
     analyticsType: 'school_class',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -41,7 +41,7 @@ export const CURRICULUM_TRACKS: CurriculumTrackItem[] = [
     badge: 'NBSE',
     desc: 'Secondary Phase 1 curriculum: Science, Mathematics, English, and Social Sciences with revision guides and practice sheets.',
     href: '/class/Class%209',
-    actionLabel: 'Launch Class 9',
+    actionLabel: 'Explore Class 9',
     analyticsType: 'school_class',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -57,7 +57,7 @@ export const CURRICULUM_TRACKS: CurriculumTrackItem[] = [
     badge: 'HSLC Board',
     desc: 'NBSE HSLC Board examination hub: 2016–2024 past board papers, model answer keys, chapter summaries, and high-yield question banks.',
     href: '/class/Class%2010',
-    actionLabel: 'Launch Class 10',
+    actionLabel: 'Explore Class 10',
     analyticsType: 'school_class',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -73,7 +73,7 @@ export const CURRICULUM_TRACKS: CurriculumTrackItem[] = [
     badge: 'HSSLC',
     desc: 'Higher Secondary foundation: Science (Physics, Chemistry, Maths, Biology), Commerce, and Arts core notes and syllabus breakdowns.',
     href: '/class/Class%2011',
-    actionLabel: 'Launch Class 11',
+    actionLabel: 'Explore Class 11',
     analyticsType: 'school_class',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -92,7 +92,7 @@ export const CURRICULUM_TRACKS: CurriculumTrackItem[] = [
     badge: 'HSSLC Board',
     desc: 'Complete NBSE Class 12 board preparation: previous year question papers, step-by-step model solutions, formula booklets, and video lectures.',
     href: '/class/Class%2012',
-    actionLabel: 'Launch Class 12',
+    actionLabel: 'Explore Class 12',
     analyticsType: 'school_class',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -108,7 +108,7 @@ export const CURRICULUM_TRACKS: CurriculumTrackItem[] = [
     badge: 'Engineering',
     desc: 'NTA & IIT curriculum problem sets, formula reference sheets, high-difficulty numericals, and full-length CBT mock tests.',
     href: '/class/JEE',
-    actionLabel: 'Launch JEE Prep',
+    actionLabel: 'Explore JEE Prep',
     analyticsType: 'competitive_exam',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -125,7 +125,7 @@ export const CURRICULUM_TRACKS: CurriculumTrackItem[] = [
     badge: 'Entrance',
     desc: 'Central Universities Entrance Test portal: Domain subjects, general aptitude prep, language section exercises, and past NTA papers.',
     href: '/class/CUET',
-    actionLabel: 'Launch CUET Prep',
+    actionLabel: 'Explore CUET Prep',
     analyticsType: 'competitive_exam',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -144,7 +144,7 @@ export const CURRICULUM_TRACKS: CurriculumTrackItem[] = [
     badge: 'Medical',
     desc: 'Comprehensive NCERT line-by-line revision guides, high-yield Biology diagrams, chemistry roadmaps, and timed physics tests.',
     href: '/class/NEET',
-    actionLabel: 'Launch NEET Prep',
+    actionLabel: 'Explore NEET Prep',
     analyticsType: 'competitive_exam',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -159,7 +159,7 @@ export const CURRICULUM_TRACKS: CurriculumTrackItem[] = [
     badge: 'Career & Tech',
     desc: 'Practical career competencies, AI tools, and programming fundamentals with hands-on projects and guides.',
     href: '/class/Skills',
-    actionLabel: 'Launch Practical Skills',
+    actionLabel: 'Explore Practical Skills',
     analyticsType: 'practical_skills',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -174,9 +174,7 @@ export default function ClassExamFinder() {
   return (
     <section className={styles.section} id="class-finder" aria-labelledby="finder-heading">
       <div className={styles.header}>
-        <p className={styles.eyebrow}>
-          <span className={styles.eyebrowNum}>01 //</span> CURRICULUM DIRECTORY
-        </p>
+        <p className={styles.eyebrow}>Curriculum Directory</p>
         <h2 className={styles.title} id="finder-heading">
           Explore by Class &amp; Exam
         </h2>

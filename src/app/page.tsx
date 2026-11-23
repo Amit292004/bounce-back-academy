@@ -116,10 +116,11 @@ export default async function Home() {
       {/* ── 7. Community & Social ── */}
       <section className={styles.connectSection} aria-labelledby="community-heading">
         <div className={styles.sectionHead}>
-          <p className={styles.eyebrow}>
-            <span className={styles.eyebrowNum}>06 //</span> COMMUNITY &amp; REACH
-          </p>
+          <p className={styles.eyebrow}>Community &amp; Support</p>
           <h2 className={styles.sectionTitle} id="community-heading">Connect with Bounce Back Academy</h2>
+          <p className={styles.sectionSub}>
+            Join our student community across YouTube and Instagram, or reach out directly to our support desk.
+          </p>
         </div>
 
         <div className={styles.connectGrid}>

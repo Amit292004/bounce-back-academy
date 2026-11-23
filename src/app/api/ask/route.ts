@@ -110,10 +110,11 @@ export async function POST(request: NextRequest) {
     messages.push({ role: 'user', content: fullText });
 
     const PRIMARY_MODELS = [
+      'qwen/qwen3.8-27b',
       'llama-3.3-70b-versatile',
       'llama-3.1-8b-instant',
+      'allam-2-7b',
       'mixtral-8x7b-32768',
-      'qwen/qwen3.8-27b',
       'qwen/qwen3.6-27b',
     ];
     let completion;

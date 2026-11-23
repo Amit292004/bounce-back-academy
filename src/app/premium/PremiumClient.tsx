@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { 
   FaCoins, FaShoppingCart, FaShieldAlt, FaTimes, FaCreditCard, 
   FaMobileAlt, FaArrowRight, FaCheckCircle, FaBookOpen, FaDownload, 
-  FaPlayCircle, FaChevronRight, FaEye
+  FaPlayCircle, FaChevronRight, FaEye, FaSearch, FaFileAlt, FaGraduationCap
 } from 'react-icons/fa';
 import styles from './page.module.css';
 import { getDriveImageUrl } from '@/lib/driveImage';
@@ -69,6 +69,7 @@ export default function PremiumStorePage() {
   const [items, setItems] = useState<PremiumItem[]>([]);
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [selectedClassFilter, setSelectedClassFilter] = useState('all');
+  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState<any[]>([]);
   const [materialTypes, setMaterialTypes] = useState<any[]>([]);
@@ -288,8 +289,15 @@ export default function PremiumStorePage() {
       const normalize = (name: string) => name.toLowerCase().replace('class', '').trim();
       return normalize(item.className) === normalize(selectedClassFilter);
     })();
-    return matchesType && matchesClass;
+    const qText = search.trim().toLowerCase();
+    const matchesSearch = !qText || 
+      item.title.toLowerCase().includes(qText) || 
+      item.description.toLowerCase().includes(qText) ||
+      (item.className && item.className.toLowerCase().includes(qText));
+    return matchesType && matchesClass && matchesSearch;
   });
+
+  const hasFilters = search.trim() !== '' || selectedFilter !== 'all' || selectedClassFilter !== 'all';
 
   if (loading) {
     return (
@@ -304,28 +312,111 @@ export default function PremiumStorePage() {
     <div className={styles.container}>
       {/* 1. Header */}
       <div className={styles.header}>
-        <div className={styles.badge}>
-          <FaCoins /> PREMIUM EDUCATION HUB
+        <div className={styles.eyebrow}>
+          <span className={styles.eyebrowDot} />
+          <span>Premium Study Store</span>
         </div>
-        <h1 className={styles.title}>
-          Unlock Premium <span className="text-gradient">Study Assets</span>
-        </h1>
+        <h1 className={styles.title}>Premium Store</h1>
         <p className={styles.subtitle}>
-          Accelerate your preparation! Secure full chapter notes, solved mock and term papers, masterclasses, and expert lectures.
+          Verified full chapter revision notes, past examination blueprint packs, masterclasses, and foundation video courses.
         </p>
       </div>
 
-      {/* SaaS-style segmented filter bar */}
+      {/* 2. Mode Toggle + Search Toolbar */}
+      <div className={styles.toolbar}>
+        <div className={styles.segmentedControl} role="tablist" aria-label="Store category filter">
+          <button
+            role="tab"
+            aria-selected={selectedFilter === 'all'}
+            onClick={() => setSelectedFilter('all')}
+            className={`${styles.segmentedBtn} ${selectedFilter === 'all' ? styles.segmentedBtnActive : ''}`}
+          >
+            <FaCoins size={12} />
+            <span>All Items</span>
+          </button>
+          <button
+            role="tab"
+            aria-selected={selectedFilter === 'NOTE'}
+            onClick={() => setSelectedFilter('NOTE')}
+            className={`${styles.segmentedBtn} ${selectedFilter === 'NOTE' ? styles.segmentedBtnActive : ''}`}
+          >
+            <FaBookOpen size={12} />
+            <span>Notes</span>
+          </button>
+          <button
+            role="tab"
+            aria-selected={selectedFilter === 'PYQ'}
+            onClick={() => setSelectedFilter('PYQ')}
+            className={`${styles.segmentedBtn} ${selectedFilter === 'PYQ' ? styles.segmentedBtnActive : ''}`}
+          >
+            <FaFileAlt size={12} />
+            <span>Board PYQs</span>
+          </button>
+          <button
+            role="tab"
+            aria-selected={selectedFilter === 'COURSE'}
+            onClick={() => setSelectedFilter('COURSE')}
+            className={`${styles.segmentedBtn} ${selectedFilter === 'COURSE' ? styles.segmentedBtnActive : ''}`}
+          >
+            <FaGraduationCap size={13} />
+            <span>Courses</span>
+          </button>
+          <button
+            role="tab"
+            aria-selected={selectedFilter === 'LECTURE'}
+            onClick={() => setSelectedFilter('LECTURE')}
+            className={`${styles.segmentedBtn} ${selectedFilter === 'LECTURE' ? styles.segmentedBtnActive : ''}`}
+          >
+            <FaPlayCircle size={12} />
+            <span>Lectures</span>
+          </button>
+        </div>
+
+        <div className={styles.searchBox}>
+          <FaSearch className={styles.searchIcon} aria-hidden="true" />
+          <input
+            type="text"
+            placeholder="Search premium packages, subjects or notes…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className={styles.searchInput}
+            aria-label="Search premium store"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className={styles.searchClear}
+              aria-label="Clear search"
+            >
+              <FaTimes size={13} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* 3. SaaS Filter Bar */}
       <div className={styles.filterBarWrapper}>
         <div className={styles.filterBar}>
-          {/* Filter icon segment */}
           <div className={styles.filterBarIcon}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
             </svg>
           </div>
 
-          {/* Category segment */}
+          <div className={styles.filterBarSegment}>
+            <span className={styles.filterBarLabel}>Class</span>
+            <select
+              value={selectedClassFilter}
+              onChange={(e) => setSelectedClassFilter(e.target.value)}
+              className={styles.filterBarSelect}
+            >
+              <option value="all">All Classes</option>
+              {courses.map((c) => (
+                <option key={c.id} value={c.name}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+
           <div className={styles.filterBarSegment}>
             <span className={styles.filterBarLabel}>Category</span>
             <select
@@ -345,30 +436,45 @@ export default function PremiumStorePage() {
             </select>
           </div>
 
-          {/* Class segment */}
-          <div className={styles.filterBarSegment}>
-            <span className={styles.filterBarLabel}>Class</span>
-            <select
-              value={selectedClassFilter}
-              onChange={(e) => setSelectedClassFilter(e.target.value)}
-              className={styles.filterBarSelect}
+          {hasFilters && (
+            <button
+              className={styles.clearSegment}
+              onClick={() => {
+                setSearch('');
+                setSelectedFilter('all');
+                setSelectedClassFilter('all');
+              }}
             >
-              <option value="all">All Classes</option>
-              {courses.map((c) => (
-                <option key={c.id} value={c.name}>{c.name}</option>
-              ))}
-            </select>
-          </div>
+              <FaTimes size={10} /> Clear
+            </button>
+          )}
         </div>
       </div>
 
-      {/* 3. Items Grid */}
+      {/* 4. Results Bar */}
+      <div className={styles.resultsBar}>
+        <span className={styles.resultsCount}>
+          {filteredItems.length} premium item{filteredItems.length !== 1 ? 's' : ''} available
+          {search ? ` matching "${search}"` : ''}
+        </span>
+      </div>
+
+      {/* 5. Items Grid */}
       <div className={styles.storeGrid}>
         {filteredItems.map((item) => {
           const featuresList = item.features ? item.features.split('|').map(f => f.trim()) : [];
+          const typeColor = getTypeColor(item.type);
+          const getIcon = () => {
+            if (item.type === 'NOTE') return <FaBookOpen size={16} />;
+            if (item.type === 'PYQ') return <FaFileAlt size={16} />;
+            if (item.type === 'COURSE') return <FaGraduationCap size={16} />;
+            if (item.type === 'LECTURE') return <FaPlayCircle size={16} />;
+            return <FaCoins size={16} />;
+          };
           
           return (
-            <div key={item.id} className={`glass-panel ${styles.productCard}`}>
+            <div key={item.id} className={styles.productCard}>
+              {/* Product Banner */}
               <div className={styles.imageWrapper}>
                 {(() => {
                   const imgSrc = getDriveImageUrl(item.imageUrl);
@@ -381,115 +487,134 @@ export default function PremiumStorePage() {
                         const t = e.currentTarget as HTMLImageElement;
                         t.style.display = 'none';
                         const sib = t.nextElementSibling as HTMLElement;
-                        if (sib) {
-                          sib.style.display = 'flex';
-                          sib.innerText = 'Image load error';
-                        }
+                        if (sib) sib.style.display = 'flex';
                       }}
                     />
                   ) : null;
                 })()}
-                {/* Minimal placeholder — shown when no imageUrl set or image fails */}
                 <div
-                  className={styles.cardCoverImg}
-                  style={{
-                    display: item.imageUrl ? 'none' : 'flex',
-                    background: 'var(--surface-highlight)',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexDirection: 'column',
-                    gap: '0.5rem',
-                    color: 'var(--foreground)',
-                    opacity: 0.35
-                  }}
+                  className={styles.cardCoverPlaceholder}
+                  style={{ display: item.imageUrl ? 'none' : 'flex' }}
                 >
-                  <span style={{ fontSize: '2rem' }}>
+                  <span style={{ fontSize: '2.2rem' }}>
                     {item.type === 'NOTE' ? '📚' : item.type === 'PYQ' ? '📝' : item.type === 'COURSE' ? '🎓' : item.type === 'LECTURE' ? '🎬' : '📦'}
                   </span>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>No image added</span>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 600, opacity: 0.75 }}>
+                    Premium {getTypeLabel(item.type)}
+                  </span>
                 </div>
               </div>
 
-              <div className={styles.cardContent}>
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
-                  <span style={{
-                    padding: '0.2rem 0.5rem', borderRadius: '4px',
-                    border: `1px solid ${getTypeColor(item.type)}`,
-                    color: getTypeColor(item.type),
-                    fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em'
-                  }}>
+              <div className={styles.cardTop}>
+                <div
+                  className={styles.cardIconBox}
+                  style={{
+                    color: typeColor,
+                    background: `color-mix(in srgb, ${typeColor} 12%, transparent)`,
+                    borderColor: `color-mix(in srgb, ${typeColor} 25%, transparent)`,
+                  }}
+                >
+                  {getIcon()}
+                </div>
+                <div className={styles.cardBadges}>
+                  <span
+                    className={styles.cardTypeBadge}
+                    style={{
+                      color: typeColor,
+                      borderColor: `color-mix(in srgb, ${typeColor} 30%, transparent)`,
+                      background: `color-mix(in srgb, ${typeColor} 10%, transparent)`
+                    }}
+                  >
                     {getTypeLabel(item.type)}
                   </span>
                   {item.className && (
-                    <span style={{
-                      padding: '0.2rem 0.5rem', borderRadius: '4px',
-                      border: '1px solid var(--surface-border)',
-                      color: 'var(--foreground)',
-                      fontSize: '0.65rem', fontWeight: 700, opacity: 0.8
-                    }}>
-                      {item.className}
+                    <span className={styles.cardBadge}>
+                      {item.className.toLowerCase().includes('class') ? item.className : `Class ${item.className}`}
                     </span>
                   )}
                 </div>
-                <h3 className={styles.cardTitle}>{item.title}</h3>
-                <p className={styles.cardDesc}>{item.description}</p>
+                <div className={styles.cardPriceBadge}>
+                  ₹{item.price}
+                </div>
+              </div>
 
-                {/* Features Checklist */}
-                {featuresList.length > 0 && (
-                  <ul className={styles.featuresList}>
-                    {featuresList.map((feat, index) => (
-                      <li key={index} className={styles.featureItem}>
-                        <FaCheckCircle className={styles.checkIcon} />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
+              <h3 className={styles.cardTitle} title={item.title}>
+                {item.title}
+              </h3>
+              <p className={styles.cardDesc} title={item.description}>
+                {item.description}
+              </p>
+
+              {featuresList.length > 0 && (
+                <ul className={styles.featuresList}>
+                  {featuresList.slice(0, 2).map((feat, index) => (
+                    <li key={index} className={styles.featureItem}>
+                      <FaCheckCircle className={styles.checkIcon} />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <div className={styles.cardDivider} />
+
+              <div className={styles.pricingRow}>
+                <div className={styles.priceCol}>
+                  <span className={styles.priceLabel}>Access Plan</span>
+                  <div style={{ display: 'flex', alignItems: 'baseline' }}>
+                    <span className={styles.priceVal}>₹{item.price}</span>
+                    {item.originalPrice && item.originalPrice > item.price && (
+                      <span className={styles.priceOriginal}>₹{item.originalPrice}</span>
+                    )}
+                  </div>
+                </div>
+                {item.unlocked && (
+                  <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <FaCheckCircle size={11} /> ENROLLED
+                  </span>
                 )}
               </div>
 
-              {/* Pricing and Action row */}
-              <div className={styles.pricingRow} style={{ flexDirection: 'column', alignItems: 'stretch', gap: '0.85rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div className={styles.priceCol}>
-                    <span className={styles.priceLabel}>Access Plan</span>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <span className={styles.priceVal}>₹{item.price}</span>
-                      {item.originalPrice && item.originalPrice > item.price && (
-                        <span className={styles.priceOriginal}>₹{item.originalPrice}</span>
-                      )}
-                    </div>
-                  </div>
-                  {item.unlocked && (
-                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                      <FaCheckCircle size={12} /> ENROLLED
-                    </span>
-                  )}
-                </div>
-
-                <AddToCartButton
-                  course={{
-                    id: item.id,
-                    title: item.title,
-                    description: item.description,
-                    price: item.price,
-                    originalPrice: item.originalPrice,
-                    type: item.type,
-                    imageUrl: item.imageUrl,
-                    className: item.className,
-                    features: item.features,
-                    alreadyEnrolled: item.unlocked,
-                  }}
-                  showViewDetails={true}
-                  variant="compact"
-                />
-              </div>
+              <AddToCartButton
+                course={{
+                  id: item.id,
+                  title: item.title,
+                  description: item.description,
+                  price: item.price,
+                  originalPrice: item.originalPrice,
+                  type: item.type,
+                  imageUrl: item.imageUrl,
+                  className: item.className,
+                  features: item.features,
+                  alreadyEnrolled: item.unlocked,
+                }}
+                showViewDetails={true}
+                variant="compact"
+              />
             </div>
           );
         })}
 
         {filteredItems.length === 0 && (
-          <div className="glass-panel" style={{ padding: '3.5rem', textAlign: 'center', gridColumn: '1 / -1', opacity: 0.6 }}>
-            No paid packages listed in this category yet. Check back soon for premium releases!
+          <div className={styles.emptyState}>
+            <div style={{ fontSize: '2.5rem', marginBottom: '0.85rem' }}>📦</div>
+            <h3 className={styles.emptyStateTitle}>No packages found</h3>
+            <p className={styles.emptyStateText}>
+              {search
+                ? `No premium items match "${search}". Try a different keyword or reset filters.`
+                : 'No paid packages listed in this category yet. Check back soon for new releases!'}
+            </p>
+            <button
+              onClick={() => {
+                setSearch('');
+                setSelectedFilter('all');
+                setSelectedClassFilter('all');
+              }}
+              className={styles.btnDownload}
+              style={{ width: 'auto', padding: '0 1.25rem', margin: '0 auto', background: 'var(--foreground)', color: 'var(--background)' }}
+            >
+              Clear Filters
+            </button>
           </div>
         )}
       </div>

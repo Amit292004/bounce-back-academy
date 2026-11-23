@@ -45,28 +45,24 @@ function getSubjectColor(name: string) {
 
 function SkeletonCard() {
   return (
-    <div style={{
-      background: 'var(--surface-card)',
-      border: '1px solid var(--surface-border)',
-      borderRadius: 'var(--radius-md)',
-      padding: '1.5rem',
-    }}>
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-        <div className="skeleton" style={{ width: 52, height: 52, borderRadius: 14, flexShrink: 0 }} />
-        <div style={{ flex: 1 }}>
-          <div className="skeleton skeleton-text" style={{ width: '75%', marginBottom: '0.5rem' }} />
-          <div className="skeleton skeleton-text" style={{ width: '45%', height: '0.75rem' }} />
+    <div className={styles.card}>
+      <div className={styles.cardTop}>
+        <div className="skeleton" style={{ width: 38, height: 38, borderRadius: 9, flexShrink: 0 }} />
+        <div style={{ flex: 1, display: 'flex', gap: '0.35rem' }}>
+          <div className="skeleton" style={{ width: 65, height: 20, borderRadius: 5 }} />
+          <div className="skeleton" style={{ width: 75, height: 20, borderRadius: 5 }} />
         </div>
-        <div className="skeleton" style={{ width: 52, height: 24, borderRadius: 8 }} />
+        <div className="skeleton" style={{ width: 44, height: 22, borderRadius: 6, flexShrink: 0 }} />
       </div>
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-        <div className="skeleton" style={{ width: 70, height: 22, borderRadius: 999 }} />
-        <div className="skeleton" style={{ width: 80, height: 22, borderRadius: 999 }} />
-        <div className="skeleton" style={{ width: 55, height: 22, borderRadius: 999 }} />
-      </div>
-      <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-        <div className="skeleton" style={{ width: 80, height: 36, borderRadius: 8 }} />
-        <div className="skeleton" style={{ width: 100, height: 36, borderRadius: 8 }} />
+      <div className="skeleton skeleton-text" style={{ width: '85%', height: '1.1rem', marginBottom: '0.5rem' }} />
+      <div className="skeleton skeleton-text" style={{ width: '60%', height: '1.1rem', marginBottom: '1rem' }} />
+      <div className={styles.cardDivider} />
+      <div className={styles.cardFooter}>
+        <div className="skeleton skeleton-text" style={{ width: '40%', height: '1rem' }} />
+        <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
+          <div className="skeleton" style={{ flex: 1, height: 36, borderRadius: 8 }} />
+          <div className="skeleton" style={{ flex: 1.6, height: 36, borderRadius: 8 }} />
+        </div>
       </div>
     </div>
   );
@@ -193,109 +189,63 @@ function PapersContent({ initialPapers = [] }: { initialPapers?: Paper[] }) {
   const hasFilters = !!(selectedClass || selectedSubject || selectedYear || selectedChapter);
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(1.5rem,5vw,2.5rem) clamp(1rem,3vw,1.5rem)' }}>
+    <div className={styles.container}>
 
       {/* Page Header */}
-      <div style={{ marginBottom: '2rem' }} className="animate-fade-in">
-        <h1 style={{ fontSize: 'clamp(2rem,7vw,2.8rem)', fontWeight: 900, marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>
-          Question <span className="kinetic-text">Papers</span>
-        </h1>
-        <p style={{ opacity: 0.65, fontSize: '1rem', lineHeight: 1.65 }}>
-          NBSE past papers from 2016 onwards. View free — download after login.
-        </p>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '1rem',
-          flexWrap: 'wrap',
-          background: 'rgba(16, 185, 129, 0.08)',
-          border: '1px solid rgba(16, 185, 129, 0.2)',
-          borderRadius: '12px',
-          padding: '0.75rem 1.25rem',
-          marginTop: '1.25rem',
-        }}>
-          <div style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.85)' }}>
-            Need chapter notes or video solutions along with past exam papers?
-          </div>
-          <Link
-            href="/library"
-            style={{
-              fontSize: '0.825rem',
-              fontWeight: 700,
-              color: '#34d399',
-              textDecoration: 'none',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '4px',
-            }}
-          >
-            Explore Unified Study Library &rarr;
-          </Link>
+      <div className={styles.header}>
+        <div className={styles.eyebrow}>
+          <span className={styles.eyebrowDot} />
+          <span>NBSE Board Archive</span>
         </div>
+        <h1 className={styles.title}>
+          Question Papers
+        </h1>
+        <p className={styles.subtitle}>
+          Official NBSE past board examination papers from 2016 onwards. Free online preview and instant PDF download.
+        </p>
       </div>
 
-      {/* Mode Toggle + Search */}
-      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+      {/* Mode Toggle + Search Toolbar */}
+      <div className={styles.toolbar}>
         {/* Mode Toggle */}
-        <div style={{
-          display: 'flex',
-          background: 'var(--surface)',
-          border: '1px solid var(--surface-border)',
-          borderRadius: 'var(--radius-md)',
-          padding: '0.3rem',
-          gap: '0.25rem',
-        }}>
+        <div className={styles.segmentedControl} role="tablist" aria-label="Question paper grouping mode">
           <button
+            role="tab"
+            aria-selected={mode === 'year-wise'}
             onClick={() => { setMode('year-wise'); setSelectedChapter(''); }}
-            style={{
-              display: 'flex', alignItems: 'center', gap: '0.4rem',
-              padding: '0.55rem 1rem', borderRadius: 'var(--radius-sm)', border: 'none',
-              background: mode === 'year-wise' ? 'var(--primary)' : 'transparent',
-              color: mode === 'year-wise' ? 'var(--primary-foreground)' : 'var(--foreground)',
-              cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s ease', fontSize: '0.88rem',
-            }}
+            className={`${styles.segmentedBtn} ${mode === 'year-wise' ? styles.segmentedBtnActive : ''}`}
           >
-            <FaCalendarAlt /> Year-wise
+            <FaCalendarAlt size={13} />
+            <span>Year-wise</span>
           </button>
           <button
+            role="tab"
+            aria-selected={mode === 'chapter-wise'}
             onClick={() => { setMode('chapter-wise'); setSelectedYear(''); }}
-            style={{
-              display: 'flex', alignItems: 'center', gap: '0.4rem',
-              padding: '0.55rem 1rem', borderRadius: 'var(--radius-sm)', border: 'none',
-              background: mode === 'chapter-wise' ? 'var(--primary)' : 'transparent',
-              color: mode === 'chapter-wise' ? 'var(--primary-foreground)' : 'var(--foreground)',
-              cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s ease', fontSize: '0.88rem',
-            }}
+            className={`${styles.segmentedBtn} ${mode === 'chapter-wise' ? styles.segmentedBtnActive : ''}`}
           >
-            <FaLayerGroup /> Chapter-wise
+            <FaLayerGroup size={13} />
+            <span>Chapter-wise</span>
           </button>
         </div>
 
-        {/* Search */}
-        <div style={{ flex: 1, minWidth: 200, position: 'relative', display: 'flex', alignItems: 'center' }}>
-          <FaSearch style={{ position: 'absolute', left: '1rem', color: 'var(--primary)', opacity: 0.6, zIndex: 1 }} />
+        {/* Search Input */}
+        <div className={styles.searchBox}>
+          <FaSearch className={styles.searchIcon} aria-hidden="true" />
           <input
             type="text"
             placeholder="Search by title, subject or year…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            style={{
-              width: '100%', padding: '0.75rem 1rem 0.75rem 2.75rem',
-              background: 'var(--surface)', border: '1px solid var(--surface-border)',
-              borderRadius: 'var(--radius-md)', color: 'var(--foreground)',
-              fontSize: '0.95rem', outline: 'none', transition: 'border-color 0.2s ease',
-            }}
-            onFocus={e => (e.target.style.borderColor = 'var(--primary)')}
-            onBlur={e => (e.target.style.borderColor = 'var(--surface-border)')}
+            className={styles.searchInput}
+            aria-label="Search question papers"
           />
           {search && (
-            <button onClick={() => setSearch('')} style={{ position: 'absolute', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--foreground)', opacity: 0.5 }}>
-              <FaTimes />
+            <button onClick={() => setSearch('')} className={styles.searchClear} aria-label="Clear search">
+              <FaTimes size={13} />
             </button>
           )}
         </div>
-
       </div>
 
       {/* ── SaaS Filter Bar ── */}
@@ -392,27 +342,25 @@ function PapersContent({ initialPapers = [] }: { initialPapers?: Paper[] }) {
         </div>
       </div>
 
-      {/* Results count */}
+      {/* Results count bar */}
       {!loading && (
-        <p style={{ fontSize: '0.85rem', opacity: 0.5, marginBottom: '1.25rem', fontWeight: 600 }}>
-          {filteredPapers.length} paper{filteredPapers.length !== 1 ? 's' : ''} found
-        </p>
+        <div className={styles.resultsBar}>
+          <span className={styles.resultsCount}>
+            {filteredPapers.length} paper{filteredPapers.length !== 1 ? 's' : ''} available
+          </span>
+        </div>
       )}
 
       {/* Papers Grid */}
       {loading ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.2rem' }}>
+        <div className={styles.papersGrid}>
           {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
         </div>
       ) : filteredPapers.length === 0 ? (
-        <div style={{
-          padding: '5rem 2rem', textAlign: 'center',
-          background: 'var(--surface)', border: '1px solid var(--surface-border)',
-          borderRadius: 'var(--radius-lg)',
-        }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📄</div>
-          <h3 style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '1.25rem' }}>No papers found</h3>
-          <p style={{ opacity: 0.55, marginBottom: '1.5rem', maxWidth: 360, margin: '0 auto 1.5rem' }}>
+        <div className={styles.emptyState}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📄</div>
+          <h3 className={styles.emptyStateTitle}>No papers found</h3>
+          <p className={styles.emptyStateText}>
             {search
               ? `No papers match "${search}". Try a different search term or adjust your filters.`
               : 'No papers available for the selected filters. Try selecting a different class or year.'}
@@ -426,181 +374,99 @@ function PapersContent({ initialPapers = [] }: { initialPapers?: Paper[] }) {
           </button>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.2rem' }}>
-          {filteredPapers.map((paper, idx) => {
-            const { color, bg } = getSubjectColor(paper.subject.name);
+        <div className={styles.papersGrid}>
+          {filteredPapers.map((paper) => {
+            const { color } = getSubjectColor(paper.subject.name);
             const displayClass = paper.className.startsWith('Class') || ['CUET','JEE','NEET'].includes(paper.className)
               ? paper.className : `Class ${paper.className}`;
+            const isChapterRedundant = !paper.chapter?.name || paper.title.toLowerCase().includes(paper.chapter.name.toLowerCase());
 
             return (
-              <div
-                key={paper.id}
-                className="premium-card"
-                style={{
-                  padding: '1.5rem',
-                  animation: `fadeIn 0.5s ease-out forwards ${idx * 0.04}s`,
-                  opacity: 0,
-                }}
-              >
-                {/* Card Header */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem' }}>
-                  <div style={{
-                    width: 52, height: 52, borderRadius: 14,
-                    background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color, fontSize: '1.4rem', flexShrink: 0,
-                    border: `1px solid ${color}33`,
-                  }}>
-                    <FaFileAlt />
+              <div key={paper.id} className={styles.card}>
+                <div className={styles.cardTop}>
+                  <div className={styles.cardIconBox} style={{ color, borderColor: `color-mix(in srgb, ${color} 30%, transparent)` }}>
+                    <FaFileAlt size={16} />
                   </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <h3 style={{ fontWeight: 700, fontSize: '0.97rem', marginBottom: '0.4rem', lineHeight: 1.35 }}>
-                      {paper.title}
-                    </h3>
-                    <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
-                      <span className="badge badge-primary">{displayClass}</span>
-                      <span className="badge" style={{ background: bg, color }}>{paper.subject.name}</span>
-                      {paper.chapter && (
-                        <span className="badge badge-success">Ch {paper.chapter.number}</span>
-                      )}
-                      {paper.phase && (
-                        <span className="badge badge-amber">{paper.phase}</span>
-                      )}
-                    </div>
+                  <div className={styles.cardBadges}>
+                    <span className={styles.cardBadge}>{displayClass}</span>
+                    <span className={styles.cardBadge} style={{ color }}>{paper.subject.name}</span>
+                    {paper.chapter && (
+                      <span className={styles.cardBadge}>Ch {paper.chapter.number}</span>
+                    )}
+                    {paper.phase && (
+                      <span className={styles.cardBadge}>{paper.phase}</span>
+                    )}
                   </div>
-                  {/* Year Badge — prominent */}
                   {paper.year && (
-                    <div style={{
-                      flexShrink: 0,
-                      padding: '0.3rem 0.65rem',
-                      borderRadius: 10,
-                      background: 'var(--primary)',
-                      color: 'var(--primary-foreground)',
-                      fontWeight: 800,
-                      fontSize: '0.82rem',
-                      letterSpacing: '0.02em',
-                      boxShadow: 'var(--shadow-md)',
-                    }}>
+                    <div className={styles.cardYearBadge}>
                       {paper.year.year}
                     </div>
                   )}
                 </div>
 
-                {/* Interaction row */}
-                <div style={{ marginBottom: '1rem' }}>
-                  <InteractionButtons
-                    targetId={paper.id}
-                    targetType="PAPER"
-                    initialLikes={paper.likesCount}
-                    initialShares={paper.sharesCount}
-                    initialFavorites={paper.favoritesCount}
-                    isLiked={paper.isLiked}
-                    isFavorited={paper.isFavorited}
-                    isAuthenticated={isAuthenticated}
-                  />
-                </div>
+                <h3 className={styles.cardTitle} title={paper.title}>
+                  {paper.title}
+                </h3>
+                <p className={styles.cardMeta}>
+                  Official NBSE Board Archive{!isChapterRedundant ? ` • ${paper.chapter!.name}` : ' • Past Exam Paper'}
+                </p>
 
-                {/* Action Buttons */}
-                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
-                  {(paper.viewUrl || paper.downloadFile) && (
-                    <a
-                      href={(() => {
-                        const base = getViewLink(paper.viewUrl || paper.downloadFile);
-                        if (base.startsWith('/view')) return `${base}&title=${encodeURIComponent(paper.title)}`;
-                        return base;
-                      })()}
-                      className="haptic-btn"
-                      style={{
-                        flex: 1,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.45rem',
-                        padding: '0.72rem 1rem',
-                        fontSize: '0.875rem',
-                        fontWeight: 700,
-                        borderRadius: 10,
-                        textAlign: 'center',
-                        background: 'var(--surface-card)',
-                        border: '1.5px solid var(--surface-border)',
-                        color: 'var(--foreground)',
-                        textDecoration: 'none',
-                        transition: 'all 0.18s ease',
-                        letterSpacing: '-0.01em',
-                      }}
-                    >
-                      <FaEye size={13} /> View
-                    </a>
-                  )}
-                  {!isAuthenticated ? (
-                    <Link
-                      href="/login"
-                      className="haptic-btn"
-                      style={{
-                        flex: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.45rem',
-                        padding: '0.72rem 1rem',
-                        fontSize: '0.875rem',
-                        fontWeight: 700,
-                        borderRadius: 10,
-                        textAlign: 'center',
-                        background: 'var(--primary)',
-                        boxShadow: 'var(--shadow-glow)',
-                        color: 'var(--primary-foreground)',
-                        textDecoration: 'none',
-                        letterSpacing: '-0.01em',
-                      }}
-                    >
-                      <FaDownload size={12} /> Login to Download
-                    </Link>
-                  ) : (paper.downloadFile || paper.viewUrl) ? (
-                    <button
-                      onClick={() => handleDownload(getDownloadLink(paper.downloadFile || paper.viewUrl), `${paper.title}.pdf`)}
-                      className="haptic-btn"
-                      style={{
-                        flex: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.45rem',
-                        padding: '0.72rem 1rem',
-                        fontSize: '0.875rem',
-                        fontWeight: 700,
-                        borderRadius: 10,
-                        background: 'var(--primary)',
-                        boxShadow: 'var(--shadow-glow)',
-                        color: 'var(--primary-foreground)',
-                        border: 'none',
-                        cursor: 'pointer',
-                        letterSpacing: '-0.01em',
-                      }}
-                    >
-                      <FaDownload size={12} /> Download
-                    </button>
-                  ) : (
-                    <button
-                      disabled
-                      style={{
-                        flex: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        padding: '0.72rem 1rem',
-                        fontSize: '0.875rem',
-                        fontWeight: 700,
-                        borderRadius: 10,
-                        background: 'var(--surface-card)',
-                        border: '1.5px solid var(--surface-border)',
-                        color: 'var(--foreground)',
-                        opacity: 0.35,
-                        cursor: 'not-allowed',
-                      }}
-                    >
-                      Not Available
-                    </button>
-                  )}
+                <div className={styles.cardDivider} />
+
+                <div className={styles.cardFooter}>
+                  <div className={styles.cardInteractions}>
+                    <InteractionButtons
+                      targetId={paper.id}
+                      targetType="PAPER"
+                      initialLikes={paper.likesCount}
+                      initialShares={paper.sharesCount}
+                      initialFavorites={paper.favoritesCount}
+                      isLiked={paper.isLiked}
+                      isFavorited={paper.isFavorited}
+                      isAuthenticated={isAuthenticated}
+                    />
+                  </div>
+
+                  <div className={styles.cardActions}>
+                    {(paper.viewUrl || paper.downloadFile) && (
+                      <a
+                        href={(() => {
+                          const base = getViewLink(paper.viewUrl || paper.downloadFile);
+                          if (base.startsWith('/view')) return `${base}&title=${encodeURIComponent(paper.title)}`;
+                          return base;
+                        })()}
+                        className={styles.btnView}
+                        aria-label={`View ${paper.title}`}
+                      >
+                        <FaEye size={13} /> View
+                      </a>
+                    )}
+                    {!isAuthenticated ? (
+                      <Link
+                        href="/login"
+                        className={styles.btnDownload}
+                        aria-label="Login to Download"
+                      >
+                        <FaDownload size={12} /> Login to Download
+                      </Link>
+                    ) : (paper.downloadFile || paper.viewUrl) ? (
+                      <button
+                        onClick={() => handleDownload(getDownloadLink(paper.downloadFile || paper.viewUrl), `${paper.title}.pdf`)}
+                        className={styles.btnDownload}
+                        aria-label={`Download ${paper.title}`}
+                      >
+                        <FaDownload size={12} /> Download
+                      </button>
+                    ) : (
+                      <button
+                        disabled
+                        className={styles.btnView}
+                        style={{ opacity: 0.4, cursor: 'not-allowed' }}
+                      >
+                        Not Available
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             );
@@ -614,12 +480,12 @@ function PapersContent({ initialPapers = [] }: { initialPapers?: Paper[] }) {
 export default function PapersClient({ initialPapers = [] }: { initialPapers?: Paper[] }) {
   return (
     <Suspense fallback={
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '2.5rem 1.5rem' }}>
-        <div className="skeleton" style={{ width: 300, height: 48, marginBottom: '0.75rem' }} />
-        <div className="skeleton skeleton-text" style={{ width: 400, marginBottom: '2rem' }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.2rem' }}>
+      <div className={styles.container}>
+        <div className="skeleton" style={{ width: 260, height: 42, marginBottom: '0.75rem' }} />
+        <div className="skeleton skeleton-text" style={{ width: 380, marginBottom: '2rem' }} />
+        <div className={styles.papersGrid}>
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="skeleton" style={{ height: 210, borderRadius: 'var(--radius-md)' }} />
+            <SkeletonCard key={i} />
           ))}
         </div>
       </div>

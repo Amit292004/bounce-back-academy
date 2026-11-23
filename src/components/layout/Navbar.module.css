@@ -1119,8 +1119,7 @@
     padding: 0 0.85rem;
     gap: 0.6rem;
   }
-  .logoText,
-  .drawerLogoText {
+  .logoText, .drawerLogoText {
     font-size: 0.92rem;
   }
   .desktopNav {
@@ -1253,8 +1252,7 @@
     border-radius: 6px;
   }
 
-  .logoText,
-  .drawerLogoText {
+  .logoText, .drawerLogoText {
     font-size: 0.92rem;
   }
 

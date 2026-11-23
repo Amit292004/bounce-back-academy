@@ -40,6 +40,7 @@ const CATEGORY_ICONS: Record<
 export default function FaqSection() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<FaqCategoryId | 'all'>('all');
+  const [showAllCategories, setShowAllCategories] = useState(false);
   // Collapsed by default
   const [openId, setOpenId] = useState<string | null>(null);
   const searchInputId = useId();
@@ -87,6 +88,14 @@ export default function FaqSection() {
       .filter((cat) => cat.faqs.length > 0);
   }, [selectedCategory, query]);
 
+  // When 'all' is selected and user hasn't searched, show top 4 categories initially for a compact view
+  const displayedCategories = useMemo(() => {
+    if (selectedCategory === 'all' && !query && !showAllCategories) {
+      return visibleCategories.slice(0, 4);
+    }
+    return visibleCategories;
+  }, [visibleCategories, selectedCategory, query, showAllCategories]);
+
   // Total matching count
   const totalMatchesAcrossAll = categoryCounts.all ?? 0;
 
@@ -117,9 +126,7 @@ export default function FaqSection() {
       <div className={styles.container}>
         {/* ── 1. Heading & Introduction ── */}
         <div className={styles.sectionHead}>
-          <p className={styles.eyebrow}>
-            <span className={styles.eyebrowNum}>05 //</span> FAQS &amp; HELP
-          </p>
+          <p className={styles.eyebrow}>Questions &amp; Answers</p>
           <h2 className={styles.title} id="faq-main-heading">
             Frequently Asked Questions
           </h2>
@@ -131,13 +138,13 @@ export default function FaqSection() {
         {/* ── 2. Search Field ── */}
         <div className={styles.searchWrapper}>
           <div className={styles.searchBox}>
-            <Search className={styles.searchIcon} size={18} aria-hidden="true" />
+            <Search className={styles.searchIcon} size={16} aria-hidden="true" />
             <input
               id={searchInputId}
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search frequently asked questions..."
+              placeholder="Search questions..."
               className={styles.searchInput}
               aria-label="Search frequently asked questions"
               autoComplete="off"
@@ -150,7 +157,7 @@ export default function FaqSection() {
                 className={styles.clearSearchBtn}
                 aria-label="Clear search query"
               >
-                <X size={16} aria-hidden="true" />
+                <X size={15} aria-hidden="true" />
               </button>
             )}
           </div>
@@ -194,7 +201,7 @@ export default function FaqSection() {
                   onClick={() => setSelectedCategory(cat.id)}
                   title={cat.description}
                 >
-                  <span>{cat.label}</span>
+                  <span>{cat.shortLabel || cat.label}</span>
                   <span className={styles.pillCount}>{count}</span>
                 </button>
               );
@@ -227,13 +234,13 @@ export default function FaqSection() {
         <div
           id="faq-grid-region"
           className={`${styles.categoryGrid} ${
-            visibleCategories.length === 1 ? styles.categoryGridSingle : ''
+            displayedCategories.length === 1 ? styles.categoryGridSingle : ''
           }`}
           role="region"
           aria-live="polite"
         >
-          {visibleCategories.length > 0 ? (
-            visibleCategories.map((category) => {
+          {displayedCategories.length > 0 ? (
+            displayedCategories.map((category) => {
               const IconComponent = CATEGORY_ICONS[category.id] ?? HelpCircle;
 
               return (
@@ -242,7 +249,7 @@ export default function FaqSection() {
                   <div className={styles.categoryCardHeader}>
                     <div className={styles.categoryTitleGroup}>
                       <span className={styles.categoryIconWrap}>
-                        <IconComponent size={17} aria-hidden="true" />
+                        <IconComponent size={15} aria-hidden="true" />
                       </span>
                       <h3 className={styles.categoryTitle}>{category.label}</h3>
                     </div>
@@ -279,7 +286,7 @@ export default function FaqSection() {
                                 className={`${styles.chevron} ${
                                   isOpen ? styles.chevronOpen : ''
                                 }`}
-                                size={16}
+                                size={15}
                                 aria-hidden="true"
                               />
                             </span>
@@ -307,7 +314,7 @@ export default function FaqSection() {
           ) : (
             <div className={styles.emptyState}>
               <div className={styles.emptyIconCircle}>
-                <HelpCircle size={26} className={styles.emptyIcon} aria-hidden="true" />
+                <HelpCircle size={24} className={styles.emptyIcon} aria-hidden="true" />
               </div>
               <h3 className={styles.emptyTitle}>No matching questions found</h3>
               <p className={styles.emptyDescription}>
@@ -348,6 +355,31 @@ export default function FaqSection() {
             </div>
           )}
         </div>
+
+        {/* ── View More / Fewer Categories Toggle (when in All Questions mode without search) ── */}
+        {selectedCategory === 'all' && !query && visibleCategories.length > 4 && (
+          <div className={styles.loadMoreWrapper}>
+            <button
+              type="button"
+              onClick={() => setShowAllCategories((prev) => !prev)}
+              className={styles.viewMoreButton}
+              aria-expanded={showAllCategories}
+            >
+              <span>
+                {showAllCategories
+                  ? 'Show Fewer Categories'
+                  : `View All ${visibleCategories.length} Categories (${totalMatchesAcrossAll} Questions)`}
+              </span>
+              <ChevronDown
+                className={`${styles.viewMoreChevron} ${
+                  showAllCategories ? styles.viewMoreChevronOpen : ''
+                }`}
+                size={15}
+                aria-hidden="true"
+              />
+            </button>
+          </div>
+        )}
 
         {/* ── 5. Compact Horizontal Support Strip ── */}
         <div className={styles.supportStrip}>

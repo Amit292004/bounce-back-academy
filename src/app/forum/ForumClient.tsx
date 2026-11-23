@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaComments, FaSearch, FaPlus, FaChevronUp, FaUserCircle, FaTag, FaChevronLeft, FaPaperPlane } from 'react-icons/fa';
+import { FaComments, FaSearch, FaPlus, FaChevronUp, FaUserCircle, FaTag, FaChevronLeft, FaPaperPlane, FaTimes } from 'react-icons/fa';
 import styles from './page.module.css';
 
 interface ForumReply {
@@ -335,29 +335,53 @@ export default function ForumClient() {
         <div className={styles.dashboardView}>
           {/* Header */}
           <div className={styles.header}>
-            <div className={styles.badge}>
-              <FaComments /> Community Forum
+            <div className={styles.eyebrow}>
+              <span className={styles.eyebrowDot} />
+              <span>Student Discussion Forum</span>
             </div>
-            <h1 className={styles.title}>
-              Discussion <span className="text-gradient">Hub</span>
-            </h1>
+            <h1 className={styles.title}>Discussion Forum</h1>
             <p className={styles.subtitle}>
-              Ask questions, share premium study materials, and brainstorm concepts with peers!
+              Ask questions, share revision tips, and collaborate with verified classmates and subject educators.
             </p>
           </div>
 
-          {/* Controls Panel */}
-          <div className={styles.controlsRow}>
-            <div className={styles.searchWrapper}>
-              <FaSearch className={styles.searchIcon} />
+          {/* Mode Toggle + Search Toolbar */}
+          <div className={styles.toolbar}>
+            <div className={styles.segmentedControl} role="tablist" aria-label="Forum topic filter">
+              {CATEGORIES.map(cat => (
+                <button
+                  key={cat}
+                  role="tab"
+                  aria-selected={activeCategory === cat}
+                  className={`${styles.segmentedBtn} ${activeCategory === cat ? styles.segmentedBtnActive : ''}`}
+                  onClick={() => setActiveCategory(cat)}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <div className={styles.searchBox}>
+              <FaSearch className={styles.searchIcon} aria-hidden="true" />
               <input
                 type="text"
-                placeholder="Search topics, questions, tags..."
+                placeholder="Search topics, questions, tags…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className={styles.searchInput}
+                aria-label="Search forum"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className={styles.searchClear}
+                  aria-label="Clear search"
+                >
+                  <FaTimes size={13} />
+                </button>
+              )}
             </div>
+
             <button 
               onClick={() => currentUser ? setShowCreateModal(true) : window.location.href = '/login'} 
               className={styles.askBtn}
@@ -366,40 +390,51 @@ export default function ForumClient() {
             </button>
           </div>
 
-          {/* Filter Row */}
-          <div className={styles.filtersBar}>
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                className={`${styles.filterBtn} ${activeCategory === cat ? styles.filterActive : ''}`}
-                onClick={() => setActiveCategory(cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          {/* Results Bar */}
+          {!isLoading && (
+            <div className={styles.resultsBar}>
+              <span className={styles.resultsCount}>
+                {posts.length} discussion{posts.length !== 1 ? 's' : ''} active
+                {searchQuery ? ` matching "${searchQuery}"` : ''}
+              </span>
+            </div>
+          )}
 
           {/* Thread Cards List */}
           <div className={styles.threadsList}>
             {isLoading ? (
-              <div className={`glass-panel ${styles.emptyState}`}>
-                <p>Loading discussions...</p>
+              <div className={styles.emptyState}>
+                <p>Loading discussions…</p>
               </div>
             ) : posts.length === 0 ? (
-              <div className={`glass-panel ${styles.emptyState}`}>
-                <p>No active discussions found for this topic. Be the first to start a thread!</p>
+              <div className={styles.emptyState}>
+                <div style={{ fontSize: '2.5rem', marginBottom: '0.85rem' }}>💬</div>
+                <h3 className={styles.emptyStateTitle}>No discussions found</h3>
+                <p className={styles.emptyStateText}>
+                  {searchQuery 
+                    ? `No discussions match "${searchQuery}". Try a different search term or category.`
+                    : 'No active discussions in this category yet. Be the first to start a thread!'}
+                </p>
+                <button 
+                  onClick={() => currentUser ? setShowCreateModal(true) : window.location.href = '/login'} 
+                  className={styles.askBtn}
+                  style={{ margin: '0 auto' }}
+                >
+                  <FaPlus /> Start First Discussion
+                </button>
               </div>
             ) : (
               posts.map(post => (
                 <div 
                   key={post.id} 
-                  className={`glass-panel ${styles.postCard}`}
+                  className={styles.postCard}
                   onClick={() => setSelectedPostId(post.id)}
                 >
                   <div className={styles.postLeft}>
                     <button 
                       onClick={(e) => handleUpvote(post.id, e)} 
                       className={`${styles.votePill} ${currentUser && post.upvotedBy.includes(currentUser.id || currentUser.email) ? styles.votePillActive : ''}`}
+                      aria-label="Upvote post"
                     >
                       <FaChevronUp />
                       <span>{post.upvotes}</span>
@@ -410,7 +445,7 @@ export default function ForumClient() {
                       <span className={styles.postCategory}>{post.category}</span>
                       <span className={styles.postAuthor}>Posted by {post.authorName} ({post.authorClass})</span>
                       <span className={styles.postDate}>
-                        {new Date(post.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                        • {new Date(post.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                       </span>
                     </div>
                     <h3 className={styles.postTitle}>{post.title}</h3>

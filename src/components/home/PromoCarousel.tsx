@@ -52,7 +52,7 @@ const DEFAULT_SLIDES: PromoSlide[] = [
     badgeType: 'ai',
     title: 'Instant Textbook Doubt Resolution',
     description: 'Upload any question from Science, Maths, or Board syllabus. Get step-by-step derivations and answers in seconds.',
-    highlights: ['Zero Wait Time', 'Class 8–12 & JEE/NEET', '100% Free Access'],
+    highlights: ['Step-by-Step Solutions', 'Class 8–12 & JEE/NEET', 'Free Access'],
     ctaText: 'Try AI Doubt Solver',
     ctaHref: '/ai-tutor',
     meta: 'Interactive AI Tool',

@@ -69,7 +69,7 @@ export default function AnimatedTitle({ onIndexChange }: AnimatedTitleProps) {
           key={current.id}
           className={styles.dynamicAccent}
           style={{
-            backgroundImage: current.gradient,
+            color: 'var(--brand-orange)',
           }}
           initial={{ y: "45%", opacity: 0, filter: "blur(6px)" }}
           animate={{ y: "0%", opacity: 1, filter: "blur(0px)" }}

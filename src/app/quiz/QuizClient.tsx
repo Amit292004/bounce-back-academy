@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { FaGraduationCap, FaHourglassHalf, FaPlay, FaCheckCircle, FaTimesCircle, FaTrophy, FaArrowRight, FaRedo, FaRegFileAlt, FaKeyboard, FaEye, FaArrowLeft, FaListOl, FaTimes } from 'react-icons/fa';
+import Link from 'next/link';
+import { FaGraduationCap, FaHourglassHalf, FaPlay, FaCheckCircle, FaTimesCircle, FaTrophy, FaArrowRight, FaRedo, FaRegFileAlt, FaKeyboard, FaEye, FaArrowLeft, FaListOl, FaTimes, FaSearch, FaLayerGroup } from 'react-icons/fa';
+import { Sparkles } from 'lucide-react';
+import InteractionButtons from '@/components/InteractionButtons';
 import styles from './page.module.css';
 import { logger } from '@/lib/logger'
 
@@ -32,6 +35,24 @@ interface Quiz {
   chapter?: Chapter | null;
   questions: Question[];
   createdAt: string;
+  likesCount?: number;
+  sharesCount?: number;
+  favoritesCount?: number;
+  isLiked?: boolean;
+  isFavorited?: boolean;
+}
+
+function getSubjectColor(name: string) {
+  const n = (name || '').toLowerCase();
+  if (n.includes('math'))    return { color: 'var(--primary)', bg: 'color-mix(in srgb, var(--primary) 10%, transparent)' };
+  if (n.includes('science')) return { color: '#10b981', bg: 'rgba(16,185,129,0.1)' };
+  if (n.includes('english')) return { color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' };
+  if (n.includes('social'))  return { color: '#ec4899', bg: 'rgba(236,72,153,0.1)' };
+  if (n.includes('hindi'))   return { color: '#f97316', bg: 'rgba(249,115,22,0.1)' };
+  if (n.includes('physics')) return { color: '#06b6d4', bg: 'rgba(6,182,212,0.1)' };
+  if (n.includes('chem'))    return { color: '#a855f7', bg: 'rgba(168,85,247,0.1)' };
+  if (n.includes('bio'))     return { color: '#84cc16', bg: 'rgba(132,204,22,0.1)' };
+  return { color: 'var(--primary)', bg: 'color-mix(in srgb, var(--primary) 10%, transparent)' };
 }
 
 // Pre-seeded fallback quizzes in case the database is empty
@@ -101,6 +122,8 @@ export default function StudentQuizPage() {
   const [score, setScore] = useState(0);
   const [wrongAnswersCount, setWrongAnswersCount] = useState(0);
   const [earnedXp, setEarnedXp] = useState(0);
+  const [search, setSearch] = useState('');
+  const [mode, setMode] = useState<'chapter-wise' | 'board-mocks'>('chapter-wise');
   const [selectedClassFilter, setSelectedClassFilter] = useState('all');
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState('');
   const [selectedChapterFilter, setSelectedChapterFilter] = useState('');
@@ -108,6 +131,27 @@ export default function StudentQuizPage() {
   const [courses, setCourses] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<{ id: string; name: string }[]>([]);
   const [chapters, setChapters] = useState<{ id: string; name: string; number: number; className: string; subjectId: string }[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const cachedMe = sessionStorage.getItem('bb_student_me');
+        if (cachedMe) {
+          const data = JSON.parse(cachedMe);
+          setIsAuthenticated(data.authenticated);
+        }
+        const res = await fetch('/api/student/me');
+        if (res.ok) {
+          const data = await res.json();
+          sessionStorage.setItem('bb_student_me', JSON.stringify(data));
+          setIsAuthenticated(data.authenticated);
+        }
+      } catch {
+        // silent
+      }
+    })();
+  }, []);
   
   // Timer state
   const [timeLeft, setTimeLeft] = useState(30); // 30 seconds per question for text input
@@ -293,12 +337,69 @@ export default function StudentQuizPage() {
     startQuiz(selectedQuiz!);
   };
 
+  const BOARD_MOCKS = [
+    {
+      id: 'mock-maths-10',
+      title: 'NBSE Class 10 Mathematics Complete Model Board Mock 2026',
+      className: '10',
+      subject: { name: 'Mathematics' },
+      questionsCount: 30,
+      time: '3 Hours',
+      year: '2026',
+      href: '/papers?subject=Mathematics',
+    },
+    {
+      id: 'mock-science-10',
+      title: 'NBSE Class 10 Science Full Syllabus Blueprint Mock 2026',
+      className: '10',
+      subject: { name: 'Science' },
+      questionsCount: 30,
+      time: '3 Hours',
+      year: '2026',
+      href: '/papers?subject=Science',
+    },
+    {
+      id: 'mock-social-10',
+      title: 'NBSE Class 10 Social Science Board Standard Mock 2026',
+      className: '10',
+      subject: { name: 'Social Science' },
+      questionsCount: 28,
+      time: '3 Hours',
+      year: '2026',
+      href: '/papers?subject=Social+Science',
+    },
+    {
+      id: 'mock-english-10',
+      title: 'NBSE Class 10 English Language & Literature Mock Paper 2026',
+      className: '10',
+      subject: { name: 'English' },
+      questionsCount: 25,
+      time: '3 Hours',
+      year: '2026',
+      href: '/papers?subject=English',
+    },
+  ];
+
   const filteredQuizzes = quizzes.filter(q => {
     const normalize = (name: string) => name.toLowerCase().replace('class', '').trim();
     const matchesClass = selectedClassFilter === 'all' || normalize(q.className) === normalize(selectedClassFilter);
     const matchesSubject = !selectedSubjectFilter || q.subject?.name === selectedSubjectFilter;
     const matchesChapter = !selectedChapterFilter || q.chapter?.id === selectedChapterFilter;
-    return matchesClass && matchesSubject && matchesChapter;
+    const qText = search.trim().toLowerCase();
+    const matchesSearch = !qText || 
+      q.title.toLowerCase().includes(qText) || 
+      (q.subject?.name && q.subject.name.toLowerCase().includes(qText)) ||
+      (q.chapter?.name && q.chapter.name.toLowerCase().includes(qText));
+    return matchesClass && matchesSubject && matchesChapter && matchesSearch;
+  });
+
+  const filteredMocks = BOARD_MOCKS.filter((m) => {
+    const normalize = (name: string) => name.toLowerCase().replace('class', '').trim();
+    const matchesClass = selectedClassFilter === 'all' || normalize(m.className) === normalize(selectedClassFilter);
+    const matchesSubject = !selectedSubjectFilter || m.subject.name.toLowerCase().includes(selectedSubjectFilter.toLowerCase());
+    const qText = search.trim().toLowerCase();
+    const matchesSearch = !qText || m.title.toLowerCase().includes(qText) || m.subject.name.toLowerCase().includes(qText);
+    return matchesClass && matchesSubject && matchesSearch;
   });
 
   const selectedSubjectId = subjects.find(s => s.name === selectedSubjectFilter)?.id;
@@ -307,7 +408,7 @@ export default function StudentQuizPage() {
     (selectedSubjectId ? ch.subjectId === selectedSubjectId : true)
   );
 
-  const hasFilters = selectedClassFilter !== 'all' || !!selectedSubjectFilter || !!selectedChapterFilter;
+  const hasFilters = search.trim() !== '' || selectedClassFilter !== 'all' || !!selectedSubjectFilter || !!selectedChapterFilter;
 
   if (loading) {
     return (
@@ -329,21 +430,66 @@ export default function StudentQuizPage() {
         <div>
           {/* Header */}
           <div className={styles.header}>
-            <div className={styles.badge}>
-              <FaGraduationCap /> Academy Practice Arena
+            <div className={styles.eyebrow}>
+              <span className={styles.eyebrowDot} />
+              <span>NBSE Board Quizzes</span>
             </div>
-            <h1 className={styles.title}>
-              Practice <span className="text-gradient">Quizzes & Tests</span>
-            </h1>
+            <h1 className={styles.title}>Practice Quizzes</h1>
             <p className={styles.subtitle}>
-              Practice class-by-class! Select multiple-choice choices or type in text answers exactly, check evaluations, and read detailed explanations.
+              Official NBSE past board examination papers and chapter practice tests from 2016 onwards. Free online interactive challenges and instant evaluations.
             </p>
+          </div>
+
+          {/* Mode Toggle + Search Toolbar */}
+          <div className={styles.toolbar}>
+            {/* Mode Toggle */}
+            <div className={styles.segmentedControl} role="tablist" aria-label="Quiz grouping mode">
+              <button
+                role="tab"
+                aria-selected={mode === 'chapter-wise'}
+                onClick={() => setMode('chapter-wise')}
+                className={`${styles.segmentedBtn} ${mode === 'chapter-wise' ? styles.segmentedBtnActive : ''}`}
+              >
+                <FaLayerGroup size={13} />
+                <span>Chapter Quizzes</span>
+              </button>
+              <button
+                role="tab"
+                aria-selected={mode === 'board-mocks'}
+                onClick={() => setMode('board-mocks')}
+                className={`${styles.segmentedBtn} ${mode === 'board-mocks' ? styles.segmentedBtnActive : ''}`}
+              >
+                <FaRegFileAlt size={13} />
+                <span>Board Mocks</span>
+              </button>
+            </div>
+
+            {/* Search Input */}
+            <div className={styles.searchBox}>
+              <FaSearch className={styles.searchIcon} aria-hidden="true" />
+              <input
+                type="text"
+                placeholder="Search by title, subject or chapter…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className={styles.searchInput}
+                aria-label="Search quizzes"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch('')}
+                  className={styles.searchClear}
+                  aria-label="Clear search"
+                >
+                  <FaTimes size={13} />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* SaaS Filter Bar */}
           <div className={styles.filterBarWrapper}>
             <div className={styles.filterBar}>
-
               {/* Filter icon */}
               <div className={styles.filterBarIcon}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -395,7 +541,7 @@ export default function StudentQuizPage() {
                   value={selectedChapterFilter}
                   onChange={e => setSelectedChapterFilter(e.target.value)}
                   className={styles.filterBarSelect}
-                  disabled={!selectedSubjectFilter && selectedClassFilter === 'all'}
+                  disabled={mode === 'board-mocks' || (!selectedSubjectFilter && selectedClassFilter === 'all')}
                 >
                   <option value="">All Chapters</option>
                   {filteredChapterOptions.map((ch) => (
@@ -408,7 +554,12 @@ export default function StudentQuizPage() {
               {hasFilters && (
                 <button
                   className={styles.clearSegment}
-                  onClick={() => { setSelectedClassFilter('all'); setSelectedSubjectFilter(''); setSelectedChapterFilter(''); }}
+                  onClick={() => {
+                    setSearch('');
+                    setSelectedClassFilter('all');
+                    setSelectedSubjectFilter('');
+                    setSelectedChapterFilter('');
+                  }}
                 >
                   <FaTimes size={10} /> Clear
                 </button>
@@ -416,57 +567,230 @@ export default function StudentQuizPage() {
             </div>
           </div>
 
-          {/* Featured Cards Grid */}
-          <div className={styles.quizGrid}>
-            {filteredQuizzes.map((quiz) => (
-              <div key={quiz.id} className={`glass-panel ${styles.quizCard}`}>
-                <div className={styles.cardHeader} style={{ flexWrap: 'wrap', rowGap: '0.25rem' }}>
-                  <span className={styles.classBadge}>
-                    {quiz.className.toLowerCase().includes('class') ? quiz.className : `Class ${quiz.className}`}
-                  </span>
-                  <span className={styles.subjectBadge}>{quiz.subject?.name || 'General'}</span>
-                  {quiz.chapter && (
-                    <span className={styles.subjectBadge} style={{ background: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>
-                      Ch {quiz.chapter.number}: {quiz.chapter.name}
-                    </span>
-                  )}
-                </div>
-                <h3 className={styles.quizCardTitle}>{quiz.title}</h3>
-                <div className={styles.quizMeta}>
-                  <span>📝 {quiz.questions.length} Questions</span>
-                  <span>⏱️ 30s / Question</span>
-                </div>
-                <button onClick={() => startQuiz(quiz)} className={styles.startBtn}>
-                  <FaPlay /> Start Challenge
-                </button>
-              </div>
-            ))}
-
-            {filteredQuizzes.length === 0 && (
-              <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', gridColumn: '1 / -1', opacity: 0.6 }}>
-                No active quizzes loaded for Class {selectedClassFilter} yet. Check back soon!
-              </div>
-            )}
+          {/* Results Count Bar */}
+          <div className={styles.resultsBar}>
+            <span className={styles.resultsCount}>
+              {mode === 'chapter-wise' ? (
+                <>
+                  {filteredQuizzes.length} quiz{filteredQuizzes.length !== 1 ? 'zes' : ''} available
+                  {search ? ` matching "${search}"` : ''}
+                </>
+              ) : (
+                <>
+                  {filteredMocks.length} mock paper{filteredMocks.length !== 1 ? 's' : ''} available
+                  {search ? ` matching "${search}"` : ''}
+                </>
+              )}
+            </span>
           </div>
 
-          {/* Full Mock Tests Section */}
-          <div className={`glass-panel ${styles.mockSection}`}>
-            <h2 className={styles.mockSectionTitle}>
-              <FaRegFileAlt /> Term & Board Prep Mock Tests (Class 9-12)
-            </h2>
-            <p className={styles.mockDesc}>
-              Complete full-length, subject-wise mock papers structured directly according to state board regulations. Features standard question formats and timed limits.
-            </p>
-            <div className={styles.mockLinksGrid}>
-              <a href="/papers" className={styles.mockLinkCard}>
-                <span>Maths Boards Mock 2026</span>
-                <span className={styles.actionArrow}><FaArrowRight /></span>
-              </a>
-              <a href="/papers" className={styles.mockLinkCard}>
-                <span>Science Term I Mock 2026</span>
-                <span className={styles.actionArrow}><FaArrowRight /></span>
-              </a>
-            </div>
+          {/* Featured Cards Grid */}
+          <div className={styles.quizGrid}>
+            {mode === 'chapter-wise' ? (
+              <>
+                {filteredQuizzes.map((quiz) => {
+                  const { color, bg } = getSubjectColor(quiz.subject?.name || '');
+                  const displayClass = quiz.className.toLowerCase().includes('class') || ['cuet', 'jee', 'neet'].includes(quiz.className.toLowerCase())
+                    ? quiz.className
+                    : `Class ${quiz.className}`;
+                  const isChapterRedundant = !quiz.chapter?.name || quiz.title.toLowerCase().includes(quiz.chapter.name.toLowerCase());
+
+                  return (
+                    <div key={quiz.id} className={styles.card}>
+                      <div className={styles.cardTop}>
+                        <div
+                          className={styles.cardIconBox}
+                          style={{
+                            color,
+                            background: bg,
+                            borderColor: `color-mix(in srgb, ${color} 30%, transparent)`,
+                          }}
+                        >
+                          <Sparkles size={16} />
+                        </div>
+
+                        <div className={styles.cardBadges}>
+                          <span className={styles.cardBadge}>{displayClass}</span>
+                          <span className={styles.cardBadge} style={{ color }}>{quiz.subject?.name || 'General'}</span>
+                          {quiz.chapter && (
+                            <span className={styles.cardBadge}>Ch {quiz.chapter.number}</span>
+                          )}
+                        </div>
+
+                        <div className={styles.cardYearBadge}>
+                          {quiz.questions.length} Qs
+                        </div>
+                      </div>
+
+                      <h3 className={styles.cardTitle} title={quiz.title}>
+                        {quiz.title}
+                      </h3>
+                      <p className={styles.cardMeta}>
+                        {!isChapterRedundant && quiz.chapter?.name
+                          ? `${quiz.chapter.name} • Practice MCQs & Explanations`
+                          : 'Official NBSE Curriculum • Chapter Practice MCQs'}
+                      </p>
+
+                      <div className={styles.cardDivider} />
+
+                      <div className={styles.cardFooter}>
+                        <div className={styles.cardInteractions}>
+                          <InteractionButtons
+                            targetId={quiz.id}
+                            targetType="QUIZ"
+                            initialLikes={quiz.likesCount || 0}
+                            initialShares={quiz.sharesCount || 0}
+                            initialFavorites={quiz.favoritesCount || 0}
+                            isLiked={quiz.isLiked}
+                            isFavorited={quiz.isFavorited}
+                            isAuthenticated={isAuthenticated}
+                          />
+                        </div>
+
+                        <div className={styles.cardActions}>
+                          <button
+                            onClick={() => startQuiz(quiz)}
+                            className={styles.btnView}
+                            aria-label={`Preview ${quiz.title}`}
+                          >
+                            <FaEye size={13} /> View
+                          </button>
+                          <button
+                            onClick={() => startQuiz(quiz)}
+                            className={styles.btnDownload}
+                            aria-label={`Start Quiz ${quiz.title}`}
+                          >
+                            <FaPlay size={10} fill="currentColor" /> Start Quiz
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {filteredQuizzes.length === 0 && (
+                  <div className={styles.emptyState} style={{ gridColumn: '1 / -1' }}>
+                    <div style={{ fontSize: '2.5rem', marginBottom: '0.85rem' }}>✨</div>
+                    <h3 className={styles.emptyStateTitle}>No quizzes found</h3>
+                    <p className={styles.emptyStateText}>
+                      {search
+                        ? `No quizzes match "${search}". Try a different keyword or reset your filters.`
+                        : 'No quizzes available for the selected filters. Check back soon for new questions!'}
+                    </p>
+                    <button
+                      onClick={() => {
+                        setSearch('');
+                        setSelectedClassFilter('all');
+                        setSelectedSubjectFilter('');
+                        setSelectedChapterFilter('');
+                      }}
+                      className={styles.btnDownload}
+                      style={{ width: 'auto', padding: '0 1.25rem', margin: '0 auto' }}
+                    >
+                      Clear Filters
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                {filteredMocks.map((mock) => {
+                  const { color, bg } = getSubjectColor(mock.subject.name);
+                  const displayClass = `Class ${mock.className}`;
+
+                  return (
+                    <div key={mock.id} className={styles.card}>
+                      <div className={styles.cardTop}>
+                        <div
+                          className={styles.cardIconBox}
+                          style={{
+                            color,
+                            background: bg,
+                            borderColor: `color-mix(in srgb, ${color} 30%, transparent)`,
+                          }}
+                        >
+                          <FaRegFileAlt size={16} />
+                        </div>
+
+                        <div className={styles.cardBadges}>
+                          <span className={styles.cardBadge}>{displayClass}</span>
+                          <span className={styles.cardBadge} style={{ color }}>{mock.subject.name}</span>
+                        </div>
+
+                        <div className={styles.cardYearBadge}>
+                          {mock.year}
+                        </div>
+                      </div>
+
+                      <h3 className={styles.cardTitle} title={mock.title}>
+                        {mock.title}
+                      </h3>
+                      <p className={styles.cardMeta}>
+                        Official NBSE Model Blueprint • {mock.questionsCount} Questions • {mock.time}
+                      </p>
+
+                      <div className={styles.cardDivider} />
+
+                      <div className={styles.cardFooter}>
+                        <div className={styles.cardInteractions}>
+                          <InteractionButtons
+                            targetId={mock.id}
+                            targetType="QUIZ"
+                            initialLikes={12}
+                            initialShares={4}
+                            initialFavorites={8}
+                            isLiked={false}
+                            isFavorited={false}
+                            isAuthenticated={isAuthenticated}
+                          />
+                        </div>
+
+                        <div className={styles.cardActions}>
+                          <Link
+                            href={mock.href}
+                            className={styles.btnView}
+                            aria-label={`View ${mock.title}`}
+                          >
+                            <FaEye size={13} /> View
+                          </Link>
+                          <Link
+                            href={mock.href}
+                            className={styles.btnDownload}
+                            aria-label={`Start ${mock.title}`}
+                          >
+                            <FaPlay size={10} fill="currentColor" /> Start Paper
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {filteredMocks.length === 0 && (
+                  <div className={styles.emptyState} style={{ gridColumn: '1 / -1' }}>
+                    <div style={{ fontSize: '2.5rem', marginBottom: '0.85rem' }}>📋</div>
+                    <h3 className={styles.emptyStateTitle}>No mock papers found</h3>
+                    <p className={styles.emptyStateText}>
+                      {search
+                        ? `No mock papers match "${search}". Try a different keyword or reset filters.`
+                        : 'No mock papers available for the selected filters.'}
+                    </p>
+                    <button
+                      onClick={() => {
+                        setSearch('');
+                        setSelectedClassFilter('all');
+                        setSelectedSubjectFilter('');
+                        setSelectedChapterFilter('');
+                      }}
+                      className={styles.btnDownload}
+                      style={{ width: 'auto', padding: '0 1.25rem', margin: '0 auto' }}
+                    >
+                      Clear Filters
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       )}

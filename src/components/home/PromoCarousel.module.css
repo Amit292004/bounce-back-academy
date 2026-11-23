@@ -8,13 +8,13 @@
   background: var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-lg, 16px);
-  padding: 1.35rem 1.45rem;
+  padding: 1.5rem;
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.55);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .carouselContainer:hover {
@@ -22,19 +22,9 @@
   box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.65);
 }
 
-/* Dynamic Ambient Glow Behind Card */
+/* Ambient Glow Behind Card (Disabled for clean surfaces) */
 .ambientGlow {
-  position: absolute;
-  top: -80px;
-  right: -80px;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  filter: blur(70px);
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.7;
-  transition: background 0.6s ease;
+  display: none;
 }
 
 /* Card Top Meta Bar (Fixed at top) */
@@ -54,14 +44,13 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.28rem 0.72rem;
-  border-radius: 999px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   border: 1px solid transparent;
-  transition: all 0.3s ease;
+  transition: border-color 0.15s ease;
 }
 
 .badgeAlert {
@@ -283,7 +272,7 @@
   font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease;
   letter-spacing: -0.01em;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   white-space: nowrap;
@@ -317,7 +306,7 @@
   border: none;
   padding: 0;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: background-color 0.15s ease, width 0.15s ease;
 }
 
 .dotActive {
@@ -338,7 +327,7 @@
   color: var(--foreground);
   opacity: 0.75;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
   padding: 0;
 }
 
@@ -346,7 +335,7 @@
   opacity: 1;
   background: var(--surface-card);
   border-color: rgba(255, 255, 255, 0.25);
-  transform: scale(1.05);
+  transform: translateY(-1px);
 }
 
 /* ─── Mobile Responsiveness (Fixed consistent height on mobile too) ─── */

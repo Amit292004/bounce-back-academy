@@ -83,10 +83,8 @@ export default function TestimonialsSection() {
       {/* Header */}
       <div className={styles.headerRow}>
         <div className={styles.head}>
-          <p className={styles.eyebrow}>
-            <span className={styles.eyebrowNum}>04 //</span> STUDENT REVIEWS
-          </p>
-          <h2 className={styles.title}>What students say</h2>
+          <p className={styles.eyebrow}>Student Reviews</p>
+          <h2 className={styles.title}>What Students Say</h2>
           <p className={styles.sub}>
             Real feedback from Nagaland students preparing for their board exams.
           </p>

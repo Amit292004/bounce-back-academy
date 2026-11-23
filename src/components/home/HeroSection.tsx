@@ -129,13 +129,6 @@ export default function HeroSection({ userClass: initialUserClass, initialHeroAd
   return (
     <section className={styles.hero}>
       <div className={styles.noise} />
-      <div
-        className={styles.beam}
-        style={{
-          background: `radial-gradient(ellipse 60% 60% at 50% 0%, ${activeTopic.beamGlow} 0%, transparent 80%)`,
-          transition: 'background 0.8s ease-in-out',
-        }}
-      />
 
       <div className={styles.container}>
         {/* Main Hero Card (Above-the-fold on mobile, contents on desktop) */}

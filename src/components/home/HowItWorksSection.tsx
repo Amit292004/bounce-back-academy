@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './HowItWorksSection.module.css';
-import { Search, Play, Trophy, Sparkles } from 'lucide-react';
+import { Search, Play, Trophy, Bot } from 'lucide-react';
 
 export default function HowItWorksSection() {
   const steps = [
@@ -26,19 +26,17 @@ export default function HowItWorksSection() {
       num: '04',
       title: 'Resolve Doubts with AI',
       desc: 'Never get stuck. Ask Bounce Back AI anytime for clear, step-by-step mathematical derivations and conceptual explanations in English or Hinglish.',
-      icon: <Sparkles size={20} strokeWidth={1.75} />,
+      icon: <Bot size={20} strokeWidth={1.75} />,
     },
   ];
 
   return (
     <section className={styles.section} id="how-it-works">
       <div className={styles.sectionHead}>
-        <p className={styles.eyebrow}>
-          <span className={styles.eyebrowNum}>03 //</span> THE STUDENT JOURNEY
-        </p>
+        <p className={styles.eyebrow}>The Student Journey</p>
         <h2 className={styles.title}>How Bounce Back Academy Works</h2>
         <p className={styles.subtitle}>
-          A proven, disciplined 4-step framework engineered to take you from foundational understanding to exam mastery.
+          Four practical steps from your first question paper to full exam readiness.
         </p>
       </div>
 

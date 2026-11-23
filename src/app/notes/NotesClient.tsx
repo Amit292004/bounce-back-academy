@@ -42,26 +42,23 @@ function getSubjectColor(name: string) {
 
 function SkeletonCard() {
   return (
-    <div style={{
-      background: 'var(--surface-card)',
-      border: '1px solid var(--surface-border)',
-      borderRadius: 'var(--radius-md)',
-      padding: '1.5rem',
-    }}>
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-        <div className="skeleton" style={{ width: 52, height: 52, borderRadius: 14, flexShrink: 0 }} />
-        <div style={{ flex: 1 }}>
-          <div className="skeleton skeleton-text" style={{ width: '70%', marginBottom: '0.5rem' }} />
-          <div className="skeleton skeleton-text" style={{ width: '40%', height: '0.75rem' }} />
+    <div className={styles.card}>
+      <div className={styles.cardTop}>
+        <div className="skeleton" style={{ width: 36, height: 36, borderRadius: 8, flexShrink: 0 }} />
+        <div style={{ flex: 1, display: 'flex', gap: '0.35rem' }}>
+          <div className="skeleton" style={{ width: 65, height: 20, borderRadius: 5 }} />
+          <div className="skeleton" style={{ width: 75, height: 20, borderRadius: 5 }} />
         </div>
       </div>
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-        <div className="skeleton" style={{ width: 70, height: 22, borderRadius: 999 }} />
-        <div className="skeleton" style={{ width: 80, height: 22, borderRadius: 999 }} />
-      </div>
-      <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-        <div className="skeleton" style={{ width: 80, height: 36, borderRadius: 8 }} />
-        <div className="skeleton" style={{ width: 100, height: 36, borderRadius: 8 }} />
+      <div className="skeleton skeleton-text" style={{ width: '85%', height: '1.1rem', marginBottom: '0.4rem' }} />
+      <div className="skeleton skeleton-text" style={{ width: '60%', height: '1.1rem', marginBottom: '0.85rem' }} />
+      <div className={styles.cardDivider} />
+      <div className={styles.cardFooter}>
+        <div className="skeleton skeleton-text" style={{ width: '40%', height: '1rem' }} />
+        <div style={{ display: 'flex', gap: '0.45rem', width: '100%' }}>
+          <div className="skeleton" style={{ flex: 1, height: 34, borderRadius: 7 }} />
+          <div className="skeleton" style={{ flex: 1.5, height: 34, borderRadius: 7 }} />
+        </div>
       </div>
     </div>
   );
@@ -178,263 +175,146 @@ function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
   const hasFilters = !!(selectedClass || selectedSubject || selectedChapter);
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(1.5rem,5vw,2.5rem) clamp(1rem,3vw,1.5rem)' }}>
+    <div className={styles.container}>
 
       {/* Page Header */}
-      <div style={{ marginBottom: '1.75rem' }} className="animate-fade-in">
-        <h1 style={{ fontSize: 'clamp(2rem,7vw,2.8rem)', fontWeight: 900, marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>
-          Study <span className="kinetic-text">Notes</span>
-        </h1>
-        <p style={{ opacity: 0.65, fontSize: '1rem', lineHeight: 1.65 }}>
-          Comprehensive notes for all levels. View free — download after login.
-        </p>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '1rem',
-          flexWrap: 'wrap',
-          background: 'rgba(99, 102, 241, 0.08)',
-          border: '1px solid rgba(99, 102, 241, 0.2)',
-          borderRadius: '12px',
-          padding: '0.75rem 1.25rem',
-          marginTop: '1.25rem',
-        }}>
-          <div style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.85)' }}>
-            Looking for question papers, video lectures, and quizzes as well?
-          </div>
-          <Link
-            href="/library"
-            style={{
-              fontSize: '0.825rem',
-              fontWeight: 700,
-              color: '#818cf8',
-              textDecoration: 'none',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '4px',
-            }}
-          >
-            Open Universal Study Library &rarr;
-          </Link>
+      <div className={styles.header}>
+        <div className={styles.eyebrow}>
+          <span className={styles.eyebrowDot} />
+          <span>Chapter Revision Notes</span>
         </div>
+        <h1 className={styles.title}>Study Notes</h1>
+        <p className={styles.subtitle}>
+          Comprehensive, syllabus-aligned chapter notes for all subjects. Free preview with instant PDF download.
+        </p>
       </div>
 
-      {/* Search Bar */}
-      <div style={{
-        display: 'flex',
-        gap: '0.75rem',
-        marginBottom: '1.25rem',
-        flexWrap: 'wrap',
-      }}>
-        <div style={{
-          flex: 1,
-          minWidth: 200,
-          position: 'relative',
-          display: 'flex',
-          alignItems: 'center',
-        }}>
-          <FaSearch style={{ position: 'absolute', left: '1rem', color: 'var(--primary)', opacity: 0.6, zIndex: 1 }} />
+      {/* Search Toolbar */}
+      <div className={styles.toolbar}>
+        <div className={styles.searchBox}>
+          <FaSearch className={styles.searchIcon} aria-hidden="true" />
           <input
             type="text"
-            placeholder="Search notes by title or subject…"
+            placeholder="Search notes by title, subject or chapter…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '0.75rem 1rem 0.75rem 2.75rem',
-              background: 'var(--surface)',
-              border: '1px solid var(--surface-border)',
-              borderRadius: 'var(--radius-md)',
-              color: 'var(--foreground)',
-              fontSize: '0.95rem',
-              outline: 'none',
-              transition: 'border-color 0.2s ease',
-            }}
-            onFocus={e => (e.target.style.borderColor = 'var(--primary)')}
-            onBlur={e => (e.target.style.borderColor = 'var(--surface-border)')}
+            className={styles.searchInput}
+            aria-label="Search study notes"
           />
           {search && (
-            <button onClick={() => setSearch('')} style={{ position: 'absolute', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--foreground)', opacity: 0.5 }}>
-              <FaTimes />
+            <button onClick={() => setSearch('')} className={styles.searchClear} aria-label="Clear search">
+              <FaTimes size={12} />
             </button>
           )}
         </div>
       </div>
 
-      {/* Class Chips Navigation */}
-      <div style={{
-        display: 'flex',
-        gap: '0.6rem',
-        overflowX: 'auto',
-        paddingBottom: '0.4rem',
-        marginBottom: '1.25rem',
-        scrollbarWidth: 'none',
-      }}>
-        <button
-          onClick={() => handleClassSelect('')}
-          className="haptic-btn"
-          style={{
-            whiteSpace: 'nowrap',
-            padding: '0.5rem 1.15rem',
-            borderRadius: 999,
-            border: `1.5px solid ${!selectedClass ? 'var(--primary)' : 'var(--surface-border)'}`,
-            background: !selectedClass ? 'var(--primary)' : 'var(--surface)',
-            color: !selectedClass ? 'var(--primary-foreground)' : 'var(--foreground)',
-            cursor: 'pointer',
-            fontWeight: 700,
-            transition: 'all 0.18s ease',
-            fontSize: '0.85rem',
-            boxShadow: !selectedClass ? 'var(--shadow-glow)' : 'none',
-          }}
-        >
-          All Classes
-        </button>
-        {courses.map(course => {
-          const isSelected = normalizeClass(selectedClass) === normalizeClass(course.name);
-          return (
+      {/* SaaS Filter Bar */}
+      <div className={styles.filterBarWrapper}>
+        <div className={styles.filterBar}>
+          <div className={styles.filterBarIcon}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+            </svg>
+          </div>
+
+          {/* Class */}
+          <div className={styles.filterBarSegment}>
+            <span className={styles.filterBarLabel}>Class</span>
+            <select
+              value={selectedClass}
+              onChange={e => {
+                const val = e.target.value;
+                setSelectedClass(val);
+                setSelectedSubject('');
+                setSelectedChapter('');
+                updateURL({ class: val, subject: '', chapter: '' });
+              }}
+              className={styles.filterBarSelect}
+            >
+              <option value="">All Classes</option>
+              {courses.map(c => (
+                <option key={c.id} value={c.name}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Subject */}
+          <div className={styles.filterBarSegment}>
+            <span className={styles.filterBarLabel}>Subject</span>
+            <select
+              value={selectedSubject}
+              onChange={e => {
+                const val = e.target.value;
+                setSelectedSubject(val);
+                setSelectedChapter('');
+                updateURL({ subject: val, chapter: '' });
+              }}
+              className={styles.filterBarSelect}
+            >
+              <option value="">All Subjects</option>
+              {subjects.map(s => (
+                <option key={s.id} value={s.id}>{s.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Chapter */}
+          <div className={styles.filterBarSegment}>
+            <span className={styles.filterBarLabel}>Chapter</span>
+            <select
+              value={selectedChapter}
+              onChange={e => {
+                setSelectedChapter(e.target.value);
+                updateURL({ chapter: e.target.value });
+              }}
+              disabled={filteredChapters.length === 0}
+              className={styles.filterBarSelect}
+            >
+              <option value="">All Chapters</option>
+              {filteredChapters.map(ch => (
+                <option key={ch.id} value={ch.id}>Ch {ch.number}: {ch.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Clear */}
+          {hasFilters && (
             <button
-              key={course.id}
-              onClick={() => handleClassSelect(course.name)}
-              className="haptic-btn"
-              style={{
-                whiteSpace: 'nowrap',
-                padding: '0.5rem 1.15rem',
-                borderRadius: 999,
-                border: `1.5px solid ${isSelected ? 'var(--primary)' : 'var(--surface-border)'}`,
-                background: isSelected ? 'var(--primary)' : 'var(--surface)',
-                color: isSelected ? 'var(--primary-foreground)' : 'var(--foreground)',
-                cursor: 'pointer',
-                fontWeight: 700,
-                transition: 'all 0.18s ease',
-                fontSize: '0.85rem',
-                boxShadow: isSelected ? 'var(--shadow-glow)' : 'none',
+              className={styles.clearSegment}
+              onClick={() => {
+                setSelectedClass('');
+                setSelectedSubject('');
+                setSelectedChapter('');
+                updateURL({ class: '', subject: '', chapter: '' });
               }}
             >
-              {course.name}
+              <FaTimes size={10} /> Clear
             </button>
-          );
-        })}
+          )}
+        </div>
       </div>
 
-      {/* Subject and Chapter Filter Row */}
-      <div style={{
-        display: 'flex',
-        gap: '0.75rem',
-        marginBottom: '1.75rem',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-      }}>
-        <div style={{ flex: '1 1 200px', minWidth: 160 }}>
-          <select
-            value={selectedSubject}
-            onChange={e => {
-              const val = e.target.value;
-              setSelectedSubject(val);
-              setSelectedChapter('');
-              updateURL({ subject: val, chapter: '' });
-            }}
-            style={{
-              width: '100%',
-              padding: '0.65rem 1rem',
-              background: 'var(--surface)',
-              border: '1px solid var(--surface-border)',
-              borderRadius: 'var(--radius-md)',
-              color: 'var(--foreground)',
-              fontSize: '0.875rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              outline: 'none',
-            }}
-          >
-            <option value="">All Subjects</option>
-            {subjects.map(s => (
-              <option key={s.id} value={s.id}>{s.name}</option>
-            ))}
-          </select>
-        </div>
-
-        <div style={{ flex: '1 1 220px', minWidth: 180 }}>
-          <select
-            value={selectedChapter}
-            onChange={e => {
-              setSelectedChapter(e.target.value);
-              updateURL({ chapter: e.target.value });
-            }}
-            disabled={filteredChapters.length === 0}
-            style={{
-              width: '100%',
-              padding: '0.65rem 1rem',
-              background: 'var(--surface)',
-              border: '1px solid var(--surface-border)',
-              borderRadius: 'var(--radius-md)',
-              color: 'var(--foreground)',
-              fontSize: '0.875rem',
-              fontWeight: 600,
-              cursor: filteredChapters.length === 0 ? 'not-allowed' : 'pointer',
-              opacity: filteredChapters.length === 0 ? 0.5 : 1,
-              outline: 'none',
-            }}
-          >
-            <option value="">All Chapters</option>
-            {filteredChapters.map(ch => (
-              <option key={ch.id} value={ch.id}>Ch {ch.number}: {ch.name}</option>
-            ))}
-          </select>
-        </div>
-
-        {hasFilters && (
-          <button
-            onClick={() => {
-              setSelectedClass('');
-              setSelectedSubject('');
-              setSelectedChapter('');
-              updateURL({ class: '', subject: '', chapter: '' });
-            }}
-            className="haptic-btn"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              padding: '0.65rem 1rem',
-              background: 'color-mix(in srgb, var(--error, #ef4444) 10%, transparent)',
-              border: '1px solid color-mix(in srgb, var(--error, #ef4444) 30%, transparent)',
-              borderRadius: 'var(--radius-md)',
-              color: 'var(--error, #ef4444)',
-              cursor: 'pointer',
-              fontWeight: 700,
-              fontSize: '0.82rem',
-            }}
-          >
-            <FaTimes size={11} /> Clear Filters
-          </button>
-        )}
-      </div>
-
-      {/* Results count */}
+      {/* Results count bar */}
       {!loading && (
-        <p style={{ fontSize: '0.85rem', opacity: 0.5, marginBottom: '1.25rem', fontWeight: 600 }}>
-          {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''} found
-        </p>
+        <div className={styles.resultsBar}>
+          <span className={styles.resultsCount}>
+            {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''} available
+          </span>
+        </div>
       )}
 
       {/* Notes Grid */}
       {loading ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.2rem' }}>
+        <div className={styles.notesGrid}>
           {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
         </div>
       ) : filteredNotes.length === 0 ? (
-        <div style={{
-          padding: '5rem 2rem',
-          textAlign: 'center',
-          background: 'var(--surface)',
-          border: '1px solid var(--surface-border)',
-          borderRadius: 'var(--radius-lg)',
-        }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📚</div>
-          <h3 style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '1.25rem' }}>No notes found</h3>
-          <p style={{ opacity: 0.55, marginBottom: '1.5rem', maxWidth: 360, margin: '0 auto 1.5rem' }}>
-            {search ? `No notes match "${search}". Try a different search or clear your filters.` : 'No notes available for the selected filters yet. Check back soon!'}
+        <div className={styles.emptyState}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📚</div>
+          <h3 className={styles.emptyStateTitle}>No notes found</h3>
+          <p className={styles.emptyStateText}>
+            {search ? `No notes match "${search}". Try a different search term or clear your filters.` : 'No notes available for the selected filters yet. Check back soon!'}
           </p>
           <button
             onClick={() => { setSearch(''); setSelectedClass(''); setSelectedSubject(''); setSelectedChapter(''); updateURL({ class: '', subject: '', chapter: '' }); }}
@@ -445,170 +325,92 @@ function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
           </button>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.2rem' }}>
-          {filteredNotes.map((note, idx) => {
-            const { color, bg } = getSubjectColor(note.subject.name);
+        <div className={styles.notesGrid}>
+          {filteredNotes.map((note) => {
+            const { color } = getSubjectColor(note.subject.name);
+            const displayClass = note.className.toLowerCase().startsWith('class') || ['cuet', 'jee', 'neet'].includes(note.className.toLowerCase())
+              ? note.className
+              : `Class ${note.className}`;
+            const isChapterRedundant = !note.chapter?.name || note.chapter.name.trim().toLowerCase() === note.title.trim().toLowerCase();
+
             return (
-              <div
-                key={note.id}
-                className="premium-card"
-                style={{
-                  padding: '1.5rem',
-                  animation: `fadeIn 0.5s ease-out forwards ${idx * 0.04}s`,
-                  opacity: 0,
-                }}
-              >
-                {/* Card Header */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem' }}>
-                  <div style={{
-                    width: 52, height: 52,
-                    borderRadius: 14,
-                    background: bg,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color, fontSize: '1.4rem', flexShrink: 0,
-                    border: `1px solid ${color}33`,
-                  }}>
-                    <FaBook />
+              <div key={note.id} className={styles.card}>
+                <div className={styles.cardTop}>
+                  <div className={styles.cardIconBox} style={{ color, borderColor: `color-mix(in srgb, ${color} 30%, transparent)` }}>
+                    <FaBook size={16} />
                   </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <h3 style={{ fontWeight: 700, fontSize: '0.97rem', marginBottom: '0.4rem', lineHeight: 1.35 }}
-                        title={note.title}>
-                      {note.title}
-                    </h3>
-                    <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
-                      <span className="badge badge-primary">
-                        {note.className.toLowerCase().startsWith('class') || ['cuet', 'jee', 'neet'].includes(note.className.toLowerCase())
-                          ? note.className
-                          : `Class ${note.className}`}
-                      </span>
-                      <span className="badge" style={{ background: bg, color }}>
-                        {note.subject.name}
-                      </span>
-                      {note.chapter && (
-                        <span className="badge badge-success">
-                          Ch {note.chapter.number}{note.chapter.name ? `: ${note.chapter.name}` : ''}
-                        </span>
-                      )}
-                    </div>
+                  <div className={styles.cardBadges}>
+                    <span className={styles.cardBadge}>{displayClass}</span>
+                    <span className={styles.cardBadge} style={{ color }}>{note.subject.name}</span>
+                    {note.chapter && (
+                      <span className={styles.cardBadge}>Ch {note.chapter.number}</span>
+                    )}
                   </div>
                 </div>
 
-                {/* Interaction row */}
-                <div style={{ marginBottom: '1rem' }}>
-                  <InteractionButtons
-                    targetId={note.id}
-                    targetType="NOTE"
-                    initialLikes={note.likesCount}
-                    initialShares={note.sharesCount}
-                    initialFavorites={note.favoritesCount}
-                    isLiked={note.isLiked}
-                    isFavorited={note.isFavorited}
-                    isAuthenticated={isAuthenticated}
-                  />
-                </div>
+                <h3 className={styles.cardTitle} title={note.title}>
+                  {note.title}
+                </h3>
+                <p className={styles.cardMeta}>
+                  {!isChapterRedundant ? `${note.chapter!.name} • Revision Notes` : 'Comprehensive Chapter Study Guide & Solutions'}
+                </p>
 
-                {/* Action Buttons */}
-                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
-                  {(note.viewUrl || note.downloadFile) && (
-                    <a
-                      href={(() => {
-                        const base = getViewLink(note.viewUrl || note.downloadFile);
-                        if (base.startsWith('/view')) return `${base}&title=${encodeURIComponent(note.title)}`;
-                        return base;
-                      })()}
-                      className="haptic-btn"
-                      style={{
-                        flex: 1,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.45rem',
-                        padding: '0.72rem 1rem',
-                        fontSize: '0.875rem',
-                        fontWeight: 700,
-                        borderRadius: 10,
-                        textAlign: 'center',
-                        background: 'var(--surface-card)',
-                        border: '1.5px solid var(--surface-border)',
-                        color: 'var(--foreground)',
-                        textDecoration: 'none',
-                        transition: 'all 0.18s ease',
-                        letterSpacing: '-0.01em',
-                      }}
-                    >
-                      <FaEye size={13} /> View
-                    </a>
-                  )}
-                  {!isAuthenticated ? (
-                    <Link
-                      href="/login"
-                      className="haptic-btn"
-                      style={{
-                        flex: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.45rem',
-                        padding: '0.72rem 1rem',
-                        fontSize: '0.875rem',
-                        fontWeight: 700,
-                        borderRadius: 10,
-                        textAlign: 'center',
-                        background: 'var(--primary)',
-                        boxShadow: 'var(--shadow-glow)',
-                        color: 'var(--primary-foreground)',
-                        textDecoration: 'none',
-                        letterSpacing: '-0.01em',
-                      }}
-                    >
-                      <FaDownload size={12} /> Login to Download
-                    </Link>
-                  ) : (note.downloadFile || note.viewUrl) ? (
-                    <button
-                      onClick={() => handleDownload(getDownloadLink(note.downloadFile || note.viewUrl), `${note.title}.pdf`)}
-                      className="haptic-btn"
-                      style={{
-                        flex: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.45rem',
-                        padding: '0.72rem 1rem',
-                        fontSize: '0.875rem',
-                        fontWeight: 700,
-                        borderRadius: 10,
-                        background: 'var(--primary)',
-                        boxShadow: 'var(--shadow-glow)',
-                        color: 'var(--primary-foreground)',
-                        border: 'none',
-                        cursor: 'pointer',
-                        letterSpacing: '-0.01em',
-                      }}
-                    >
-                      <FaDownload size={12} /> Download
-                    </button>
-                  ) : (
-                    <button
-                      disabled
-                      style={{
-                        flex: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        padding: '0.72rem 1rem',
-                        fontSize: '0.875rem',
-                        fontWeight: 700,
-                        borderRadius: 10,
-                        background: 'var(--surface-card)',
-                        border: '1.5px solid var(--surface-border)',
-                        color: 'var(--foreground)',
-                        opacity: 0.35,
-                        cursor: 'not-allowed',
-                      }}
-                    >
-                      Not Available
-                    </button>
-                  )}
+                <div className={styles.cardDivider} />
+
+                <div className={styles.cardFooter}>
+                  <div className={styles.cardInteractions}>
+                    <InteractionButtons
+                      targetId={note.id}
+                      targetType="NOTE"
+                      initialLikes={note.likesCount}
+                      initialShares={note.sharesCount}
+                      initialFavorites={note.favoritesCount}
+                      isLiked={note.isLiked}
+                      isFavorited={note.isFavorited}
+                      isAuthenticated={isAuthenticated}
+                    />
+                  </div>
+
+                  <div className={styles.cardActions}>
+                    {(note.viewUrl || note.downloadFile) && (
+                      <a
+                        href={(() => {
+                          const base = getViewLink(note.viewUrl || note.downloadFile);
+                          if (base.startsWith('/view')) return `${base}&title=${encodeURIComponent(note.title)}`;
+                          return base;
+                        })()}
+                        className={styles.btnView}
+                        aria-label={`View ${note.title}`}
+                      >
+                        <FaEye size={13} /> View
+                      </a>
+                    )}
+                    {!isAuthenticated ? (
+                      <Link
+                        href="/login"
+                        className={styles.btnDownload}
+                        aria-label="Login to Download"
+                      >
+                        <FaDownload size={12} /> Login to Download
+                      </Link>
+                    ) : (note.downloadFile || note.viewUrl) ? (
+                      <button
+                        onClick={() => handleDownload(getDownloadLink(note.downloadFile || note.viewUrl), `${note.title}.pdf`)}
+                        className={styles.btnDownload}
+                        aria-label={`Download ${note.title}`}
+                      >
+                        <FaDownload size={12} /> Download
+                      </button>
+                    ) : (
+                      <button
+                        disabled
+                        className={styles.btnView}
+                        style={{ opacity: 0.4, cursor: 'not-allowed' }}
+                      >
+                        Not Available
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             );
@@ -622,12 +424,12 @@ function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
 export default function NotesClient({ initialNotes = [] }: { initialNotes?: Note[] }) {
   return (
     <Suspense fallback={
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '2.5rem 1.5rem' }}>
-        <div className="skeleton" style={{ width: 280, height: 48, marginBottom: '0.75rem' }} />
-        <div className="skeleton skeleton-text" style={{ width: 360, marginBottom: '2rem' }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.2rem' }}>
+      <div className={styles.container}>
+        <div className="skeleton" style={{ width: 260, height: 42, marginBottom: '0.75rem' }} />
+        <div className="skeleton skeleton-text" style={{ width: 380, marginBottom: '2rem' }} />
+        <div className={styles.notesGrid}>
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="skeleton" style={{ height: 200, borderRadius: 'var(--radius-md)' }} />
+            <SkeletonCard key={i} />
           ))}
         </div>
       </div>

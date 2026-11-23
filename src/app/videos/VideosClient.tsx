@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FaYoutube, FaTimes } from 'react-icons/fa';
-import { Play, X, Sparkles, Layers } from 'lucide-react';
+import { Play, X, Sparkles, Layers, FileText } from 'lucide-react';
 import PWVideoPlayer from '@/components/video/PWVideoPlayer';
 import InteractionButtons from '@/components/InteractionButtons';
 import styles from './page.module.css';
@@ -182,42 +182,17 @@ function VideosContent({ initialVideos = [] }: { initialVideos?: Video[] }) {
   const hasFilters = !!(selectedCategory || selectedSubject || selectedChapter);
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'clamp(1rem, 5vw, 2rem) clamp(0.75rem, 3vw, 1.5rem)' }}>
-      <div style={{ marginBottom: '2rem' }} className="animate-fade-in">
-        <h1 style={{ fontSize: 'clamp(1.75rem, 8vw, 2.5rem)', fontWeight: 800, marginBottom: '0.5rem' }}>
-          Video <span className="kinetic-text">Lectures</span>
-        </h1>
-        <p style={{ opacity: 0.7, fontSize: 'clamp(0.9rem, 4vw, 1rem)' }}>Curated Physics Wallah style video lectures by class and subject. Watch free anytime.</p>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '1rem',
-          flexWrap: 'wrap',
-          background: 'rgba(6, 182, 212, 0.08)',
-          border: '1px solid rgba(6, 182, 212, 0.2)',
-          borderRadius: '12px',
-          padding: '0.75rem 1.25rem',
-          marginTop: '1.25rem',
-        }}>
-          <div style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.85)' }}>
-            Want accompanying chapter notes and self-test quizzes for these lectures?
-          </div>
-          <Link
-            href="/library"
-            style={{
-              fontSize: '0.825rem',
-              fontWeight: 700,
-              color: '#22d3ee',
-              textDecoration: 'none',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '4px',
-            }}
-          >
-            Access All Resources in Library &rarr;
-          </Link>
+    <div className={styles.container}>
+      {/* Page Header */}
+      <div className={styles.header}>
+        <div className={styles.eyebrow}>
+          <span className={styles.eyebrowDot} />
+          <span>Video Lectures</span>
         </div>
+        <h1 className={styles.title}>Video Lessons</h1>
+        <p className={styles.subtitle}>
+          Curated video lessons and lectures by class and subject. Watch free anytime in the theater player.
+        </p>
       </div>
 
       {/* ── SaaS Filter Bar ── */}
@@ -300,16 +275,35 @@ function VideosContent({ initialVideos = [] }: { initialVideos?: Video[] }) {
         </div>
       </div>
 
+      {/* Results count bar */}
+      {!loading && (
+        <div className={styles.resultsBar}>
+          <span className={styles.resultsCount}>
+            {videos.length} video{videos.length !== 1 ? 's' : ''} available
+          </span>
+        </div>
+      )}
+
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '4rem', opacity: 0.6 }}>Loading videos...</div>
+        <div className={styles.videosGrid}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className={styles.videoCard}>
+              <div className="skeleton" style={{ width: '100%', paddingBottom: '56.25%' }} />
+              <div style={{ padding: '1rem' }}>
+                <div className="skeleton skeleton-text" style={{ width: '80%', height: '1.2rem', marginBottom: '0.5rem' }} />
+                <div className="skeleton skeleton-text" style={{ width: '50%', height: '1rem' }} />
+              </div>
+            </div>
+          ))}
+        </div>
       ) : videos.length === 0 ? (
         <div className="glass-morphism" style={{ padding: '4rem', textAlign: 'center', opacity: 0.6 }}>
-          <FaYoutube style={{ fontSize: '4rem', marginBottom: '1rem', color: '#ff0000' }} />
+          <FaYoutube style={{ fontSize: '4rem', marginBottom: '1rem', color: '#ef4444' }} />
           <p>No videos available yet. Check back soon!</p>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}>
-          {videos.map((video, idx) => {
+        <div className={styles.videosGrid}>
+          {videos.map((video) => {
             const videoId = getYoutubeId(video.youtubeLink);
             const thumbUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
 
@@ -317,16 +311,12 @@ function VideosContent({ initialVideos = [] }: { initialVideos?: Video[] }) {
               <div
                 key={video.id}
                 className={styles.videoCard}
-                style={{
-                  animation: `fadeIn 0.5s ease-out forwards ${idx * 0.05}s`,
-                  opacity: 0
-                }}
               >
                 {/* Interactive High-Def Thumbnail with PW Video Player Launcher */}
                 <div 
                   className={styles.thumbnailContainer}
                   onClick={() => setActivePlayerVideo(video)}
-                  title={`Play "${video.title}" in PW Video Player`}
+                  title={`Play "${video.title}" in Theater Player`}
                 >
                   {thumbUrl ? (
                     <img 
@@ -337,13 +327,13 @@ function VideosContent({ initialVideos = [] }: { initialVideos?: Video[] }) {
                     />
                   ) : (
                     <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <FaYoutube style={{ fontSize: '3rem', color: '#ff0000' }} />
+                      <FaYoutube style={{ fontSize: '3rem', color: '#ef4444' }} />
                     </div>
                   )}
 
                   <div className={styles.thumbnailOverlay}>
                     <div className={styles.playGlowBtn}>
-                      <Play size={24} fill="currentColor" style={{ marginLeft: '3px' }} />
+                      <Play size={20} fill="currentColor" style={{ marginLeft: '2px' }} />
                     </div>
                   </div>
 
@@ -356,41 +346,33 @@ function VideosContent({ initialVideos = [] }: { initialVideos?: Video[] }) {
 
                   <div className={styles.pwPillBadge}>
                     <Sparkles size={10} />
-                    <span>PW Video Player</span>
+                    <span>Watch</span>
                   </div>
                 </div>
 
-                <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
+                <div className={styles.cardBody}>
                   <div>
                     <h3 
                       onClick={() => setActivePlayerVideo(video)}
-                      style={{ 
-                        fontWeight: 700, 
-                        marginBottom: '0.75rem', 
-                        fontSize: '1.05rem', 
-                        lineHeight: 1.4, 
-                        height: '2.8rem', 
-                        overflow: 'hidden', 
-                        display: '-webkit-box', 
-                        WebkitLineClamp: 2, 
-                        WebkitBoxOrient: 'vertical',
-                        cursor: 'pointer'
-                      }}
+                      className={styles.cardTitle}
                       title={video.title}
                     >
                       {video.title}
                     </h3>
 
-                    <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
-                      <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(99,102,241,0.1)', borderRadius: '999px', color: 'var(--primary)', fontWeight: 600 }}>{video.category}</span>
+                    <div className={styles.cardBadges}>
+                      <span className={styles.cardBadge}>{video.category}</span>
                       {video.subject && (
-                        <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(139,92,246,0.1)', borderRadius: '999px', color: 'var(--accent)', fontWeight: 600 }}>{video.subject.name}</span>
+                        <span className={styles.cardBadge} style={{ color: 'var(--primary)' }}>{video.subject.name}</span>
+                      )}
+                      {video.chapter && (
+                        <span className={styles.cardBadge}>Ch {video.chapter.number}</span>
                       )}
                     </div>
                   </div>
 
-                  <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--surface-border)', paddingTop: '0.75rem' }}>
+                  <div className={styles.cardFooter}>
+                    <div className={styles.cardInteractions}>
                       <InteractionButtons
                         targetId={video.id}
                         targetType="VIDEO"
@@ -401,17 +383,24 @@ function VideosContent({ initialVideos = [] }: { initialVideos?: Video[] }) {
                         isFavorited={video.isFavorited}
                         isAuthenticated={isAuthenticated}
                       />
+                    </div>
+                    <div className={styles.cardActions}>
+                      <button
+                        onClick={() => setActivePlayerVideo(video)}
+                        className={styles.btnDownload}
+                        aria-label={`Watch ${video.title}`}
+                      >
+                        <Play size={12} fill="currentColor" /> Watch
+                      </button>
                       {video.pdfUrl && (
                         <a
                           href={video.pdfUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="haptic-btn"
-                          style={{ fontSize: '0.8rem', color: 'var(--primary)', textDecoration: 'none', border: '1px solid var(--primary)', padding: '0.25rem 0.75rem', borderRadius: 'var(--radius-sm)', fontWeight: 600, transition: 'var(--transition)' }}
-                          onMouseEnter={e => e.currentTarget.style.background = 'rgba(99,102,241,0.1)'}
-                          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                          className={styles.btnView}
+                          aria-label={`Notes PDF for ${video.title}`}
                         >
-                          Notes
+                          <FileText size={12} /> Notes PDF
                         </a>
                       )}
                     </div>
@@ -500,7 +489,23 @@ function VideosContent({ initialVideos = [] }: { initialVideos?: Video[] }) {
 
 export default function VideosClient({ initialVideos = [] }: { initialVideos?: Video[] }) {
   return (
-    <Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', opacity: 0.6 }}>Loading page...</div>}>
+    <Suspense fallback={
+      <div className={styles.container}>
+        <div className="skeleton" style={{ width: 260, height: 42, marginBottom: '0.75rem' }} />
+        <div className="skeleton skeleton-text" style={{ width: 380, marginBottom: '2rem' }} />
+        <div className={styles.videosGrid}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className={styles.videoCard}>
+              <div className="skeleton" style={{ width: '100%', paddingBottom: '56.25%' }} />
+              <div style={{ padding: '1rem' }}>
+                <div className="skeleton skeleton-text" style={{ width: '80%', height: '1.2rem', marginBottom: '0.5rem' }} />
+                <div className="skeleton skeleton-text" style={{ width: '50%', height: '1rem' }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    }>
       <VideosContent initialVideos={initialVideos} />
     </Suspense>
   );

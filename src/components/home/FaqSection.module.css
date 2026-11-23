@@ -1,6 +1,6 @@
 /* ── Main FAQ Section & Container ── */
 .section {
-  padding: 4.5rem 1.5rem 3.5rem;
+  padding: 3.25rem 1.5rem 2.5rem;
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
@@ -12,25 +12,21 @@
 
 /* ── 1. Heading & Introduction ── */
 .sectionHead {
-  text-align: center;
-  max-width: 660px;
-  margin: 0 auto 1.75rem;
+  max-width: 640px;
+  margin-bottom: 1.5rem;
 }
 
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.35rem 0.85rem;
-  border-radius: 9999px;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--foreground);
+  border: 1px solid var(--surface-border);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--secondary);
   margin-bottom: 0.9rem;
 }
 
@@ -47,25 +43,26 @@
 }
 
 .title {
-  font-size: clamp(1.95rem, 3.5vw, 2.45rem);
+  font-size: clamp(1.75rem, 3.5vw, 2.35rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--foreground);
   margin-bottom: 0.65rem;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .subtitle {
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  line-height: 1.65;
   color: var(--foreground);
-  opacity: 0.65;
+  opacity: 0.55;
+  max-width: 640px;
 }
 
 /* ── 2. Search Field ── */
 .searchWrapper {
-  max-width: 640px;
-  margin: 0 auto 1.5rem;
+  max-width: 600px;
+  margin-bottom: 1.25rem;
 }
 
 .searchBox {
@@ -77,7 +74,7 @@
 
 .searchIcon {
   position: absolute;
-  left: 1rem;
+  left: 0.9rem;
   color: var(--foreground);
   opacity: 0.45;
   pointer-events: none;
@@ -88,10 +85,10 @@
 
 .searchInput {
   width: 100%;
-  padding: 0.8rem 2.75rem 0.8rem 2.85rem;
-  min-height: 48px;
+  padding: 0.65rem 2.4rem 0.65rem 2.6rem;
+  min-height: 42px;
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   background: var(--surface);
   color: var(--foreground);
   border: 1px solid var(--surface-border);
@@ -139,33 +136,33 @@
 
 /* ── 3. Category Filter Chips ── */
 .categoriesContainer {
-  margin-bottom: 1.85rem;
+  margin-bottom: 1.25rem;
 }
 
 .categoryPills {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
+  justify-content: flex-start;
+  gap: 0.4rem;
   max-width: 1080px;
-  margin: 0 auto;
+  margin: 0;
   padding-bottom: 0.25rem;
 }
 
 .categoryPill {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.48rem 1rem;
-  min-height: 38px;
+  gap: 0.35rem;
+  padding: 0.35rem 0.8rem;
+  min-height: 32px;
   border-radius: 9999px;
   background: var(--surface);
   border: 1px solid var(--surface-border);
   color: var(--foreground);
   opacity: 0.75;
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
@@ -203,12 +200,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.35rem;
-  height: 1.25rem;
-  padding: 0 0.35rem;
+  min-width: 1.2rem;
+  height: 1.15rem;
+  padding: 0 0.3rem;
   border-radius: 9999px;
   background: rgba(255, 255, 255, 0.08);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 600;
   line-height: 1;
 }
@@ -222,9 +219,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.35rem;
-  padding: 0.55rem 0.95rem;
-  font-size: 0.875rem;
+  margin-bottom: 1.15rem;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.825rem;
   color: var(--foreground);
   opacity: 0.8;
   border-left: 2px solid var(--foreground);
@@ -245,10 +242,10 @@
   border: none;
   color: var(--foreground);
   opacity: 0.65;
-  font-size: 0.8rem;
+  font-size: 0.775rem;
   font-weight: 500;
   cursor: pointer;
-  padding: 0.2rem 0.45rem;
+  padding: 0.2rem 0.4rem;
   border-radius: 4px;
   transition: opacity 0.15s ease;
 }
@@ -262,7 +259,7 @@
 .categoryGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.35rem;
+  gap: 0.9rem;
   width: 100%;
   align-items: stretch;
 }
@@ -277,7 +274,7 @@
 .categoryCard {
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -290,8 +287,8 @@
 }
 
 .categoryCardHeader {
-  padding: 1rem 1.25rem;
-  min-height: 50px;
+  padding: 0.65rem 1rem;
+  min-height: 42px;
   background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid var(--surface-border);
   display: flex;
@@ -304,7 +301,7 @@
 .categoryTitleGroup {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
 
 .categoryIconWrap {
@@ -316,7 +313,7 @@
 }
 
 .categoryTitle {
-  font-size: 1rem;
+  font-size: 0.925rem;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--foreground);
@@ -324,7 +321,7 @@
 }
 
 .categoryCountBadge {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--foreground);
   opacity: 0.55;
   font-weight: 500;
@@ -356,15 +353,15 @@
 
 .questionButton {
   width: 100%;
-  padding: 14px 18px;
-  min-height: 54px;
+  padding: 10px 14px;
+  min-height: 44px;
   flex: 1;
   background: transparent;
   border: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.85rem;
+  gap: 0.75rem;
   text-align: left;
   font-family: inherit;
   cursor: pointer;
@@ -383,9 +380,9 @@
 }
 
 .questionText {
-  font-size: 0.95rem; /* ~15px */
+  font-size: 0.875rem;
   font-weight: 550;
-  line-height: 1.45;
+  line-height: 1.4;
   color: var(--foreground);
   flex: 1;
 }
@@ -425,34 +422,77 @@
 }
 
 .answerText {
-  padding: 0 18px 16px 18px;
-  font-size: 0.9rem;
-  line-height: 1.62;
+  padding: 0 14px 12px 14px;
+  font-size: 0.85rem;
+  line-height: 1.58;
   color: var(--foreground);
   opacity: 0.75;
   margin: 0;
 }
 
+/* ── View More Categories Toggle ── */
+.loadMoreWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.15rem;
+}
+
+.viewMoreButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.25rem;
+  border-radius: 9999px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--foreground);
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.viewMoreButton:hover {
+  background: var(--surface-card);
+  border-color: color-mix(in srgb, var(--foreground) 30%, transparent);
+  transform: translateY(-1px);
+}
+
+.viewMoreButton:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.viewMoreChevron {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--foreground);
+  opacity: 0.65;
+}
+
+.viewMoreChevronOpen {
+  transform: rotate(180deg);
+}
+
 /* ── Empty State ── */
 .emptyState {
   grid-column: 1 / -1;
-  padding: 3rem 1.5rem;
+  padding: 2.5rem 1.5rem;
   text-align: center;
   background: var(--surface);
   border: 1px dashed var(--surface-border);
-  border-radius: 14px;
+  border-radius: 12px;
 }
 
 .emptyIconCircle {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--surface-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 0.9rem;
+  margin: 0 auto 0.75rem;
 }
 
 .emptyIcon {
@@ -461,19 +501,19 @@
 }
 
 .emptyTitle {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: var(--foreground);
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.4rem;
 }
 
 .emptyDescription {
-  font-size: 0.9rem;
-  line-height: 1.6;
+  font-size: 0.875rem;
+  line-height: 1.55;
   color: var(--foreground);
   opacity: 0.6;
   max-width: 520px;
-  margin: 0 auto 1.35rem;
+  margin: 0 auto 1.25rem;
 }
 
 .emptyDescription strong {
@@ -490,13 +530,13 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 1.25rem;
+  padding: 0.55rem 1.15rem;
   border-radius: var(--radius-md, 10px);
   background: var(--foreground);
   color: var(--background);
   border: 1px solid var(--foreground);
   font-family: inherit;
-  font-size: 0.875rem;
+  font-size: 0.825rem;
   font-weight: 600;
   cursor: pointer;
   transition: opacity 0.15s ease, transform 0.15s ease;
@@ -514,32 +554,32 @@
 
 /* ── 5. Compact Horizontal Support Strip ── */
 .supportStrip {
-  margin-top: 2.25rem;
-  padding: 1.25rem 1.75rem;
+  margin-top: 1.5rem;
+  padding: 1rem 1.35rem;
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  border-radius: 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1.25rem;
   width: 100%;
 }
 
 .supportLeft {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .supportTextWrap {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.25rem;
 }
 
 .supportPrompt {
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   color: var(--foreground);
   opacity: 0.85;
 }
@@ -553,14 +593,14 @@
 .supportMicroChannels {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  font-size: 0.825rem;
+  gap: 0.75rem;
+  font-size: 0.775rem;
 }
 
 .microChannelLink {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   color: var(--foreground);
   opacity: 0.65;
   text-decoration: none;
@@ -587,19 +627,19 @@
 .supportActions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   flex-shrink: 0;
 }
 
 .primarySupportBtn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.15rem;
-  border-radius: 8px;
+  gap: 0.45rem;
+  padding: 0.5rem 1rem;
+  border-radius: 7px;
   background: var(--foreground);
   color: var(--background);
-  font-size: 0.875rem;
+  font-size: 0.825rem;
   font-weight: 600;
   text-decoration: none;
   transition: opacity 0.15s ease, transform 0.15s ease;
@@ -618,13 +658,13 @@
 .secondarySupportBtn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.15rem;
-  border-radius: 8px;
+  gap: 0.45rem;
+  padding: 0.5rem 1rem;
+  border-radius: 7px;
   background: transparent;
   color: var(--foreground);
   border: 1px solid var(--surface-border);
-  font-size: 0.875rem;
+  font-size: 0.825rem;
   font-weight: 500;
   text-decoration: none;
   transition: background-color 0.15s ease, border-color 0.15s ease;
@@ -643,20 +683,20 @@
 /* ── Responsive Rules ── */
 @media (max-width: 860px) {
   .section {
-    padding: 3rem 1.25rem 2.25rem;
+    padding: 2rem 1rem 1.5rem;
   }
 
   .sectionHead {
-    margin-bottom: 1.35rem;
+    margin-bottom: 1rem;
   }
 
   .title {
-    font-size: 1.75rem;
+    font-size: 1.45rem;
   }
 
   .categoryGrid {
     grid-template-columns: 1fr;
-    gap: 1.15rem;
+    gap: 0.65rem;
   }
 
   .categoryPills {
@@ -665,17 +705,38 @@
     overflow-x: auto;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+    padding: 0 0.25rem 0.35rem;
   }
 
   .categoryPills::-webkit-scrollbar {
     display: none;
   }
 
+  .categoryCardHeader {
+    padding: 0.55rem 0.85rem;
+    min-height: 38px;
+  }
+
+  .questionButton {
+    padding: 9px 12px;
+    min-height: 40px;
+  }
+
+  .questionText {
+    font-size: 0.825rem;
+  }
+
+  .answerText {
+    padding: 0 12px 10px 12px;
+    font-size: 0.8rem;
+  }
+
   .supportStrip {
     flex-direction: column;
     align-items: stretch;
-    gap: 1.15rem;
-    padding: 1.25rem;
+    gap: 0.85rem;
+    padding: 1rem;
+    margin-top: 1.15rem;
   }
 
   .supportLeft {
@@ -685,7 +746,7 @@
   .supportMicroChannels {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.45rem;
+    gap: 0.35rem;
   }
 
   .microDivider {
@@ -695,7 +756,7 @@
   .supportActions {
     flex-direction: column;
     align-items: stretch;
-    gap: 0.5rem;
+    gap: 0.45rem;
   }
 
   .primarySupportBtn,
@@ -713,7 +774,9 @@
   .searchInput,
   .primaryActionButton,
   .primarySupportBtn,
-  .secondarySupportBtn {
+  .secondarySupportBtn,
+  .viewMoreButton,
+  .viewMoreChevron {
     transition: none !important;
   }
 }
