@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { FaTrash, FaPlus, FaChevronLeft, FaImage, FaFileAlt, FaKeyboard, FaListOl } from 'react-icons/fa';
+import { FaTrash, FaPlus, FaChevronLeft, FaImage, FaFileAlt, FaKeyboard, FaListOl, FaClock } from 'react-icons/fa';
 import { logger } from '@/lib/logger'
 
 interface Question {
@@ -394,8 +394,8 @@ export default function QuizQuestionsManagerPage() {
                   <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', background: isMCQ ? 'rgba(99,102,241,0.1)' : 'rgba(245,158,11,0.1)', color: isMCQ ? 'var(--primary)' : '#f59e0b', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase' }}>
                     {isMCQ ? 'Multiple Choice (MCQ)' : 'Text Input'}
                   </span>
-                  <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', background: 'rgba(99,102,241,0.06)', color: 'var(--primary)', border: '1px solid var(--surface-border)', fontSize: '0.75rem', fontWeight: 700 }}>
-                    ⏱️ {question.timeLimit || 30}s
+                  <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', background: 'rgba(99,102,241,0.06)', color: 'var(--primary)', border: '1px solid var(--surface-border)', fontSize: '0.75rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <FaClock size={11} /> {question.timeLimit || 30}s
                   </span>
                 </div>
 

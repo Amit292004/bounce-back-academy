@@ -55,11 +55,18 @@ function getSubjectColor(name: string) {
   return { color: 'var(--primary)', bg: 'color-mix(in srgb, var(--primary) 10%, transparent)' };
 }
 
+function stripEmojis(str?: string): string {
+  if (!str) return '';
+  return str
+    .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2300}-\u{23FF}\u{2B50}\u{200D}\u{FE0F}]/gu, '')
+    .trim();
+}
+
 // Pre-seeded fallback quizzes in case the database is empty
 const STATIC_FALLBACK_QUIZZES: Quiz[] = [
   {
     id: 'static-maths-10',
-    title: '📐 Trigonometry & Algebra Essentials',
+    title: 'Trigonometry & Algebra Essentials',
     className: '10',
     subject: { name: 'Maths' },
     createdAt: new Date().toISOString(),
@@ -83,7 +90,7 @@ const STATIC_FALLBACK_QUIZZES: Quiz[] = [
   },
   {
     id: 'static-science-10',
-    title: '⚡ Electricity & Chemical Elements',
+    title: 'Electricity & Chemical Elements',
     className: '10',
     subject: { name: 'Science' },
     createdAt: new Date().toISOString(),
@@ -311,7 +318,7 @@ export default function StudentQuizPage() {
           const attempt = {
             id: selectedQuiz.id + '_' + Date.now(),
             quizId: selectedQuiz.id,
-            title: selectedQuiz.title,
+            title: stripEmojis(selectedQuiz.title) || 'Practice Assessment',
             className: selectedQuiz.className,
             subject: selectedQuiz.subject?.name || 'General',
             score,
@@ -322,7 +329,10 @@ export default function StudentQuizPage() {
           };
           const rawHistory = localStorage.getItem('bba_quiz_history');
           const history = rawHistory ? JSON.parse(rawHistory) : [];
-          const updated = [attempt, ...history.filter((h: any) => h.quizId !== attempt.quizId)].slice(0, 15);
+          const sanitizedHistory = Array.isArray(history)
+            ? history.map((h: any) => ({ ...h, title: stripEmojis(h.title) || 'Practice Assessment' }))
+            : [];
+          const updated = [attempt, ...sanitizedHistory.filter((h: any) => h.quizId !== attempt.quizId)].slice(0, 15);
           localStorage.setItem('bba_quiz_history', JSON.stringify(updated));
         }
       } catch (err) {
@@ -670,7 +680,9 @@ export default function StudentQuizPage() {
 
                 {filteredQuizzes.length === 0 && (
                   <div className={styles.emptyState} style={{ gridColumn: '1 / -1' }}>
-                    <div style={{ fontSize: '2.5rem', marginBottom: '0.85rem' }}>✨</div>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.85rem', opacity: 0.6 }}>
+                      <Sparkles size={36} />
+                    </div>
                     <h3 className={styles.emptyStateTitle}>No quizzes found</h3>
                     <p className={styles.emptyStateText}>
                       {search
@@ -768,7 +780,9 @@ export default function StudentQuizPage() {
 
                 {filteredMocks.length === 0 && (
                   <div className={styles.emptyState} style={{ gridColumn: '1 / -1' }}>
-                    <div style={{ fontSize: '2.5rem', marginBottom: '0.85rem' }}>📋</div>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.85rem', opacity: 0.6 }}>
+                      <FaRegFileAlt size={36} />
+                    </div>
                     <h3 className={styles.emptyStateTitle}>No mock papers found</h3>
                     <p className={styles.emptyStateText}>
                       {search
@@ -954,7 +968,10 @@ export default function StudentQuizPage() {
             {/* 4. Wrong Answer Recap for Text Inputs */}
             {isAnswerValidated && !isCorrect && !isMCQ && (
               <div style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', padding: '1rem 1.25rem', borderRadius: '10px', marginTop: '1.25rem', color: '#ef4444', fontWeight: 600 }}>
-                ❌ Correct Answer was: <span style={{ textDecoration: 'underline', color: 'var(--foreground)', marginLeft: '0.25rem' }}>{currentQuestion.answer}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <FaTimesCircle /> Correct Answer was:
+                </span>{' '}
+                <span style={{ textDecoration: 'underline', color: 'var(--foreground)', marginLeft: '0.25rem' }}>{currentQuestion.answer}</span>
               </div>
             )}
 
@@ -1016,7 +1033,9 @@ export default function StudentQuizPage() {
 
           {/* Award message */}
           <div className={styles.xpAwardCard}>
-            <h3>🎉 You Earned</h3>
+            <h3 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.45rem' }}>
+              <FaTrophy /> You Earned
+            </h3>
             <div className={styles.xpText}>{earnedXp} XP Points</div>
             <p>Calculated and updated to your profile rankings!</p>
           </div>

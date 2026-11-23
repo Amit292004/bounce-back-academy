@@ -6,7 +6,7 @@ import Link from 'next/link';
 import {
   FaWhatsapp, FaUpload, FaSave, FaCheckCircle, FaImage,
   FaBullhorn, FaUsers, FaTrash, FaRedo, FaLink, FaExternalLinkAlt, FaEye,
-  FaPlus, FaClone,
+  FaPlus, FaClone, FaClock, FaExclamationTriangle, FaBullseye
 } from 'react-icons/fa';
 
 interface User {
@@ -132,7 +132,7 @@ export default function AdvertisingPage() {
         setSentSet(initialSent);
       }
     } catch {
-      showStatus('❌ Failed to fetch advertising data.');
+      showStatus('Failed to fetch advertising data.');
     } finally {
       setLoading(false);
     }
@@ -162,7 +162,7 @@ export default function AdvertisingPage() {
     };
     setAds(prev => [...prev, newAd]);
     setSelectedAdId(newId);
-    showStatus(`✨ Added new advertisement #${ads.length + 1}. Upload an image banner and set destination.`);
+    showStatus(`Added new advertisement #${ads.length + 1}. Upload an image banner and set destination.`);
   };
 
   /* ---------- Duplicate Advertisement ---------- */
@@ -176,7 +176,7 @@ export default function AdvertisingPage() {
     };
     setAds(prev => [...prev, clone]);
     setSelectedAdId(newId);
-    showStatus(`📋 Duplicated "${targetAd.title}".`);
+    showStatus(`Duplicated "${targetAd.title}".`);
   };
 
   /* ---------- Delete Advertisement ---------- */
@@ -198,7 +198,7 @@ export default function AdvertisingPage() {
     if (selectedAdId === idToDelete) {
       setSelectedAdId(filtered[0].id);
     }
-    showStatus('🗑️ Advertisement deleted.');
+    showStatus('Advertisement deleted.');
   };
 
   /* ---------- Image upload via /api/upload ---------- */
@@ -215,12 +215,12 @@ export default function AdvertisingPage() {
         const data = await res.json();
         const uploadedUrl = data.url || data.path || '';
         updateCurrentAd(prev => ({ ...prev, imageUrl: uploadedUrl }));
-        showStatus('✅ Image uploaded successfully!');
+        showStatus('Image uploaded successfully!');
       } else {
-        showStatus('❌ Failed to upload image.');
+        showStatus('Failed to upload image.');
       }
     } catch {
-      showStatus('❌ Error during image upload.');
+      showStatus('Error during image upload.');
     } finally {
       setUploading(false);
     }
@@ -252,12 +252,12 @@ export default function AdvertisingPage() {
         try {
           localStorage.setItem('bba_hero_ad_updated', String(Date.now()));
         } catch {}
-        showStatus(`✅ All ${ads.length} advertisement(s) published live to Homepage!`);
+        showStatus(`All ${ads.length} advertisement(s) published live to Homepage!`);
       } else {
-        showStatus('❌ Failed to save advertisements.');
+        showStatus('Failed to save advertisements.');
       }
     } catch {
-      showStatus('❌ Network error while saving.');
+      showStatus('Network error while saving.');
     } finally {
       setSaving(false);
     }
@@ -292,7 +292,7 @@ export default function AdvertisingPage() {
       rawText = `Hi ${user.name},\n\n*${broadcastAd.title}*\n${broadcastAd.description}`;
     }
 
-    const text = `${rawText}\n\n👉 Access Here: ${adLink}`;
+    const text = `${rawText}\n\nAccess Here: ${adLink}`;
 
     let mobile = user.mobile?.replace(/\D/g, '') || '';
     if (mobile.length === 10) mobile = `91${mobile}`;
@@ -368,7 +368,7 @@ export default function AdvertisingPage() {
           color: 'var(--foreground)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <span>{statusMsg}</span>
-          <button onClick={() => setStatusMsg('')} style={{ background: 'transparent', border: 'none', color: 'inherit', cursor: 'pointer', opacity: 0.6 }}>✕</button>
+          <button onClick={() => setStatusMsg('')} style={{ background: 'transparent', border: 'none', color: 'inherit', cursor: 'pointer', opacity: 0.6 }} aria-label="Dismiss">&times;</button>
         </div>
       )}
 
@@ -482,8 +482,8 @@ export default function AdvertisingPage() {
                     </div>
 
                     {/* Destination Pill */}
-                    <div style={{ fontSize: '0.7rem', opacity: 0.6, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      🔗 <code>{item.link}</code>
+                    <div style={{ fontSize: '0.7rem', opacity: 0.6, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                      <FaLink size={10} /> <code>{item.link}</code>
                     </div>
                   </div>
                 );
@@ -891,8 +891,8 @@ export default function AdvertisingPage() {
                 </div>
               </div>
 
-              <div style={{ marginTop: '0.75rem', padding: '0.75rem 1rem', background: 'var(--surface-highlight)', borderRadius: '8px', border: '1px solid var(--surface-border)', fontSize: '0.8rem', opacity: 0.85 }}>
-                🎯 <strong>Button Destination:</strong> <code>{activeAd.link}</code>
+              <div style={{ marginTop: '0.75rem', padding: '0.75rem 1rem', background: 'var(--surface-highlight)', borderRadius: '8px', border: '1px solid var(--surface-border)', fontSize: '0.8rem', opacity: 0.85, display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
+                <FaBullseye size={13} /> <strong>Button Destination:</strong> <code>{activeAd.link}</code>
                 <br />
                 Clicking the black button or the banner image on the homepage will immediately navigate to this target URL.
               </div>
@@ -944,15 +944,15 @@ export default function AdvertisingPage() {
                 </span>
 
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.3rem 0.75rem', borderRadius: '999px', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', color: 'var(--foreground)', fontSize: '0.8rem', fontWeight: 600 }}>
-                  ⏳ {pendingCount} Pending
+                  <FaClock size={11} /> {pendingCount} Pending
                 </span>
               </div>
             )}
           </div>
 
           {!isAdReady && (
-            <div style={{ padding: '1.5rem', textAlign: 'center', opacity: 0.5, border: '1px dashed var(--surface-border)', borderRadius: 'var(--radius-sm)', marginBottom: '1.5rem' }}>
-              ⚠️ Please configure an Ad Headline or Image before sending.
+            <div style={{ padding: '1.5rem', textAlign: 'center', opacity: 0.7, border: '1px dashed var(--surface-border)', borderRadius: 'var(--radius-sm)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.45rem' }}>
+              <FaExclamationTriangle size={15} /> Please configure an Ad Headline or Image before sending.
             </div>
           )}
 

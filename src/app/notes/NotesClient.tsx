@@ -311,7 +311,9 @@ function NotesContent({ initialNotes = [] }: { initialNotes?: Note[] }) {
         </div>
       ) : filteredNotes.length === 0 ? (
         <div className={styles.emptyState}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📚</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', opacity: 0.6 }}>
+            <FaBook size={40} />
+          </div>
           <h3 className={styles.emptyStateTitle}>No notes found</h3>
           <p className={styles.emptyStateText}>
             {search ? `No notes match "${search}". Try a different search term or clear your filters.` : 'No notes available for the selected filters yet. Check back soon!'}

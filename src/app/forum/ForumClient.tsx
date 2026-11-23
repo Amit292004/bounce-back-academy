@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaComments, FaSearch, FaPlus, FaChevronUp, FaUserCircle, FaTag, FaChevronLeft, FaPaperPlane, FaTimes } from 'react-icons/fa';
+import { FaComments, FaSearch, FaPlus, FaChevronUp, FaUserCircle, FaTag, FaChevronLeft, FaPaperPlane, FaTimes, FaCommentDots, FaEdit } from 'react-icons/fa';
 import styles from './page.module.css';
 
 interface ForumReply {
@@ -408,7 +408,9 @@ export default function ForumClient() {
               </div>
             ) : posts.length === 0 ? (
               <div className={styles.emptyState}>
-                <div style={{ fontSize: '2.5rem', marginBottom: '0.85rem' }}>💬</div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.85rem', opacity: 0.6 }}>
+                  <FaComments size={36} />
+                </div>
                 <h3 className={styles.emptyStateTitle}>No discussions found</h3>
                 <p className={styles.emptyStateText}>
                   {searchQuery 
@@ -457,8 +459,8 @@ export default function ForumClient() {
                           <span key={tag} className={styles.postTag}>#{tag}</span>
                         ))}
                       </div>
-                      <span className={styles.repliesCount}>
-                        💬 {post._count?.replies || 0} replies
+                      <span className={styles.repliesCount} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                        <FaCommentDots size={12} /> {post._count?.replies || 0} replies
                       </span>
                     </div>
                   </div>
@@ -473,7 +475,9 @@ export default function ForumClient() {
       {showCreateModal && (
         <div className={styles.modalOverlay} onClick={() => setShowCreateModal(false)}>
           <div className={`glass-panel ${styles.modalCard}`} onClick={(e) => e.stopPropagation()}>
-            <h2 className={styles.modalTitle}>🚀 Start a New Discussion</h2>
+            <h2 className={styles.modalTitle} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <FaEdit size={18} /> Start a New Discussion
+            </h2>
             <form onSubmit={handleCreatePost} className={styles.form}>
               <div className={styles.inputGroup}>
                 <label className={styles.label}>Thread Title</label>

@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
 
     const token = await signStudentToken({ userId: user.id, email: user.email });
 
-    const response = NextResponse.json({ success: true, user: { name: user.name, class: user.class, email: user.email } }, { status: 200 });
+    const response = NextResponse.json({ success: true, user: { name: user.name, class: user.class, email: user.email, image: user.image } }, { status: 200 });
 
     response.cookies.set({
       name: 'student_token',

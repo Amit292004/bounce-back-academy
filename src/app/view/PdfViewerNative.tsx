@@ -5,7 +5,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaChevronLeft, FaChevronRight, FaSearchPlus, FaSearchMinus } from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaSearchPlus, FaSearchMinus, FaExclamationTriangle } from 'react-icons/fa';
 import { MdOutlineZoomOutMap } from 'react-icons/md';
 
 // Worker must be in the same module as Document/Page (react-pdf v10 requirement)
@@ -202,7 +202,9 @@ export default function PdfViewerNative({ url }: PdfViewerNativeProps) {
                 margin: '3rem auto',
               }}
             >
-              <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>⚠️</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', color: 'var(--error)' }}>
+                <FaExclamationTriangle size={36} />
+              </div>
               <p style={{ color: 'var(--error)', fontWeight: 700, marginBottom: 8 }}>Could not load PDF</p>
               <p style={{ color: 'color-mix(in srgb, var(--foreground) 40%, transparent)', fontSize: '0.82rem', lineHeight: 1.5 }}>
                 This file may be restricted. Try downloading it directly.

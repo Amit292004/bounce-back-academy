@@ -33,6 +33,8 @@ export async function POST(request: Request) {
 
     const email = payload.email;
     const name = payload.name || 'Google User';
+    const rawPicture = payload.picture || null;
+    const picture = rawPicture ? rawPicture.replace(/=s\d+(-c)?$/, '=s384-c') : null;
 
     // Check if user exists
     let user = await prisma.user.findUnique({
@@ -51,14 +53,20 @@ export async function POST(request: Request) {
           password: hashedPassword,
           class: 'Not Selected',
           emailVerified: true, // Mark Google users as verified
+          image: picture,
         },
       });
-    } else if (!user.emailVerified) {
-      // Ensure existing users are marked as verified if they sign in with Google
-      user = await prisma.user.update({
-        where: { id: user.id },
-        data: { emailVerified: true }
-      });
+    } else {
+      const updateData: any = {};
+      if (!user.emailVerified) updateData.emailVerified = true;
+      if (!user.image && picture) updateData.image = picture;
+
+      if (Object.keys(updateData).length > 0) {
+        user = await prisma.user.update({
+          where: { id: user.id },
+          data: updateData,
+        });
+      }
     }
 
     // Generate JWT session
@@ -70,7 +78,7 @@ export async function POST(request: Request) {
       { 
         success: true, 
         needsProfile: isNewOrIncomplete,
-        user: { name: user.name, class: user.class, email: user.email } 
+        user: { name: user.name, class: user.class, email: user.email, image: user.image } 
       },
       { status: 200 }
     );

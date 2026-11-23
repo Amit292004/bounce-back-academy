@@ -792,7 +792,7 @@ export default function Navbar() {
               <div className={styles.drawerAccountHeader}>
                 <div className={styles.drawerAccountAvatar}>
                   {auth.image ? (
-                    <Image src={auth.image} alt="" width={34} height={34} className={styles.avatarImg} />
+                    <Image src={auth.image} alt="" width={34} height={34} className={styles.drawerAccountAvatarImg} />
                   ) : (
                     <FaUserCircle className={styles.avatarPlaceholder} style={{ fontSize: '2rem' }} />
                   )}

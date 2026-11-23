@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { FaPaperPlane, FaImage, FaCheckCircle, FaTrash, FaInfoCircle, FaEnvelopeOpenText, FaHistory } from 'react-icons/fa';
+import { FaPaperPlane, FaImage, FaCheckCircle, FaTrash, FaInfoCircle, FaEnvelopeOpenText, FaHistory, FaClock } from 'react-icons/fa';
 import { logger } from '@/lib/logger'
 
 interface User {
@@ -399,7 +399,7 @@ export default function BroadcasterPage() {
                       borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700, display: 'inline-flex', 
                       alignItems: 'center', gap: '0.4rem', border: '1px solid #e2e8f0' 
                     }}>
-                      <span>⌛</span> Pending
+                      <FaClock size={11} /> Pending
                     </div>
                   )}
                 </div>

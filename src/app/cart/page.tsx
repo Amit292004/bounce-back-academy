@@ -14,6 +14,10 @@ import {
   Tag,
   AlertCircle,
   Sparkles,
+  BookOpen,
+  FileText,
+  GraduationCap,
+  Zap,
 } from 'lucide-react';
 import { getDriveImageUrl } from '@/lib/driveImage';
 
@@ -175,7 +179,15 @@ export default function CartPage() {
                       <img src={imgSrc} alt={item.title} className={styles.itemThumb} />
                     ) : (
                       <span className={styles.itemThumbFallback}>
-                        {item.type === 'NOTE' ? '📚' : item.type === 'PYQ' ? '📝' : item.type === 'COURSE' ? '🎓' : '⚡'}
+                        {item.type === 'NOTE' ? (
+                          <BookOpen size={18} />
+                        ) : item.type === 'PYQ' ? (
+                          <FileText size={18} />
+                        ) : item.type === 'COURSE' ? (
+                          <GraduationCap size={18} />
+                        ) : (
+                          <Zap size={18} />
+                        )}
                       </span>
                     )}
                   </div>
@@ -335,9 +347,13 @@ export default function CartPage() {
                   color: '#10b981',
                   fontWeight: 700,
                   textAlign: 'center',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.4rem',
                 }}
               >
-                🎉 You are saving ₹{totalSavings.toFixed(2)} on this order!
+                <Sparkles size={14} /> You are saving ₹{totalSavings.toFixed(2)} on this order!
               </div>
             )}
 

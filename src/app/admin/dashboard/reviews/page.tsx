@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Check, Clock, Trash2 } from 'lucide-react';
 
 interface Review {
   id: string;
@@ -132,12 +133,13 @@ export default function AdminReviewsPage() {
                       }}>{r.score}</span>
                     )}
                     <span style={{
-                      fontSize: '0.68rem', fontWeight: 700, padding: '1px 8px',
+                      fontSize: '0.68rem', fontWeight: 700, padding: '2px 8px',
                       borderRadius: '999px',
                       background: r.approved ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)',
                       color: r.approved ? 'var(--success)' : '#f59e0b',
+                      display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
                     }}>
-                      {r.approved ? '✓ Approved' : '⏳ Pending'}
+                      {r.approved ? <><Check size={11} /> Approved</> : <><Clock size={11} /> Pending</>}
                     </span>
                   </div>
                   <p style={{ fontSize: '0.85rem', opacity: 0.75, lineHeight: 1.6, color: 'var(--foreground)', margin: 0 }}>
@@ -157,8 +159,11 @@ export default function AdminReviewsPage() {
                         padding: '0.4rem 0.9rem', borderRadius: '7px',
                         background: 'var(--gradient-success)', color: 'white',
                         fontWeight: 700, fontSize: '0.78rem', border: 'none', cursor: 'pointer',
+                        display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
                       }}
-                    >✓ Approve</button>
+                    >
+                      <Check size={12} /> Approve
+                    </button>
                   ) : (
                     <button
                       onClick={() => handleApprove(r.id, false)}
@@ -177,8 +182,13 @@ export default function AdminReviewsPage() {
                       background: 'rgba(239,68,68,0.1)', color: 'var(--error)',
                       fontWeight: 700, fontSize: '0.78rem',
                       border: '1px solid rgba(239,68,68,0.2)', cursor: 'pointer',
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                     }}
-                  >🗑</button>
+                    title="Delete review"
+                    aria-label="Delete review"
+                  >
+                    <Trash2 size={13} />
+                  </button>
                 </div>
               </div>
             </div>

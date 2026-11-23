@@ -141,7 +141,9 @@ export default function FavoritesPage() {
         </div>
 
         <div className={styles.emptyState}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '0.85rem' }}>🔖</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.85rem', opacity: 0.6 }}>
+            <Bookmark size={36} />
+          </div>
           <h3 className={styles.emptyStateTitle}>Sign in to view your saved items</h3>
           <p className={styles.emptyStateText}>
             Bookmark and sync questions papers, chapter revision notes, and video lectures to access them anytime here.
@@ -268,7 +270,9 @@ export default function FavoritesPage() {
           </div>
         ) : displayItems.length === 0 ? (
           <div className={styles.emptyState}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '0.85rem' }}>🔖</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.85rem', opacity: 0.6 }}>
+              <Bookmark size={36} />
+            </div>
             <h3 className={styles.emptyStateTitle}>No favorites found</h3>
             <p className={styles.emptyStateText}>
               {search

@@ -260,7 +260,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }).catch(() => {});
 
       showToast({
-        title: 'Added to Cart! 🛒',
+        title: 'Added to Cart',
         description: `"${course.title}" has been added to your cart.`,
         type: 'success',
       });
@@ -365,7 +365,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           } catch {}
 
           showToast({
-            title: 'Coupon Applied! 🎉',
+            title: 'Coupon Applied!',
             description: data.coupon.message || `Saved ₹${data.coupon.discountAmount}`,
             type: 'success',
           });

@@ -166,7 +166,7 @@ function PaymentReturnContent() {
               }}
             />
             <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.5rem', color: '#10b981' }}>
-              Enrollment Successful! 🎉
+              Enrollment Successful!
             </h2>
             <p style={{ opacity: 0.75, fontSize: '0.95rem', marginBottom: '1.75rem', lineHeight: 1.5 }}>
               {message}

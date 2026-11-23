@@ -292,8 +292,8 @@ export default function AdminPremiumStorePage() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 700 }}>Premium Store Listings</h1>
-        <div style={{ padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-sm)', background: 'rgba(99,102,241,0.1)', color: 'var(--primary)', fontWeight: 600, fontSize: '0.85rem' }}>
-          💰 Total Products: {listings.length}
+        <div style={{ padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-sm)', background: 'rgba(99,102,241,0.1)', color: 'var(--primary)', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+          <FaCoins size={14} /> Total Products: {listings.length}
         </div>
       </div>
 

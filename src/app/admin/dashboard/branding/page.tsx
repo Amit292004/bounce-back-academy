@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { FaUpload, FaSave, FaCheckCircle, FaImage, FaUserCircle, FaTrash, FaWhatsapp, FaLink } from 'react-icons/fa';
+import { FaUpload, FaSave, FaCheckCircle, FaImage, FaUserCircle, FaTrash, FaWhatsapp, FaLink, FaLightbulb } from 'react-icons/fa';
 
 interface Branding {
   siteLogo?: string | null;
@@ -272,8 +272,8 @@ export default function BrandingPage() {
                   fontSize: '0.9rem', resize: 'vertical', outline: 'none'
                 }}
               />
-              <p style={{ fontSize: '0.75rem', opacity: 0.5, marginTop: '0.5rem' }}>
-                💡 Tip: Use <strong>{'{name}'}</strong> to automatically insert the student's name.
+              <p style={{ fontSize: '0.75rem', opacity: 0.5, marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <FaLightbulb size={12} /> Tip: Use <strong>{'{name}'}</strong> to automatically insert the student's name.
               </p>
             </div>
 
@@ -331,7 +331,9 @@ export default function BrandingPage() {
 
       {/* Instructions */}
       <div className="glass-panel" style={{ padding: '1.5rem', marginTop: '1.5rem' }}>
-        <h3 style={{ fontWeight: 600, marginBottom: '0.75rem', fontSize: '0.95rem' }}>💡 Tips</h3>
+        <h3 style={{ fontWeight: 600, marginBottom: '0.75rem', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+          <FaLightbulb size={15} /> Tips
+        </h3>
         <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', paddingLeft: '1.25rem', opacity: 0.7, fontSize: '0.875rem' }}>
           <li>The WhatsApp branding image will be sent as a link preview along with your message.</li>
           <li>Use the <strong>{'{name}'}</strong> tag to personalize your outreach.</li>

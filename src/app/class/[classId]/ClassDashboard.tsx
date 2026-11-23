@@ -10,6 +10,7 @@ import {
   BookOpen,
   Video as VideoIcon,
   CheckCircle2,
+  XCircle,
   Play,
   Award,
   ChevronRight,
@@ -1956,7 +1957,15 @@ export default function ClassDashboard({
                   {selectedOption && (
                     <>
                       <div className={`${styles.quizFeedback} ${selectedOption === activeQuiz.questions[questionIndex].answer ? styles.quizFeedbackOk : styles.quizFeedbackWrong}`}>
-                        {selectedOption === activeQuiz.questions[questionIndex].answer ? "✓ Correct!" : `✗ Wrong — ${activeQuiz.questions[questionIndex].answer}`}
+                        {selectedOption === activeQuiz.questions[questionIndex].answer ? (
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                            <CheckCircle2 size={16} /> Correct!
+                          </span>
+                        ) : (
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                            <XCircle size={16} /> Wrong — {activeQuiz.questions[questionIndex].answer}
+                          </span>
+                        )}
                       </div>
                       {activeQuiz.questions[questionIndex].explanation && (
                         <div className={styles.quizExplain}>
@@ -1978,7 +1987,7 @@ export default function ClassDashboard({
                   <div className={styles.quizReview}>
                     {quizHistory.map((r, i) => (
                       <div key={i} className={`${styles.quizReviewItem} ${r.isCorrect ? styles.reviewOk : styles.reviewWrong}`}>
-                        <span>{r.isCorrect ? "✓" : "✗"}</span>
+                        <span>{r.isCorrect ? <CheckCircle2 size={14} /> : <XCircle size={14} />}</span>
                         <div>
                           <p>{r.question}</p>
                           <span>Your answer: {r.selected}</span>

@@ -358,7 +358,9 @@ function PapersContent({ initialPapers = [] }: { initialPapers?: Paper[] }) {
         </div>
       ) : filteredPapers.length === 0 ? (
         <div className={styles.emptyState}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📄</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', opacity: 0.6 }}>
+            <FaFileAlt size={40} />
+          </div>
           <h3 className={styles.emptyStateTitle}>No papers found</h3>
           <p className={styles.emptyStateText}>
             {search

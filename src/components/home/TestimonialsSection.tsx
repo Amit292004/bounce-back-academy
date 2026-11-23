@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { X } from 'lucide-react';
 import styles from './TestimonialsSection.module.css';
 
 interface Review {
@@ -199,15 +200,18 @@ export default function TestimonialsSection() {
             {/* Close */}
             <button
               onClick={() => setShowForm(false)}
+              aria-label="Close review modal"
               style={{
                 position: 'absolute', top: '1rem', right: '1rem',
                 background: 'var(--surface-card)', border: '1px solid var(--surface-border)',
                 borderRadius: '50%', width: '30px', height: '30px',
-                cursor: 'pointer', color: 'var(--foreground)', fontSize: '0.75rem',
+                cursor: 'pointer', color: 'var(--foreground)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontWeight: 700, transition: 'var(--transition)',
+                transition: 'var(--transition)',
               }}
-            >✕</button>
+            >
+              <X size={14} />
+            </button>
 
             {submitted ? (
               <div style={{ textAlign: 'center', padding: '1rem 0' }}>

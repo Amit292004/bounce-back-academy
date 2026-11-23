@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { FaUsers, FaTrash, FaWhatsapp, FaCheckCircle, FaTimes, FaEnvelope, FaPhone, FaGraduationCap, FaCalendarAlt } from 'react-icons/fa';
+import { FaUsers, FaTrash, FaWhatsapp, FaCheckCircle, FaTimes, FaEnvelope, FaPhone, FaGraduationCap, FaCalendarAlt, FaClock } from 'react-icons/fa';
 
 interface User {
   id: string;
@@ -109,7 +109,7 @@ export default function UsersPage() {
                   <FaCheckCircle size={11} /> {sentSet.size} Sent
                 </span>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.3rem 0.75rem', borderRadius: '999px', background: 'var(--surface-highlight)', border: '1px solid var(--surface-border)', color: 'var(--foreground)', fontSize: '0.8rem', fontWeight: 600 }}>
-                  ⏳ {users.filter(u => u.mobile).length - sentSet.size} Pending
+                  <FaClock size={11} /> {users.filter(u => u.mobile).length - sentSet.size} Pending
                 </span>
               </div>
             )}
@@ -133,8 +133,9 @@ export default function UsersPage() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                           <div style={{ 
                             width: '32px', height: '32px', borderRadius: '50%', 
+                            aspectRatio: '1 / 1',
                             backgroundImage: user.image ? `url(${user.image})` : 'linear-gradient(135deg, var(--primary), var(--accent))',
-                            backgroundSize: 'cover', backgroundPosition: 'center',
+                            backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: '0.8rem', color: 'white', flexShrink: 0
                           }}>
@@ -171,7 +172,7 @@ export default function UsersPage() {
                               outline: 'none',
                             }}
                           >
-                            {isSent ? <><FaCheckCircle size={10} /> Sent</> : <>⏳ Pending</>}
+                            {isSent ? <><FaCheckCircle size={10} /> Sent</> : <><FaClock size={10} /> Pending</>}
                           </button>
                         ) : (
                           <span style={{ opacity: 0.4, fontSize: '0.8rem' }}>No number</span>
@@ -224,8 +225,9 @@ export default function UsersPage() {
                 onClick={() => selectedUser.image && setZoomImage(selectedUser.image)}
                 style={{ 
                   width: '100px', height: '100px', borderRadius: '50%', margin: '0 auto 1.5rem',
+                  aspectRatio: '1 / 1',
                   backgroundImage: selectedUser.image ? `url(${selectedUser.image})` : 'linear-gradient(135deg, var(--primary), var(--accent))',
-                  backgroundSize: 'cover', backgroundPosition: 'center',
+                  backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '2.5rem', color: 'white', border: '4px solid var(--surface-border)',
                   boxShadow: '0 8px 20px rgba(0,0,0,0.3)',

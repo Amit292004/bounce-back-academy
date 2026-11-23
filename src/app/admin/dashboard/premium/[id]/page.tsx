@@ -773,9 +773,9 @@ export default function AdminPremiumDetailPage() {
                     style={inputStyle}
                   >
                     <option value="ANNOUNCEMENT">Announcement</option>
-                    <option value="IMPORTANT">Important 🚨</option>
-                    <option value="SCHEDULE">Schedule ⏰</option>
-                    <option value="EXAM">Test / Exam 📝</option>
+                    <option value="IMPORTANT">Important</option>
+                    <option value="SCHEDULE">Schedule</option>
+                    <option value="EXAM">Test / Exam</option>
                   </select>
                 </div>
               </div>
@@ -1102,9 +1102,9 @@ export default function AdminPremiumDetailPage() {
                         <span style={{
                           fontSize: '0.7rem', fontWeight: 700, padding: '0.1rem 0.4rem',
                           borderRadius: '4px', background: 'rgba(245, 158, 11, 0.15)',
-                          color: '#f59e0b'
+                          color: '#f59e0b', display: 'inline-flex', alignItems: 'center', gap: '0.3rem'
                         }}>
-                          📁 {sub ? `${sub.name} > ` : ''}{mod.title}
+                          <FaFolder size={10} /> {sub ? `${sub.name} > ` : ''}{mod.title}
                         </span>
                       )}
                     </div>

@@ -3,19 +3,16 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
-  FaGraduationCap,
-  FaBook,
-  FaEye,
-  FaHeart,
-  FaBookmark,
-  FaShareAlt,
-  FaSearch,
-  FaTimes,
-  FaLayerGroup,
-  FaCheck,
-  FaCompass,
-  FaLaptopCode,
-} from 'react-icons/fa';
+  GraduationCap,
+  BookOpen,
+  Trophy,
+  Layers,
+  Search,
+  X,
+  ArrowRight,
+  Play,
+  FileText,
+} from 'lucide-react';
 import AddToCartButton from '@/components/cart/AddToCartButton';
 import { getDriveImageUrl } from '@/lib/driveImage';
 import styles from './page.module.css';
@@ -63,45 +60,44 @@ export default function CoursesClient({ initialCourses, initialPremiumItems }: C
     return 'competitive';
   };
 
-  const getCategoryTheme = (cat: 'secondary' | 'higher-sec' | 'competitive' | 'skills') => {
-    switch (cat) {
-      case 'secondary':
-        return {
-          color: '#2563eb', // Royal Blue
-          bg: 'rgba(37, 99, 235, 0.08)',
-          border: 'rgba(37, 99, 235, 0.22)',
-          badgeColor: '#1d4ed8',
-          label: 'School Hub',
-          icon: <FaBook size={15} />,
-        };
-      case 'higher-sec':
-        return {
-          color: '#7c3aed', // Royal Violet
-          bg: 'rgba(124, 58, 237, 0.08)',
-          border: 'rgba(124, 58, 237, 0.22)',
-          badgeColor: '#6d28d9',
-          label: 'Senior Secondary',
-          icon: <FaGraduationCap size={16} />,
-        };
-      case 'competitive':
-        return {
-          color: '#059669', // Emerald
-          bg: 'rgba(5, 150, 105, 0.08)',
-          border: 'rgba(5, 150, 105, 0.22)',
-          badgeColor: '#047857',
-          label: 'Entrance Track',
-          icon: <FaCompass size={15} />,
-        };
-      case 'skills':
-        return {
-          color: '#d97706', // Warm Amber
-          bg: 'rgba(217, 119, 6, 0.08)',
-          border: 'rgba(217, 119, 6, 0.22)',
-          badgeColor: '#b45309',
-          label: 'Skill Academy',
-          icon: <FaLaptopCode size={15} />,
-        };
+  const getHubIcon = (name: string) => {
+    const lower = name.toLowerCase().trim();
+    if (lower === 'skills') {
+      return <Layers size={18} />;
     }
+    if (lower.includes('class 11') || lower.includes('class 12')) {
+      return <BookOpen size={18} />;
+    }
+    if (lower.includes('class 8') || lower.includes('class 9') || lower.includes('class 10')) {
+      return <GraduationCap size={18} />;
+    }
+    return <Trophy size={18} />;
+  };
+
+  const getHubBadge = (name: string): string => {
+    const lower = name.toLowerCase().trim();
+    if (lower === 'skills') return 'Skill Academy';
+    if (lower.includes('class 8') || lower.includes('class 9') || lower.includes('class 10')) {
+      return 'Curriculum';
+    }
+    if (lower.includes('class 11') || lower.includes('class 12')) {
+      return 'Senior Sec';
+    }
+    return 'Entrance Track';
+  };
+
+  const getHubDescription = (name: string): string => {
+    const lower = name.toLowerCase().trim();
+    if (lower === 'class 8') return 'Comprehensive Class 8 syllabus coverage, chapter notes, and past 10-year question papers.';
+    if (lower === 'class 9') return 'Comprehensive Class 9 syllabus coverage, chapter notes, and past 10-year question papers.';
+    if (lower === 'class 10') return 'Full board preparation, chapter summaries, past 10-year papers, and practice tests.';
+    if (lower === 'class 11') return 'Stream-wise syllabus notes, past question papers, and video lectures.';
+    if (lower === 'class 12') return 'Board examination archive, question banks, and verified revision notes.';
+    if (lower === 'cuet') return 'High-yield topic notes, previous year question banks, and mock tests.';
+    if (lower === 'jee') return 'Physics derivations, chemical equations, and engineering prep papers.';
+    if (lower === 'neet') return 'Medical entrance question papers, biology notes, and exam practice.';
+    if (lower === 'skills') return 'Practical masterclasses in AI tools, productivity, and modern workflows.';
+    return 'Dedicated syllabus notes, verified past question papers, and video lectures.';
   };
 
   // Category counts
@@ -170,7 +166,7 @@ export default function CoursesClient({ initialCourses, initialPremiumItems }: C
       <div className={styles.header}>
         <div className={styles.eyebrow}>
           <span className={styles.eyebrowDot} />
-          <span>Curated Academic Hubs</span>
+          <span>Curated Learning Programs</span>
         </div>
         <h1 className={styles.title}>Courses &amp; Curriculum Hubs</h1>
         <p className={styles.subtitle}>
@@ -186,7 +182,7 @@ export default function CoursesClient({ initialCourses, initialPremiumItems }: C
             className={`${styles.segmentedBtn} ${activeTab === 'all' ? styles.segmentedBtnActive : ''}`}
             onClick={() => setActiveTab('all')}
           >
-            <FaLayerGroup size={12} />
+            <Layers size={13} />
             <span>All Hubs</span>
             <span className={styles.tabCount}>{counts.all}</span>
           </button>
@@ -227,7 +223,7 @@ export default function CoursesClient({ initialCourses, initialPremiumItems }: C
         </div>
 
         <div className={styles.searchBox}>
-          <FaSearch className={styles.searchIcon} />
+          <Search size={14} className={styles.searchIcon} />
           <input
             type="text"
             className={styles.searchInput}
@@ -242,7 +238,7 @@ export default function CoursesClient({ initialCourses, initialPremiumItems }: C
               onClick={() => setSearchQuery('')}
               aria-label="Clear search"
             >
-              <FaTimes size={12} />
+              <X size={12} />
             </button>
           )}
         </div>
@@ -251,7 +247,7 @@ export default function CoursesClient({ initialCourses, initialPremiumItems }: C
       {/* Results Bar */}
       <div className={styles.resultsBar}>
         <span className={styles.resultsCount}>
-          {totalFilteredCount} {totalFilteredCount === 1 ? 'curriculum hub' : 'curriculum hubs'} available
+          Showing {totalFilteredCount} {totalFilteredCount === 1 ? 'learning program' : 'learning programs'}
         </span>
         {searchQuery && (
           <button
@@ -284,90 +280,33 @@ export default function CoursesClient({ initialCourses, initialPremiumItems }: C
         </div>
       )}
 
-      {/* 1. Curriculum Hubs Grid */}
+      {/* 1. Curriculum Hubs Grid (Exact Dashboard Card Design) */}
       {activeTab !== 'modules' && filteredHubs.length > 0 && (
         <div className={styles.cardsGrid}>
-          {filteredHubs.map((course, idx) => {
-            const cat = getHubCategory(course.name);
-            const theme = getCategoryTheme(cat);
-            const hubTitle = course.name.toLowerCase().includes('class')
-              ? `${course.name} Curriculum Hub`
-              : `${course.name} Examination Hub`;
-
-            // Deterministic interaction counts
-            const likes = 2 + ((idx * 3) % 15);
-            const bookmarks = 1 + ((idx * 2) % 9);
-            const shares = (idx * 4) % 12;
-
-            return (
-              <div key={course.id} className={styles.card}>
-                <div className={styles.cardTop}>
-                  <div
-                    className={styles.cardIconBox}
-                    style={{
-                      color: theme.color,
-                      backgroundColor: theme.bg,
-                      borderColor: theme.border,
-                    }}
-                  >
-                    {theme.icon}
-                  </div>
-                  <div className={styles.cardBadges}>
-                    <span
-                      className={styles.cardBadge}
-                      style={{
-                        color: theme.badgeColor,
-                        backgroundColor: theme.bg,
-                        borderColor: theme.border,
-                        fontWeight: 600,
-                      }}
-                    >
-                      {course.name}
-                    </span>
-                    <span className={styles.cardBadge}>
-                      {theme.label}
-                    </span>
-                  </div>
+          {filteredHubs.map((course) => (
+            <Link
+              key={course.id}
+              href={`/class/${encodeURIComponent(course.name)}`}
+              className={styles.statCard}
+            >
+              <div className={styles.statTop}>
+                <div className={styles.statIcon}>
+                  {getHubIcon(course.name)}
                 </div>
-
-                <h3 className={styles.cardTitle}>{hubTitle}</h3>
-                <p className={styles.cardMeta}>Official NBSE &amp; National Archive • Syllabus Hub</p>
-
-                <div className={styles.cardDivider} />
-
-                <div className={styles.cardFooter}>
-                  <div className={styles.cardInteractions}>
-                    <span className={styles.interactionItem}>
-                      <FaHeart size={11} style={{ color: '#ef4444' }} /> <span>{likes}</span>
-                    </span>
-                    <span className={styles.interactionItem}>
-                      <FaBookmark size={11} style={{ color: '#3b82f6' }} /> <span>{bookmarks}</span>
-                    </span>
-                    <span className={styles.interactionItem}>
-                      <FaShareAlt size={11} style={{ color: '#8b5cf6' }} /> <span>{shares}</span>
-                    </span>
-                  </div>
-
-                  <div className={styles.cardActions}>
-                    <Link
-                      href={`/class/${encodeURIComponent(course.name)}`}
-                      className={styles.btnView}
-                    >
-                      <FaEye size={12} />
-                      <span>Preview</span>
-                    </Link>
-                    <Link
-                      href={`/class/${encodeURIComponent(course.name)}`}
-                      className={styles.btnDownload}
-                    >
-                      <FaGraduationCap size={12} />
-                      <span>Open Hub</span>
-                    </Link>
-                  </div>
-                </div>
+                <span className={styles.statBadge}>
+                  {getHubBadge(course.name)}
+                </span>
               </div>
-            );
-          })}
+
+              <div className={styles.statValue}>{course.name}</div>
+              <div className={styles.statLabel}>{getHubDescription(course.name)}</div>
+
+              <div className={styles.statAction}>
+                <span>Open Hub</span>
+                <ArrowRight size={12} />
+              </div>
+            </Link>
+          ))}
         </div>
       )}
 
@@ -375,88 +314,64 @@ export default function CoursesClient({ initialCourses, initialPremiumItems }: C
       {activeTab === 'modules' && filteredPremiumItems.length > 0 && (
         <div className={styles.cardsGrid}>
           {filteredPremiumItems.map((item) => {
-            const features = item.features ? item.features.split('|').map((f) => f.trim()) : [];
-            const typeColor = item.type === 'COURSE' ? '#7c3aed' : item.type === 'LECTURE' ? '#ea580c' : '#059669';
-
+            const imgSrc = getDriveImageUrl(item.imageUrl);
             return (
-              <div key={item.id} className={styles.card}>
+              <div key={item.id} className={styles.featuredCard}>
                 <div className={styles.imageWrapper}>
-                  {(() => {
-                    const imgSrc = getDriveImageUrl(item.imageUrl);
-                    return imgSrc ? (
-                      <img
-                        src={imgSrc}
-                        alt={item.title}
-                        className={styles.cardCoverImg}
-                        onError={(e) => {
-                          const t = e.currentTarget as HTMLImageElement;
-                          t.style.display = 'none';
-                          const sib = t.nextElementSibling as HTMLElement;
-                          if (sib) sib.style.display = 'flex';
-                        }}
-                      />
-                    ) : null;
-                  })()}
+                  {imgSrc ? (
+                    <img
+                      src={imgSrc}
+                      alt={item.title}
+                      className={styles.cardCoverImg}
+                      onError={(e) => {
+                        const t = e.currentTarget as HTMLImageElement;
+                        t.style.display = 'none';
+                        const sib = t.nextElementSibling as HTMLElement;
+                        if (sib) sib.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
                   <div
                     className={styles.cardCoverPlaceholder}
-                    style={{ display: item.imageUrl ? 'none' : 'flex' }}
+                    style={{ display: imgSrc ? 'none' : 'flex' }}
                   >
-                    <span style={{ fontSize: '1.8rem' }}>🎓</span>
+                    <GraduationCap size={28} />
                     <span style={{ fontSize: '0.72rem', fontWeight: 600, opacity: 0.75 }}>
                       {item.type}
                     </span>
                   </div>
                 </div>
 
-                <div className={styles.cardTop}>
-                  <div
-                    className={styles.cardIconBox}
-                    style={{
-                      color: typeColor,
-                      backgroundColor: `color-mix(in srgb, ${typeColor} 10%, transparent)`,
-                      borderColor: `color-mix(in srgb, ${typeColor} 25%, transparent)`,
-                    }}
-                  >
-                    <FaBook size={15} />
-                  </div>
-                  <div className={styles.cardBadges}>
-                    <span
-                      className={styles.cardBadge}
-                      style={{
-                        color: typeColor,
-                        borderColor: `color-mix(in srgb, ${typeColor} 25%, transparent)`,
-                        backgroundColor: `color-mix(in srgb, ${typeColor} 8%, transparent)`,
-                        fontWeight: 600,
-                      }}
-                    >
-                      {item.type}
-                    </span>
-                    {item.className && (
-                      <span className={styles.cardBadge}>{item.className}</span>
+                <div className={styles.statTop}>
+                  <div className={styles.statIcon}>
+                    {item.type === 'NOTE' ? (
+                      <BookOpen size={16} />
+                    ) : item.type === 'PYQ' ? (
+                      <FileText size={16} />
+                    ) : item.type === 'LECTURE' ? (
+                      <Play size={16} />
+                    ) : (
+                      <GraduationCap size={16} />
                     )}
                   </div>
-                  <span className={styles.cardYearBadge} style={{ color: '#10b981', fontWeight: 700 }}>
-                    ₹{item.price}
-                  </span>
+                  <span className={styles.statBadge}>{item.type}</span>
                 </div>
 
-                <h3 className={styles.cardTitle}>{item.title}</h3>
-                <p className={styles.cardMeta}>{item.description}</p>
+                <div className={styles.statValue} style={{ fontSize: '1rem', lineHeight: 1.35 }}>
+                  {item.title}
+                </div>
+                <div className={styles.statLabel} style={{ minHeight: '2.5rem' }}>
+                  {item.description}
+                </div>
 
-                {features.length > 0 && (
-                  <div className={styles.featuresList}>
-                    {features.slice(0, 2).map((feat, i) => (
-                      <div key={i} className={styles.featureItem}>
-                        <FaCheck size={9} style={{ color: '#10b981' }} />
-                        <span>{feat}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <div className={styles.featuredPriceRow}>
+                  <span className={styles.featuredPrice}>₹{item.price}</span>
+                  {item.originalPrice && (
+                    <span className={styles.featuredOriginalPrice}>₹{item.originalPrice}</span>
+                  )}
+                </div>
 
-                <div className={styles.cardDivider} />
-
-                <div className={styles.cardFooter}>
+                <div style={{ marginTop: 'auto' }}>
                   <AddToCartButton
                     course={{
                       id: item.id,

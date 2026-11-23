@@ -202,8 +202,9 @@ export default function ProfilePage() {
             onClick={() => user.image && setShowImageModal(true)}
             style={{
               width: 'min(90px, 25vw)', height: 'min(90px, 25vw)', borderRadius: '50%',
+              aspectRatio: '1 / 1',
               backgroundImage: user.image ? `url(${user.image})` : 'linear-gradient(135deg, var(--primary), var(--accent))',
-              backgroundSize: 'cover', backgroundPosition: 'center',
+              backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 'clamp(1.5rem, 6vw, 2.5rem)', border: '3px solid var(--surface-border)',
               boxShadow: '0 4px 15px rgba(0,0,0,0.2)', overflow: 'hidden',
@@ -283,7 +284,9 @@ export default function ProfilePage() {
           background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.35)',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <span style={{ fontSize: '1.25rem' }}>📱</span>
+            <span style={{ color: '#f59e0b', display: 'flex', alignItems: 'center' }}>
+              <FaPhone size={18} />
+            </span>
             <div>
               <p style={{ fontWeight: 600, fontSize: '0.9rem', color: '#f59e0b' }}>Complete your profile</p>
               <p style={{ fontSize: '0.8rem', opacity: 0.7, marginTop: '0.1rem' }}>Please select your class and add your mobile number.</p>

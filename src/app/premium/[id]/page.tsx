@@ -22,6 +22,7 @@ import {
   Bell,
   Lock,
   Sparkles,
+  Package,
 } from "lucide-react";
 import { FaArrowLeft, FaShoppingCart, FaShieldAlt, FaCreditCard, FaMobileAlt, FaTimes } from "react-icons/fa";
 import { getDriveImageUrl } from "@/lib/driveImage";
@@ -485,7 +486,7 @@ export default function PremiumCourseHubPage() {
   if (!item) return null;
 
   // ═════════════════════════════════════════════════════════════════════════════
-  // 🔓 UNLOCKED CLASSROOM VIEW
+  // UNLOCKED CLASSROOM VIEW
   // ═════════════════════════════════════════════════════════════════════════════
   if (item.isUnlocked) {
     const PW_NAV_TABS = [
@@ -1098,7 +1099,7 @@ export default function PremiumCourseHubPage() {
   }
 
   // ═════════════════════════════════════════════════════════════════════════════
-  // 🔒 LOCKED SALES PAGE (BEFORE PURCHASE)
+  // LOCKED SALES PAGE (BEFORE PURCHASE)
   // ═════════════════════════════════════════════════════════════════════════════
   const featuresList = item.features ? item.features.split("|").map((f: string) => f.trim()).filter(Boolean) : [];
 
@@ -1130,7 +1131,10 @@ export default function PremiumCourseHubPage() {
           )}
 
           <div className={premiumStyles.curriculumPreviewSection}>
-            <h3 className={premiumStyles.curriculumPreviewHeading}>📦 Curriculum Preview ({item.contents?.length || 0} items)</h3>
+            <h3 className={premiumStyles.curriculumPreviewHeading}>
+              <Package size={18} style={{ display: 'inline', marginRight: '0.45rem', verticalAlign: 'middle' }} />
+              Curriculum Preview ({item.contents?.length || 0} items)
+            </h3>
             <div className={premiumStyles.previewList}>
               {(item.contents || []).map((c: any) => (
                 <div key={c.id} className={premiumStyles.previewRow}>
@@ -1281,7 +1285,7 @@ export default function PremiumCourseHubPage() {
             {checkoutStep === "success" && (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "1rem", padding: "2rem 0" }}>
                 <CheckCircle2 size={48} color="#10b981" />
-                <h3>Welcome to the Course! 🎉</h3>
+                <h3>Welcome to the Course!</h3>
                 <p style={{ fontSize: "0.85rem", opacity: 0.7 }}>Your access is now active and ready.</p>
                 <button onClick={() => setShowCheckout(false)} className="btn-primary" style={{ width: "100%", padding: "0.85rem" }}>
                   Open Course Classroom <ChevronRight size={14} />

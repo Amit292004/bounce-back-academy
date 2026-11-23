@@ -107,7 +107,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
         <div style={{ padding: '1.5rem', borderTop: '1px solid var(--surface-border)' }}>
           {branding.adminPhoto && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-              <img src={getDriveImageUrl(branding.adminPhoto) || ""} alt="Admin" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)' }} />
+              <img src={getDriveImageUrl(branding.adminPhoto) || ""} alt="Admin" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', border: '2px solid var(--primary)' }} />
               <div>
                 <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--foreground)' }}>Administrator</p>
                 <p style={{ fontSize: '0.7rem', opacity: 0.6 }}>Manage Platform</p>

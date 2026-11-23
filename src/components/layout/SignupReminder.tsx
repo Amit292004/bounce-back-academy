@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { X } from 'lucide-react';
 
 export default function SignupReminder() {
   const [visible, setVisible] = useState(false);
@@ -261,7 +262,9 @@ export default function SignupReminder() {
 
       <div className="sr-outer">
         {/* Close button OUTSIDE clipping containers */}
-        <button onClick={handleDismiss} className="sr-close" aria-label="Dismiss">✕</button>
+        <button onClick={handleDismiss} className="sr-close" aria-label="Dismiss">
+          <X size={12} />
+        </button>
 
         <div className="sr-border">
           <div className="sr-card">

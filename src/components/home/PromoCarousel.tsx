@@ -11,6 +11,7 @@ import {
   FileText,
   BookOpen,
   Award,
+  Check,
 } from 'lucide-react';
 import styles from './PromoCarousel.module.css';
 import { HeroAdData } from '@/lib/adConfig';
@@ -328,7 +329,7 @@ export default function PromoCarousel({
             <div className={styles.highlightList} aria-label="Key highlights">
               {current.highlights.map((item) => (
                 <span key={item} className={styles.highlightChip}>
-                  <span className={styles.chipCheck}>✓</span>
+                  <span className={styles.chipCheck}><Check size={11} /></span>
                   <span>{item}</span>
                 </span>
               ))}

@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import styles from './CartDrawer.module.css';
-import { ShoppingCart, X, Trash2, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { ShoppingCart, X, Trash2, ArrowRight, ShieldCheck, Sparkles, BookOpen, FileText, GraduationCap, Zap } from 'lucide-react';
 import { getDriveImageUrl } from '@/lib/driveImage';
 
 export default function CartDrawer() {
@@ -109,7 +109,15 @@ export default function CartDrawer() {
                         <img src={imgSrc} alt={item.title} className={styles.itemThumb} />
                       ) : (
                         <div className={styles.itemThumbFallback}>
-                          {item.type === 'NOTE' ? '📚' : item.type === 'PYQ' ? '📝' : item.type === 'COURSE' ? '🎓' : '⚡'}
+                          {item.type === 'NOTE' ? (
+                            <BookOpen size={16} />
+                          ) : item.type === 'PYQ' ? (
+                            <FileText size={16} />
+                          ) : item.type === 'COURSE' ? (
+                            <GraduationCap size={16} />
+                          ) : (
+                            <Zap size={16} />
+                          )}
                         </div>
                       )}
 

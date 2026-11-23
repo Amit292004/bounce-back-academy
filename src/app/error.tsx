@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { AlertTriangle } from "lucide-react";
 import { logger } from '@/lib/logger'
 
 export default function Error({
@@ -27,7 +28,9 @@ export default function Error({
       padding: '2rem',
       textAlign: 'center',
     }}>
-      <div style={{ fontSize: '3rem' }}>⚠️</div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8, color: '#ef4444' }}>
+        <AlertTriangle size={48} />
+      </div>
       <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Something went wrong</h2>
       <p style={{ opacity: 0.7, maxWidth: '400px' }}>
         An unexpected error occurred. You can try again or go back to the home page.

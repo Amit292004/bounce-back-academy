@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { 
   FaCoins, FaShoppingCart, FaShieldAlt, FaTimes, FaCreditCard, 
   FaMobileAlt, FaArrowRight, FaCheckCircle, FaBookOpen, FaDownload, 
-  FaPlayCircle, FaChevronRight, FaEye, FaSearch, FaFileAlt, FaGraduationCap
+  FaPlayCircle, FaChevronRight, FaEye, FaSearch, FaFileAlt, FaGraduationCap,
+  FaBoxOpen
 } from 'react-icons/fa';
 import styles from './page.module.css';
 import { getDriveImageUrl } from '@/lib/driveImage';
@@ -29,7 +30,7 @@ interface PremiumItem {
 const STATIC_FALLBACK_PACKAGES: PremiumItem[] = [
   {
     id: 'pack-notes-10',
-    title: '📐 Class 10 Board Notes Package',
+    title: 'Class 10 Board Notes Package',
     description: 'Expert, color-coded study notes covering all chapters of Class 10 Science and Mathematics. Includes solved examples.',
     type: 'NOTE',
     price: 99,
@@ -41,7 +42,7 @@ const STATIC_FALLBACK_PACKAGES: PremiumItem[] = [
   },
   {
     id: 'pack-pyq-12',
-    title: '⚡ Class 12 Physics Premium PYQs',
+    title: 'Class 12 Physics Premium PYQs',
     description: 'Highly requested Previous Year Question papers from 2016-2025 with step-by-step verified expert solutions.',
     type: 'PYQ',
     price: 149,
@@ -53,7 +54,7 @@ const STATIC_FALLBACK_PACKAGES: PremiumItem[] = [
   },
   {
     id: 'pack-course-full',
-    title: '🚀 Class 9-12 Foundation Mathematics Course',
+    title: 'Class 9-12 Foundation Mathematics Course',
     description: 'Comprehensive mathematics crash course designed to establish core arithmetic and algebraic concepts for board prep.',
     type: 'COURSE',
     price: 499,
@@ -496,9 +497,19 @@ export default function PremiumStorePage() {
                   className={styles.cardCoverPlaceholder}
                   style={{ display: item.imageUrl ? 'none' : 'flex' }}
                 >
-                  <span style={{ fontSize: '2.2rem' }}>
-                    {item.type === 'NOTE' ? '📚' : item.type === 'PYQ' ? '📝' : item.type === 'COURSE' ? '🎓' : item.type === 'LECTURE' ? '🎬' : '📦'}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8, marginBottom: '0.25rem' }}>
+                    {item.type === 'NOTE' ? (
+                      <FaBookOpen size={28} />
+                    ) : item.type === 'PYQ' ? (
+                      <FaFileAlt size={28} />
+                    ) : item.type === 'COURSE' ? (
+                      <FaGraduationCap size={28} />
+                    ) : item.type === 'LECTURE' ? (
+                      <FaPlayCircle size={28} />
+                    ) : (
+                      <FaCoins size={28} />
+                    )}
+                  </div>
                   <span style={{ fontSize: '0.72rem', fontWeight: 600, opacity: 0.75 }}>
                     Premium {getTypeLabel(item.type)}
                   </span>
@@ -597,7 +608,9 @@ export default function PremiumStorePage() {
 
         {filteredItems.length === 0 && (
           <div className={styles.emptyState}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '0.85rem' }}>📦</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.85rem', opacity: 0.6 }}>
+              <FaBoxOpen size={36} />
+            </div>
             <h3 className={styles.emptyStateTitle}>No packages found</h3>
             <p className={styles.emptyStateText}>
               {search
