@@ -294,7 +294,7 @@ export default function AdminQuizzesPage() {
                 </td>
                 <td style={{ padding: '1rem', fontWeight: 500 }}>{quiz.title}</td>
                 <td style={{ padding: '1rem', textAlign: 'center' }}>
-                  <span style={{ padding: '0.2rem 0.6rem', borderRadius: '4px', background: 'rgba(99,102,241,0.1)', color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 600 }}>
+                  <span style={{ padding: '0.2rem 0.6rem', borderRadius: '4px', background: 'var(--surface-card)', color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 600 }}>
                     {quiz._count.questions} questions
                   </span>
                 </td>

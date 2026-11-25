@@ -26,15 +26,23 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!mounted) return;
-    
+    const root = document.documentElement;
+    root.classList.add('theme-switching');
+
     if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-      document.documentElement.classList.remove('light');
+      root.classList.add('dark');
+      root.classList.remove('light');
     } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
+      root.classList.remove('dark');
+      root.classList.add('light');
     }
-    
+
+    // Flush synchronous style update so colors/backgrounds swap atomically without mid-fade contrast glitches
+    void root.offsetHeight;
+    requestAnimationFrame(() => {
+      root.classList.remove('theme-switching');
+    });
+
     localStorage.setItem('bba-theme', theme);
   }, [theme, mounted]);
 

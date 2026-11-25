@@ -57,7 +57,7 @@ async function getUpstashLimiter(limit: number, windowSeconds: number) {
  * @returns        - null if allowed; a 429 NextResponse if blocked
  */
 export async function checkRateLimit(
-  request: NextRequest,
+  request: Request | NextRequest,
   limit = 5,
   windowS = 60,
 ): Promise<NextResponse | null> {
@@ -65,7 +65,8 @@ export async function checkRateLimit(
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
     request.headers.get('x-real-ip') ??
     'unknown';
-  const key = `rate:${request.nextUrl.pathname}:${ip}`;
+  const pathname = (request as any).nextUrl?.pathname || (request.url ? new URL(request.url).pathname : 'unknown');
+  const key = `rate:${pathname}:${ip}`;
 
   const useUpstash =
     !!process.env.UPSTASH_REDIS_REST_URL && !!process.env.UPSTASH_REDIS_REST_TOKEN;

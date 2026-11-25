@@ -292,7 +292,7 @@ export default function AdminPremiumStorePage() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 700 }}>Premium Store Listings</h1>
-        <div style={{ padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-sm)', background: 'rgba(99,102,241,0.1)', color: 'var(--primary)', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+        <div style={{ padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-sm)', background: 'var(--surface-card)', color: 'var(--primary)', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <FaCoins size={14} /> Total Products: {listings.length}
         </div>
       </div>
@@ -533,7 +533,7 @@ export default function AdminPremiumStorePage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', alignItems: 'flex-start' }}>
                     <span style={{
                       padding: '0.15rem 0.5rem', borderRadius: '4px',
-                      background: item.type === 'NOTE' ? 'rgba(99,102,241,0.1)' : item.type === 'PYQ' ? 'rgba(16,185,129,0.1)' : item.type === 'COURSE' ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)',
+                      background: item.type === 'NOTE' ? 'var(--surface-card)' : item.type === 'PYQ' ? 'rgba(16,185,129,0.1)' : item.type === 'COURSE' ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)',
                       color: item.type === 'NOTE' ? 'var(--primary)' : item.type === 'PYQ' ? '#10b981' : item.type === 'COURSE' ? '#f59e0b' : '#ef4444',
                       fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase'
                     }}>
@@ -569,8 +569,8 @@ export default function AdminPremiumStorePage() {
                     onClick={() => handleViewBuyers(item)}
                     style={{
                       padding: '0.22rem 0.6rem', borderRadius: '4px',
-                      background: 'rgba(99,102,241,0.06)', color: 'var(--primary)',
-                      fontWeight: 700, fontSize: '0.8rem', border: '1px solid rgba(99,102,241,0.12)',
+                      background: 'var(--surface-card)', color: 'var(--primary)',
+                      fontWeight: 700, fontSize: '0.8rem', border: '1px solid var(--surface-card)',
                       cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
                       transition: 'all 0.2s hover'
                     }}
@@ -610,8 +610,8 @@ export default function AdminPremiumStorePage() {
                       style={{
                         display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
                         padding: '0.35rem 0.75rem', borderRadius: '6px',
-                        background: 'rgba(99,102,241,0.1)', color: 'var(--primary)',
-                        fontSize: '0.78rem', fontWeight: 700, border: '1px solid rgba(99,102,241,0.2)',
+                        background: 'var(--surface-card)', color: 'var(--primary)',
+                        fontSize: '0.78rem', fontWeight: 700, border: '1px solid var(--surface-card)',
                         transition: 'all 0.15s ease'
                       }}
                       title="Manage Content"
@@ -692,7 +692,7 @@ export default function AdminPremiumStorePage() {
             <div style={{ flex: 1, overflowY: 'auto', minHeight: '200px' }}>
               {loadingBuyers ? (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '4rem 0', gap: '1rem' }}>
-                  <div style={{ width: '40px', height: '40px', border: '4px solid rgba(99,102,241,0.1)', borderTop: '4px solid var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                  <div style={{ width: '40px', height: '40px', border: '4px solid var(--surface-card)', borderTop: '4px solid var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
                   <span style={{ fontSize: '0.9rem', opacity: 0.7 }}>Loading unlock details...</span>
                 </div>
               ) : (() => {
@@ -738,7 +738,7 @@ export default function AdminPremiumStorePage() {
                           </span>
                           <span style={{
                             padding: '0.15rem 0.4rem', borderRadius: '4px',
-                            background: 'rgba(99,102,241,0.1)', color: 'var(--primary)',
+                            background: 'var(--surface-card)', color: 'var(--primary)',
                             fontSize: '0.7rem', fontWeight: 800
                           }}>
                             CLASS {purchase.user?.class}

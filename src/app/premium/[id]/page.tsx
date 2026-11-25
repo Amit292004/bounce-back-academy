@@ -435,13 +435,18 @@ export default function PremiumCourseHubPage() {
         }
         const cashfree = (window as any).Cashfree({ mode: orderData.environment || "production" });
         cashfree.checkout({ paymentSessionId: orderData.paymentSessionId, redirectTarget: "_self" });
-      } else {
+      } else if (orderData.mode === "free") {
+        alert(orderData.message || "Course access unlocked!");
+        fetchItemDetail();
+      } else if (orderData.mode === "simulated") {
         setShowCheckout(true);
         setCheckoutStep("details");
         setCardNumber("");
         setCardExpiry("");
         setCardCvv("");
         setUpiId("");
+      } else {
+        alert(orderData.error || "Payment gateway is currently unavailable.");
       }
     } finally {
       setIsPurchasing(false);
@@ -478,7 +483,7 @@ export default function PremiumCourseHubPage() {
   if (loading) {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: "1rem" }}>
-        <div style={{ width: "32px", height: "32px", border: "3px solid rgba(99,102,241,0.15)", borderTopColor: "var(--primary)", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+        <div style={{ width: "32px", height: "32px", border: "3px solid var(--surface-border)", borderTopColor: "var(--foreground)", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
       </div>
     );
   }
@@ -615,7 +620,7 @@ export default function PremiumCourseHubPage() {
                               setClassroomSubTab("lectures");
                             }}
                           >
-                            <div className={styles.chapterNum} style={{ background: "rgba(99,102,241,0.1)", color: "#6366f1", fontWeight: 800 }}>
+                            <div className={styles.chapterNum} style={{ background: "rgba(249,115,22,0.12)", color: "#f97316", fontWeight: 800 }}>
                               {padNum}
                             </div>
                             <div className={styles.chapterInfo}>
@@ -749,7 +754,7 @@ export default function PremiumCourseHubPage() {
                                 if (note.viewUrl) setSelectedDoc({ title: note.title, viewUrl: note.viewUrl, downloadUrl: note.downloadFile });
                               }}
                             >
-                              <div className={styles.docIcon} style={{ background: "rgba(99,102,241,0.1)", color: "#6366f1" }}>
+                              <div className={styles.docIcon} style={{ background: "rgba(249,115,22,0.12)", color: "#f97316" }}>
                                 <FileText size={20} />
                               </div>
                               <div className={styles.docInfo}>
@@ -979,7 +984,7 @@ export default function PremiumCourseHubPage() {
                     const isImportant = tag === "IMPORTANT";
                     const isExam = tag === "EXAM";
                     const isSchedule = tag === "SCHEDULE";
-                    const badgeBg = isImportant ? "rgba(239, 68, 68, 0.12)" : isExam ? "rgba(16, 185, 129, 0.12)" : isSchedule ? "rgba(245, 158, 11, 0.12)" : "rgba(99, 102, 241, 0.12)";
+                    const badgeBg = isImportant ? "rgba(239, 68, 68, 0.12)" : isExam ? "rgba(16, 185, 129, 0.12)" : isSchedule ? "rgba(245, 158, 11, 0.12)" : "var(--surface-card)";
                     const badgeColor = isImportant ? "#ef4444" : isExam ? "#10b981" : isSchedule ? "#f59e0b" : "var(--primary)";
 
                     return (
@@ -1139,7 +1144,7 @@ export default function PremiumCourseHubPage() {
               {(item.contents || []).map((c: any) => (
                 <div key={c.id} className={premiumStyles.previewRow}>
                   <div className={premiumStyles.previewIconWrap}>
-                    {c.contentType === "VIDEO" ? <VideoIcon color="#ef4444" size={18} /> : <FileText color="#6366f1" size={18} />}
+                    {c.contentType === "VIDEO" ? <VideoIcon color="#ef4444" size={18} /> : <FileText color="#f97316" size={18} />}
                   </div>
                   <div className={premiumStyles.previewTitleWrap}>
                     <strong>{c.title}</strong>
@@ -1248,10 +1253,10 @@ export default function PremiumCourseHubPage() {
                 </div>
 
                 <div style={{ display: "flex", gap: "0.5rem" }}>
-                  <button type="button" onClick={() => setPayTab("card")} style={{ flex: 1, padding: "0.6rem", borderRadius: "6px", border: `1px solid ${payTab === "card" ? "var(--primary)" : "var(--surface-border)"}`, background: payTab === "card" ? "rgba(99,102,241,0.1)" : "transparent", color: payTab === "card" ? "var(--primary)" : "var(--foreground)", fontWeight: 600, fontSize: "0.82rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }}>
+                  <button type="button" onClick={() => setPayTab("card")} style={{ flex: 1, padding: "0.6rem", borderRadius: "6px", border: `1px solid ${payTab === "card" ? "var(--foreground)" : "var(--surface-border)"}`, background: payTab === "card" ? "var(--surface-card)" : "transparent", color: "var(--foreground)", fontWeight: 600, fontSize: "0.82rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }}>
                     <FaCreditCard size={12} /> Card Payment
                   </button>
-                  <button type="button" onClick={() => setPayTab("upi")} style={{ flex: 1, padding: "0.6rem", borderRadius: "6px", border: `1px solid ${payTab === "upi" ? "var(--primary)" : "var(--surface-border)"}`, background: payTab === "upi" ? "rgba(99,102,241,0.1)" : "transparent", color: payTab === "upi" ? "var(--primary)" : "var(--foreground)", fontWeight: 600, fontSize: "0.82rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }}>
+                  <button type="button" onClick={() => setPayTab("upi")} style={{ flex: 1, padding: "0.6rem", borderRadius: "6px", border: `1px solid ${payTab === "upi" ? "var(--foreground)" : "var(--surface-border)"}`, background: payTab === "upi" ? "var(--surface-card)" : "transparent", color: "var(--foreground)", fontWeight: 600, fontSize: "0.82rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }}>
                     <FaMobileAlt size={12} /> UPI / QR
                   </button>
                 </div>
@@ -1276,7 +1281,7 @@ export default function PremiumCourseHubPage() {
 
             {checkoutStep === "processing" && (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "1rem", padding: "2rem 0" }}>
-                <div style={{ width: "36px", height: "36px", border: "3px solid rgba(99,102,241,0.15)", borderTopColor: "var(--primary)", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                <div style={{ width: "36px", height: "36px", border: "3px solid var(--surface-border)", borderTopColor: "var(--foreground)", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
                 <strong>{loaderMessage}</strong>
                 <span style={{ fontSize: "0.8rem", opacity: 0.6 }}>Please do not refresh the page.</span>
               </div>

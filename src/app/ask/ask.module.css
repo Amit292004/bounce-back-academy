@@ -21,23 +21,23 @@
   --ai-bg: #f8fafc;
   --ai-card-bg: #ffffff;
   --ai-card-subtle: #f1f5f9;
-  --ai-border: rgba(0, 0, 0, 0.08);
-  --ai-border-strong: rgba(0, 0, 0, 0.16);
+  --ai-border: rgba(0, 0, 0, 0.12);
+  --ai-border-strong: rgba(0, 0, 0, 0.2);
   --ai-text-main: #0f172a;
   --ai-text-secondary: #334155;
-  --ai-text-muted: #64748b;
-  --ai-accent: #f97316;
-  --ai-accent-subtle: rgba(249, 115, 22, 0.1);
-  --ai-accent-hover: #ea580c;
+  --ai-text-muted: #475569;
+  --ai-accent: #ea580c;
+  --ai-accent-subtle: rgba(234, 88, 12, 0.11);
+  --ai-accent-hover: #c2410c;
   --ai-code-bg: #0f172a;
   --ai-code-text: #f8fafc;
-  --ai-success-bg: rgba(16, 185, 129, 0.06);
-  --ai-success-border: rgba(16, 185, 129, 0.25);
-  --ai-success-text: #059669;
-  --ai-amber-bg: rgba(245, 158, 11, 0.06);
-  --ai-amber-border: rgba(245, 158, 11, 0.25);
-  --ai-amber-text: #d97706;
-  --ai-dot-pattern: rgba(0, 0, 0, 0.03);
+  --ai-success-bg: rgba(16, 185, 129, 0.1);
+  --ai-success-border: rgba(5, 150, 105, 0.3);
+  --ai-success-text: #047857;
+  --ai-amber-bg: rgba(245, 158, 11, 0.1);
+  --ai-amber-border: rgba(180, 83, 9, 0.3);
+  --ai-amber-text: #b45309;
+  --ai-dot-pattern: rgba(0, 0, 0, 0.04);
 }
 
 /* ── Dark Theme Variables ──────────────────────────────────────── */
@@ -46,23 +46,23 @@
   --ai-bg: #09090b;
   --ai-card-bg: #111115;
   --ai-card-subtle: #16161c;
-  --ai-border: rgba(255, 255, 255, 0.08);
-  --ai-border-strong: rgba(255, 255, 255, 0.16);
+  --ai-border: rgba(255, 255, 255, 0.14);
+  --ai-border-strong: rgba(255, 255, 255, 0.24);
   --ai-text-main: #f8fafc;
   --ai-text-secondary: #cbd5e1;
-  --ai-text-muted: #94a3b8;
-  --ai-accent: #f97316;
-  --ai-accent-subtle: rgba(249, 115, 22, 0.14);
-  --ai-accent-hover: #ea580c;
+  --ai-text-muted: #b0bac9;
+  --ai-accent: #fb923c;
+  --ai-accent-subtle: rgba(249, 115, 22, 0.15);
+  --ai-accent-hover: #f97316;
   --ai-code-bg: #09090d;
   --ai-code-text: #e2e8f0;
-  --ai-success-bg: rgba(16, 185, 129, 0.08);
-  --ai-success-border: rgba(16, 185, 129, 0.24);
+  --ai-success-bg: rgba(16, 185, 129, 0.1);
+  --ai-success-border: rgba(16, 185, 129, 0.3);
   --ai-success-text: #34d399;
-  --ai-amber-bg: rgba(245, 158, 11, 0.08);
-  --ai-amber-border: rgba(245, 158, 11, 0.24);
+  --ai-amber-bg: rgba(245, 158, 11, 0.1);
+  --ai-amber-border: rgba(245, 158, 11, 0.3);
   --ai-amber-text: #fbbf24;
-  --ai-dot-pattern: rgba(255, 255, 255, 0.03);
+  --ai-dot-pattern: rgba(255, 255, 255, 0.04);
 }
 
 /* Subtle Technical Background Grid Pattern */
@@ -287,7 +287,7 @@
 }
 
 .historyItem:hover .historyDeleteBtn {
-  opacity: 0.6;
+  opacity: 0.85;
 }
 
 .historyDeleteBtn:hover {
@@ -840,7 +840,7 @@
   padding: 0.55rem 0.85rem;
   border-radius: 7px;
   background: var(--ai-card-subtle);
-  border-left: 3px solid var(--ai-accent);
+  border: 1px solid var(--ai-border);
 }
 
 .topicCardLeft {
@@ -902,8 +902,6 @@
 }
 
 .stepContent {
-  padding-left: 0.75rem;
-  border-left: 2px solid var(--ai-border);
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
@@ -1422,7 +1420,6 @@
     content: '';
     display: block;
     width: 100%;
-    border-top: 3px solid #1e3a5f;
     margin-bottom: 0;
   }
 
@@ -1448,7 +1445,7 @@
     text-transform: uppercase;
     margin-top: -4pt;
     margin-bottom: 12pt;
-    border-bottom: 2px solid #1e3a5f;
+    border-bottom: 1pt solid #d1d5db;
     padding-bottom: 8pt;
   }
 
@@ -1527,7 +1524,6 @@
   .conceptCard {
     background: #fff7ed !important;
     border: 1pt solid #fed7aa !important;
-    border-left: 4pt solid #f97316 !important;
     border-radius: 4pt !important;
     padding: 8pt 11pt !important;
     margin-bottom: 10pt !important;
@@ -1577,8 +1573,6 @@
   .stepHeader svg { display: none !important; }
 
   .stepContent {
-    padding-left: 12pt !important;
-    border-left: 2pt solid #fdba74 !important;
     display: block !important;
     gap: 0 !important;
   }
@@ -1587,7 +1581,6 @@
   .finalAnswerCard {
     background: #f0fdf4 !important;
     border: 1pt solid #86efac !important;
-    border-left: 4pt solid #16a34a !important;
     border-radius: 4pt !important;
     padding: 8pt 11pt !important;
     margin-bottom: 10pt !important;
@@ -1625,7 +1618,6 @@
   .takeawayCard {
     background: #fffbeb !important;
     border: 1pt solid #fcd34d !important;
-    border-left: 4pt solid #d97706 !important;
     border-radius: 4pt !important;
     padding: 8pt 11pt !important;
     margin-bottom: 10pt !important;

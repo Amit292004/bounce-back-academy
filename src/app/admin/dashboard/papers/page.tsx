@@ -233,7 +233,7 @@ export default function PapersPage() {
                         style={{
                           display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
                           padding: '0.35rem 0.75rem', borderRadius: 'var(--radius-sm)',
-                          background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.3)',
+                          background: 'var(--surface-card)', border: '1px solid var(--surface-border)',
                           color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 500,
                           textDecoration: 'none', transition: 'var(--transition)'
                         }}

@@ -69,8 +69,8 @@ export default function AdminLogin() {
 
   return (
     <div className={styles.container}>
-      <div className={`glass-panel ${styles.loginCard} animate-fade-in`}>
-        <h1 className={`${styles.title} text-gradient`}>Admin Portal</h1>
+      <div className={`${styles.loginCard} animate-fade-in`}>
+        <h1 className={styles.title}>Admin Portal</h1>
         <p className={styles.subtitle}>
           {step === 1 ? 'Sign in with credentials' : 'Step 2: Verify with Google'}
         </p>

@@ -72,16 +72,17 @@
   background: none;
   border: none;
   cursor: pointer;
-  opacity: 0.5;
-  color: var(--foreground);
+  opacity: 0.85;
+  color: var(--secondary);
   font-size: 0.7rem;
   padding: 2px;
   line-height: 1;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, color 0.2s;
 }
 
 .tooltipClose:hover {
   opacity: 1;
+  color: var(--foreground);
 }
 
 .tooltipText {
@@ -93,7 +94,7 @@
 
 .tooltipSub {
   font-size: 0.75rem;
-  opacity: 0.55;
+  color: var(--secondary);
   margin: 0;
 }
 

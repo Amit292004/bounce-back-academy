@@ -17,6 +17,7 @@ import {
   ShoppingCart,
   Clock,
   ArrowRight,
+  ArrowLeft,
   RotateCcw,
   AlertCircle,
   ExternalLink,
@@ -352,6 +353,17 @@ export default function UniversalSearchModal({
       <div className={styles.modal}>
         {/* ── Search Input Header ── */}
         <div className={styles.inputHeader}>
+          {/* Mobile Back Button: Always provides an effortless way to exit on mobile */}
+          <button
+            type="button"
+            className={styles.backBtn}
+            onClick={onClose}
+            aria-label="Back / Close search"
+            title="Go back"
+          >
+            <ArrowLeft size={19} />
+          </button>
+
           <Search size={18} className={styles.searchIcon} aria-hidden="true" />
           <input
             ref={inputRef}
@@ -381,9 +393,16 @@ export default function UniversalSearchModal({
                 <X size={16} />
               </button>
             )}
-            <kbd className={styles.escBadge} title="Press Escape to close">
-              ESC
-            </kbd>
+            <button
+              type="button"
+              className={styles.escBadge}
+              onClick={onClose}
+              title="Close search"
+              aria-label="Close search"
+            >
+              <span className={styles.escDesktopText}>ESC</span>
+              <span className={styles.cancelMobileText}>Cancel</span>
+            </button>
           </div>
         </div>
 
@@ -439,7 +458,7 @@ export default function UniversalSearchModal({
                           inputRef.current?.focus();
                         }}
                       >
-                        <Clock size={13} style={{ opacity: 0.6 }} />
+                        <Clock size={13} style={{ color: 'var(--secondary)' }} />
                         <span>{term}</span>
                       </button>
                     ))}
@@ -463,7 +482,7 @@ export default function UniversalSearchModal({
                         inputRef.current?.focus();
                       }}
                     >
-                      <Search size={12} style={{ opacity: 0.6 }} />
+                      <Search size={12} style={{ color: 'var(--secondary)' }} />
                       <span>{term}</span>
                     </button>
                   ))}
@@ -640,7 +659,7 @@ export default function UniversalSearchModal({
           )}
         </div>
 
-        {/* ── Modal Footer with Keyboard Navigation Hints ── */}
+        {/* ── Modal Footer with Keyboard Navigation Hints & Mobile Back ── */}
         <div className={styles.modalFooter}>
           <div className={styles.footerHints}>
             <span className={styles.footerHint}>
@@ -653,6 +672,16 @@ export default function UniversalSearchModal({
               <kbd className={styles.kbd}>ESC</kbd> Close
             </span>
           </div>
+
+          <button
+            type="button"
+            className={styles.mobileFooterCloseBtn}
+            onClick={onClose}
+            aria-label="Back to page"
+          >
+            <ArrowLeft size={14} />
+            <span>Back to Page</span>
+          </button>
 
           <div>
             {results.length > 0 && query.trim() ? (

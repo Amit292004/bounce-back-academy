@@ -152,7 +152,7 @@ export default function CoursesPage() {
   };
 
   const statCards = [
-    { label: 'Total Classes', value: stats.totalClasses, icon: 'chalkboard', color: '#6366f1' },
+    { label: 'Total Classes', value: stats.totalClasses, icon: 'chalkboard', color: '#f97316' },
     { label: 'Subjects', value: stats.totalSubjects, icon: 'book', color: '#10b981' },
     { label: 'Total Students', value: stats.totalStudents, icon: 'users', color: '#ec4899' },
     { label: 'Active Courses', value: courses.length, icon: 'layers', color: '#f59e0b' },
@@ -319,7 +319,7 @@ export default function CoursesPage() {
                         onClick={() => startEditing(course)}
                         title="Edit"
                         style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', padding: '0.5rem', borderRadius: '6px', marginRight: '0.25rem', transition: 'background 0.15s' }}
-                        onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = 'rgba(99,102,241,0.1)'}
+                        onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = 'var(--surface-card)'}
                         onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = 'transparent'}
                       >
                         <FaEdit size={17} />

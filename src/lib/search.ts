@@ -312,7 +312,7 @@ export const POPULAR_SEARCHES = [
   'Arithmetic Progression',
   'JEE Main',
   'NEET UG',
-  'NBSE HSLC 2025',
+  'NBSE HSLC',
   'AI Tutor',
   'Polynomial',
   'Class 12 Physics',

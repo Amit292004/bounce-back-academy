@@ -56,7 +56,7 @@
 .forgotLink {
   font-size: 0.8125rem;
   font-weight: 450;
-  color: #71717a;
+  color: #52525b;
   text-decoration: none;
   transition: color 0.15s ease;
 }
@@ -357,6 +357,15 @@ select.input option {
   border-top-color: #000000;
 }
 
+.pageSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid var(--surface-border);
+  border-top-color: var(--foreground);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -370,7 +379,7 @@ select.input option {
   display: flex;
   align-items: center;
   margin: 1.25rem 0;
-  color: #71717a;
+  color: #52525b;
   font-size: 0.6875rem;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -381,14 +390,14 @@ select.input option {
 .divider::after {
   content: '';
   flex: 1;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 :global(html.dark) .divider::before,
 :global(html:not(.light)) .divider::before,
 :global(html.dark) .divider::after,
 :global(html:not(.light)) .divider::after {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .divider span {
@@ -397,7 +406,7 @@ select.input option {
 
 :global(html.dark) .divider span,
 :global(html:not(.light)) .divider span {
-  color: #71717a;
+  color: #a1a1aa;
 }
 
 /* Google OAuth Full-Width Alignment */

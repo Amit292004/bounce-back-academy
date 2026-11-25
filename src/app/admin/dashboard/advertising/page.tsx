@@ -364,7 +364,7 @@ export default function AdvertisingPage() {
       {statusMsg && (
         <div style={{
           padding: '0.85rem 1.25rem', marginBottom: '1.25rem', borderRadius: 'var(--radius-sm, 8px)',
-          background: 'rgba(99, 102, 241, 0.15)', border: '1px solid rgba(99, 102, 241, 0.35)',
+          background: 'var(--surface-card)', border: '1px solid var(--surface-border)',
           color: 'var(--foreground)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <span>{statusMsg}</span>
@@ -445,7 +445,7 @@ export default function AdvertisingPage() {
                     style={{
                       minWidth: '220px', maxWidth: '240px', padding: '0.75rem',
                       borderRadius: '10px', cursor: 'pointer',
-                      background: isSelected ? 'rgba(99, 102, 241, 0.12)' : 'var(--surface-highlight)',
+                      background: isSelected ? 'var(--surface-card)' : 'var(--surface-highlight)',
                       border: isSelected ? '2px solid var(--primary)' : '1px solid var(--surface-border)',
                       transition: 'all 0.2s ease', position: 'relative', flexShrink: 0,
                     }}
@@ -499,7 +499,7 @@ export default function AdvertisingPage() {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '0.75rem', borderBottom: '1px solid var(--surface-border)' }}>
                 <div>
                   <h2 style={{ fontSize: '1.15rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <FaImage style={{ color: '#818cf8' }} /> Editing Ad: {activeAd.title}
+                    <FaImage style={{ color: '#f97316' }} /> Editing Ad: {activeAd.title}
                   </h2>
                   <span style={{ fontSize: '0.78rem', opacity: 0.55 }}>
                     Ad ID: <code>{activeAd.id}</code>
@@ -640,8 +640,8 @@ export default function AdvertisingPage() {
                       onClick={() => updateCurrentAd(prev => ({ ...prev, link: p.url }))}
                       style={{
                         padding: '0.2rem 0.55rem', borderRadius: '4px', border: '1px solid var(--surface-border)',
-                        background: activeAd.link === p.url ? 'rgba(99,102,241,0.2)' : 'var(--surface-highlight)',
-                        color: activeAd.link === p.url ? '#818cf8' : 'var(--foreground)',
+                        background: activeAd.link === p.url ? 'var(--surface-card)' : 'var(--surface-highlight)',
+                        color: activeAd.link === p.url ? '#f97316' : 'var(--foreground)',
                         fontSize: '0.72rem', cursor: 'pointer', fontWeight: 500,
                       }}
                     >
@@ -981,7 +981,7 @@ export default function AdvertisingPage() {
                         <td style={{ padding: '0.85rem 1rem', fontWeight: 500 }}>{user.name}</td>
                         <td style={{ padding: '0.85rem 1rem', opacity: 0.8, fontSize: '0.9rem' }}>{user.mobile}</td>
                         <td style={{ padding: '0.85rem 1rem' }}>
-                          <span style={{ padding: '0.2rem 0.6rem', background: 'rgba(99,102,241,0.15)', borderRadius: '999px', fontSize: '0.8rem', color: 'var(--primary)' }}>
+                          <span style={{ padding: '0.2rem 0.6rem', background: 'var(--surface-card)', borderRadius: '999px', fontSize: '0.8rem', color: 'var(--primary)' }}>
                             Class {user.class}
                           </span>
                         </td>

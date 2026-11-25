@@ -23,25 +23,25 @@
 .default {
   background: rgba(255, 255, 255, 0.08);
   color: var(--foreground, #ededed);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 :global(.light) .default {
   background: rgba(0, 0, 0, 0.05);
-  color: #3f3f46;
-  border-color: rgba(0, 0, 0, 0.1);
+  color: #27272a;
+  border-color: rgba(0, 0, 0, 0.14);
 }
 
 .primary {
-  background: rgba(99, 102, 241, 0.12);
-  color: #818cf8;
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  background: var(--brand-orange-light);
+  color: var(--brand-orange-text);
+  border: 1px solid var(--brand-orange-border);
 }
 
 :global(.light) .primary {
-  background: rgba(79, 70, 229, 0.1);
-  color: #4338ca;
-  border-color: rgba(79, 70, 229, 0.2);
+  background: var(--brand-orange-light);
+  color: var(--brand-orange-text);
+  border-color: var(--brand-orange-border);
 }
 
 .success {

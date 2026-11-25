@@ -11,15 +11,15 @@ export default function Loading() {
       <div
         className="animate-spin"
         style={{
-          width: '48px',
-          height: '48px',
-          border: '4px solid var(--surface-border)',
-          borderTop: '4px solid var(--primary)',
+          width: '36px',
+          height: '36px',
+          border: '3px solid var(--surface-border)',
+          borderTop: '3px solid var(--foreground)',
           borderRadius: '50%',
         }}
         aria-label="Loading"
       />
-      <p style={{ opacity: 0.6, fontSize: '0.95rem' }}>Loading…</p>
+      <p style={{ color: 'var(--secondary)', fontSize: '0.9rem' }}>Loading…</p>
     </div>
   );
 }

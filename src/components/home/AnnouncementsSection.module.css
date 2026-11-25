@@ -83,7 +83,8 @@
 
 .date {
   font-size: 0.8rem;
-  opacity: 0.6;
+  color: var(--secondary);
+  opacity: 1;
   font-weight: 500;
   margin-top: auto;
 }

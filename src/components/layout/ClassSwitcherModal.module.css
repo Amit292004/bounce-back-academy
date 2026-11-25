@@ -119,13 +119,6 @@
   min-width: 0;
 }
 
-.accentBar {
-  width: 4px;
-  height: 34px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
 .cardInfo {
   display: flex;
   flex-direction: column;

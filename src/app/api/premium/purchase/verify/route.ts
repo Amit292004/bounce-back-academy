@@ -3,10 +3,26 @@ import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { checkRateLimit } from '@/lib/rateLimit';
+import {
+  isCashfreeConfigured,
+  getCashfreeBaseUrl,
+  isSimulationAllowed,
+  verifyOrderAmountMatch,
+  sanitizeOrderId,
+} from '@/lib/paymentSecurity';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
-    // 1. Authenticate the student session
+    // 1. Rate Limiting Protection (Max 20 verify requests/minute per IP)
+    const rateLimitResponse = await checkRateLimit(request, 20, 60);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
+    // 2. Authenticate the student session
     const cookieStore = await cookies();
     const token = cookieStore.get('student_token')?.value;
 
@@ -21,14 +37,17 @@ export async function POST(request: Request) {
 
     const userId = payload.userId as string;
 
-    // 2. Parse payload
-    const {
-      premiumItemId,
-      cashfreeOrderId,
-      simulatedConfirm
-    } = await request.json();
+    // 3. Parse and sanitize payload
+    let body: any;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON request format' }, { status: 400 });
+    }
 
-    if (!premiumItemId) {
+    const { premiumItemId, cashfreeOrderId, simulatedConfirm } = body;
+
+    if (!premiumItemId || typeof premiumItemId !== 'string') {
       return NextResponse.json({ error: 'Premium Item ID is required.' }, { status: 400 });
     }
 
@@ -41,15 +60,35 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Premium listing was not found.' }, { status: 404 });
     }
 
-    const appId = process.env.CASHFREE_APP_ID;
-    const secretKey = process.env.CASHFREE_SECRET_KEY;
-    const hasCashfreeKeys = !!(appId && secretKey);
+    // Idempotent Check: If user already owns it, return success immediately
+    const existingPurchase = await prisma.purchase.findUnique({
+      where: {
+        userId_premiumItemId: {
+          userId,
+          premiumItemId,
+        },
+      },
+    });
 
-    // 3. Handle Simulated Confirmation Mode (local dev & unconfigured gateway fallback)
+    if (existingPurchase) {
+      return NextResponse.json({
+        success: true,
+        alreadyUnlocked: true,
+        message: `You already have access to "${premiumItem.title}"!`,
+        purchase: existingPurchase,
+      });
+    }
+
+    // 4. Handle Simulated Confirmation Mode (strictly restricted to local dev)
     if (simulatedConfirm) {
-      if (hasCashfreeKeys && process.env.NODE_ENV === 'production' && process.env.ALLOW_SIMULATED_PURCHASE !== 'true') {
-        return NextResponse.json({ error: 'Simulated purchases are disabled when real payment gateway is configured.' }, { status: 403 });
+      if (!isSimulationAllowed()) {
+        logger.error(`Blocked unauthorized single-item simulated verification attempt for item ${premiumItemId} in production`);
+        return NextResponse.json(
+          { error: 'Simulated purchases are strictly disabled in production environment.' },
+          { status: 403 }
+        );
       }
+
       const purchase = await prisma.purchase.upsert({
         where: {
           userId_premiumItemId: {
@@ -71,22 +110,22 @@ export async function POST(request: Request) {
       });
     }
 
-    // 4. Handle Real Cashfree Verification — fetch order status from Cashfree API
-    if (!cashfreeOrderId) {
-      return NextResponse.json({ error: 'Cashfree order ID is required for verification.' }, { status: 400 });
+    // 5. Authoritative Cashfree Verification — fetch order status from Cashfree API
+    const targetOrderId = sanitizeOrderId(cashfreeOrderId);
+    if (!targetOrderId) {
+      return NextResponse.json({ error: 'Valid Cashfree order ID is required for verification.' }, { status: 400 });
     }
 
-    if (!appId || !secretKey) {
+    if (!isCashfreeConfigured()) {
       return NextResponse.json({ error: 'Payment gateway is not configured on the server.' }, { status: 500 });
     }
 
-    const isProduction = (process.env.CASHFREE_ENV || 'production') === 'production';
-    const cashfreeBaseUrl = isProduction
-      ? 'https://api.cashfree.com/pg'
-      : 'https://sandbox.cashfree.com/pg';
+    const cashfreeBaseUrl = getCashfreeBaseUrl();
+    const appId = process.env.CASHFREE_APP_ID!.trim();
+    const secretKey = process.env.CASHFREE_SECRET_KEY!.trim();
 
-    // Fetch order status from Cashfree
-    const cfResponse = await fetch(`${cashfreeBaseUrl}/orders/${cashfreeOrderId}`, {
+    // Fetch order status directly from Cashfree
+    const cfResponse = await fetch(`${cashfreeBaseUrl}/orders/${targetOrderId}`, {
       method: 'GET',
       headers: {
         'x-client-id': appId,
@@ -98,18 +137,44 @@ export async function POST(request: Request) {
     if (!cfResponse.ok) {
       const cfError = await cfResponse.json();
       logger.error('Cashfree order fetch failed:', cfError);
-      return NextResponse.json({ error: 'Failed to verify payment with Cashfree.' }, { status: 400 });
+      return NextResponse.json({ error: 'Failed to verify payment with payment gateway.' }, { status: 400 });
     }
 
     const cfOrder = await cfResponse.json();
 
-    // Check if payment is successful
+    // Verification Check A: Order status
     if (cfOrder.order_status !== 'PAID') {
       logger.warn('Cashfree order not PAID:', cfOrder.order_status);
       return NextResponse.json(
         { error: `Payment not completed. Status: ${cfOrder.order_status}` },
         { status: 400 }
       );
+    }
+
+    // Verification Check B: Currency
+    if (cfOrder.order_currency !== 'INR') {
+      return NextResponse.json({ error: 'Invalid transaction currency' }, { status: 400 });
+    }
+
+    // Verification Check C: Amount matching item price
+    const cfAmount = Number(cfOrder.order_amount);
+    if (!verifyOrderAmountMatch(premiumItem.price, cfAmount)) {
+      logger.error(`Amount mismatch: Item ${premiumItem.id} price is ${premiumItem.price}, gateway order amount was ${cfAmount}`);
+      return NextResponse.json({ error: 'Paid amount does not match course price' }, { status: 400 });
+    }
+
+    // Verification Check D: Customer ID matching authenticated user
+    const cfCustomerId = cfOrder.customer_details?.customer_id;
+    if (cfCustomerId && cfCustomerId !== userId) {
+      logger.error(`Customer mismatch: Gateway customer ${cfCustomerId} !== user ${userId}`);
+      return NextResponse.json({ error: 'Customer identifier mismatch' }, { status: 403 });
+    }
+
+    // Verification Check E: Cross-item reuse prevention via order_tags
+    const taggedItemId = cfOrder.order_tags?.premiumItemId;
+    if (taggedItemId && taggedItemId !== premiumItemId) {
+      logger.error(`Order tag mismatch: Order ${targetOrderId} was generated for item ${taggedItemId}, but verification attempted for ${premiumItemId}`);
+      return NextResponse.json({ error: 'Transaction was authorized for a different item' }, { status: 403 });
     }
 
     // Write verified unlock to DB
@@ -126,6 +191,8 @@ export async function POST(request: Request) {
       },
       update: {}
     });
+
+    logger.info(`Successfully verified and unlocked course ${premiumItem.id} for user ${userId}`);
 
     return NextResponse.json({
       success: true,

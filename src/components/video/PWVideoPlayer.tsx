@@ -616,7 +616,7 @@ export default function PWVideoPlayer({
       {/* Speed & Quality Feedback Toast */}
       {speedToast && (
         <div className={styles.speedToast}>
-          <Gauge size={16} color="#818cf8" />
+          <Gauge size={16} color="#f97316" />
           <span>{speedToast}</span>
         </div>
       )}
@@ -983,7 +983,7 @@ export default function PWVideoPlayer({
         <div className={styles.sideDrawer}>
           <div className={styles.drawerHeader}>
             <div className={styles.drawerTitle}>
-              <List size={18} color="#818cf8" />
+              <List size={18} color="#f97316" />
               <span>Lecture Chapters</span>
             </div>
             <button className={styles.drawerCloseBtn} onClick={() => setActiveDrawer("none")}>
@@ -1021,7 +1021,7 @@ export default function PWVideoPlayer({
           <div className={styles.shortcutsModal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.shortcutsHeader}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <HelpCircle size={20} color="#818cf8" />
+                <HelpCircle size={20} color="#f97316" />
                 <h3 style={{ color: "#fff", margin: 0, fontSize: "1.05rem", fontWeight: 700 }}>
                   Player Shortcuts
                 </h3>

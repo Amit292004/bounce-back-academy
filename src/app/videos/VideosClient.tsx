@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FaYoutube, FaTimes } from 'react-icons/fa';
-import { Play, X, Sparkles, Layers, FileText } from 'lucide-react';
+import { Play, X, Layers, FileText } from 'lucide-react';
 import PWVideoPlayer from '@/components/video/PWVideoPlayer';
 import InteractionButtons from '@/components/InteractionButtons';
 import styles from './page.module.css';
@@ -297,7 +297,7 @@ function VideosContent({ initialVideos = [] }: { initialVideos?: Video[] }) {
           ))}
         </div>
       ) : videos.length === 0 ? (
-        <div className="glass-morphism" style={{ padding: '4rem', textAlign: 'center', opacity: 0.6 }}>
+        <div className="glass-morphism" style={{ padding: '4rem', textAlign: 'center', color: 'var(--secondary)' }}>
           <FaYoutube style={{ fontSize: '4rem', marginBottom: '1rem', color: '#ef4444' }} />
           <p>No videos available yet. Check back soon!</p>
         </div>
@@ -339,15 +339,10 @@ function VideosContent({ initialVideos = [] }: { initialVideos?: Video[] }) {
 
                   {video.lectureNumber > 0 && (
                     <div className={styles.topPillBadge}>
-                      <Layers size={11} color="#818cf8" />
+                      <Layers size={11} color="#f97316" />
                       <span>Lecture {video.lectureNumber}</span>
                     </div>
                   )}
-
-                  <div className={styles.pwPillBadge}>
-                    <Sparkles size={10} />
-                    <span>Watch</span>
-                  </div>
                 </div>
 
                 <div className={styles.cardBody}>
@@ -418,7 +413,7 @@ function VideosContent({ initialVideos = [] }: { initialVideos?: Video[] }) {
           <div className={styles.modalDialog} onClick={e => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <div>
-                <span style={{ fontSize: '0.72rem', color: '#818cf8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                <span style={{ fontSize: '0.72rem', color: '#fb923c', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                   {activePlayerVideo.category} {activePlayerVideo.subject ? `· ${activePlayerVideo.subject.name}` : ''} {activePlayerVideo.lectureNumber ? `· Lecture ${activePlayerVideo.lectureNumber}` : ''}
                 </span>
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', marginTop: '2px' }}>
@@ -464,10 +459,10 @@ function VideosContent({ initialVideos = [] }: { initialVideos?: Video[] }) {
                   className="haptic-btn"
                   style={{
                     fontSize: '0.85rem',
-                    background: 'rgba(99,102,241,0.15)',
-                    color: 'var(--primary)',
+                    background: 'var(--surface-card)',
+                    color: 'var(--foreground)',
                     textDecoration: 'none',
-                    border: '1px solid var(--primary)',
+                    border: '1px solid var(--surface-border)',
                     padding: '0.4rem 1rem',
                     borderRadius: 'var(--radius-sm)',
                     fontWeight: 600,

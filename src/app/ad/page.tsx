@@ -27,12 +27,12 @@ export default function AdPage() {
       fontFamily: 'var(--font-inter, Inter, sans-serif)',
     }}>
       <div style={{
-        width: '60px', height: '60px', borderRadius: '50%',
-        border: '3px solid var(--primary)',
-        borderTopColor: 'transparent',
+        width: '40px', height: '40px', borderRadius: '50%',
+        border: '3px solid var(--surface-border)',
+        borderTopColor: 'var(--foreground)',
         animation: 'spin 0.8s linear infinite',
       }} />
-      <p style={{ fontSize: '1.1rem', opacity: 0.7 }}>Redirecting you to Bounce Back Academy…</p>
+      <p style={{ fontSize: '0.95rem', color: 'var(--secondary)' }}>Redirecting you to Bounce Back Academy…</p>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>

@@ -212,14 +212,19 @@ export default function PremiumStorePage() {
           paymentSessionId: orderData.paymentSessionId,
           redirectTarget: '_self'
         });
-      } else {
-        // Fall back to gorgeous simulated drawer
+      } else if (orderData.mode === 'free') {
+        alert(orderData.message || 'Course successfully unlocked!');
+        fetchPremiumItems();
+      } else if (orderData.mode === 'simulated') {
+        // Fall back to gorgeous simulated drawer for dev testing
         setCheckoutItem(item);
         setCheckoutStep('details');
         setCardNumber('');
         setCardExpiry('');
         setCardCvv('');
         setUpiId('');
+      } else {
+        alert(orderData.error || 'Payment gateway is currently unavailable.');
       }
     } catch (err) {
       logger.error(err);
@@ -303,7 +308,7 @@ export default function PremiumStorePage() {
   if (loading) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '1rem', opacity: 0.7 }}>
-        <div style={{ width: '40px', height: '40px', border: '3px solid rgba(99,102,241,0.15)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+        <div style={{ width: '40px', height: '40px', border: '3px solid var(--surface-border)', borderTopColor: 'var(--foreground)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
         <p>Loading e-learning marketplace...</p>
       </div>
     );

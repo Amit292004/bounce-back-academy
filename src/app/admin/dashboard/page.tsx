@@ -22,10 +22,10 @@ export default async function AdminDashboard() {
 
   const stats = [
     { label: 'Total Users', value: userCount, icon: <FaUsers size={24} />, color: '#ec4899' },
-    { label: 'Subjects', value: subjectCount, icon: <FaBook size={24} />, color: '#6366f1' },
+    { label: 'Subjects', value: subjectCount, icon: <FaBook size={24} />, color: '#f97316' },
     { label: 'Question Papers', value: paperCount, icon: <FaFileAlt size={24} />, color: '#10b981' },
     { label: 'Notes', value: noteCount, icon: <FaFileAlt size={24} />, color: '#f59e0b' },
-    { label: 'Videos', value: videoCount, icon: <FaVideo size={24} />, color: '#8b5cf6' },
+    { label: 'Videos', value: videoCount, icon: <FaVideo size={24} />, color: '#10b981' },
     { label: 'Feedbacks', value: feedbackCount, icon: <FaComments size={24} />, color: '#f43f5e' },
   ];
 

@@ -353,11 +353,11 @@ export default function VideosPage() {
                       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                     <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}>
-                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'linear-gradient(135deg, #6366f1, #a855f7)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', boxShadow: '0 0 15px rgba(99,102,241,0.7)' }}>
+                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#09090b', boxShadow: '0 4px 16px rgba(0,0,0,0.45)' }}>
                         <FaPlay style={{ marginLeft: 3, fontSize: '0.85rem' }} />
                       </div>
                     </div>
-                    <span style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(99,102,241,0.9)', color: '#fff', fontSize: '0.65rem', fontWeight: 700, padding: '2px 6px', borderRadius: 4 }}>
+                    <span style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(9,9,11,0.88)', border: '1px solid rgba(255,255,255,0.16)', color: '#fff', fontSize: '0.65rem', fontWeight: 700, padding: '2px 6px', borderRadius: 4 }}>
                       PW Player
                     </span>
                   </div>
@@ -371,9 +371,9 @@ export default function VideosPage() {
                     <div>
                       <h3 style={{ fontWeight: 600, marginBottom: '0.25rem', fontSize: '0.95rem' }}>{video.title}</h3>
                       <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                        <span style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', background: 'rgba(99,102,241,0.15)', borderRadius: '999px', color: 'var(--primary)' }}>{video.category}</span>
+                        <span style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', background: 'var(--surface-card)', border: '1px solid var(--surface-border)', borderRadius: '999px', color: 'var(--foreground)' }}>{video.category}</span>
                         {video.subject && (
-                          <span style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', background: 'rgba(139,92,246,0.15)', borderRadius: '999px', color: 'var(--accent)' }}>{video.subject.name}</span>
+                          <span style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', background: 'rgba(249,115,22,0.12)', borderRadius: '999px', color: '#f97316' }}>{video.subject.name}</span>
                         )}
                         {video.chapter && (
                           <span style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', background: 'rgba(16,185,129,0.15)', borderRadius: '999px', color: '#10b981' }}>{video.chapter.name}</span>
@@ -405,12 +405,12 @@ export default function VideosPage() {
           onClick={() => setPreviewVideo(null)}
         >
           <div 
-            style={{ width: '100%', maxWidth: '1000px', background: '#0f1422', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 25px 60px rgba(0,0,0,0.8)' }}
+            style={{ width: '100%', maxWidth: '1000px', background: '#09090b', borderRadius: '14px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 25px 60px rgba(0,0,0,0.8)' }}
             onClick={e => e.stopPropagation()}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)', background: 'rgba(15,23,42,0.6)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)', background: '#111114' }}>
               <div>
-                <span style={{ fontSize: '0.72rem', color: '#818cf8', fontWeight: 700, textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.72rem', color: '#f97316', fontWeight: 700, textTransform: 'uppercase' }}>
                   {previewVideo.category} {previewVideo.subject ? `· ${previewVideo.subject.name}` : ''} {previewVideo.lectureNumber ? `· Lec ${previewVideo.lectureNumber}` : ''}
                 </span>
                 <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fff', marginTop: 2 }}>{previewVideo.title}</h3>

@@ -15,15 +15,15 @@
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.22rem 0.65rem;
-  border-radius: 9999px;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--surface-border);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: var(--secondary);
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.9rem;
 }
 
 :global(.light) .eyebrow {
@@ -36,7 +36,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #10b981;
+  background: var(--brand-orange);
   display: inline-block;
 }
 
@@ -110,26 +110,28 @@
   background: var(--surface-card);
   color: var(--foreground);
   font-weight: 600;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  box-shadow: none;
+  border: 1px solid var(--surface-border);
 }
 
 :global(.light) .segmentedControl {
-  background: #f4f4f5;
-  border-color: rgba(0, 0, 0, 0.08);
+  background: var(--surface);
+  border-color: var(--surface-border);
 }
 
 :global(.light) .segmentedBtn {
-  color: #52525b;
+  color: var(--secondary);
 }
 
 :global(.light) .segmentedBtn:hover {
-  color: #09090b;
+  color: var(--foreground);
 }
 
 :global(.light) .segmentedBtnActive {
-  background: #ffffff;
-  color: #09090b;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: var(--surface-card);
+  color: var(--foreground);
+  box-shadow: none;
+  border: 1px solid var(--surface-border);
 }
 
 .searchBox {
@@ -150,7 +152,7 @@
 }
 
 :global(.light) .searchIcon {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 .searchInput {
@@ -159,20 +161,20 @@
   padding: 0 2rem 0 2.3rem;
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  border-radius: 9px;
+  border-radius: 8px;
   color: var(--foreground);
   font-size: 0.85rem;
   font-family: inherit;
   outline: none;
   box-sizing: border-box;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 :global(.light) .searchInput {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.14);
-  color: #09090b;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  background: var(--surface);
+  border-color: var(--surface-border);
+  color: var(--foreground);
+  box-shadow: none;
 }
 
 .searchInput:focus {
@@ -180,18 +182,18 @@
 }
 
 :global(.light) .searchInput:focus {
-  border-color: #09090b;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: none;
 }
 
 .searchInput::placeholder {
   color: var(--secondary);
-  opacity: 0.6;
+  opacity: 0.85;
 }
 
 :global(.light) .searchInput::placeholder {
-  color: #71717a;
-  opacity: 1;
+  color: var(--secondary);
+  opacity: 0.85;
 }
 
 .searchClear {
@@ -225,18 +227,18 @@
   border: 1px solid var(--surface-border);
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: none;
   width: 100%;
 }
 
 :global(.light) .filterBar {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  background: var(--surface);
+  border-color: var(--surface-border);
+  box-shadow: none;
 }
 
 :global(.light) .filterBarLabel {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 :global(.light) .filterBarSelect {
@@ -244,14 +246,15 @@
 }
 
 :global(.light) .card {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  background: var(--surface);
+  border-color: var(--surface-border);
+  box-shadow: none;
 }
 
 :global(.light) .card:hover {
-  border-color: rgba(0, 0, 0, 0.22);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  background: var(--surface-card);
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: none;
 }
 
 :global(.light) .cardTitle {
@@ -259,17 +262,17 @@
 }
 
 :global(.light) .cardMeta {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 :global(.light) .btnView {
-  background: #f4f4f5;
-  border-color: rgba(0, 0, 0, 0.1);
-  color: #09090b;
+  background: var(--background);
+  border-color: var(--surface-border);
+  color: var(--foreground);
 }
 
 :global(.light) .btnView:hover {
-  background: #e4e4e7;
+  background: var(--surface-highlight);
 }
 
 :global(.light) .btnDownload {
@@ -283,7 +286,7 @@
   padding: 0 0.85rem;
   border-right: 1px solid var(--surface-border);
   color: var(--secondary);
-  opacity: 0.6;
+  opacity: 0.9;
   flex-shrink: 0;
 }
 
@@ -350,8 +353,12 @@
   white-space: nowrap;
 }
 
+:global(.light) .clearSegment {
+  color: #b91c1c;
+}
+
 .clearSegment:hover {
-  opacity: 0.7;
+  opacity: 0.85;
 }
 
 /* ── Results Bar ── */
@@ -394,21 +401,19 @@
 .card {
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  border-radius: 12px;
-  padding: 1.25rem;
+  border-radius: 14px;
+  padding: 1.3rem;
   display: flex;
   flex-direction: column;
   height: 100%;
   box-sizing: border-box;
-  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
   position: relative;
 }
 
 .card:hover {
   background: var(--surface-card);
-  border-color: color-mix(in srgb, var(--foreground) 16%, transparent);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  border-color: color-mix(in srgb, var(--foreground) 20%, transparent);
 }
 
 .cardTop {
@@ -420,9 +425,9 @@
 }
 
 .cardIconBox {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
   border: 1px solid var(--surface-border);
   background: var(--background);
   display: flex;
@@ -520,12 +525,12 @@
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  height: 34px;
+  height: 36px;
   padding: 0 0.75rem;
   font-size: 0.8rem;
   font-weight: 600;
-  border-radius: 7px;
-  background: var(--surface-card);
+  border-radius: 8px;
+  background: var(--background);
   border: 1px solid var(--surface-border);
   color: var(--foreground);
   text-decoration: none;
@@ -545,23 +550,22 @@
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  height: 34px;
+  height: 36px;
   padding: 0 0.75rem;
   font-size: 0.8rem;
   font-weight: 600;
-  border-radius: 7px;
+  border-radius: 8px;
   background: var(--foreground);
   color: var(--background);
   text-decoration: none;
   border: none;
   cursor: pointer;
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition: opacity 0.15s ease;
   font-family: inherit;
 }
 
 .btnDownload:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
+  opacity: 0.9;
 }
 
 /* ── Empty State ── */
@@ -569,8 +573,8 @@
   padding: 4rem 1.5rem;
   text-align: center;
   background: var(--surface);
-  border: 1px solid var(--surface-border);
-  border-radius: 12px;
+  border: 1px dashed var(--surface-border);
+  border-radius: 14px;
 }
 
 .emptyStateTitle {

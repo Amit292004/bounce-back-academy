@@ -28,14 +28,15 @@
 
 /* Primary variant */
 .variantPrimary {
-  background: var(--primary);
-  color: var(--primary-foreground);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background: var(--foreground);
+  color: var(--background);
+  box-shadow: var(--shadow-sm);
 }
 
 .variantPrimary:hover {
   opacity: 0.92;
-  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 /* Secondary variant */
@@ -47,7 +48,7 @@
 
 .variantSecondary:hover {
   background: var(--surface-highlight);
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
 }
 
 /* Compact variant */
@@ -61,19 +62,19 @@
 .variantLarge {
   padding: 0.85rem 1.6rem;
   font-size: 0.98rem;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 /* In Cart State */
 .btnInCart {
-  background: rgba(99, 102, 241, 0.15);
-  border-color: rgba(99, 102, 241, 0.4);
-  color: #818cf8;
+  background: rgba(249, 115, 22, 0.12);
+  border-color: rgba(249, 115, 22, 0.35);
+  color: #f97316;
 }
 
 .btnInCart:hover {
-  background: rgba(99, 102, 241, 0.25);
-  border-color: rgba(99, 102, 241, 0.6);
+  background: rgba(249, 115, 22, 0.2);
+  border-color: rgba(249, 115, 22, 0.55);
 }
 
 /* Enrolled State */
@@ -109,5 +110,5 @@
 .detailsLink:hover {
   opacity: 1;
   background: var(--surface-highlight);
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
 }

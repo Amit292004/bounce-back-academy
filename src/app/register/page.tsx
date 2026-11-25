@@ -128,9 +128,9 @@ export default function RegisterPage() {
 
   if (checking) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', color: '#71717a', fontSize: '0.875rem' }}>
-          <div className={styles.spinner} />
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', color: 'var(--secondary)', fontSize: '0.9rem', fontWeight: 500 }}>
+          <div className={styles.pageSpinner} />
           <span>Verifying session...</span>
         </div>
       </div>

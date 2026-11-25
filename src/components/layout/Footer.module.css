@@ -54,7 +54,8 @@
 .tagline {
   font-size: 0.85rem;
   line-height: 1.65;
-  opacity: 0.6;
+  color: var(--secondary);
+  opacity: 1;
   max-width: 280px;
   margin-bottom: 1.5rem;
 }
@@ -92,7 +93,8 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  opacity: 0.4;
+  color: var(--secondary);
+  opacity: 0.9;
   margin-bottom: 1.1rem;
 }
 
@@ -106,17 +108,17 @@
 
 .footerLink {
   font-size: 0.88rem;
-  opacity: 0.68;
+  color: var(--foreground);
+  opacity: 0.84;
   font-weight: 500;
   transition: all 0.2s ease;
   display: inline-block;
   text-decoration: none;
-  color: inherit;
 }
 
 .footerLink:hover {
   opacity: 1;
-  color: var(--primary);
+  color: var(--brand-orange-text);
   transform: translateX(3px);
 }
 
@@ -131,8 +133,8 @@
   justify-content: space-between;
   gap: 1rem;
   font-size: 0.85rem;
-  color: var(--foreground);
-  opacity: 0.85;
+  color: var(--secondary);
+  opacity: 1;
 }
 
 .bottomLeft {
@@ -206,8 +208,8 @@
 /* Responsive */
 @media (max-width: 960px) {
   .inner {
-    grid-template-columns: 1fr 1fr;
-    gap: 2.5rem 2rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.25rem 1.5rem;
   }
   .brand { grid-column: 1 / -1; }
 }

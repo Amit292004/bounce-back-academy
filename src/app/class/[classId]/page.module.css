@@ -1,8 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
 .appShell,
 .appShell * {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
 /* ============================================================
@@ -21,7 +19,7 @@
   min-height: calc(100dvh - var(--header-height, 70px));
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
   width: 100%;
 }
 
@@ -31,7 +29,7 @@
 .appShell h4,
 .appShell h5,
 .appShell strong {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* Right column: fills full width on mobile, sits beside sidebar on desktop */
@@ -96,7 +94,7 @@
 .classHeaderTitle {
   font-size: 0.95rem;
   font-weight: 700;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   color: var(--foreground);
   white-space: nowrap;
   letter-spacing: -0.01em;
@@ -123,7 +121,7 @@
 .classSwitcherBtn span {
   font-size: 0.95rem;
   font-weight: 700;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   color: var(--foreground);
   white-space: nowrap;
   letter-spacing: -0.01em;
@@ -160,7 +158,7 @@
   color: var(--foreground);
   font-size: 0.82rem;
   font-weight: 600;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   cursor: pointer;
   opacity: 0.78;
   white-space: nowrap;
@@ -175,7 +173,7 @@
 }
 .classTabBtnActive {
   opacity: 1;
-  background: rgba(99, 102, 241, 0.08);
+  background: var(--surface-card);
   color: var(--primary);
 }
 
@@ -273,13 +271,13 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   opacity: 0.55;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 .classSelectorName {
   font-size: 1rem;
   font-weight: 800;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   color: var(--foreground);
   margin-top: 0.1rem;
 }
@@ -291,7 +289,7 @@
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
   font-weight: 700;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   color: var(--primary-foreground);
   background: var(--primary);
   border: none;
@@ -305,7 +303,7 @@
 .classSelectorBtn:hover {
   background: var(--primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+  box-shadow: var(--shadow-md);
 }
 
 .classSelectorBtn:active {
@@ -366,7 +364,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   letter-spacing: 0.2px;
 }
 
@@ -439,7 +437,7 @@
 
 .ringBg {
   fill: none;
-  stroke: rgba(99, 102, 241, 0.1);
+  stroke: var(--surface-border);
   stroke-width: 7;
 }
 
@@ -508,7 +506,7 @@
 }
 
 .statCard:hover {
-  border-color: rgba(99, 102, 241, 0.4);
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
   box-shadow: var(--shadow-sm);
   transform: translateY(-2px);
 }
@@ -530,7 +528,7 @@
 
 .statCard:hover .statIcon {
   opacity: 1;
-  border-color: rgba(99, 102, 241, 0.45);
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
   color: var(--primary);
   transform: scale(1.06);
 }
@@ -621,7 +619,7 @@
 
 .continueCard:hover {
   border-color: var(--primary);
-  box-shadow: 0 0 0 1px rgba(99,102,241,0.3), var(--shadow-sm);
+  box-shadow: 0 0 0 1px var(--foreground), var(--shadow-sm);
   transform: translateY(-2px);
 }
 
@@ -704,7 +702,7 @@
 }
 
 .subjectChip:hover {
-  border-color: rgba(99, 102, 241, 0.35);
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
   background: var(--surface-card);
   color: var(--foreground);
 }
@@ -722,7 +720,7 @@
 
 .featuredCourseCard:hover {
   box-shadow: var(--shadow-md);
-  border-color: rgba(99, 102, 241, 0.3);
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
 }
 
 .featuredCourseBadge {
@@ -733,8 +731,8 @@
   text-transform: uppercase;
   padding: 0.18rem 0.5rem;
   border-radius: 5px;
-  background: rgba(99, 102, 241, 0.08);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
   color: var(--primary);
   margin-bottom: 0.65rem;
 }
@@ -758,7 +756,7 @@
 .featuredCourseTitle {
   font-size: 1.05rem;
   font-weight: 700;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   margin-bottom: 0.2rem;
 }
 
@@ -777,7 +775,7 @@
 .featuredPrice strong {
   font-size: 1.15rem;
   font-weight: 800;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 .featuredPrice span {
@@ -821,7 +819,7 @@
 .pageHeading h2 {
   font-size: 1.25rem;
   font-weight: 700;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   margin-bottom: 0.2rem;
 }
 
@@ -937,7 +935,7 @@
 
 .subjectRow:hover .iconBox {
   opacity: 1;
-  border-color: rgba(99,102,241,0.35);
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
   color: var(--primary);
 }
 
@@ -1014,7 +1012,7 @@
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 /* ============================================================
@@ -1052,7 +1050,7 @@
 
 .chapterRow:hover {
   transform: translateY(-2px);
-  border-color: rgba(99, 102, 241, 0.45);
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
   box-shadow: var(--shadow-md);
 }
 
@@ -1066,7 +1064,7 @@
   font-size: 0.95rem;
   font-weight: 800;
   flex-shrink: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 .chapterInfo {
@@ -1078,7 +1076,7 @@
   font-size: 0.98rem;
   font-weight: 700;
   margin-bottom: 0.35rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   line-height: 1.35;
   color: var(--foreground);
 }
@@ -1122,7 +1120,7 @@
 .chapterBannerTitle {
   font-size: 1.25rem;
   font-weight: 800;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   line-height: 1.3;
 }
 
@@ -1155,7 +1153,7 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   white-space: nowrap;
 }
 
@@ -1200,7 +1198,7 @@
 
 .videoCard:hover {
   transform: translateY(-2px);
-  border-color: rgba(99, 102, 241, 0.45);
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
   box-shadow: var(--shadow-md);
 }
 
@@ -1276,7 +1274,7 @@
   font-size: 0.92rem;
   font-weight: 700;
   line-height: 1.35;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   color: var(--foreground);
 }
 
@@ -1294,7 +1292,7 @@
 }
 
 .docCard:hover {
-  border-color: rgba(99, 102, 241, 0.35);
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
   box-shadow: var(--shadow-sm);
 }
 
@@ -1320,7 +1318,7 @@
 .docInfo h4 {
   font-size: 0.88rem;
   font-weight: 600;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   margin-bottom: 0.15rem;
   line-height: 1.3;
 }
@@ -1388,8 +1386,8 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: rgba(99, 102, 241, 0.05);
-  border: 1px solid rgba(99, 102, 241, 0.15);
+  background: var(--surface-highlight);
+  border: 1px solid var(--surface-border);
   border-radius: 12px;
   padding: 0.75rem;
   flex-shrink: 0;
@@ -1411,7 +1409,7 @@
   display: block;
   font-size: 0.85rem;
   font-weight: 700;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 .aiChatHeader p {
@@ -1492,7 +1490,7 @@
   background: var(--surface);
   color: var(--foreground);
   font-size: 0.85rem;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   outline: none;
   transition: var(--transition);
 }
@@ -1587,8 +1585,8 @@
   text-transform: uppercase;
   padding: 0.18rem 0.5rem;
   border-radius: 5px;
-  background: rgba(99, 102, 241, 0.08);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
   color: var(--primary);
   margin-bottom: 0.65rem;
 }
@@ -1596,7 +1594,7 @@
 .courseTitle {
   font-size: 1rem;
   font-weight: 700;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   margin-bottom: 0.2rem;
 }
 
@@ -1645,7 +1643,7 @@
 .coursePrice strong {
   font-size: 1.15rem;
   font-weight: 800;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 .coursePrice span {
@@ -1665,7 +1663,7 @@
   font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -1673,7 +1671,7 @@
 
 .enrollBtn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+  box-shadow: var(--shadow-md);
 }
 
 .enrolledBtn {
@@ -1685,7 +1683,7 @@
   font-size: 0.82rem;
   font-weight: 700;
   cursor: default;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 /* ============================================================
@@ -1731,7 +1729,7 @@
 .quizInfo h4 {
   font-size: 0.88rem;
   font-weight: 600;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   margin-bottom: 0.15rem;
 }
 
@@ -1749,7 +1747,7 @@
   font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   flex-shrink: 0;
   transition: var(--transition);
 }
@@ -1791,7 +1789,7 @@
 .noticeCard h4 {
   font-size: 0.9rem;
   font-weight: 700;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   margin-bottom: 0.35rem;
 }
 
@@ -1858,7 +1856,7 @@
 .modalTitle {
   font-size: 0.95rem;
   font-weight: 700;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   line-height: 1.3;
 }
 
@@ -1902,7 +1900,7 @@
   position: absolute;
   width: 700px;
   height: 450px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.08) 50%, transparent 100%);
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, color-mix(in srgb, var(--foreground) 5%, transparent) 55%, transparent 100%);
   filter: blur(80px);
   pointer-events: none;
   z-index: 5;
@@ -1965,7 +1963,7 @@
 
 .actionBtn:hover {
   background: var(--surface-highlight);
-  border-color: rgba(99, 102, 241, 0.25);
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
   transform: translateY(-1px);
 }
 
@@ -2019,7 +2017,7 @@
 .playlistHeader h4 {
   font-size: 0.82rem;
   font-weight: 700;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   color: var(--foreground);
 }
 
@@ -2049,8 +2047,8 @@
 }
 
 .playlistItemActive {
-  background: rgba(99, 102, 241, 0.08) !important;
-  border-color: rgba(99, 102, 241, 0.2) !important;
+  background: rgba(249, 115, 22, 0.08) !important;
+  border-color: rgba(249, 115, 22, 0.25) !important;
 }
 
 .playlistThumbContainer {
@@ -2092,14 +2090,14 @@
   height: 8px;
   background: var(--primary);
   border-radius: 50%;
-  box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6);
+  box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.55);
   animation: playPulse 1.8s infinite;
 }
 
 @keyframes playPulse {
-  0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); transform: scale(0.95); }
-  70% { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0); transform: scale(1.1); }
-  100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); transform: scale(0.95); }
+  0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.55); transform: scale(0.95); }
+  70% { box-shadow: 0 0 0 6px rgba(249, 115, 22, 0); transform: scale(1.1); }
+  100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); transform: scale(0.95); }
 }
 
 .playlistItemInfo {
@@ -2180,7 +2178,7 @@
   font-size: 0.82rem;
   font-weight: 700;
   margin-bottom: 0.6rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 .playlist {
@@ -2200,7 +2198,7 @@
 }
 
 .playlistItem:hover { background: var(--surface-highlight); }
-.playlistItemActive { background: rgba(99, 102, 241, 0.08); }
+.playlistItemActive { background: rgba(249, 115, 22, 0.08); }
 
 .playlistNum {
   width: 26px;
@@ -2255,7 +2253,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 .markDoneBtnActive {
@@ -2276,7 +2274,7 @@
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   text-decoration: none;
   transition: var(--transition);
 }
@@ -2431,10 +2429,10 @@
   font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
-.payBtn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.35); }
+.payBtn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow-md); }
 .payBtn:disabled { opacity: 0.65; cursor: wait; }
 
 .successState {
@@ -2462,7 +2460,7 @@
 .successState h4 {
   font-size: 1.1rem;
   font-weight: 700;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 .successState p {
@@ -2519,7 +2517,7 @@
   font-size: 0.98rem;
   font-weight: 600;
   line-height: 1.55;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 .quizOptions {
@@ -2542,13 +2540,13 @@
   cursor: pointer;
   text-align: left;
   transition: var(--transition);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   width: 100%;
 }
 
 .quizOption:hover:not(:disabled) {
   border-color: var(--primary);
-  background: rgba(99, 102, 241, 0.04);
+  background: var(--surface-highlight);
 }
 
 .quizOptCorrect { border-color: #10b981 !important; background: rgba(16,185,129,0.08) !important; color: #10b981 !important; }
@@ -2607,7 +2605,7 @@
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   transition: var(--transition);
 }
 
@@ -2625,13 +2623,13 @@
 .quizResult h3 {
   font-size: 1.1rem;
   font-weight: 700;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 .quizScore {
   font-size: 2rem;
   font-weight: 800;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   color: var(--primary);
 }
 
@@ -2694,7 +2692,7 @@
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   transition: var(--transition);
 }
 
@@ -3068,7 +3066,7 @@
 .checkoutSpinner {
   width: 48px;
   height: 48px;
-  border: 4px solid rgba(99, 102, 241, 0.15);
+  border: 4px solid var(--surface-border);
   border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 0.9s linear infinite;
@@ -3217,7 +3215,7 @@
 .checkoutSpinner {
   width: 48px;
   height: 48px;
-  border: 4px solid rgba(99, 102, 241, 0.15);
+  border: 4px solid var(--surface-border);
   border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 0.9s linear infinite;
@@ -3511,7 +3509,7 @@
 .spinner {
   width: 48px;
   height: 48px;
-  border: 4px solid rgba(99, 102, 241, 0.15);
+  border: 4px solid var(--surface-border);
   border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;

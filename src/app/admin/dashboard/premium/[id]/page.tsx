@@ -54,14 +54,14 @@ interface PremiumNotice {
 
 const CONTENT_TYPE_META: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
   VIDEO: { label: 'Video Lecture', icon: <FaVideo />, color: '#ef4444' },
-  NOTE: { label: 'Chapter Notes (PDF)', icon: <FaFilePdf />, color: '#6366f1' },
+  NOTE: { label: 'Chapter Notes (PDF)', icon: <FaFilePdf />, color: '#f97316' },
   DPP: { label: 'DPP / Practice Sheet', icon: <FaBookOpen />, color: '#10b981' },
   TEST: { label: 'Chapter Test / Quiz', icon: <FaTrophy />, color: '#f59e0b' },
   PAPER: { label: 'Question Paper / PYQ', icon: <FaFileAlt />, color: '#06b6d4' }
 };
 
 const NOTICE_TAG_COLORS: Record<string, { bg: string; color: string }> = {
-  ANNOUNCEMENT: { bg: 'rgba(99, 102, 241, 0.12)', color: '#6366f1' },
+  ANNOUNCEMENT: { bg: 'var(--surface-card)', color: '#f97316' },
   IMPORTANT: { bg: 'rgba(239, 68, 68, 0.12)', color: '#ef4444' },
   SCHEDULE: { bg: 'rgba(245, 158, 11, 0.12)', color: '#f59e0b' },
   EXAM: { bg: 'rgba(16, 185, 129, 0.12)', color: '#10b981' },
@@ -357,7 +357,7 @@ export default function AdminPremiumDetailPage() {
     }
   };
 
-  const getTypeColor = (type: string) => CONTENT_TYPE_META[type]?.color || '#6366f1';
+  const getTypeColor = (type: string) => CONTENT_TYPE_META[type]?.color || '#f97316';
   const getTypeIcon = (type: string) => CONTENT_TYPE_META[type]?.icon || <FaFileAlt />;
   const getTypeLabel = (type: string) => CONTENT_TYPE_META[type]?.label || type;
 
@@ -387,7 +387,7 @@ export default function AdminPremiumDetailPage() {
   if (loading) {
     return (
       <div style={{ padding: '2rem', display: 'flex', alignItems: 'center', gap: '1rem', opacity: 0.7 }}>
-        <div style={{ width: '24px', height: '24px', border: '3px solid rgba(99,102,241,0.15)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+        <div style={{ width: '24px', height: '24px', border: '3px solid var(--surface-card)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
         Loading package details...
       </div>
     );
@@ -419,7 +419,7 @@ export default function AdminPremiumDetailPage() {
             <h1 style={{ fontSize: '1.8rem', fontWeight: 800, lineHeight: 1.2 }}>{premiumItem.title}</h1>
             <span style={{
               padding: '0.2rem 0.65rem', borderRadius: '100px',
-              background: 'rgba(99,102,241,0.12)', color: 'var(--primary)',
+              background: 'var(--surface-card)', color: 'var(--primary)',
               fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase'
             }}>
               {premiumItem.type}
@@ -439,7 +439,7 @@ export default function AdminPremiumDetailPage() {
       </div>
 
       {/* 1. Structure Manager: Subjects & Chapters */}
-      <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '2rem', border: '1px solid rgba(99,102,241,0.2)' }}>
+      <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '2rem', border: '1px solid var(--surface-card)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <FaLayerGroup color="var(--primary)" /> 1. Course Subjects & Chapters Tree
@@ -543,7 +543,7 @@ export default function AdminPremiumDetailPage() {
                         {/* Subject Title Bar */}
                         <div style={{
                           padding: '0.85rem 1rem',
-                          background: 'rgba(99, 102, 241, 0.08)',
+                          background: 'var(--surface-card)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
@@ -598,7 +598,7 @@ export default function AdminPremiumDetailPage() {
                                       <button
                                         type="button"
                                         onClick={() => openAddContentForModule(m.id, 'NOTE')}
-                                        style={{ padding: '0.22rem 0.5rem', borderRadius: '4px', background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary)', border: '1px solid rgba(99, 102, 241, 0.25)', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
+                                        style={{ padding: '0.22rem 0.5rem', borderRadius: '4px', background: 'var(--surface-card)', color: 'var(--primary)', border: '1px solid var(--surface-border)', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
                                       >
                                         <FaFilePdf size={10} /> + Note
                                       </button>
@@ -628,7 +628,7 @@ export default function AdminPremiumDetailPage() {
 
                                   {/* List of contents under this module */}
                                   {moduleContents.length > 0 && (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', marginTop: '0.2rem', paddingLeft: '0.5rem', borderLeft: '2px solid rgba(99, 102, 241, 0.2)' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', marginTop: '0.2rem', paddingLeft: '0.5rem', borderLeft: '2px solid var(--surface-card)' }}>
                                       {moduleContents.map(c => (
                                         <div key={c.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.8rem', opacity: 0.85 }}>
                                           <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
@@ -697,7 +697,7 @@ export default function AdminPremiumDetailPage() {
                                 <button
                                   type="button"
                                   onClick={() => openAddContentForModule(m.id, 'NOTE')}
-                                  style={{ padding: '0.2rem 0.45rem', borderRadius: '4px', background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary)', border: '1px solid rgba(99, 102, 241, 0.25)', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer' }}
+                                  style={{ padding: '0.2rem 0.45rem', borderRadius: '4px', background: 'var(--surface-card)', color: 'var(--primary)', border: '1px solid var(--surface-border)', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer' }}
                                 >
                                   + Note
                                 </button>
@@ -864,7 +864,7 @@ export default function AdminPremiumDetailPage() {
 
       {/* 3. Add Content Form */}
       {showForm && (
-        <div className="glass-panel" style={{ padding: '2rem', marginBottom: '2rem', border: '1px solid rgba(99,102,241,0.3)', animation: 'fadeInUp 0.3s ease-out forwards' }}>
+        <div className="glass-panel" style={{ padding: '2rem', marginBottom: '2rem', border: '1px solid var(--surface-border)', animation: 'fadeInUp 0.3s ease-out forwards' }}>
           <h2 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <FaPlus style={{ color: 'var(--primary)' }} /> 3. Publish Chapter Material
           </h2>

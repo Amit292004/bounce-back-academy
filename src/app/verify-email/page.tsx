@@ -146,7 +146,7 @@ function VerifyEmailForm() {
         <h3 style={{ fontSize: '1.25rem', fontWeight: 650, marginBottom: '0.5rem', color: 'inherit' }}>
           Email Verified Successfully
         </h3>
-        <p style={{ color: '#71717a', fontSize: '0.9375rem', lineHeight: 1.5 }}>
+        <p style={{ color: 'var(--secondary)', fontSize: '0.9375rem', lineHeight: 1.5 }}>
           Your account is confirmed. Redirecting to your student dashboard...
         </p>
       </div>
@@ -225,7 +225,7 @@ function VerifyEmailForm() {
 
       {/* Resend Action */}
       <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.8125rem' }}>
-        <span style={{ color: '#71717a' }}>Didn&apos;t receive the code? </span>
+        <span style={{ color: 'var(--secondary)' }}>Didn&apos;t receive the code? </span>
         <button
           type="button"
           onClick={handleResend}
@@ -233,7 +233,7 @@ function VerifyEmailForm() {
           style={{
             background: 'none',
             border: 'none',
-            color: resendCooldown > 0 ? '#9ca3af' : 'inherit',
+            color: resendCooldown > 0 ? 'var(--secondary)' : 'inherit',
             cursor: resendCooldown > 0 ? 'not-allowed' : 'pointer',
             fontWeight: 600,
             textDecoration: 'underline',
@@ -257,7 +257,7 @@ export default function VerifyEmailPage() {
     <Suspense
       fallback={
         <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ color: '#71717a' }}>Loading...</div>
+          <div style={{ color: 'var(--secondary)' }}>Loading...</div>
         </div>
       }
     >

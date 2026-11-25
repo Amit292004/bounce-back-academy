@@ -30,7 +30,7 @@ export default function CartToast() {
           >
             <div className={styles.iconWrap}>
               {type === 'success' && <CheckCircle2 size={18} color="#10b981" />}
-              {type === 'info' && <Info size={18} color="#818cf8" />}
+              {type === 'info' && <Info size={18} color="var(--foreground)" />}
               {type === 'warning' && <AlertTriangle size={18} color="#f59e0b" />}
               {type === 'error' && <AlertCircle size={18} color="#ef4444" />}
             </div>

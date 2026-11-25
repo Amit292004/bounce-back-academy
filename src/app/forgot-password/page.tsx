@@ -184,7 +184,7 @@ function ForgotPasswordContent() {
         breadcrumbLabel="Password Updated"
       >
         <div style={{ textAlign: 'left', padding: '0.25rem 0 0.5rem' }}>
-          <p style={{ color: '#71717a', fontSize: '0.9375rem', marginBottom: '1.75rem', lineHeight: 1.6 }}>
+          <p style={{ color: 'var(--secondary)', fontSize: '0.9375rem', marginBottom: '1.75rem', lineHeight: 1.6 }}>
             You can now sign in to your Bounce Back Academy account using your updated password.
           </p>
 
@@ -321,7 +321,7 @@ function ForgotPasswordContent() {
 
           {/* Resend Action */}
           <div style={{ textAlign: 'center', marginTop: '0.5rem', fontSize: '0.8125rem' }}>
-            <span style={{ color: '#71717a' }}>Didn&apos;t get the code? </span>
+            <span style={{ color: 'var(--secondary)' }}>Didn&apos;t get the code? </span>
             <button
               type="button"
               onClick={handleResend}
@@ -329,7 +329,7 @@ function ForgotPasswordContent() {
               style={{
                 background: 'none',
                 border: 'none',
-                color: resendCooldown > 0 ? '#9ca3af' : 'inherit',
+                color: resendCooldown > 0 ? 'var(--secondary)' : 'inherit',
                 cursor: resendCooldown > 0 ? 'not-allowed' : 'pointer',
                 fontWeight: 600,
                 textDecoration: 'underline',
@@ -409,7 +409,7 @@ export default function ForgotPasswordPage() {
     <Suspense
       fallback={
         <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ color: '#71717a' }}>Loading...</div>
+          <div style={{ color: 'var(--secondary)' }}>Loading...</div>
         </div>
       }
     >

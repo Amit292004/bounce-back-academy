@@ -15,6 +15,7 @@ const tools: ToolItem[] = [
     title: 'Question Papers',
     desc: 'NBSE past papers from 2016 onwards — year-wise and chapter-wise, with instant PDF preview.',
     href: '/papers',
+    badge: 'Past Papers',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -29,6 +30,7 @@ const tools: ToolItem[] = [
     title: 'Study Notes',
     desc: 'Structured, comprehensive notes for every subject and chapter — free to read, download after login.',
     href: '/notes',
+    badge: 'Notes',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
@@ -40,6 +42,7 @@ const tools: ToolItem[] = [
     title: 'Video Lectures',
     desc: 'Curated lectures by expert educators, organized by class and subject for focused learning.',
     href: '/videos',
+    badge: 'Lectures',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <polygon points="23 7 16 12 23 17 23 7" />
@@ -58,6 +61,7 @@ const tools: ToolItem[] = [
     title: 'Practice Quiz & Tests',
     desc: 'AI-generated and syllabus-aligned MCQ assessments with real-time scoring, timers, and detailed answer explanations.',
     href: '/quiz',
+    badge: 'Mock Tests',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
@@ -81,6 +85,7 @@ const tools: ToolItem[] = [
     title: 'Discussion Forum',
     desc: 'Connect with peers across Nagaland: ask doubts, discuss exam strategies, and exchange study solutions.',
     href: '/forum',
+    badge: 'Community',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -91,6 +96,7 @@ const tools: ToolItem[] = [
     title: 'Study Library',
     desc: 'Universal indexed search across all syllabus materials, notes, model question papers, and video lectures.',
     href: '/library',
+    badge: 'Search',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -101,6 +107,7 @@ const tools: ToolItem[] = [
     title: 'Saved Favourites',
     desc: 'Bookmark any paper, chapter summary, or formula sheet to build your personal offline revision notebook.',
     href: '/favorites',
+    badge: 'Bookmarks',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>

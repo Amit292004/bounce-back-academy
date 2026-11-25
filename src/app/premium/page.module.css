@@ -16,15 +16,15 @@
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.22rem 0.65rem;
-  border-radius: 9999px;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--surface-border);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: var(--secondary);
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.9rem;
 }
 
 :global(.light) .eyebrow {
@@ -37,7 +37,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #10b981;
+  background: var(--brand-orange);
   display: inline-block;
 }
 
@@ -87,8 +87,8 @@
 }
 
 :global(.light) .segmentedControl {
-  background: #f4f4f5;
-  border-color: rgba(0, 0, 0, 0.08);
+  background: var(--surface);
+  border-color: var(--surface-border);
 }
 
 .segmentedBtn {
@@ -113,24 +113,26 @@
 }
 
 :global(.light) .segmentedBtn {
-  color: #52525b;
+  color: var(--secondary);
 }
 
 :global(.light) .segmentedBtn:hover {
-  color: #09090b;
+  color: var(--foreground);
 }
 
 .segmentedBtnActive {
   background: var(--surface-card);
   color: var(--foreground);
   font-weight: 600;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  box-shadow: none;
+  border: 1px solid var(--surface-border);
 }
 
 :global(.light) .segmentedBtnActive {
-  background: #ffffff;
-  color: #09090b;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: var(--surface-card);
+  color: var(--foreground);
+  box-shadow: none;
+  border: 1px solid var(--surface-border);
 }
 
 .searchBox {
@@ -151,7 +153,7 @@
 }
 
 :global(.light) .searchIcon {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 .searchInput {
@@ -160,20 +162,20 @@
   padding: 0 2rem 0 2.3rem;
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  border-radius: 9px;
+  border-radius: 8px;
   color: var(--foreground);
   font-size: 0.85rem;
   font-family: inherit;
   outline: none;
   box-sizing: border-box;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 :global(.light) .searchInput {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.14);
-  color: #09090b;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  background: var(--surface);
+  border-color: var(--surface-border);
+  color: var(--foreground);
+  box-shadow: none;
 }
 
 .searchInput:focus {
@@ -181,18 +183,18 @@
 }
 
 :global(.light) .searchInput:focus {
-  border-color: #09090b;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: none;
 }
 
 .searchInput::placeholder {
   color: var(--secondary);
-  opacity: 0.6;
+  opacity: 0.85;
 }
 
 :global(.light) .searchInput::placeholder {
-  color: #71717a;
-  opacity: 1;
+  color: var(--secondary);
+  opacity: 0.85;
 }
 
 .searchClear {
@@ -226,14 +228,14 @@
   border: 1px solid var(--surface-border);
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: none;
   width: 100%;
 }
 
 :global(.light) .filterBar {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  background: var(--surface);
+  border-color: var(--surface-border);
+  box-shadow: none;
 }
 
 .filterBarIcon {
@@ -242,7 +244,7 @@
   padding: 0 0.85rem;
   border-right: 1px solid var(--surface-border);
   color: var(--secondary);
-  opacity: 0.6;
+  opacity: 0.9;
   flex-shrink: 0;
 }
 
@@ -271,7 +273,7 @@
 }
 
 :global(.light) .filterBarLabel {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 .filterBarSelect {
@@ -323,7 +325,7 @@
 }
 
 .clearSegment:hover {
-  opacity: 0.7;
+  opacity: 0.85;
 }
 
 /* ── Results Bar ── */
@@ -342,7 +344,7 @@
 }
 
 :global(.light) .resultsCount {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 /* ── Store Grid ── */
@@ -371,31 +373,32 @@
 .productCard {
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  border-radius: 12px;
-  padding: 1.25rem;
+  border-radius: 14px;
+  padding: 1.3rem;
   display: flex;
   flex-direction: column;
   height: 100%;
   box-sizing: border-box;
-  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
   position: relative;
 }
 
 :global(.light) .productCard {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  background: var(--surface);
+  border-color: var(--surface-border);
+  box-shadow: none;
 }
 
 .productCard:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--foreground) 16%, transparent);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  background: var(--surface-card);
+  border-color: color-mix(in srgb, var(--foreground) 20%, transparent);
+  box-shadow: none;
 }
 
 :global(.light) .productCard:hover {
-  border-color: rgba(0, 0, 0, 0.22);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  background: var(--surface-card);
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: none;
 }
 
 /* ── Product Card Banner / Image ── */
@@ -451,9 +454,9 @@
 }
 
 .cardIconBox {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
   border: 1px solid var(--surface-border);
   background: var(--background);
   display: flex;
@@ -464,8 +467,8 @@
 }
 
 :global(.light) .cardIconBox {
-  background: #f4f4f5;
-  border-color: rgba(0, 0, 0, 0.08);
+  background: var(--background);
+  border-color: var(--surface-border);
 }
 
 .cardBadges {
@@ -501,9 +504,9 @@
   line-height: 1.2;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  background: rgba(99, 102, 241, 0.12);
+  background: var(--surface-card);
   color: var(--primary);
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  border: 1px solid var(--surface-border);
 }
 
 .cardPriceBadge {
@@ -553,7 +556,7 @@
 }
 
 :global(.light) .cardDesc {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 .featuresList {
@@ -575,9 +578,13 @@
 }
 
 .checkIcon {
-  color: #10b981;
+  color: #34d399;
   font-size: 0.75rem;
   flex-shrink: 0;
+}
+
+:global(.light) .checkIcon {
+  color: #047857;
 }
 
 .cardDivider {
@@ -588,7 +595,7 @@
 }
 
 :global(.light) .cardDivider {
-  background: rgba(0, 0, 0, 0.08);
+  background: var(--surface-border);
 }
 
 .pricingRow {
@@ -627,14 +634,14 @@
   color: var(--secondary);
   text-decoration: line-through;
   margin-left: 0.45rem;
-  opacity: 0.6;
+  opacity: 0.85;
 }
 
 /* ── Empty State ── */
 .emptyState {
   background: var(--surface);
-  border: 1px solid var(--surface-border);
-  border-radius: 12px;
+  border: 1px dashed var(--surface-border);
+  border-radius: 14px;
   padding: 3rem 1.5rem;
   text-align: center;
   grid-column: 1 / -1;
@@ -642,8 +649,8 @@
 }
 
 :global(.light) .emptyState {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.1);
+  background: var(--surface);
+  border-color: var(--surface-border);
 }
 
 .emptyStateTitle {
@@ -666,7 +673,7 @@
 }
 
 :global(.light) .emptyStateText {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 /* ── Checkout Modal Overlay ── */
@@ -713,8 +720,8 @@
 .closeBtn {
   background: transparent;
   border: none;
-  color: var(--foreground);
-  opacity: 0.6;
+  color: var(--secondary);
+  opacity: 0.85;
   cursor: pointer;
   padding: 0.4rem;
   border-radius: 8px;
@@ -722,7 +729,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.15s ease;
+  transition: opacity 0.15s ease, color 0.15s ease;
 }
 
 .closeBtn:hover {

@@ -18,8 +18,16 @@
 }
 
 .carouselContainer:hover {
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: color-mix(in srgb, var(--foreground) 22%, transparent);
   box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.65);
+}
+
+:global(.light) .carouselContainer {
+  box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.1);
+}
+
+:global(.light) .carouselContainer:hover {
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.14);
 }
 
 /* Ambient Glow Behind Card (Disabled for clean surfaces) */
@@ -60,9 +68,9 @@
 }
 
 .badgeAi {
-  background: rgba(129, 140, 248, 0.14);
-  border-color: rgba(129, 140, 248, 0.35);
-  color: #818cf8;
+  background: rgba(249, 115, 22, 0.12);
+  border-color: rgba(249, 115, 22, 0.3);
+  color: #f97316;
 }
 
 .badgeStudy {
@@ -92,8 +100,8 @@
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--foreground);
-  opacity: 0.45;
+  color: var(--secondary);
+  opacity: 1;
   font-variant-numeric: tabular-nums;
 }
 
@@ -334,7 +342,7 @@
 .arrowButton:hover {
   opacity: 1;
   background: var(--surface-card);
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: color-mix(in srgb, var(--foreground) 24%, transparent);
   transform: translateY(-1px);
 }
 

@@ -3,12 +3,27 @@ import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { checkRateLimit } from '@/lib/rateLimit';
+import {
+  isCashfreeConfigured,
+  getCashfreeBaseUrl,
+  isSimulationAllowed,
+  isProductionEnvironment,
+  generateSecureOrderId,
+  validateCustomerDetails,
+} from '@/lib/paymentSecurity';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
-    // 1. Authenticate student
+    // 1. Rate Limiting Protection (Max 15 checkout creation requests/minute per IP)
+    const rateLimitResponse = await checkRateLimit(request, 15, 60);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
+    // 2. Authenticate student session
     const cookieStore = await cookies();
     const token = cookieStore.get('student_token')?.value;
 
@@ -29,18 +44,39 @@ export async function POST(request: Request) {
 
     const userId = payload.userId as string;
 
-    // 2. Parse request
-    const body = await request.json();
+    // 3. Parse and sanitize request body
+    let body: any;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON request format' }, { status: 400 });
+    }
+
     const { itemIds, couponCode, customerDetails } = body;
 
+    // Strict validation of itemIds array
     if (!Array.isArray(itemIds) || itemIds.length === 0) {
       return NextResponse.json({ error: 'Your cart is empty' }, { status: 400 });
     }
 
-    // 3. Fetch courses from database (re-validate prices server-side)
+    const cleanItemIds = Array.from(
+      new Set(itemIds.filter((id): id is string => typeof id === 'string' && id.trim().length > 0))
+    );
+
+    if (cleanItemIds.length === 0) {
+      return NextResponse.json({ error: 'Invalid course selections in cart' }, { status: 400 });
+    }
+
+    // Customer details validation
+    const customerValidation = validateCustomerDetails(customerDetails);
+    if (!customerValidation.valid) {
+      return NextResponse.json({ error: customerValidation.error }, { status: 400 });
+    }
+
+    // 4. Fetch courses from database (authoritative prices server-side)
     const dbCourses = await prisma.premiumItem.findMany({
       where: {
-        id: { in: itemIds },
+        id: { in: cleanItemIds },
         isActive: true,
       },
     });
@@ -52,7 +88,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 4. Fetch user details
+    // 5. Fetch user profile
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { id: true, name: true, email: true, mobile: true },
@@ -62,7 +98,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'User account not found' }, { status: 404 });
     }
 
-    // 5. Check if user already owns any of these courses
+    // 6. Check existing enrollments to prevent duplicate purchases
     const existingPurchases = await prisma.purchase.findMany({
       where: {
         userId,
@@ -84,10 +120,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // 6. Calculate subtotal strictly using trusted database prices
+    // 7. Calculate subtotal strictly using trusted database prices
     const subtotal = coursesToBuy.reduce((sum, item) => sum + item.price, 0);
 
-    // 7. Validate coupon if provided
+    // 8. Validate coupon code server-side against DB rules
     let discountAmount = 0;
     let validatedCouponCode: string | null = null;
 
@@ -118,17 +154,18 @@ export async function POST(request: Request) {
     discountAmount = Math.round(discountAmount * 100) / 100;
     const finalAmount = Math.max(0, Math.round((subtotal - discountAmount) * 100) / 100);
 
-    // Generate unique order ID
-    const orderId = `bba_ord_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    // Generate cryptographically unguessable order ID
+    const orderId = generateSecureOrderId('bba_ord');
 
-    const customerName = customerDetails?.name || user.name || 'Student';
-    const customerEmail = customerDetails?.email || user.email;
-    const customerPhone = customerDetails?.mobile || user.mobile || '9999999999';
+    const customerName = (customerDetails?.name || user.name || 'Student').trim().slice(0, 100);
+    const customerEmail = (customerDetails?.email || user.email).trim().toLowerCase();
+    const rawMobile = customerDetails?.mobile || user.mobile || '9999999999';
+    const customerPhone = rawMobile.replace(/[^\d]/g, '').slice(-10) || '9999999999';
 
-    // 8. Handle Free Checkout (finalAmount === 0)
+    // 9. Handle Free Checkout (finalAmount === 0, e.g. 100% coupon or ₹0 courses)
     if (finalAmount === 0) {
       await prisma.$transaction(async (tx) => {
-        // Create Order record
+        // Create Order record with FREE status
         await tx.order.create({
           data: {
             id: orderId,
@@ -153,7 +190,7 @@ export async function POST(request: Request) {
           },
         });
 
-        // Immediately grant enrollment for every course in order
+        // Grant enrollment for all items in order
         for (const course of coursesToBuy) {
           await tx.purchase.upsert({
             where: {
@@ -188,11 +225,11 @@ export async function POST(request: Request) {
       });
     }
 
-    // 9. Handle Paid Checkout
-    const hasCashfreeKeys = !!(process.env.CASHFREE_APP_ID && process.env.CASHFREE_SECRET_KEY);
-    const isProduction = (process.env.CASHFREE_ENV || 'production') === 'production';
+    // 10. Handle Paid Checkout
+    const hasCashfree = isCashfreeConfigured();
+    const isProduction = isProductionEnvironment();
 
-    // Create PENDING Order in Database first
+    // Create PENDING Order in Database before gateway handoff
     await prisma.order.create({
       data: {
         id: orderId,
@@ -202,7 +239,7 @@ export async function POST(request: Request) {
         totalAmount: finalAmount,
         couponCode: validatedCouponCode,
         status: 'PENDING',
-        paymentGateway: hasCashfreeKeys ? 'cashfree' : 'simulated',
+        paymentGateway: hasCashfree ? 'cashfree' : 'simulated',
         customerName,
         customerEmail,
         customerPhone,
@@ -217,13 +254,10 @@ export async function POST(request: Request) {
       },
     });
 
-    if (hasCashfreeKeys) {
+    if (hasCashfree) {
       try {
-        const cashfreeBaseUrl = isProduction
-          ? 'https://api.cashfree.com/pg'
-          : 'https://sandbox.cashfree.com/pg';
-
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://bouncebackacademy.vercel.app';
+        const cashfreeBaseUrl = getCashfreeBaseUrl();
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://bouncebackacademy.vercel.app';
         const returnUrl = `${appUrl}/payment/return?order_id={order_id}&mode=cart`;
 
         const orderPayload = {
@@ -252,8 +286,8 @@ export async function POST(request: Request) {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-client-id': process.env.CASHFREE_APP_ID!,
-            'x-client-secret': process.env.CASHFREE_SECRET_KEY!,
+            'x-client-id': process.env.CASHFREE_APP_ID!.trim(),
+            'x-client-secret': process.env.CASHFREE_SECRET_KEY!.trim(),
             'x-api-version': '2023-08-01',
           },
           body: JSON.stringify(orderPayload),
@@ -262,7 +296,7 @@ export async function POST(request: Request) {
         if (cfResponse.ok) {
           const cfData = await cfResponse.json();
 
-          // Update order with payment session id
+          // Link gateway order ID and session ID to DB order
           await prisma.order.update({
             where: { id: orderId },
             data: {
@@ -277,26 +311,39 @@ export async function POST(request: Request) {
             paymentSessionId: cfData.payment_session_id,
             amount: finalAmount,
             currency: 'INR',
-            environment: isProduction ? 'production' : 'sandbox',
+            environment: (process.env.CASHFREE_ENV || 'production').toLowerCase() === 'production' ? 'production' : 'sandbox',
             courses: coursesToBuy.map((c) => ({ id: c.id, title: c.title, price: c.price })),
           });
         } else {
           const cfError = await cfResponse.json();
           logger.error('Cashfree order creation error:', cfError);
-          // If Cashfree PG returns an error in production, propagate error
-          if (isProduction && process.env.ALLOW_SIMULATED_PURCHASE !== 'true') {
-            return NextResponse.json(
-              { error: 'Payment gateway error. Please try again shortly.' },
-              { status: 502 }
-            );
-          }
+          return NextResponse.json(
+            { error: 'Payment gateway rejected order creation. Please verify details or try again.' },
+            { status: 502 }
+          );
         }
       } catch (err) {
         logger.error('Cashfree communication failure:', err);
+        return NextResponse.json(
+          { error: 'Unable to reach payment gateway. Please check your internet connection and try again.' },
+          { status: 503 }
+        );
       }
     }
 
-    // Default Fallback: Simulated Mode (for dev environment or test simulation)
+    // 11. Gateway Not Configured Safeguards
+    if (!isSimulationAllowed()) {
+      // In production without keys, NEVER allow bypass!
+      return NextResponse.json(
+        {
+          error: 'Online payments are currently undergoing scheduled maintenance. Please contact academy support for enrollment.',
+          maintenance: true,
+        },
+        { status: 503 }
+      );
+    }
+
+    // Local development fallback only
     return NextResponse.json({
       mode: 'simulated',
       orderId,

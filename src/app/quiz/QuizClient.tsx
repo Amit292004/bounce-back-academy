@@ -50,7 +50,7 @@ function getSubjectColor(name: string) {
   if (n.includes('social'))  return { color: '#ec4899', bg: 'rgba(236,72,153,0.1)' };
   if (n.includes('hindi'))   return { color: '#f97316', bg: 'rgba(249,115,22,0.1)' };
   if (n.includes('physics')) return { color: '#06b6d4', bg: 'rgba(6,182,212,0.1)' };
-  if (n.includes('chem'))    return { color: '#a855f7', bg: 'rgba(168,85,247,0.1)' };
+  if (n.includes('chem'))    return { color: '#f97316', bg: 'rgba(249,115,22,0.1)' };
   if (n.includes('bio'))     return { color: '#84cc16', bg: 'rgba(132,204,22,0.1)' };
   return { color: 'var(--primary)', bg: 'color-mix(in srgb, var(--primary) 10%, transparent)' };
 }
@@ -850,7 +850,7 @@ export default function StudentQuizPage() {
           <div className={`glass-panel ${styles.questionCard}`}>
             
             <div style={{ marginBottom: '1rem', display: 'flex' }}>
-              <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', background: isMCQ ? 'rgba(99,102,241,0.1)' : 'rgba(245,158,11,0.1)', color: isMCQ ? 'var(--primary)' : '#f59e0b', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>
+              <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', background: isMCQ ? 'var(--surface-card)' : 'rgba(245,158,11,0.1)', border: isMCQ ? '1px solid var(--surface-border)' : 'none', color: isMCQ ? 'var(--foreground)' : '#f59e0b', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>
                 {isMCQ ? 'Selectable MCQ' : 'Text Input Match'}
               </span>
             </div>

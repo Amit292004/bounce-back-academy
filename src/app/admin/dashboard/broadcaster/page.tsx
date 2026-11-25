@@ -163,7 +163,7 @@ export default function BroadcasterPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           
           {/* Range Selection Card */}
-          <div className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(99,102,241,0.03)' }}>
+          <div className="glass-panel" style={{ padding: '1.5rem', background: 'var(--surface-card)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
               <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-foreground)' }}>
                 <FaEnvelopeOpenText size={18} />
@@ -295,7 +295,7 @@ export default function BroadcasterPage() {
                 style={{ 
                   padding: '1.25rem', fontSize: '1.1rem', fontWeight: 700, borderRadius: '12px',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem',
-                  marginTop: '1rem', boxShadow: '0 15px 30px -10px rgba(99,102,241,0.4)'
+                  marginTop: '1rem', boxShadow: 'var(--shadow-md)'
                 }}
               >
                 {sending ? 'Broadcasting now...' : <><FaPaperPlane /> Send Broadcast</>}
@@ -321,7 +321,7 @@ export default function BroadcasterPage() {
               {/* Body */}
               <div style={{ padding: '1.5rem', background: 'white', flex: 1 }}>
                 <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-                  <div style={{ fontWeight: 900, fontSize: '1.1rem', color: '#6366f1' }}>BOUNCE BACK ACADEMY</div>
+                  <div style={{ fontWeight: 900, fontSize: '1.1rem', color: '#09090b', letterSpacing: '-0.02em' }}>BOUNCE BACK ACADEMY</div>
                 </div>
 
                 {imagePreview && (
@@ -462,13 +462,13 @@ export default function BroadcasterPage() {
           transition: all 0.2s;
         }
         .form-input:focus {
-          border-color: var(--primary);
-          background: rgba(255,255,255,0.05);
-          box-shadow: 0 0 0 4px rgba(99,102,241,0.1);
+          border-color: var(--foreground);
+          background: var(--surface-card);
+          box-shadow: 0 0 0 3px color-mix(in srgb, var(--foreground) 10%, transparent);
         }
         .upload-dropzone:hover {
-          border-color: var(--primary);
-          background: rgba(99,102,241,0.02) !important;
+          border-color: var(--foreground);
+          background: var(--surface-card) !important;
         }
       ` }} />
     </div>

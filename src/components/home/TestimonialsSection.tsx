@@ -240,7 +240,7 @@ export default function TestimonialsSection() {
                 <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--foreground)' }}>
                   Thank you for your review!
                 </h3>
-                <p style={{ opacity: 0.6, fontSize: '0.88rem', marginBottom: '1.5rem', color: 'var(--foreground)' }}>
+                <p style={{ fontSize: '0.88rem', marginBottom: '1.5rem', color: 'var(--secondary)' }}>
                   Your review is pending approval and will appear on the homepage soon.
                 </p>
                 <button
@@ -279,14 +279,14 @@ export default function TestimonialsSection() {
                   </svg>
                   Share Your Experience
                 </h3>
-                <p style={{ opacity: 0.55, fontSize: '0.82rem', marginBottom: '1.5rem', color: 'var(--foreground)' }}>
+                <p style={{ fontSize: '0.82rem', marginBottom: '1.5rem', color: 'var(--secondary)' }}>
                   Your review helps other students discover Bounce Back Academy.
                 </p>
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                     <div>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.6, color: 'var(--foreground)', display: 'block', marginBottom: '0.35rem' }}>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary)', display: 'block', marginBottom: '0.35rem' }}>
                         YOUR NAME *
                       </label>
                       <input
@@ -303,7 +303,7 @@ export default function TestimonialsSection() {
                       />
                     </div>
                     <div>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.6, color: 'var(--foreground)', display: 'block', marginBottom: '0.35rem' }}>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary)', display: 'block', marginBottom: '0.35rem' }}>
                         CLASS *
                       </label>
                       <select
@@ -324,7 +324,7 @@ export default function TestimonialsSection() {
                   </div>
 
                   <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.6, color: 'var(--foreground)', display: 'block', marginBottom: '0.35rem' }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary)', display: 'block', marginBottom: '0.35rem' }}>
                       YOUR REVIEW *
                     </label>
                     <textarea
@@ -344,7 +344,7 @@ export default function TestimonialsSection() {
                   </div>
 
                   <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.6, color: 'var(--foreground)', display: 'block', marginBottom: '0.35rem' }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary)', display: 'block', marginBottom: '0.35rem' }}>
                       YOUR SCORE (Optional)
                     </label>
                     <input
@@ -400,7 +400,7 @@ export default function TestimonialsSection() {
                       </>
                     )}
                   </button>
-                  <p style={{ fontSize: '0.72rem', opacity: 0.45, textAlign: 'center', color: 'var(--foreground)', margin: 0 }}>
+                  <p style={{ fontSize: '0.72rem', textAlign: 'center', color: 'var(--secondary)', margin: 0 }}>
                     Reviews are reviewed by our team before appearing publicly.
                   </p>
                 </form>

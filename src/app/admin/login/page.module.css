@@ -3,24 +3,31 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, var(--background) 100%);
+  padding: 1.5rem;
+  background: var(--background);
 }
 
 .loginCard {
   width: 100%;
-  max-width: 400px;
-  padding: 3rem 2rem;
+  max-width: 420px;
+  padding: 2.5rem 2rem;
   text-align: center;
+  background: var(--surface) !important;
+  border: 1px solid var(--surface-border) !important;
+  border-radius: 14px;
 }
 
 .title {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+  color: var(--foreground);
+  margin-bottom: 0.4rem;
 }
 
 .subtitle {
-  opacity: 0.8;
+  color: var(--secondary);
+  font-size: 0.9rem;
   margin-bottom: 2rem;
 }
 
@@ -43,19 +50,20 @@
 }
 
 .input {
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-sm);
+  padding: 0.72rem 0.95rem;
+  border-radius: 8px;
   border: 1px solid var(--surface-border);
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--surface-card);
   color: var(--foreground);
-  font-size: 1rem;
-  transition: var(--transition);
+  font-size: 0.92rem;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  border-color: var(--foreground);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--foreground) 12%, transparent);
 }
 
 .submitBtn {
@@ -95,8 +103,8 @@
 .backBtn {
   background: transparent;
   border: none;
-  color: var(--foreground);
-  opacity: 0.6;
+  color: var(--secondary);
+  opacity: 1;
   font-size: 0.875rem;
   cursor: pointer;
   text-decoration: underline;
@@ -104,5 +112,6 @@
 }
 
 .backBtn:hover {
+  color: var(--foreground);
   opacity: 1;
 }

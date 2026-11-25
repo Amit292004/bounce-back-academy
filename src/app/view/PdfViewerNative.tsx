@@ -164,7 +164,7 @@ export default function PdfViewerNative({ url }: PdfViewerNativeProps) {
         position: 'relative',
         paddingBottom: '7rem',
         // Radial glow that follows the center of the viewport
-        background: 'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.06) 40%, transparent 70%)',
+        background: 'radial-gradient(ellipse 80% 60% at 50% 40%, color-mix(in srgb, var(--foreground) 5%, transparent) 0%, rgba(249,115,22,0.03) 45%, transparent 70%)',
       }}
     >
       {/* ── Top progress sliver ── */}
@@ -173,7 +173,7 @@ export default function PdfViewerNative({ url }: PdfViewerNativeProps) {
           <motion.div
             animate={{ width: `${readPct}%` }}
             transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-            style={{ height: '100%', background: 'linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899)', borderRadius: '0 2px 2px 0' }}
+            style={{ height: '100%', background: 'linear-gradient(90deg, var(--foreground), #f97316)', borderRadius: '0 2px 2px 0' }}
           />
         </div>
       )}
@@ -222,11 +222,11 @@ export default function PdfViewerNative({ url }: PdfViewerNativeProps) {
               style={{
                 borderRadius: 10,
                 overflow: 'hidden',
-                // The "glowing page" effect from the mockup
+                // Subtle crisp border + elevation around the document page
                 boxShadow: `
-                  0 0 0 1px rgba(139,92,246,0.15),
+                  0 0 0 1px rgba(255,255,255,0.12),
                   0 20px 60px rgba(0,0,0,0.7),
-                  0 0 80px rgba(99,102,241,0.08)
+                  0 0 60px rgba(255,255,255,0.03)
                 `,
               }}
             >
@@ -324,9 +324,9 @@ export default function PdfViewerNative({ url }: PdfViewerNativeProps) {
             onClick={resetZoom}
             title="Reset zoom (0)"
             style={{
-              background: scale !== 1.0 ? 'rgba(139,92,246,0.15)' : 'transparent',
-              border: scale !== 1.0 ? '1px solid rgba(139,92,246,0.3)' : '1px solid transparent',
-              color: scale !== 1.0 ? '#c4b5fd' : 'rgba(255,255,255,0.45)',
+              background: scale !== 1.0 ? 'rgba(249,115,22,0.15)' : 'transparent',
+              border: scale !== 1.0 ? '1px solid rgba(249,115,22,0.35)' : '1px solid transparent',
+              color: scale !== 1.0 ? '#fdba74' : 'rgba(255,255,255,0.82)',
               borderRadius: 8,
               padding: '5px 10px',
               fontSize: '0.75rem',

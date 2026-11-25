@@ -70,7 +70,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
               alt="Bounce Back Academy Logo" 
               style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'contain' }} 
             />
-            <h2 style={{ fontSize: '1rem', fontWeight: 800, color: '#ffffff' }}>Bounce Back Academy</h2>
+            <h2 style={{ fontSize: '0.98rem', fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--foreground)' }}>Bounce Back Academy</h2>
           </div>
           <button 
             className={styles.hamburger} 
@@ -89,13 +89,14 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
                 href={item.href}
                 className="nav-link"
                 style={{
-                  display: 'flex', alignItems: 'center', gap: '1rem',
-                  padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)',
-                  background: isActive ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
-                  color: isActive ? 'var(--primary)' : 'var(--foreground)',
+                  display: 'flex', alignItems: 'center', gap: '0.85rem',
+                  padding: '0.7rem 0.9rem', borderRadius: '8px',
+                  background: isActive ? 'var(--surface-card)' : 'transparent',
+                  color: isActive ? 'var(--foreground)' : 'var(--secondary)',
                   fontWeight: isActive ? 600 : 500,
-                  transition: 'var(--transition)',
-                  border: 'none'
+                  fontSize: '0.9rem',
+                  transition: 'all 0.15s ease',
+                  border: isActive ? '1px solid var(--surface-border)' : '1px solid transparent'
                 }}
               >
                 {item.icon}

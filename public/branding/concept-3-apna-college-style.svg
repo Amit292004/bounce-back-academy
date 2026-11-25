@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240">
+  <!-- Concept 3: Apna College Style - Dynamic Ascending Phoenix Vector Monogram -->
+  <!-- Flat, sharp vector, bold royal tech blue & fiery sunburst orange, aspirational youth energy -->
+
+  <!-- Left: Phoenix 'B' Soaring Symbol (180x180 centered) -->
+  <g transform="translate(40, 30)">
+    <!-- Base Squircle -->
+    <rect width="180" height="180" rx="44" fill="#0F172A" />
+
+    <!-- Scaled Vector Phoenix 'B' (Centered 140x140 area) -->
+    <g transform="translate(24, 20) scale(0.68)">
+      <!-- Heavy Solid Black/Charcoal 'B' Stem & Spine -->
+      <path d="M 24 16 L 95 16 C 130 16, 155 38, 155 72 C 155 92, 142 108, 124 116 C 148 124, 164 144, 164 172 C 164 210, 132 236, 92 236 L 24 236 Z" fill="#1E293B" />
+      
+      <!-- 'B' Counter cutouts -->
+      <rect x="52" y="44" width="38" height="34" rx="4" fill="#0F172A" />
+      <rect x="52" y="146" width="42" height="42" rx="4" fill="#0F172A" />
+
+      <!-- Left Phoenix Wing (3-tier energetic flame feathers in Royal Orange/Gold) -->
+      <!-- Feather 1 (Top) -->
+      <path d="M 18 36 C -8 68, -12 110, 16 142 C 6 112, 12 78, 42 54 Z" fill="#F59E0B" />
+      <!-- Feather 2 (Mid) -->
+      <path d="M -2 92 C -20 125, -16 162, 16 188 C 6 160, 10 132, 36 112 Z" fill="#EA580C" />
+      <!-- Feather 3 (Bottom Sweep) -->
+      <path d="M -10 152 C -20 185, -6 216, 26 236 C 10 216, 12 192, 32 172 Z" fill="#C2410C" />
+
+      <!-- Phoenix Center Crest & Sharp Head -->
+      <path d="M 68 84 C 62 64, 76 46, 96 46 C 104 46, 116 52, 118 64 C 114 62, 108 64, 104 68 C 112 68, 118 72, 120 78 C 112 78, 104 84, 98 94 Z" fill="#F97316" />
+
+      <!-- The Soaring Rocket / Rebound Arrow launching out of the 'B' -->
+      <path d="M 64 210 L 168 62" stroke="#F97316" stroke-width="20" stroke-linecap="round" />
+      <!-- Arrow Head -->
+      <polygon points="184,34 186,84 142,66" fill="#F97316" />
+      <!-- Arrow Core Gleam -->
+      <polygon points="184,34 175,64 154,58" fill="#FDE047" />
+    </g>
+  </g>
+
+  <!-- Right: Bold Modern Community Typography -->
+  <g transform="translate(260, 66)">
+    <!-- Primary Name -->
+    <text x="0" y="50" font-family="'Montserrat', 'Plus Jakarta Sans', sans-serif" font-size="50" font-weight="900" fill="#0F172A" letter-spacing="-1">
+      BOUNCE<tspan fill="#EA580C">BACK</tspan>
+    </text>
+
+    <!-- Sub-brand: ACADEMY -->
+    <text x="2" y="92" font-family="'Montserrat', sans-serif" font-size="21" font-weight="800" fill="#64748B" letter-spacing="8">
+      ACADEMY
+    </text>
+
+    <!-- Apna College style student pill badge -->
+    <g transform="translate(230, 75)">
+      <rect width="165" height="25" rx="6" fill="#EA580C" />
+      <text x="82" y="17" font-family="'Montserrat', sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">
+        STUDENT FIRST
+      </text>
+    </g>
+  </g>
+</svg>

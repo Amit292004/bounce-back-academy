@@ -146,7 +146,7 @@ export default function UsersPage() {
                       </td>
                       <td style={{ padding: '0.85rem 1rem', opacity: 0.8, fontSize: '0.9rem' }}>{user.email}</td>
                       <td style={{ padding: '0.85rem 1rem' }}>
-                        <span style={{ padding: '0.2rem 0.6rem', background: 'rgba(99,102,241,0.15)', borderRadius: '999px', fontSize: '0.8rem', color: 'var(--primary)' }}>
+                        <span style={{ padding: '0.2rem 0.6rem', background: 'var(--surface-card)', borderRadius: '999px', fontSize: '0.8rem', color: 'var(--primary)' }}>
                           Class {user.class}
                         </span>
                       </td>
@@ -197,7 +197,7 @@ export default function UsersPage() {
                             <FaWhatsapp />
                           </a>
                         )}
-                        <button onClick={() => setSelectedUser(user)} title="View Profile" style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)', padding: '0.45rem 0.8rem', borderRadius: 'var(--radius-sm)', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}>
+                        <button onClick={() => setSelectedUser(user)} title="View Profile" style={{ background: 'var(--surface-card)', border: '1px solid var(--surface-card)', padding: '0.45rem 0.8rem', borderRadius: 'var(--radius-sm)', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}>
                           View
                         </button>
                         <button onClick={() => handleDelete(user.id)} title="Delete User" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', padding: '0.45rem', borderRadius: 'var(--radius-sm)', color: 'var(--error)', cursor: 'pointer', fontSize: '1.1rem', display: 'flex', alignItems: 'center' }}>

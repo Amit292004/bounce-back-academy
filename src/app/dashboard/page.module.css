@@ -15,33 +15,29 @@
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.22rem 0.65rem;
-  border-radius: 9999px;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--surface-border);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: var(--secondary);
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.9rem;
 }
 
 :global(.light) .eyebrow {
   background: rgba(0, 0, 0, 0.04);
-  border-color: rgba(0, 0, 0, 0.1);
-  color: #09090b;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: var(--foreground);
 }
 
 .eyebrowDot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--foreground);
+  background: var(--brand-orange);
   display: inline-block;
-}
-
-:global(.light) .eyebrowDot {
-  background: #09090b;
 }
 
 .headerRow {
@@ -74,7 +70,7 @@
 }
 
 :global(.light) .subtitle {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 .headerActions {
@@ -156,38 +152,42 @@
 .statsRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.15rem;
+  gap: 1px;
+  background: var(--surface-border);
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  overflow: hidden;
   margin-bottom: 2.25rem;
+}
+
+@media (max-width: 1024px) {
+  .statsRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .statCard {
   background: var(--surface);
-  border: 1px solid var(--surface-border);
-  border-radius: 12px;
-  padding: 1.25rem;
+  border: none;
+  border-radius: 0;
+  padding: 1.35rem 1.25rem;
   display: flex;
   flex-direction: column;
-  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.15s ease;
   text-decoration: none;
   color: inherit;
 }
 
 .statCard:hover {
   background: var(--surface-card);
-  border-color: color-mix(in srgb, var(--foreground) 16%, transparent);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
 :global(.light) .statCard {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.09);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  background: var(--surface);
 }
 
 :global(.light) .statCard:hover {
-  border-color: rgba(0, 0, 0, 0.22);
-  box-shadow: 0 6px 18px -4px rgba(0, 0, 0, 0.08);
+  background: var(--surface-card);
 }
 
 .statTop {
@@ -198,49 +198,45 @@
 }
 
 .statIcon {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
   border: 1px solid var(--surface-border);
-  background: var(--surface-card);
+  background: var(--background);
   color: var(--foreground);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: all 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 :global(.light) .statIcon {
-  background: #f4f4f5;
-  border-color: rgba(0, 0, 0, 0.08);
-  color: #09090b;
+  background: var(--background);
+  border-color: var(--surface-border);
+  color: var(--foreground);
 }
 
 .statCard:hover .statIcon {
   border-color: color-mix(in srgb, var(--foreground) 25%, transparent);
 }
 
-:global(.light) .statCard:hover .statIcon {
-  background: #09090b;
-  color: #ffffff;
-  border-color: #09090b;
-}
-
 .statBadge {
-  font-size: 0.68rem;
-  font-weight: 500;
-  padding: 0.18rem 0.45rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.5rem;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--surface-border);
-  color: var(--secondary);
+  background: var(--brand-orange-light);
+  border: 1px solid var(--brand-orange-border);
+  color: var(--brand-orange-text);
 }
 
 :global(.light) .statBadge {
-  background: #f4f4f5;
-  border-color: rgba(0, 0, 0, 0.08);
-  color: #52525b;
+  background: var(--brand-orange-light);
+  border-color: var(--brand-orange-border);
+  color: var(--brand-orange-text);
 }
 
 .statValue {
@@ -263,7 +259,7 @@
 }
 
 :global(.light) .statLabel {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 .statAction {
@@ -304,16 +300,16 @@
 .aiBox {
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 1.25rem;
   margin-bottom: 1.75rem;
   transition: border-color 0.15s ease;
 }
 
 :global(.light) .aiBox {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.09);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  background: var(--surface);
+  border-color: var(--surface-border);
+  box-shadow: none;
 }
 
 .aiHeader {
@@ -324,11 +320,11 @@
 }
 
 .aiIcon {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
   border: 1px solid var(--surface-border);
-  background: var(--surface-card);
+  background: var(--background);
   color: var(--foreground);
   display: flex;
   align-items: center;
@@ -337,9 +333,9 @@
 }
 
 :global(.light) .aiIcon {
-  background: #f4f4f5;
-  border-color: rgba(0, 0, 0, 0.08);
-  color: #09090b;
+  background: var(--background);
+  border-color: var(--surface-border);
+  color: var(--foreground);
 }
 
 .aiTitle {
@@ -366,8 +362,8 @@
 
 :global(.light) .aiBadge {
   background: #f4f4f5;
-  border-color: rgba(0, 0, 0, 0.08);
-  color: #52525b;
+  border-color: var(--surface-border);
+  color: var(--secondary);
 }
 
 .aiDesc {
@@ -378,7 +374,7 @@
 }
 
 :global(.light) .aiDesc {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 .aiInputRow {
@@ -472,17 +468,17 @@
 .cardGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.15rem;
+  gap: 0.85rem;
 }
 
 .studyCard {
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
   text-decoration: none;
   color: inherit;
   height: 100%;
@@ -491,20 +487,19 @@
 
 .studyCard:hover {
   background: var(--surface-card);
-  border-color: color-mix(in srgb, var(--foreground) 16%, transparent);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  border-color: color-mix(in srgb, var(--foreground) 20%, transparent);
 }
 
 :global(.light) .studyCard {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.09);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  background: var(--surface);
+  border-color: var(--surface-border);
+  box-shadow: none;
 }
 
 :global(.light) .studyCard:hover {
-  border-color: rgba(0, 0, 0, 0.22);
-  box-shadow: 0 6px 18px -4px rgba(0, 0, 0, 0.08);
+  background: var(--surface-card);
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: none;
 }
 
 .cardTop {
@@ -515,49 +510,45 @@
 }
 
 .studyIconBox {
-  width: 34px;
-  height: 34px;
-  border-radius: 7px;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
   border: 1px solid var(--surface-border);
-  background: var(--surface-card);
+  background: var(--background);
   color: var(--foreground);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: all 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 :global(.light) .studyIconBox {
-  background: #f4f4f5;
-  border-color: rgba(0, 0, 0, 0.08);
-  color: #09090b;
+  background: var(--background);
+  border-color: var(--surface-border);
+  color: var(--foreground);
 }
 
 .studyCard:hover .studyIconBox {
   border-color: color-mix(in srgb, var(--foreground) 25%, transparent);
 }
 
-:global(.light) .studyCard:hover .studyIconBox {
-  background: #09090b;
-  color: #ffffff;
-  border-color: #09090b;
-}
-
 .cardBadge {
-  font-size: 0.68rem;
-  font-weight: 500;
-  padding: 0.18rem 0.45rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.5rem;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--surface-border);
-  color: var(--secondary);
+  background: var(--brand-orange-light);
+  border: 1px solid var(--brand-orange-border);
+  color: var(--brand-orange-text);
 }
 
 :global(.light) .cardBadge {
-  background: #f4f4f5;
-  border-color: rgba(0, 0, 0, 0.08);
-  color: #52525b;
+  background: var(--brand-orange-light);
+  border-color: var(--brand-orange-border);
+  color: var(--brand-orange-text);
 }
 
 .cardTitle {
@@ -582,7 +573,7 @@
 }
 
 :global(.light) .cardMeta {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 .cardDivider {
@@ -614,14 +605,14 @@
 .sideWidget {
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 1.25rem;
 }
 
 :global(.light) .sideWidget {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.09);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  background: var(--surface);
+  border-color: var(--surface-border);
+  box-shadow: none;
 }
 
 .sideWidgetHeader {
@@ -679,7 +670,7 @@
 
 :global(.light) .quizHistoryItem {
   background: #f4f4f5;
-  border-color: rgba(0, 0, 0, 0.08);
+  border-color: var(--surface-border);
 }
 
 .quizIconBadge {
@@ -697,7 +688,7 @@
 
 :global(.light) .quizIconBadge {
   background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.08);
+  border-color: var(--surface-border);
   color: #09090b;
 }
 
@@ -721,7 +712,7 @@
 }
 
 :global(.light) .quizMetaText {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 .quizScoreBadge {
@@ -737,7 +728,7 @@
 
 :global(.light) .quizScoreBadge {
   background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.12);
   color: #09090b;
 }
 
@@ -751,7 +742,7 @@
 
 :global(.light) .emptyQuizBox {
   background: #f9f9fa;
-  border-color: rgba(0, 0, 0, 0.12);
+  border-color: var(--surface-border);
 }
 
 .emptyQuizText {
@@ -762,7 +753,7 @@
 }
 
 :global(.light) .emptyQuizText {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 .btnTakeQuiz {
@@ -815,7 +806,7 @@
 
 :global(.light) .noticeCard {
   background: #f4f4f5;
-  border-color: rgba(0, 0, 0, 0.08);
+  border-color: var(--surface-border);
 }
 
 :global(.light) .noticeCard:hover {
@@ -838,7 +829,7 @@
 
 :global(.light) .noticeIconBox {
   background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.12);
   color: #09090b;
 }
 
@@ -861,12 +852,12 @@
 }
 
 :global(.light) .noticeDesc {
-  color: #71717a;
+  color: var(--secondary);
 }
 
 .noticeArrow {
-  color: var(--secondary);
-  opacity: 0.6;
+  color: var(--brand-orange-text);
+  opacity: 0.8;
   flex-shrink: 0;
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
@@ -874,7 +865,7 @@
 .noticeCard:hover .noticeArrow {
   transform: translateX(2px);
   opacity: 1;
-  color: var(--foreground);
+  color: var(--brand-orange-text);
 }
 
 /* ── Mobile Layout Optimization (≤ 640px) ── */
@@ -916,12 +907,12 @@
 
   .statsRow {
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+    gap: 1px;
     margin-bottom: 1.5rem;
   }
 
   .statCard {
-    padding: 1rem 0.85rem;
+    padding: 1.05rem 0.9rem;
   }
 
   .statValue {

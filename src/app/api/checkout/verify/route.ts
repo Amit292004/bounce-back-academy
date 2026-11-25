@@ -3,12 +3,26 @@ import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { checkRateLimit } from '@/lib/rateLimit';
+import {
+  isCashfreeConfigured,
+  getCashfreeBaseUrl,
+  isSimulationAllowed,
+  verifyOrderAmountMatch,
+  sanitizeOrderId,
+} from '@/lib/paymentSecurity';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
-    // 1. Authenticate student session
+    // 1. Rate Limiting Protection (Max 20 verify requests/minute per IP)
+    const rateLimitResponse = await checkRateLimit(request, 20, 60);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
+    // 2. Authenticate student session
     const cookieStore = await cookies();
     const token = cookieStore.get('student_token')?.value;
 
@@ -23,15 +37,23 @@ export async function POST(request: Request) {
 
     const userId = payload.userId as string;
 
-    // 2. Parse payload
-    const { orderId, cashfreeOrderId, simulatedConfirm } = await request.json();
-    const targetOrderId = orderId || cashfreeOrderId;
-
-    if (!targetOrderId) {
-      return NextResponse.json({ error: 'Order ID is required for verification.' }, { status: 400 });
+    // 3. Parse and sanitize payload
+    let body: any;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON request format' }, { status: 400 });
     }
 
-    // 3. Find order in DB
+    const { orderId, cashfreeOrderId, simulatedConfirm } = body;
+    const rawTargetId = orderId || cashfreeOrderId;
+    const targetOrderId = sanitizeOrderId(rawTargetId);
+
+    if (!targetOrderId) {
+      return NextResponse.json({ error: 'Valid Order ID is required for verification.' }, { status: 400 });
+    }
+
+    // 4. Find order in DB
     const order = await prisma.order.findUnique({
       where: { id: targetOrderId },
       include: {
@@ -46,15 +68,16 @@ export async function POST(request: Request) {
     });
 
     if (!order) {
-      return NextResponse.json({ error: 'Order not found.' }, { status: 404 });
+      return NextResponse.json({ error: 'Order record not found.' }, { status: 404 });
     }
 
-    // Ensure order belongs to authenticated user
+    // 5. Strict Authorization: Ensure order belongs to authenticated user
     if (order.userId !== userId) {
+      logger.warn(`Unauthorized verification attempt on order ${targetOrderId} by user ${userId}`);
       return NextResponse.json({ error: 'Unauthorized order access.' }, { status: 403 });
     }
 
-    // Idempotent check: If order is already PAID or FREE, return success immediately
+    // 6. Idempotent check: If order is already PAID or FREE, return success immediately
     if (order.status === 'PAID' || order.status === 'FREE') {
       return NextResponse.json({
         success: true,
@@ -69,29 +92,28 @@ export async function POST(request: Request) {
       });
     }
 
-    const appId = process.env.CASHFREE_APP_ID;
-    const secretKey = process.env.CASHFREE_SECRET_KEY;
-    const hasCashfreeKeys = !!(appId && secretKey);
-    const isProduction = (process.env.CASHFREE_ENV || 'production') === 'production';
-
-    // 4. Verification Check
+    // 7. Security Enforcement on Simulated Confirmation
     if (simulatedConfirm) {
-      if (hasCashfreeKeys && isProduction && process.env.ALLOW_SIMULATED_PURCHASE !== 'true') {
+      if (!isSimulationAllowed()) {
+        logger.error(`Blocked unauthorized simulated verification attempt on order ${targetOrderId} in production`);
         return NextResponse.json(
-          { error: 'Simulated payments are disabled in production environment.' },
+          { error: 'Simulated payments are strictly disabled in production environment.' },
           { status: 403 }
         );
       }
-      // Allowed simulated confirmation proceeds to fulfillment
+      // Allowed simulated confirmation proceeds to fulfillment (local dev only)
     } else {
-      // Real Cashfree Gateway Verification
-      if (!appId || !secretKey) {
-        return NextResponse.json({ error: 'Payment gateway configuration missing.' }, { status: 500 });
+      // 8. Authoritative Cashfree Gateway Verification
+      if (!isCashfreeConfigured()) {
+        return NextResponse.json(
+          { error: 'Payment gateway configuration is missing on server.' },
+          { status: 500 }
+        );
       }
 
-      const cashfreeBaseUrl = isProduction
-        ? 'https://api.cashfree.com/pg'
-        : 'https://sandbox.cashfree.com/pg';
+      const cashfreeBaseUrl = getCashfreeBaseUrl();
+      const appId = process.env.CASHFREE_APP_ID!.trim();
+      const secretKey = process.env.CASHFREE_SECRET_KEY!.trim();
 
       const cfResponse = await fetch(`${cashfreeBaseUrl}/orders/${targetOrderId}`, {
         method: 'GET',
@@ -105,11 +127,12 @@ export async function POST(request: Request) {
       if (!cfResponse.ok) {
         const cfError = await cfResponse.json();
         logger.error('Cashfree order fetch failed:', cfError);
-        return NextResponse.json({ error: 'Failed to verify transaction with Cashfree.' }, { status: 400 });
+        return NextResponse.json({ error: 'Failed to verify transaction with payment gateway.' }, { status: 400 });
       }
 
       const cfOrder = await cfResponse.json();
 
+      // Check A: Order status must be PAID
       if (cfOrder.order_status !== 'PAID') {
         logger.warn('Order is not in PAID status:', cfOrder.order_status);
         return NextResponse.json(
@@ -117,11 +140,31 @@ export async function POST(request: Request) {
           { status: 400 }
         );
       }
+
+      // Check B: Currency must be INR
+      if (cfOrder.order_currency !== 'INR') {
+        logger.error('Order currency mismatch:', cfOrder.order_currency);
+        return NextResponse.json({ error: 'Invalid order currency' }, { status: 400 });
+      }
+
+      // Check C: Paid amount must strictly match order totalAmount (Cent-level check)
+      const cfAmount = Number(cfOrder.order_amount);
+      if (!verifyOrderAmountMatch(order.totalAmount, cfAmount)) {
+        logger.error(`Amount mismatch for order ${order.id}. Expected ${order.totalAmount}, got ${cfAmount}`);
+        return NextResponse.json({ error: 'Paid amount does not match order amount' }, { status: 400 });
+      }
+
+      // Check D: Customer ID on gateway order must match the student user ID
+      const cfCustomerId = cfOrder.customer_details?.customer_id;
+      if (cfCustomerId && cfCustomerId !== userId) {
+        logger.error(`Customer mismatch: Gateway customer ${cfCustomerId} !== user ${userId}`);
+        return NextResponse.json({ error: 'Customer identifier mismatch' }, { status: 403 });
+      }
     }
 
-    // 5. Atomic Fulfillment in Database Transaction
+    // 9. Atomic Fulfillment in Database Transaction
     await prisma.$transaction(async (tx) => {
-      // Update order status
+      // Update order status to PAID
       await tx.order.update({
         where: { id: order.id },
         data: { status: 'PAID' },
@@ -152,6 +195,8 @@ export async function POST(request: Request) {
         },
       });
     });
+
+    logger.info(`Successfully verified and fulfilled order ${order.id} for user ${userId}`);
 
     return NextResponse.json({
       success: true,

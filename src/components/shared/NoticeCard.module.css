@@ -1,17 +1,29 @@
 .card {
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  border-radius: var(--radius-lg, 14px);
+  border-radius: var(--radius-lg, 12px);
   padding: 1.25rem;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
+:global(.light) .card {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.09);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
 .card:hover {
   background: var(--surface-card);
-  border-color: var(--primary);
+  border-color: color-mix(in srgb, var(--foreground) 18%, transparent);
+}
+
+:global(.light) .card:hover {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.22);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
 }
 
 .cardHeader {
@@ -47,16 +59,22 @@
 }
 
 .tagNotice {
-  background: rgba(99, 102, 241, 0.12);
-  color: #6366f1;
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  background: var(--surface-card);
+  color: var(--foreground);
+  border: 1px solid var(--surface-border);
+}
+
+:global(.light) .tagNotice {
+  background: #f4f4f5;
+  color: #09090b;
+  border-color: rgba(0, 0, 0, 0.09);
 }
 
 .classTarget {
   font-size: 0.72rem;
   font-weight: 600;
-  color: var(--foreground);
-  opacity: 0.6;
+  color: var(--secondary);
+  opacity: 1;
 }
 
 .dateArea {
@@ -64,8 +82,8 @@
   align-items: center;
   gap: 0.35rem;
   font-size: 0.75rem;
-  color: var(--foreground);
-  opacity: 0.6;
+  color: var(--secondary);
+  opacity: 1;
 }
 
 .mediaWrapper {

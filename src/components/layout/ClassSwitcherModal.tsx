@@ -185,7 +185,6 @@ export default function ClassSwitcherModal({ isOpen, onClose, currentClass }: Cl
                   disabled={loading}
                 >
                   <div className={styles.cardLeft}>
-                    <div className={styles.accentBar} style={{ background: color }} />
                     <div className={styles.cardInfo}>
                       <span className={styles.className}>{course.name}</span>
                       {course.caption && <span className={styles.classCaption}>{course.caption}</span>}

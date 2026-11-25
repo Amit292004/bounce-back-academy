@@ -1,12 +1,12 @@
 .section {
-  padding: 5rem 1.5rem;
+  padding: 3.75rem 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .sectionHead {
   max-width: 640px;
-  margin-bottom: 2.75rem;
+  margin-bottom: 2.25rem;
 }
 
 .eyebrow {
@@ -15,11 +15,11 @@
   gap: 0.4rem;
   padding: 0.25rem 0.65rem;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface);
   border: 1px solid var(--surface-border);
   font-size: 0.78rem;
   font-weight: 500;
-  color: var(--secondary);
+  color: var(--foreground);
   margin-bottom: 0.9rem;
 }
 
@@ -47,8 +47,7 @@
 .subtitle {
   font-size: 0.95rem;
   line-height: 1.65;
-  color: var(--foreground);
-  opacity: 0.55;
+  color: var(--secondary);
 }
 
 /* 4-column connected bento grid */
@@ -93,7 +92,7 @@
   align-items: center;
   justify-content: center;
   color: var(--foreground);
-  opacity: 0.8;
+  opacity: 1;
   transition: opacity 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   flex-shrink: 0;
 }
@@ -101,26 +100,26 @@
 .card:hover .iconBox {
   opacity: 1;
   border-color: color-mix(in srgb, var(--foreground) 30%, transparent);
-  color: var(--primary);
+  color: var(--brand-orange-text);
 }
 
 .stepNumber {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--foreground);
-  opacity: 0.35;
+  color: var(--brand-orange-text);
+  opacity: 1;
   font-variant-numeric: tabular-nums;
   padding: 0.18rem 0.5rem;
   border-radius: 5px;
-  background: var(--surface-highlight);
-  border: 1px solid var(--surface-border);
+  background: var(--brand-orange-light);
+  border: 1px solid var(--brand-orange-border);
   transition: opacity 0.2s ease, color 0.2s ease;
 }
 
 .card:hover .stepNumber {
-  opacity: 0.8;
-  color: var(--primary);
+  opacity: 1;
+  color: var(--brand-orange-text);
 }
 
 .cardTitle {
@@ -135,8 +134,7 @@
 .cardDesc {
   font-size: 0.83rem;
   line-height: 1.6;
-  color: var(--foreground);
-  opacity: 0.5;
+  color: var(--secondary);
   flex: 1;
 }
 
@@ -152,6 +150,6 @@
     grid-template-columns: 1fr;
   }
   .section {
-    padding: 3.5rem 1rem;
+    padding: 2.75rem 1rem;
   }
 }

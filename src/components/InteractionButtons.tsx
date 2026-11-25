@@ -109,7 +109,7 @@ export default function InteractionButtons({
       <button 
         onClick={handleLike}
         title="Like"
-        style={{ background: 'transparent', border: 'none', color: isLiked ? '#ef4444' : 'var(--foreground)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 500, padding: 0, opacity: isLiked ? 1 : 0.6, transition: 'var(--transition)' }}
+        style={{ background: 'transparent', border: 'none', color: isLiked ? '#ef4444' : 'var(--secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 500, padding: 0, transition: 'var(--transition)' }}
       >
         {isLiked ? <FaHeart style={{ fontSize: '1rem' }} /> : <FaRegHeart style={{ fontSize: '1rem' }} />} 
         <span>{likes}</span>
@@ -118,7 +118,7 @@ export default function InteractionButtons({
       <button 
         onClick={handleFavorite}
         title="Add to Favorite"
-        style={{ background: 'transparent', border: 'none', color: isFavorited ? 'var(--primary)' : 'var(--foreground)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 500, padding: 0, opacity: isFavorited ? 1 : 0.6, transition: 'var(--transition)' }}
+        style={{ background: 'transparent', border: 'none', color: isFavorited ? 'var(--brand-orange-text)' : 'var(--secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 500, padding: 0, transition: 'var(--transition)' }}
       >
         {isFavorited ? <FaBookmark style={{ fontSize: '1rem' }} /> : <FaRegBookmark style={{ fontSize: '1rem' }} />} 
         <span>{favorites}</span>
@@ -127,7 +127,7 @@ export default function InteractionButtons({
       <button 
         onClick={handleShare}
         title="Share"
-        style={{ background: 'transparent', border: 'none', color: 'var(--foreground)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 500, padding: 0, opacity: 0.6, transition: 'var(--transition)' }}
+        style={{ background: 'transparent', border: 'none', color: 'var(--secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 500, padding: 0, transition: 'var(--transition)' }}
       >
         <FaShareAlt style={{ fontSize: '1rem' }} /> 
         <span>{shares}</span>

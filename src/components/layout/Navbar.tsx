@@ -158,9 +158,14 @@ export default function Navbar() {
   const [hasNewAnnouncement, setHasNewAnnouncement] = useState(false);
   const [megaOpen, setMegaOpen] = useState<'resources' | 'platform' | null>(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
   const [libraryExpanded, setLibraryExpanded] = useState(false);
   const megaRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setAvatarError(false);
+  }, [auth.image]);
 
   // Main initialization effect (branding, announcements, event listeners)
   useEffect(() => {
@@ -509,10 +514,10 @@ export default function Navbar() {
             aria-label={`Open shopping cart (${itemCount} items)`}
             title="Shopping Cart"
           >
-            <ShoppingCart size={18} />
+            <ShoppingCart size={16} />
             {itemCount > 0 && <span className={styles.cartBadge}>{itemCount}</span>}
           </button>
-          <ThemeToggle />
+          <ThemeToggle variant="monochrome" />
         </div>
 
         {/* Mobile Actions: Search Icon + Cart Icon + Hamburger */}
@@ -608,6 +613,7 @@ export default function Navbar() {
               <ShoppingCart size={17} />
               {itemCount > 0 && <span className={styles.drawerCartBadge}>{itemCount}</span>}
             </button>
+            <ThemeToggle variant="monochrome" />
             <button
               type="button"
               onClick={() => setMenuOpen(false)}
@@ -801,9 +807,6 @@ export default function Navbar() {
                   <span className={styles.drawerAccountName}>{auth.name || 'Student'}</span>
                   {auth.email && <span className={styles.drawerAccountEmail}>{auth.email}</span>}
                 </div>
-                <div className={styles.drawerThemeToggleWrap}>
-                  <ThemeToggle />
-                </div>
               </div>
 
               <div className={styles.drawerAccountGrid}>
@@ -868,7 +871,6 @@ export default function Navbar() {
                   <HelpCircle size={14} />
                   <span>Contact Support</span>
                 </Link>
-                <ThemeToggle />
               </div>
             </div>
           )}

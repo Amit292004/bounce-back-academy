@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240">
+  <!-- Concept 1: PW (Physics Wallah) Style - Bold Monogram Power Badge -->
+  <!-- Flat, solid, high-impact, bold black & crimson/white -->
+
+  <!-- Left: Solid Icon Emblem (180x180 centered) -->
+  <g transform="translate(30, 30)">
+    <!-- Solid circular badge base -->
+    <rect width="180" height="180" rx="42" fill="#111827" />
+    
+    <!-- Bold 'BBA' Monogram with integrated upward rebound arrow -->
+    <!-- The 'B' Letterform -->
+    <path d="M 46 42 L 94 42 C 112 42, 124 53, 124 69 C 124 81, 116 90, 104 94 C 119 98, 128 109, 128 124 C 128 141, 114 153, 94 153 L 46 153 Z" fill="#FFFFFF" />
+    <!-- Cutouts in 'B' -->
+    <rect x="66" y="58" width="30" height="20" rx="3" fill="#111827" />
+    <rect x="66" y="116" width="32" height="22" rx="3" fill="#111827" />
+    
+    <!-- Dynamic Rebound Arrow in bold Red/Orange cutting through -->
+    <path d="M 88 153 L 136 78" stroke="#EF4444" stroke-width="14" stroke-linecap="round" />
+    <polygon points="144,56 148,88 120,74" fill="#EF4444" />
+    
+    <!-- Small bounce dot -->
+    <circle cx="86" cy="153" r="8" fill="#EF4444" />
+  </g>
+
+  <!-- Right: Professional Bold Typography -->
+  <g transform="translate(250, 65)">
+    <!-- Primary Name -->
+    <text x="0" y="52" font-family="'Montserrat', 'Arial Black', -apple-system, sans-serif" font-size="52" font-weight="900" fill="#111827" letter-spacing="-1">
+      BOUNCE<tspan fill="#EF4444">BACK</tspan>
+    </text>
+
+    <!-- Sub-brand: ACADEMY -->
+    <text x="2" y="94" font-family="'Montserrat', 'Arial', sans-serif" font-size="22" font-weight="800" fill="#6B7280" letter-spacing="9">
+      ACADEMY
+    </text>
+
+    <!-- Tagline Badge -->
+    <rect x="220" y="78" width="168" height="24" rx="12" fill="#FEE2E2" />
+    <text x="304" y="94" font-family="-apple-system, sans-serif" font-size="11" font-weight="800" fill="#DC2626" text-anchor="middle" letter-spacing="1">
+      RISE HIGHER
+    </text>
+  </g>
+</svg>

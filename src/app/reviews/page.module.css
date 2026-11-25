@@ -1,0 +1,288 @@
+/* ── Main Container: Aligned with 1200px Homepage Standard ── */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 2.5rem 1.5rem 5rem;
+  box-sizing: border-box;
+  min-height: calc(100vh - var(--header-height, 70px));
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--secondary);
+  font-size: 0.84rem;
+  font-weight: 500;
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+  transition: color 0.15s ease;
+}
+
+.backLink:hover {
+  color: var(--foreground);
+}
+
+/* ── Header ── */
+.header {
+  margin-bottom: 2.25rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--surface-border);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--secondary);
+  margin-bottom: 0.9rem;
+}
+
+:global(.light) .eyebrow {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: var(--foreground);
+}
+
+.eyebrowDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand-orange);
+  display: inline-block;
+}
+
+.title {
+  font-size: clamp(1.85rem, 3.8vw, 2.65rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--foreground);
+  margin: 0 0 0.4rem;
+  line-height: 1.15;
+}
+
+:global(.light) .title {
+  color: #09090b;
+}
+
+.subtitle {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--secondary);
+  max-width: 640px;
+  margin: 0;
+  text-wrap: balance;
+}
+
+:global(.light) .subtitle {
+  color: var(--secondary);
+}
+
+/* ── Bento Grid matching Homepage TestimonialsSection ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--surface-border);
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: var(--surface);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.15s ease;
+}
+
+:global(.light) .card {
+  background: var(--surface);
+}
+
+.card:hover {
+  background: var(--surface-card);
+}
+
+:global(.light) .card:hover {
+  background: var(--surface-card);
+}
+
+.stars {
+  display: flex;
+  gap: 0.2rem;
+  color: #eab308;
+  margin-bottom: 1.15rem;
+}
+
+.quote {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--foreground);
+  opacity: 0.94;
+  flex: 1;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.75rem;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  position: relative;
+  padding-top: 1.25rem;
+  margin-top: auto;
+}
+
+.author::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--foreground) 10%, transparent), transparent);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--foreground);
+  color: var(--background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.82rem;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.authorInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.authorName {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--foreground);
+  margin-bottom: 0.12rem;
+  letter-spacing: -0.01em;
+}
+
+.authorMeta {
+  font-size: 0.78rem;
+  color: var(--secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.score {
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--secondary);
+  flex-shrink: 0;
+  letter-spacing: -0.01em;
+}
+
+.skeletonCard {
+  background: var(--surface);
+  padding: 1.75rem;
+  min-height: 210px;
+  display: flex;
+  flex-direction: column;
+}
+
+:global(.light) .skeletonCard {
+  background: var(--surface);
+}
+
+.skeletonStars {
+  width: 96px;
+  height: 14px;
+  border-radius: 4px;
+  margin-bottom: 1.15rem;
+}
+
+.skeletonQuoteLines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-bottom: 1.75rem;
+}
+
+.skeletonLine {
+  height: 14px;
+  border-radius: 4px;
+}
+
+.skeletonAuthorRow {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: auto;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--surface-border);
+}
+
+.skeletonAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.skeletonMetaLines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 1.5rem;
+  background: var(--surface);
+  color: var(--secondary);
+  font-size: 0.92rem;
+}
+
+/* ── Mobile Layout (≤ 640px) ── */
+@media (max-width: 640px) {
+  .container {
+    padding: 1.25rem 1rem calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .title {
+    font-size: 1.85rem;
+  }
+
+  .card {
+    padding: 1.4rem 1.25rem;
+  }
+}

@@ -14,6 +14,10 @@ export default function TermsOfUsePage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
+        <div className={styles.eyebrow}>
+          <span className={styles.eyebrowDot} />
+          <span>Legal</span>
+        </div>
         <h1 className={styles.title}>Terms of Use</h1>
         <p className={styles.lastUpdated}>Last updated: September 3, 2026</p>
       </div>

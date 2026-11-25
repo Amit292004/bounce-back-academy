@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240">
+  <!-- Concept 2: Unacademy Style - Clean Minimalist Geometric Dual-Loop Icon -->
+  <!-- Flat, modern, pure geometry, emerald green & deep navy, high trust -->
+
+  <!-- Left: Geometric Dual-Arch Symbol (180x180 centered) -->
+  <g transform="translate(40, 30)">
+    <!-- Crisp white squircle with subtle border -->
+    <rect width="180" height="180" rx="44" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="2" />
+    
+    <!-- Outer Rebound Arc (Deep Navy #0F172A) -->
+    <!-- Represents the foundation & resilient base -->
+    <path d="M 44 135 C 44 75, 90 48, 126 48 C 144 48, 154 56, 154 68 C 154 82, 138 90, 120 90 C 88 90, 72 108, 72 135 Z" fill="#0F172A" />
+
+    <!-- Inner Rising Leaf / Trajectory Loop (Signature Emerald #059669 / #10B981) -->
+    <!-- Interlocks with outer curve, surging upwards into academic growth -->
+    <path d="M 72 135 C 72 102, 100 84, 128 84 C 152 84, 164 100, 164 120 C 164 142, 142 154, 114 154 C 84 154, 72 135, 72 135 Z" fill="#10B981" />
+
+    <!-- Accent Apex Node -->
+    <circle cx="126" cy="48" r="9" fill="#10B981" />
+  </g>
+
+  <!-- Right: Clean Minimalist Tech Typography -->
+  <g transform="translate(260, 68)">
+    <!-- Primary Name -->
+    <text x="0" y="48" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="48" font-weight="800" fill="#0F172A" letter-spacing="-1">
+      BounceBack
+    </text>
+
+    <!-- Sub-brand & Tagline -->
+    <text x="2" y="86" font-family="'Plus Jakarta Sans', 'Inter', sans-serif" font-size="19" font-weight="600" fill="#64748B" letter-spacing="4">
+      ACADEMY
+    </text>
+
+    <!-- Dot separator -->
+    <circle cx="178" cy="80" r="3.5" fill="#10B981" />
+
+    <!-- Clean Tech Slogan -->
+    <text x="195" y="86" font-family="'Plus Jakarta Sans', 'Inter', sans-serif" font-size="15" font-weight="600" fill="#10B981" letter-spacing="0.5">
+      Rise Higher
+    </text>
+  </g>
+</svg>

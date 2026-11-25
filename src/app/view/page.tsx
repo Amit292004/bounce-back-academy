@@ -24,14 +24,15 @@ function ViewerSkeleton() {
       justifyContent: 'center',
       gap: '2rem',
       padding: '2rem 1rem',
-      background: 'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(99,102,241,0.1) 0%, transparent 70%)',
+      background: 'var(--background)',
     }}>
       <div style={{
         width: '100%', maxWidth: 720,
         height: 'min(calc(720px * 1.414), 65vh)',
-        borderRadius: 10,
-        background: 'rgba(255,255,255,0.03)',
-        boxShadow: '0 0 0 1px rgba(139,92,246,0.12), 0 20px 60px rgba(0,0,0,0.6)',
+        borderRadius: 12,
+        background: 'var(--surface)',
+        border: '1px solid var(--surface-border)',
+        boxShadow: 'var(--shadow-md)',
         position: 'relative', overflow: 'hidden',
       }}>
         <motion.div
@@ -40,7 +41,7 @@ function ViewerSkeleton() {
           style={{
             position: 'absolute', top: 0, left: 0,
             width: '40%', height: '100%',
-            background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.07), transparent)',
+            background: 'linear-gradient(90deg, transparent, color-mix(in srgb, var(--foreground) 6%, transparent), transparent)',
           }}
         />
         <div style={{
@@ -51,13 +52,13 @@ function ViewerSkeleton() {
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             style={{
-              width: 36, height: 36,
+              width: 34, height: 34,
               borderRadius: '50%',
-              border: '3px solid rgba(139,92,246,0.2)',
-              borderTopColor: '#8b5cf6',
+              border: '3px solid var(--surface-border)',
+              borderTopColor: 'var(--foreground)',
             }}
           />
-          <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: '0.78rem', margin: 0 }}>Loading…</p>
+          <p style={{ color: 'var(--secondary)', fontSize: '0.8rem', margin: 0 }}>Loading…</p>
         </div>
       </div>
     </div>
@@ -127,14 +128,14 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
           style={{
-            width: 72, height: 72, borderRadius: 20,
-            background: 'linear-gradient(135deg, color-mix(in srgb, var(--primary) 30%, transparent), color-mix(in srgb, var(--accent) 30%, transparent))',
-            border: '1px solid color-mix(in srgb, var(--accent) 40%, transparent)',
+            width: 64, height: 64, borderRadius: 16,
+            background: 'var(--surface)',
+            border: '1px solid var(--surface-border)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: 'var(--shadow-glow)',
+            boxShadow: 'var(--shadow-sm)',
           }}
         >
-          <FaFilePdf style={{ fontSize: '1.8rem', color: 'var(--accent)' }} />
+          <FaFilePdf style={{ fontSize: '1.65rem', color: 'var(--foreground)' }} />
         </motion.div>
         <motion.h1
           initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
@@ -231,29 +232,28 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
       >
         {/* Left: back + title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', minWidth: 0, flex: 1 }}>
-          {/* Back button — matches the mockup square style */}
+          {/* Back button */}
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => router.back()}
             aria-label="Go back"
             style={{
-              width: 38, height: 38, flexShrink: 0,
-              borderRadius: 10,
-              background: 'color-mix(in srgb, var(--primary) 15%, transparent)',
-              border: '1px solid color-mix(in srgb, var(--primary) 25%, transparent)',
-              color: 'var(--primary)',
+              width: 36, height: 36, flexShrink: 0,
+              borderRadius: 9,
+              background: 'var(--surface-card)',
+              border: '1px solid var(--surface-border)',
+              color: 'var(--foreground)',
               cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               transition: 'background 0.15s ease, border-color 0.15s ease',
-              boxShadow: '0 0 12px color-mix(in srgb, var(--primary) 10%, transparent)',
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.background = 'color-mix(in srgb, var(--primary) 25%, transparent)';
-              (e.currentTarget as HTMLElement).style.borderColor = 'color-mix(in srgb, var(--primary) 40%, transparent)';
+              (e.currentTarget as HTMLElement).style.background = 'var(--surface-highlight)';
+              (e.currentTarget as HTMLElement).style.borderColor = 'color-mix(in srgb, var(--foreground) 24%, transparent)';
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.background = 'color-mix(in srgb, var(--primary) 15%, transparent)';
-              (e.currentTarget as HTMLElement).style.borderColor = 'color-mix(in srgb, var(--primary) 25%, transparent)';
+              (e.currentTarget as HTMLElement).style.background = 'var(--surface-card)';
+              (e.currentTarget as HTMLElement).style.borderColor = 'var(--surface-border)';
             }}
           >
             <FaArrowLeft size={14} />
@@ -293,16 +293,16 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
             href="/login"
             style={{
               display: 'flex', alignItems: 'center', gap: '0.4rem',
-              padding: '0.45rem 0.85rem',
-              borderRadius: 10,
+              padding: '0.45rem 0.9rem',
+              borderRadius: 8,
               border: 'none',
-              background: 'var(--primary)',
-              color: 'var(--primary-foreground)',
-              fontSize: '0.8rem', fontWeight: 700,
+              background: 'var(--foreground)',
+              color: 'var(--background)',
+              fontSize: '0.8rem', fontWeight: 600,
               cursor: 'pointer',
               textDecoration: 'none',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 4px 16px rgba(99,102,241,0.3)',
+              transition: 'opacity 0.15s ease',
+              boxShadow: 'var(--shadow-sm)',
               letterSpacing: '-0.01em',
               whiteSpace: 'nowrap',
               flexShrink: 0,
@@ -318,17 +318,16 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
             aria-label="Download PDF"
             style={{
               display: 'flex', alignItems: 'center', gap: '0.4rem',
-              padding: '0.45rem 0.85rem',
-              borderRadius: 10,
+              padding: '0.45rem 0.9rem',
+              borderRadius: 8,
               border: 'none',
-              background: downloading
-                ? 'var(--primary-hover)'
-                : 'var(--primary)',
-              color: 'var(--primary-foreground)',
-              fontSize: '0.8rem', fontWeight: 700,
+              background: 'var(--foreground)',
+              color: 'var(--background)',
+              opacity: downloading ? 0.75 : 1,
+              fontSize: '0.8rem', fontWeight: 600,
               cursor: downloading ? 'default' : 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: downloading ? 'none' : '0 4px 16px rgba(99,102,241,0.3)',
+              transition: 'opacity 0.15s ease',
+              boxShadow: 'var(--shadow-sm)',
               letterSpacing: '-0.01em',
               whiteSpace: 'nowrap',
               flexShrink: 0,
@@ -368,7 +367,7 @@ export default function ViewPage({ searchParams }: ViewPageProps) {
             {/* Subtle glow behind the iframe */}
             <div style={{
               position: 'absolute', inset: 0,
-              background: 'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(99,102,241,0.06) 0%, transparent 70%)',
+              background: 'radial-gradient(ellipse 60% 50% at 50% 40%, color-mix(in srgb, var(--foreground) 4%, transparent) 0%, transparent 70%)',
               pointerEvents: 'none', zIndex: 0,
             }} />
             <iframe

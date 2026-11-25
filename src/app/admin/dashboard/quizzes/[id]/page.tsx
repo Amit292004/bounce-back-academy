@@ -385,16 +385,16 @@ export default function QuizQuestionsManagerPage() {
 
           return (
             <div key={question.id} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', position: 'relative' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignSelf: 'flex-start', background: 'rgba(99,102,241,0.1)', color: 'var(--primary)', width: '32px', height: '32px', borderRadius: '50%', alignItems: 'center', justifyContent: 'center', fontWeight: 800, flexShrink: 0 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignSelf: 'flex-start', background: 'var(--surface-card)', color: 'var(--primary)', width: '32px', height: '32px', borderRadius: '50%', alignItems: 'center', justifyContent: 'center', fontWeight: 800, flexShrink: 0 }}>
                 {index + 1}
               </div>
 
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                  <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', background: isMCQ ? 'rgba(99,102,241,0.1)' : 'rgba(245,158,11,0.1)', color: isMCQ ? 'var(--primary)' : '#f59e0b', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase' }}>
+                  <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', background: isMCQ ? 'var(--surface-card)' : 'rgba(245,158,11,0.1)', color: isMCQ ? 'var(--primary)' : '#f59e0b', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase' }}>
                     {isMCQ ? 'Multiple Choice (MCQ)' : 'Text Input'}
                   </span>
-                  <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', background: 'rgba(99,102,241,0.06)', color: 'var(--primary)', border: '1px solid var(--surface-border)', fontSize: '0.75rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', background: 'var(--surface-card)', color: 'var(--primary)', border: '1px solid var(--surface-border)', fontSize: '0.75rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
                     <FaClock size={11} /> {question.timeLimit || 30}s
                   </span>
                 </div>

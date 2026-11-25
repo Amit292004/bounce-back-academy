@@ -78,8 +78,8 @@ export default function SignupReminder() {
           100% { background-position: 0% 50%; }
         }
         @keyframes sr-iconPulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.4); }
-          50%       { box-shadow: 0 0 0 8px rgba(99,102,241,0); }
+          0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--foreground) 18%, transparent); }
+          50%       { box-shadow: 0 0 0 8px transparent; }
         }
 
         .sr-outer {
@@ -91,7 +91,13 @@ export default function SignupReminder() {
           width: calc(100% - 2rem);
           max-width: 520px;
           animation: sr-slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-          transition: bottom 0.3s ease;
+          transition: bottom 0.3s ease, opacity 0.2s ease;
+        }
+
+        body.mobile-drawer-open .sr-outer {
+          opacity: 0;
+          pointer-events: none;
+          visibility: hidden;
         }
 
         @media (max-width: 768px) {
@@ -185,8 +191,7 @@ export default function SignupReminder() {
 
         .sr-sub {
           font-size: 0.75rem;
-          color: var(--foreground);
-          opacity: 0.55;
+          color: var(--secondary);
           margin: 0;
           line-height: 1.4;
           white-space: nowrap;

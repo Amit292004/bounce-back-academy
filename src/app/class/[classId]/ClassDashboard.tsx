@@ -644,7 +644,7 @@ export default function ClassDashboard({
                   onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && handleStatClick("notes")}
                   aria-label={`${stats.notes} Chapter Notes. Click to open study notes.`}
                 >
-                  <div className={styles.statIcon} style={{ color: '#6366f1' }}>
+                  <div className={styles.statIcon} style={{ color: '#f97316' }}>
                     <FileText size={26} />
                   </div>
                   <div className={styles.statInfo}>
@@ -925,7 +925,7 @@ export default function ClassDashboard({
                           tabIndex={0}
                           onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setSelectedChapterId(chap.id)}
                         >
-                          <div className={styles.chapterNum} style={{ background: "rgba(99,102,241,0.12)", color: "#6366f1" }}>
+                          <div className={styles.chapterNum} style={{ background: "rgba(249,115,22,0.12)", color: "#f97316" }}>
                             {chap.number}
                           </div>
                           <div className={styles.chapterInfo}>
@@ -1028,7 +1028,7 @@ export default function ClassDashboard({
                               className={`${styles.docCard} ${done ? styles.docCardDone : ""}`}
                               onClick={() => setSelectedDoc({ title: note.title, viewUrl: note.viewUrl, downloadUrl: note.downloadFile })}
                             >
-                              <div className={styles.docIcon} style={{ background: "rgba(99,102,241,0.1)", color: "#6366f1" }}>
+                              <div className={styles.docIcon} style={{ background: "rgba(249,115,22,0.12)", color: "#f97316" }}>
                                 <FileText size={18} />
                               </div>
                               <div className={styles.docInfo}>
@@ -1246,7 +1246,7 @@ export default function ClassDashboard({
                           className={`${styles.docCard} ${done ? styles.docCardDone : ""}`}
                           onClick={() => setSelectedDoc({ title: note.title, viewUrl: note.viewUrl, downloadUrl: note.downloadFile })}
                         >
-                          <div className={styles.docIcon} style={{ background: "rgba(99,102,241,0.1)", color: "#6366f1" }}>
+                          <div className={styles.docIcon} style={{ background: "rgba(249,115,22,0.12)", color: "#f97316" }}>
                             <FileText size={18} />
                           </div>
                           <div className={styles.docInfo}>
@@ -1732,7 +1732,7 @@ export default function ClassDashboard({
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
-                        {content.contentType === 'VIDEO' ? <VideoIcon size={18} color="#ef4444" /> : <FileText size={18} color="#6366f1" />}
+                        {content.contentType === 'VIDEO' ? <VideoIcon size={18} color="#ef4444" /> : <FileText size={18} color="#f97316" />}
                         <div style={{ minWidth: 0 }}>
                           <h5 style={{ fontSize: '0.9rem', fontWeight: 700, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{content.title}</h5>
                           {content.description && <p style={{ fontSize: '0.78rem', opacity: 0.6, margin: 0 }}>{content.description}</p>}

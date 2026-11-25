@@ -62,7 +62,7 @@ export default function CartPage() {
       {/* Page Header */}
       <div className={styles.header}>
         <div className={styles.eyebrow}>
-          <Sparkles size={14} />
+          <span className={styles.eyebrowDot} />
           <span>Checkout &amp; Access</span>
         </div>
         <h1 className={styles.title}>
@@ -81,7 +81,7 @@ export default function CartPage() {
             <ShoppingCart size={40} />
           </div>
           <h2 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0 }}>Your cart is empty</h2>
-          <p style={{ opacity: 0.65, fontSize: '0.95rem', margin: 0, maxWidth: '400px', lineHeight: 1.5 }}>
+          <p style={{ color: 'var(--secondary)', fontSize: '0.95rem', margin: 0, maxWidth: '400px', lineHeight: 1.5 }}>
             You haven&apos;t added any courses or study packages to your cart yet. Browse our comprehensive curriculum to get started!
           </p>
           <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -232,12 +232,7 @@ export default function CartPage() {
 
                       <Link
                         href={`/premium/${item.id}`}
-                        style={{
-                          fontSize: '0.8rem',
-                          fontWeight: 600,
-                          color: '#818cf8',
-                          textDecoration: 'none',
-                        }}
+                        className={styles.syllabusLink}
                       >
                         View Syllabus &rarr;
                       </Link>
@@ -374,7 +369,7 @@ export default function CartPage() {
                 <span>Instant Lifetime Digital Access</span>
               </div>
               <div className={styles.trustItem}>
-                <Sparkles size={16} color="#818cf8" />
+                <Sparkles size={16} color="#f97316" />
                 <span>Free Future Syllabus Updates Included</span>
               </div>
             </div>

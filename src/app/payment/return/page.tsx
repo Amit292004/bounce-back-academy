@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
-import { BookOpen, CheckCircle2, ArrowRight } from 'lucide-react';
+import { BookOpen, CheckCircle2, ArrowRight, ShieldCheck, MessageSquare, RefreshCw } from 'lucide-react';
 
 type Status = 'verifying' | 'success' | 'failed';
 
@@ -30,6 +30,7 @@ function PaymentReturnContent() {
   const [savedClass, setSavedClass] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
   const [unlockedCourses, setUnlockedCourses] = useState<UnlockedCourse[]>([]);
+  const [stepLabel, setStepLabel] = useState('Verifying encrypted gateway response...');
 
   const isCartMode = mode === 'cart' || (orderId && orderId.startsWith('bba_ord_'));
 
@@ -41,21 +42,19 @@ function PaymentReturnContent() {
 
     if (!orderId) {
       setStatus('failed');
-      setMessage('Invalid payment return. Missing order information.');
+      setMessage('Invalid payment return: missing order identifier.');
       return;
     }
 
     if (isFree) {
-      // Free order was already activated during checkout
       setStatus('success');
-      setMessage('Free enrollment confirmed! Your courses are now unlocked.');
+      setMessage('Free enrollment confirmed! Your course access is activated.');
       return;
     }
 
-    // Small delay to let payment gateway finalize the order status
     const timer = setTimeout(() => {
       verifyPayment(0);
-    }, 1500);
+    }, 1200);
 
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,6 +62,9 @@ function PaymentReturnContent() {
 
   const verifyPayment = async (attempt: number) => {
     try {
+      if (attempt === 1) setStepLabel('Confirming settlement with bank...');
+      if (attempt >= 2) setStepLabel('Synchronizing lifetime course access...');
+
       let endpoint = '/api/premium/purchase/verify';
       let payload: any = { cashfreeOrderId: orderId };
 
@@ -83,7 +85,7 @@ function PaymentReturnContent() {
 
       if (res.ok && data.success) {
         setStatus('success');
-        setMessage(data.message || 'Payment successful! Your course access is now unlocked.');
+        setMessage(data.message || 'Payment successfully verified! Your courses have been unlocked.');
 
         if (Array.isArray(data.items)) {
           setUnlockedCourses(data.items);
@@ -92,25 +94,29 @@ function PaymentReturnContent() {
           clearPurchasedItems([premiumItemId]);
         }
       } else {
-        // If payment is still processing (ACTIVE/PENDING), retry up to 3 times
+        // If payment is pending on gateway (ACTIVE or PENDING), retry up to 4 times
         const isProcessing =
           data.error?.includes('ACTIVE') ||
           data.error?.includes('PENDING') ||
           data.error?.includes('not completed');
 
-        if (isProcessing && attempt < 3) {
+        if (isProcessing && attempt < 4) {
           setRetryCount(attempt + 1);
-          setTimeout(() => verifyPayment(attempt + 1), 3000);
+          setTimeout(() => verifyPayment(attempt + 1), 2500);
         } else {
           setStatus('failed');
-          setMessage(data.error || 'Payment verification failed. Please contact academy support.');
+          setMessage(data.error || 'Payment verification could not be completed at this time.');
         }
       }
     } catch {
       setStatus('failed');
-      setMessage('A network error occurred while verifying your payment. Please contact support.');
+      setMessage('A network error occurred while verifying your transaction. Please contact support.');
     }
   };
+
+  const whatsappSupportUrl = `https://wa.me/919999999999?text=${encodeURIComponent(
+    `Hello Bounce Back Academy, I need assistance verifying my payment.\nOrder ID: ${orderId || 'N/A'}`
+  )}`;
 
   return (
     <div
@@ -123,52 +129,78 @@ function PaymentReturnContent() {
       }}
     >
       <div
-        className="glass-panel"
         style={{
-          maxWidth: '540px',
+          maxWidth: '520px',
           width: '100%',
           padding: '2.5rem',
           textAlign: 'center',
-          borderRadius: '1.5rem',
+          borderRadius: '16px',
+          background: 'var(--surface)',
+          border: '1px solid var(--surface-border)',
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         {status === 'verifying' && (
           <>
             <div
               style={{
-                width: '64px',
-                height: '64px',
+                width: '60px',
+                height: '60px',
                 margin: '0 auto 1.5rem',
-                border: '4px solid rgba(99,102,241,0.15)',
-                borderTopColor: 'var(--primary)',
+                border: '3px solid var(--surface-border)',
+                borderTopColor: '#10b981',
                 borderRadius: '50%',
-                animation: 'spin 1s linear infinite',
+                animation: 'spin 0.8s linear infinite',
               }}
             />
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '0.75rem' }}>
+            <h2 style={{ fontSize: '1.45rem', fontWeight: 800, marginBottom: '0.5rem' }}>
               Verifying Payment
             </h2>
-            <p style={{ opacity: 0.6, fontSize: '0.95rem' }}>
-              {retryCount > 0
-                ? `Checking status with gateway (attempt ${retryCount + 1}/4)...`
-                : 'Please wait while we confirm your payment and unlock your curriculum...'}
+            <p style={{ color: 'var(--secondary)', fontSize: '0.92rem', marginBottom: '1.5rem' }}>
+              {stepLabel}
             </p>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.35rem 0.85rem',
+                borderRadius: '999px',
+                background: 'rgba(16, 185, 129, 0.1)',
+                border: '1px solid rgba(16, 185, 129, 0.25)',
+                fontSize: '0.78rem',
+                color: '#10b981',
+                fontWeight: 600,
+              }}
+            >
+              <ShieldCheck size={14} />
+              <span>Cryptographic Bank Verification Active</span>
+            </div>
           </>
         )}
 
         {status === 'success' && (
           <>
-            <FaCheckCircle
+            <div
               style={{
-                fontSize: '3.75rem',
+                width: '72px',
+                height: '72px',
+                margin: '0 auto 1.25rem',
+                borderRadius: '50%',
+                background: 'rgba(16, 185, 129, 0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 color: '#10b981',
-                marginBottom: '1.25rem',
               }}
-            />
+            >
+              <FaCheckCircle style={{ fontSize: '2.8rem' }} />
+            </div>
+
             <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.5rem', color: '#10b981' }}>
-              Enrollment Successful!
+              Enrollment Confirmed!
             </h2>
-            <p style={{ opacity: 0.75, fontSize: '0.95rem', marginBottom: '1.75rem', lineHeight: 1.5 }}>
+            <p style={{ color: 'var(--secondary)', fontSize: '0.92rem', marginBottom: '1.75rem', lineHeight: 1.55 }}>
               {message}
             </p>
 
@@ -183,8 +215,8 @@ function PaymentReturnContent() {
                   textAlign: 'left',
                 }}
               >
-                <span style={{ fontSize: '0.78rem', fontWeight: 700, opacity: 0.6, textTransform: 'uppercase' }}>
-                  Unlocked Courses:
+                <span style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--secondary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  Unlocked Learning Materials:
                 </span>
                 {unlockedCourses.map((c) => (
                   <Link
@@ -194,16 +226,16 @@ function PaymentReturnContent() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      padding: '0.75rem 1rem',
+                      padding: '0.85rem 1rem',
                       background: 'var(--surface-highlight)',
                       border: '1px solid var(--surface-border)',
-                      borderRadius: '8px',
+                      borderRadius: '10px',
                       color: 'var(--foreground)',
                       textDecoration: 'none',
                       transition: 'border-color 0.15s ease',
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
                       <CheckCircle2 size={16} color="#10b981" />
                       <strong style={{ fontSize: '0.9rem' }}>{c.title}</strong>
                     </div>
@@ -228,7 +260,7 @@ function PaymentReturnContent() {
                     textDecoration: 'none',
                   }}
                 >
-                  Access Your Course →
+                  Access Your Course Now →
                 </Link>
               )}
 
@@ -251,14 +283,13 @@ function PaymentReturnContent() {
               <Link
                 href={savedClass ? `/class/${encodeURIComponent(savedClass)}?tab=premium` : '/courses'}
                 style={{
-                  opacity: 0.6,
-                  fontSize: '0.88rem',
+                  color: 'var(--secondary)',
+                  fontSize: '0.86rem',
                   textDecoration: 'none',
-                  color: 'inherit',
                   marginTop: '0.25rem',
                 }}
               >
-                ← Back to Courses
+                ← Return to Courses
               </Link>
             </div>
           </>
@@ -266,22 +297,36 @@ function PaymentReturnContent() {
 
         {status === 'failed' && (
           <>
-            <FaTimesCircle
+            <div
               style={{
-                fontSize: '3.75rem',
+                width: '72px',
+                height: '72px',
+                margin: '0 auto 1.25rem',
+                borderRadius: '50%',
+                background: 'rgba(239, 68, 68, 0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 color: '#ef4444',
-                marginBottom: '1.25rem',
               }}
-            />
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '0.75rem', color: '#ef4444' }}>
-              Payment Verification Pending / Failed
+            >
+              <FaTimesCircle style={{ fontSize: '2.8rem' }} />
+            </div>
+
+            <h2 style={{ fontSize: '1.45rem', fontWeight: 800, marginBottom: '0.5rem', color: '#ef4444' }}>
+              Payment Verification Failed
             </h2>
-            <p style={{ opacity: 0.75, fontSize: '0.95rem', marginBottom: '1.75rem', lineHeight: 1.5 }}>
+            <p style={{ color: 'var(--secondary)', fontSize: '0.92rem', marginBottom: '1.75rem', lineHeight: 1.55 }}>
               {message}
             </p>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <Link
-                href="/checkout"
+              <button
+                type="button"
+                onClick={() => {
+                  setStatus('verifying');
+                  verifyPayment(0);
+                }}
                 className="btn-primary"
                 style={{
                   display: 'inline-flex',
@@ -290,26 +335,50 @@ function PaymentReturnContent() {
                   gap: '0.5rem',
                   padding: '0.85rem 1.5rem',
                   fontWeight: 800,
-                  textDecoration: 'none',
                 }}
               >
-                Return to Checkout
-              </Link>
-              <Link
-                href="/cart"
+                <RefreshCw size={16} /> Retry Verification
+              </button>
+
+              <a
+                href={whatsappSupportUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 style={{
-                  opacity: 0.7,
-                  fontSize: '0.88rem',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  padding: '0.85rem 1.5rem',
+                  borderRadius: '8px',
+                  background: '#25D366',
+                  color: 'white',
+                  fontWeight: 700,
+                  fontSize: '0.9rem',
                   textDecoration: 'none',
-                  color: 'inherit',
                 }}
               >
-                View Cart Selections
+                <MessageSquare size={16} /> Contact Academy Support on WhatsApp
+              </a>
+
+              <Link
+                href="/checkout"
+                style={{
+                  color: 'var(--secondary)',
+                  fontSize: '0.86rem',
+                  textDecoration: 'none',
+                  marginTop: '0.35rem',
+                }}
+              >
+                Return to Checkout Page
               </Link>
             </div>
-            <p style={{ marginTop: '1.5rem', fontSize: '0.8rem', opacity: 0.5 }}>
-              If your payment was debited, your access will be activated once the webhook completes, or contact support with reference: {orderId}.
-            </p>
+
+            {orderId && (
+              <p style={{ marginTop: '1.5rem', fontSize: '0.75rem', color: 'var(--secondary)' }}>
+                Order Reference: <code>{orderId}</code>
+              </p>
+            )}
           </>
         )}
       </div>
@@ -333,8 +402,8 @@ export default function PaymentReturnPage() {
             style={{
               width: '40px',
               height: '40px',
-              border: '3px solid rgba(99,102,241,0.2)',
-              borderTopColor: 'var(--primary)',
+              border: '3px solid var(--surface-border)',
+              borderTopColor: 'var(--foreground)',
               borderRadius: '50%',
               animation: 'spin 0.8s linear infinite',
             }}

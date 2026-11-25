@@ -1,9 +1,15 @@
 .card {
-  background: var(--surface-card, #141414);
-  border: 1px solid var(--surface-border, rgba(255, 255, 255, 0.1));
+  background: var(--surface, #111114);
+  border: 1px solid var(--surface-border, rgba(255, 255, 255, 0.08));
   border-radius: var(--radius-md, 12px);
   position: relative;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+:global(.light) .card {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.09);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 .padded {
@@ -15,13 +21,20 @@
 }
 
 .interactive:hover {
-  border-color: rgba(99, 102, 241, 0.4);
+  background: var(--surface-card, #18181b);
+  border-color: color-mix(in srgb, var(--foreground) 18%, transparent);
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(99, 102, 241, 0.2);
+  box-shadow: var(--shadow-md);
+}
+
+:global(.light) .interactive:hover {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.22);
+  box-shadow: 0 6px 18px -4px rgba(0, 0, 0, 0.08);
 }
 
 .elevated {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-md);
 }
 
 .flat {

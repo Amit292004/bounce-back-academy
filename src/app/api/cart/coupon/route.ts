@@ -1,26 +1,46 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { logger } from '@/lib/logger';
+import { checkRateLimit } from '@/lib/rateLimit';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
-    const { code, subtotal } = await request.json();
+    // 1. Anti-Brute-Force Rate Limiting (Max 10 coupon verification attempts/minute per IP)
+    const rateLimitResponse = await checkRateLimit(request, 10, 60);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
+    let body: any;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON request format' }, { status: 400 });
+    }
+
+    const { code, subtotal } = body;
 
     if (!code || typeof code !== 'string') {
       return NextResponse.json({ error: 'Coupon code is required' }, { status: 400 });
     }
 
-    const cleanCode = code.trim().toUpperCase();
-    const orderSubtotal = Number(subtotal) || 0;
+    const cleanCode = code.trim().toUpperCase().slice(0, 32);
+
+    // Only allow alphanumeric characters and dashes
+    if (!/^[A-Z0-9_-]{2,32}$/.test(cleanCode)) {
+      return NextResponse.json({ error: 'Invalid coupon format' }, { status: 400 });
+    }
+
+    const orderSubtotal = Math.max(0, Number(subtotal) || 0);
 
     const coupon = await prisma.coupon.findUnique({
       where: { code: cleanCode },
     });
 
     if (!coupon || !coupon.isActive) {
-      return NextResponse.json({ error: 'Invalid or expired coupon code' }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid or inactive coupon code' }, { status: 400 });
     }
 
     if (coupon.expiresAt && new Date(coupon.expiresAt) < new Date()) {

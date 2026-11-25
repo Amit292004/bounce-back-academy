@@ -57,8 +57,8 @@ const DEFAULT_SLIDES: PromoSlide[] = [
     ctaText: 'Try AI Doubt Solver',
     ctaHref: '/ai-tutor',
     meta: 'Interactive AI Tool',
-    accentColor: '#818cf8',
-    bgGlow: 'rgba(129, 140, 248, 0.18)',
+    accentColor: '#f97316',
+    bgGlow: 'rgba(249, 115, 22, 0.16)',
     icon: Bot,
   },
   {
@@ -120,7 +120,7 @@ function buildSlidesFromAds(
         ad.badgeType === 'alert'
           ? '#f97316'
           : ad.badgeType === 'ai'
-          ? '#6366f1'
+          ? '#f97316'
           : ad.badgeType === 'study'
           ? '#10b981'
           : '#ec4899';
@@ -129,7 +129,7 @@ function buildSlidesFromAds(
         ad.badgeType === 'alert'
           ? 'rgba(249, 115, 22, 0.2)'
           : ad.badgeType === 'ai'
-          ? 'rgba(99, 102, 241, 0.2)'
+          ? 'rgba(249, 115, 22, 0.18)'
           : ad.badgeType === 'study'
           ? 'rgba(16, 185, 129, 0.2)'
           : 'rgba(236, 72, 153, 0.2)';

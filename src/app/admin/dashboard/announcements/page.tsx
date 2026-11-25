@@ -214,7 +214,7 @@ export default function AnnouncementsPage() {
                     gap: '0.5rem',
                     padding: '0.75rem 1rem',
                     borderRadius: 'var(--radius-sm)',
-                    background: image ? 'rgba(99,102,241,0.1)' : 'var(--surface-highlight)',
+                    background: image ? 'var(--surface-card)' : 'var(--surface-highlight)',
                     border: `1px dashed ${image ? 'var(--primary)' : 'var(--surface-border)'}`,
                     color: image ? 'var(--primary)' : 'var(--foreground)',
                     cursor: 'pointer',
@@ -311,7 +311,7 @@ export default function AnnouncementsPage() {
                     onClick={() => handleToggle(a)}
                     title={a.isActive ? 'Hide announcement' : 'Show announcement'}
                     style={{
-                      background: a.isActive ? 'rgba(99,102,241,0.2)' : 'var(--surface-highlight)',
+                      background: a.isActive ? 'var(--surface-card)' : 'var(--surface-highlight)',
                       border: `1px solid ${a.isActive ? 'var(--primary)' : 'var(--surface-border)'}`,
                       color: a.isActive ? 'var(--primary)' : 'var(--foreground)',
                       borderRadius: '6px',

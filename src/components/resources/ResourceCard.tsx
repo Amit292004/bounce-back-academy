@@ -44,12 +44,12 @@ export default function ResourceCard({
   const isVideo = type === 'VIDEO';
 
   const iconBg = isNote
-    ? 'rgba(99, 102, 241, 0.15)'
+    ? 'rgba(249, 115, 22, 0.12)'
     : isPaper
-    ? 'rgba(239, 68, 68, 0.15)'
-    : 'rgba(6, 182, 212, 0.15)';
+    ? 'rgba(16, 185, 129, 0.12)'
+    : 'rgba(6, 182, 212, 0.12)';
 
-  const iconColor = isNote ? '#818cf8' : isPaper ? '#f87171' : '#22d3ee';
+  const iconColor = isNote ? '#f97316' : isPaper ? '#10b981' : '#06b6d4';
 
   const badgeVariant: 'primary' | 'danger' | 'cyan' = isNote
     ? 'primary'

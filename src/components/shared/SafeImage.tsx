@@ -48,7 +48,7 @@ export default function SafeImage({
   const getFallbackGradient = () => {
     switch (fallbackType) {
       case 'NOTE':
-        return 'linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.25) 100%)';
+        return 'linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, rgba(234, 88, 12, 0.2) 100%)';
       case 'PAPER':
         return 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(249, 115, 22, 0.25) 100%)';
       case 'VIDEO':

@@ -22,7 +22,7 @@
 
 .toast {
   pointer-events: auto;
-  background: rgba(20, 20, 20, 0.95);
+  background: var(--surface);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--surface-border);
@@ -31,7 +31,7 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow-md);
   animation: slideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   color: var(--foreground);
 }
@@ -48,19 +48,19 @@
 }
 
 .toastSuccess {
-  border-left: 4px solid #10b981;
+  border-color: rgba(16, 185, 129, 0.35);
 }
 
 .toastInfo {
-  border-left: 4px solid #6366f1;
+  border-color: var(--surface-border);
 }
 
 .toastWarning {
-  border-left: 4px solid #f59e0b;
+  border-color: rgba(245, 158, 11, 0.35);
 }
 
 .toastError {
-  border-left: 4px solid #ef4444;
+  border-color: rgba(239, 68, 68, 0.35);
 }
 
 .iconWrap {

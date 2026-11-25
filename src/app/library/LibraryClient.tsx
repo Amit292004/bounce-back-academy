@@ -429,7 +429,7 @@ export default function LibraryClient() {
                         loading="lazy"
                       />
                     ) : (
-                      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(168,85,247,0.2) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, var(--surface-card) 0%, var(--surface) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Play size={36} color="var(--primary)" />
                       </div>
                     )}
@@ -699,14 +699,14 @@ export default function LibraryClient() {
                 alignItems: 'center',
                 padding: '1rem 1.5rem',
                 borderBottom: '1px solid rgba(255,255,255,0.08)',
-                background: 'rgba(15,23,42,0.6)',
+                background: '#111114',
               }}
             >
               <div>
                 <span
                   style={{
                     fontSize: '0.72rem',
-                    color: '#818cf8',
+                    color: '#fb923c',
                     fontWeight: 700,
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px',

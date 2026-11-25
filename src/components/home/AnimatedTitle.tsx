@@ -71,12 +71,12 @@ export default function AnimatedTitle({ onIndexChange }: AnimatedTitleProps) {
           style={{
             color: 'var(--brand-orange)',
           }}
-          initial={{ y: "45%", opacity: 0, filter: "blur(6px)" }}
+          initial={{ y: "35%", opacity: 0, filter: "blur(2px)" }}
           animate={{ y: "0%", opacity: 1, filter: "blur(0px)" }}
-          exit={{ y: "-45%", opacity: 0, filter: "blur(6px)" }}
+          exit={{ y: "-35%", opacity: 0, filter: "blur(2px)" }}
           transition={{
-            duration: 0.42,
-            ease: [0.16, 1, 0.3, 1],
+            duration: 0.36,
+            ease: [0.23, 1, 0.32, 1],
           }}
         >
           {current.text}

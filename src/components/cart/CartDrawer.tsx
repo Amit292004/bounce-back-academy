@@ -90,7 +90,7 @@ export default function CartDrawer() {
           ) : (
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.8rem', opacity: 0.6, fontWeight: 600 }}>
+                <span style={{ fontSize: '0.8rem', color: 'var(--secondary)', fontWeight: 600 }}>
                   {itemCount} {itemCount === 1 ? 'course' : 'courses'} in cart
                 </span>
                 <button onClick={clearCart} className={styles.clearCartBtn}>

@@ -49,7 +49,7 @@ export default function FeedbackPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
                 <div>
                   <span style={{ fontWeight: 600 }}>{fb.name}</span>
-                  <span style={{ marginLeft: '0.75rem', padding: '0.15rem 0.5rem', background: 'rgba(99,102,241,0.15)', borderRadius: '999px', fontSize: '0.78rem', color: 'var(--primary)' }}>Class {fb.className}</span>
+                  <span style={{ marginLeft: '0.75rem', padding: '0.15rem 0.5rem', background: 'var(--surface-card)', borderRadius: '999px', fontSize: '0.78rem', color: 'var(--primary)' }}>Class {fb.className}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                   <span style={{ opacity: 0.5, fontSize: '0.8rem' }}>{new Date(fb.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>

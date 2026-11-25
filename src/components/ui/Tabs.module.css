@@ -27,7 +27,7 @@
 
 :global(.light) .pillContainer {
   background: #f4f4f5;
-  border-color: rgba(0, 0, 0, 0.08);
+  border-color: var(--surface-border);
 }
 
 .pillContainer::-webkit-scrollbar {
